@@ -19,14 +19,14 @@
             <!-- Left: Product Gallery (Col span 4) -->
             <div class="lg:col-span-4" x-data="{ currentImage: '{{ $product->images->first() ? asset('storage/' . $product->images->first()->path) : 'https://m.media-amazon.com/images/I/61pD7UeR4mL._AC_UF894,1000_QL80_.jpg' }}' }">
                 <div class="mb-4">
-                    <div class="aspect-[4/5] rounded bg-white border border-slate-200 mb-4 overflow-hidden flex items-center justify-center p-6">
+                    <div class="aspect-[4/5] rounded-xl bg-white border border-slate-200 mb-4 overflow-hidden flex items-center justify-center p-4">
                         <img :src="currentImage" class="w-full h-full object-contain transition-all duration-300">
                     </div>
                     @if($product->images->count() > 0)
                         <div class="grid grid-cols-5 gap-2">
                             @foreach($product->images as $index => $image)
                             <div @click="currentImage = '{{ asset('storage/' . $image->path) }}'" 
-                                class="aspect-square rounded border-2 p-1 overflow-hidden cursor-pointer transition-colors bg-white flex items-center justify-center"
+                                class="aspect-square rounded-lg border-2 p-1 overflow-hidden cursor-pointer transition-colors bg-white flex items-center justify-center"
                                 :class="currentImage === '{{ asset('storage/' . $image->path) }}' ? 'border-green-600' : 'border-slate-200 hover:border-green-400'">
                                 <img src="{{ asset('storage/' . $image->path) }}" class="w-full h-full object-cover">
                             </div>
@@ -146,7 +146,7 @@
                     <h4 class="text-[14px] font-black text-[#0A1D37] mb-3">Select Size / Storage</h4>
                     <div class="flex flex-wrap gap-2">
                         @foreach($product->sizes as $size)
-                            <button class="px-4 py-1.5 bg-white border-2 border-slate-200 text-[12px] font-bold text-slate-700 rounded hover:border-green-600 transition-colors">
+                            <button class="px-4 py-1.5 bg-white border-2 border-slate-200 text-[12px] font-bold text-slate-700 rounded-lg hover:border-green-600 transition-colors">
                                 {{ $size }}
                             </button>
                         @endforeach
@@ -158,12 +158,12 @@
                 <div class="space-y-3 mb-6">
                     <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $product->store->whatsapp_number) }}?text=Hello, I am interested in your product: {{ urlencode($product->name) }}" 
                        target="_blank"
-                       class="w-full bg-[#16A34A] text-white py-3.5 rounded-md font-bold text-[15px] flex items-center justify-center gap-2 hover:bg-green-700 transition-colors shadow-sm">
+                       class="w-full bg-[#16A34A] text-white py-3.5 rounded-lg font-bold text-[15px] flex items-center justify-center gap-2 hover:bg-green-700 transition-colors shadow-sm">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
                         Contact on WhatsApp
                     </a>
                     <a href="tel:{{ preg_replace('/[^0-9]/', '', $product->store->whatsapp_number) }}" 
-                       class="w-full bg-slate-50 text-slate-800 border border-slate-200 py-3.5 rounded-md font-bold text-[15px] flex items-center justify-center gap-2 hover:bg-slate-100 transition-colors shadow-sm">
+                       class="w-full bg-slate-50 text-slate-800 border border-slate-200 py-3.5 rounded-lg font-bold text-[15px] flex items-center justify-center gap-2 hover:bg-slate-100 transition-colors shadow-sm">
                         <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
                         Call Seller
                     </a>
@@ -243,16 +243,16 @@
                         </div>
                     </div>
 
-                    <a href="{{ route('stores.show', $product->store->slug) }}" class="w-full bg-[#1e588f] text-white py-2.5 rounded font-bold text-[13px] hover:bg-blue-800 transition-all mb-3 flex items-center justify-center">View Store</a>
+                    <a href="{{ route('stores.show', $product->store->slug) }}" class="w-full bg-[#1e588f] text-white py-2.5 rounded-lg font-bold text-[13px] hover:bg-blue-800 transition-all mb-3 flex items-center justify-center">View Store</a>
                     
                     <div class="grid grid-cols-2 gap-2 mb-4">
                         <a href="tel:{{ preg_replace('/[^0-9]/', '', $product->store->whatsapp_number) }}" 
-                           class="bg-slate-50 border border-slate-200 text-slate-700 py-2 rounded text-[12px] font-medium flex items-center justify-center gap-1.5 hover:bg-slate-100">
+                           class="bg-slate-50 border border-slate-200 text-slate-700 py-2 rounded-lg text-[12px] font-medium flex items-center justify-center gap-1.5 hover:bg-slate-100">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg> Call Seller
                         </a>
                         <button 
                             @click="navigator.clipboard.writeText(window.location.href); alert('Product link copied to clipboard!')"
-                            class="bg-slate-50 border border-slate-200 text-slate-700 py-2 rounded text-[12px] font-medium flex items-center justify-center gap-1.5 hover:bg-slate-100">
+                            class="bg-slate-50 border border-slate-200 text-slate-700 py-2 rounded-lg text-[12px] font-medium flex items-center justify-center gap-1.5 hover:bg-slate-100">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg> Save link
                         </button>
                     </div>
@@ -354,7 +354,7 @@
                         ->get();
                 @endphp
                 @foreach($relatedProducts as $related)
-                <a href="{{ route('products.show', $related->slug) }}" class="bg-white rounded-lg border border-slate-200 p-3 hover:shadow-xl transition-all group block">
+                <a href="{{ route('products.show', $related->slug) }}" class="bg-white rounded-xl border border-slate-200 p-4 hover:shadow-xl transition-all group block">
                     <div class="relative bg-white rounded-lg aspect-square mb-3 flex items-center justify-center border border-slate-100 overflow-hidden">
                         <img src="{{ $related->images->first() ? asset('storage/' . $related->images->first()->path) : 'https://m.media-amazon.com/images/I/61pD7UeR4mL._AC_UF894,1000_QL80_.jpg' }}" 
                             class="w-[80%] h-[80%] object-contain group-hover:scale-105 transition-transform duration-500">

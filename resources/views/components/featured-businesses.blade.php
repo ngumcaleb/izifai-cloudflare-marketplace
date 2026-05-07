@@ -1,4 +1,11 @@
-@props(['title' => 'Trusted Shops', 'limit' => 10])
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap');
+    
+    .font-montserrat { font-family: 'Montserrat', sans-serif; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+</style>
+
+@props(['title' => 'Top Wholesalers', 'limit' => 12])
 
 @php
     $stores = \App\Models\Store::whereHas('products')
@@ -9,43 +16,68 @@
 @endphp
 
 @if($stores->count() > 0)
-<section class="py-6">
-    <div class="flex flex-col items-center text-center mb-6">
-        <h2 class="text-xl md:text-2xl font-black text-[#0A1D37] tracking-tight mb-2">{{ $title }}</h2>
-        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">The best sellers in Cameroon</p>
-        <div class="w-12 h-1 bg-green-600 rounded-full mt-4"></div>
-    </div>
+<section class="py-8 bg-white font-montserrat">
+    <div class="max-w-[1400px] mx-auto px-4 lg:px-8">
+        
+        {{-- ── MINIMALIST HEADER ── --}}
+        <div class="flex items-end justify-between mb-6 pb-2 border-b border-slate-100">
+            <div>
+                <span class="text-[9px] font-black uppercase tracking-[0.3em] text-emerald-600 block mb-1">Curated List</span>
+                <h2 class="text-sm font-black text-[#0A1D37] uppercase tracking-tighter">{{ $title }}</h2>
+            </div>
+            <a href="{{ route('stores.index') }}" class="text-[9px] font-bold uppercase tracking-widest text-slate-400 hover:text-emerald-600 transition-colors flex items-center gap-2">
+                View All Directory
+                <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"/></svg>
+            </a>
+        </div>
 
-    <!-- Discovery Hub Grid -->
-    <div class="flex overflow-x-auto no-scrollbar gap-10 pb-6 -mx-4 px-4 lg:mx-0 lg:px-0 lg:justify-center">
-        @foreach($stores as $store)
-            <a href="{{ route('stores.show', $store->slug) }}" class="flex-shrink-0 group flex flex-col items-center text-center w-[100px] transition-all">
-                <!-- Brand Profile Image -->
-                <div class="relative mb-4">
-                    <div class="w-20 h-20 rounded-2xl bg-white shadow-xl border border-slate-50 flex items-center justify-center overflow-hidden group-hover:scale-110 group-hover:shadow-green-100 transition-all duration-500">
-                        @if($store->logo)
-                            <img src="{{ asset('storage/' . $store->logo) }}" class="w-full h-full object-cover">
-                        @else
-                            <span class="text-3xl font-black text-slate-100 uppercase group-hover:text-green-600 transition-colors">{{ substr($store->name, 0, 1) }}</span>
-                        @endif
-                    </div>
+        {{-- ── SMALL-SCALE HORIZONTAL FLOW ── --}}
+        <div class="flex overflow-x-auto no-scrollbar gap-3 snap-x">
+            
+            @foreach($stores as $store)
+            <a href="{{ route('stores.show', $store->slug) }}" 
+               class="snap-start flex-shrink-0 w-[160px] group border border-transparent hover:border-slate-100 p-2 rounded-xl transition-all">
+                
+                {{-- Square Preview --}}
+                <div class="relative aspect-square rounded-lg overflow-hidden bg-slate-50 mb-3">
+                    @php $img = $store->products->first()?->images->first()?->path; @endphp
+                    <img src="{{ $img ? asset('storage/' . $img) : 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=200&h=200&auto=format&fit=crop' }}" 
+                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                     
+                    {{-- Small Badge --}}
                     @if($store->is_verified)
-                        <div class="absolute -bottom-1 -right-1 bg-green-600 text-white p-1 rounded-lg shadow-lg border-2 border-white transform group-hover:rotate-12 transition-transform">
-                            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812z"></path></svg>
-                        </div>
+                    <div class="absolute top-1.5 right-1.5 w-4 h-4 bg-emerald-500 rounded-full flex items-center justify-center shadow-lg border-2 border-white">
+                        <svg class="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>
+                    </div>
                     @endif
                 </div>
 
-                <!-- Simple Human Info -->
-                <h3 class="text-[11px] font-black text-[#0A1D37] uppercase tracking-tight group-hover:text-green-600 transition-colors line-clamp-1 mb-1">{{ $store->name }}</h3>
-                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">{{ $store->products_count }} Items</span>
-                
-                <div class="mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <span class="text-[8px] font-black text-green-600 uppercase tracking-[0.2em]">Visit Shop &rarr;</span>
+                {{-- Micro Info --}}
+                <div class="space-y-0.5">
+                    <h3 class="text-[10px] font-extrabold text-[#0A1D37] truncate uppercase tracking-tight group-hover:text-emerald-600">
+                        {{ $store->name }}
+                    </h3>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[8px] font-bold text-slate-400 uppercase tracking-widest">
+                            {{ $store->products_count }} SKUs
+                        </span>
+                        <span class="text-[8px] font-medium text-slate-300 uppercase italic">
+                            {{ $store->location ?? 'Cameroon' }}
+                        </span>
+                    </div>
                 </div>
             </a>
-        @endforeach
+            @endforeach
+
+            {{-- ── SMALL CTA END ── --}}
+            <a href="{{ route('stores.index') }}" 
+               class="flex-shrink-0 w-[120px] flex flex-col items-center justify-center border border-dashed border-slate-200 rounded-xl hover:bg-slate-50 transition-colors">
+                <div class="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center mb-2">
+                    <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                </div>
+                <span class="text-[8px] font-black text-slate-400 uppercase tracking-widest">More</span>
+            </a>
+        </div>
     </div>
 </section>
 @endif

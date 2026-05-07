@@ -13,7 +13,10 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
+                        sans: ['Montserrat', 'sans-serif'],
+                        barlow: ['Barlow', 'sans-serif'],
+                        source: ['Source Sans 3', 'sans-serif'],
+                        montserrat: ['Montserrat', 'sans-serif'],
                     },
                 }
             }
@@ -22,11 +25,18 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Barlow:wght@300;400;500;600;700;800;900&family=Source+Sans+3:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', () => lucide.createIcons());</script>
     <style>
-        body { font-family: 'Inter', sans-serif; font-size: 13px; }
+        body { font-family: 'Montserrat', sans-serif; font-size: 13px; }
+        h1, h2, h3, h4, h5, h6, .font-display { font-family: 'Montserrat', sans-serif; }
+        .font-barlow { font-family: 'Barlow', sans-serif; }
+        .font-source { font-family: 'Source Sans 3', sans-serif; }
+        p, li, td, input, textarea, select { font-family: 'Source Sans 3', sans-serif; }
+        nav, button, label, .nav-item { font-family: 'Barlow', sans-serif; }
         [x-cloak] { display: none !important; }
         .search-shadow { box-shadow: 0 4px 20px rgba(22, 163, 74, 0.15); }
         .mega-menu-shadow { box-shadow: 0 20px 50px rgba(0,0,0,0.1); }
@@ -45,7 +55,7 @@
                     <span class="text-slate-900 font-bold">Cameroon</span>
                 </div>
                 <div class="flex items-center gap-6">
-                    <a href="{{ route('seller.dashboard') }}" class="hover:text-green-600 transition-colors">{{ auth()->check() && auth()->user()->role === 'seller' ? 'Seller Central' : 'Sell on Izifai' }}</a>
+                    <a href="{{ route('seller.dashboard') }}" class="hover:text-green-600 transition-colors">{{ auth()->check() && auth()->user()->role === 'seller' ? 'Seller Dashboard' : 'Sell on Izifai' }}</a>
                     <a href="{{ route('help') }}" class="hover:text-green-600 transition-colors">Help Center</a>
                 </div>
             </div>
@@ -57,7 +67,7 @@
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"></path></svg>
                         </button>
                         <div x-show="userDropdown" x-cloak class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-2xl border border-slate-100 py-2 z-[200]">
-                            <a href="{{ auth()->user()->role === 'seller' ? route('seller.dashboard') : route('dashboard') }}" class="block px-4 py-2 hover:bg-slate-50 font-bold text-slate-700">{{ auth()->user()->role === 'seller' ? 'Seller Central' : 'My Dashboard' }}</a>
+                            <a href="{{ auth()->user()->role === 'seller' ? route('seller.dashboard') : route('dashboard') }}" class="block px-4 py-2 hover:bg-slate-50 font-bold text-slate-700">{{ auth()->user()->role === 'seller' ? 'Seller Dashboard' : 'My Dashboard' }}</a>
                             <a href="{{ route('favorites.index') }}" class="block px-4 py-2 hover:bg-slate-50 font-bold text-slate-700">My Favorites</a>
                             <a href="{{ route('profile.edit') }}" class="block px-4 py-2 hover:bg-slate-50 font-bold text-slate-700">Settings</a>
                             <form method="POST" action="{{ route('logout') }}" class="border-t border-slate-50 mt-2">
@@ -286,6 +296,10 @@
                         All Categories
                     </button>
                     <nav class="flex items-center gap-8 text-[11px] font-bold text-slate-500 h-full">
+                        <a href="{{ url('/') }}" class="flex items-center gap-1.5 hover:text-green-600 transition-colors {{ request()->is('/') ? 'text-green-600' : '' }}">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                            Marketplace
+                        </a>
                         <a href="{{ route('stores.index') }}" class="hover:text-green-600 transition-colors {{ request()->routeIs('stores.*') ? 'text-green-600' : '' }}">Featured Sellers</a>
                         <a href="{{ route('products.new-arrivals') }}" class="hover:text-green-600 transition-colors {{ request()->routeIs('products.new-arrivals') ? 'text-green-600' : '' }}">Newest Items</a>
                         <a href="{{ route('products.local-sourcing') }}" class="hover:text-green-600 transition-colors {{ request()->routeIs('products.local-sourcing') ? 'text-green-600' : '' }}">Buy Near Me</a>
@@ -420,10 +434,17 @@
             </a>
 
             <!-- Profile -->
-            <a href="{{ auth()->user()->role === 'seller' ? route('seller.dashboard') : route('dashboard') }}" class="flex flex-col items-center gap-1 group">
-                <svg class="w-5 h-5 {{ (request()->is('dashboard*') || request()->is('profile*') || request()->is('seller*')) ? 'text-green-600' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M16 7a4 4 0 11-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
-                <span class="text-[8px] font-bold uppercase tracking-widest {{ (request()->is('dashboard*') || request()->is('profile*') || request()->is('seller*')) ? 'text-slate-900' : 'text-slate-400' }}">{{ auth()->user()->role === 'seller' ? 'Central' : 'Profile' }}</span>
-            </a>
+            @auth
+                <a href="{{ auth()->user()->role === 'seller' ? route('seller.dashboard') : route('dashboard') }}" class="flex flex-col items-center gap-1 group">
+                    <svg class="w-5 h-5 {{ (request()->is('dashboard*') || request()->is('profile*') || request()->is('seller*')) ? 'text-green-600' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M16 7a4 4 0 11-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                    <span class="text-[8px] font-bold uppercase tracking-widest {{ (request()->is('dashboard*') || request()->is('profile*') || request()->is('seller*')) ? 'text-slate-900' : 'text-slate-400' }}">{{ auth()->user()->role === 'seller' ? '' : 'Profile' }} Dashboard</span>
+                </a>
+            @else
+                <a href="{{ route('login') }}" class="flex flex-col items-center gap-1 group">
+                    <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path></svg>
+                    <span class="text-[8px] font-bold uppercase tracking-widest text-slate-400">Login</span>
+                </a>
+            @endauth
         </nav>
     </div>
 
@@ -477,7 +498,7 @@
                                             </div>
                                             <div>
                                                 <p class="text-white text-sm font-bold">{{ auth()->user()->name }}</p>
-                                                <a href="{{ auth()->user()->role === 'seller' ? route('seller.dashboard') : route('dashboard') }}" class="text-green-400 text-[10px] uppercase tracking-wider font-bold hover:underline">{{ auth()->user()->role === 'seller' ? 'Seller Central' : 'My Dashboard' }}</a>
+                                                <a href="{{ auth()->user()->role === 'seller' ? route('seller.dashboard') : route('dashboard') }}" class="text-green-400 text-[10px] uppercase tracking-wider font-bold hover:underline">{{ auth()->user()->role === 'seller' ? 'Seller Dashboard' : 'My Dashboard' }}</a>
                                             </div>
                                         </div>
                                     @else
