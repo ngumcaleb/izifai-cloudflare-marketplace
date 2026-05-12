@@ -8,7 +8,7 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = \App\Models\Product::with(['images', 'store', 'savedUsers'])->latest()->paginate(24);
+        $products = \App\Models\Product::active()->with(['images', 'store', 'savedUsers'])->latest()->paginate(24);
         $title = "New Arrivals";
         $description = "Browse the latest wholesale and retail products from verified sellers in Cameroon.";
         
@@ -17,7 +17,7 @@ class ProductController extends Controller
 
     public function localSourcing(Request $request)
     {
-        $query = \App\Models\Product::with(['images', 'store', 'savedUsers']);
+        $query = \App\Models\Product::active()->with(['images', 'store', 'savedUsers']);
 
         if ($request->city) {
             $query->whereHas('store', function($q) use ($request) {
@@ -39,6 +39,8 @@ class ProductController extends Controller
         $q = $request->query('q');
         $type = $request->query('type', 'products');
         $city = $request->query('city');
+        $minPrice = $request->query('min_price');
+        $maxPrice = $request->query('max_price');
 
         if ($type === 'sellers') {
             $query = \App\Models\Store::query();
@@ -54,10 +56,10 @@ class ProductController extends Controller
             }
 
             if ($city) {
-                $query->where('location', $city);
+                $query->where('location', 'LIKE', "%{$city}%");
             }
 
-            $stores = $query->latest()->paginate(24);
+            $stores = $query->where('status', 'active')->latest()->paginate(24);
             
             return view('stores.index', [
                 'stores' => $stores,
@@ -66,7 +68,7 @@ class ProductController extends Controller
             ]);
         }
 
-        $query = \App\Models\Product::with(['images', 'store', 'savedUsers']);
+        $query = \App\Models\Product::active()->with(['images', 'store', 'savedUsers']);
 
         if ($q) {
             $keywords = array_filter(explode(' ', $q));
@@ -89,8 +91,16 @@ class ProductController extends Controller
 
         if ($city) {
             $query->whereHas('store', function($sub) use ($city) {
-                $sub->where('location', $city);
+                $sub->where('location', 'LIKE', "%{$city}%");
             });
+        }
+
+        if ($minPrice) {
+            $query->where('price', '>=', $minPrice);
+        }
+
+        if ($maxPrice) {
+            $query->where('price', '<=', $maxPrice);
         }
 
         $products = $query->latest()->paginate(24);
@@ -103,9 +113,56 @@ class ProductController extends Controller
 
     public function show($slug)
     {
-        $product = \App\Models\Product::where('slug', $slug)->with(['images', 'store', 'specifications', 'category'])->firstOrFail();
+        $product = \App\Models\Product::active()->where('slug', $slug)->with(['images', 'store', 'specifications', 'category'])->firstOrFail();
         $product->increment('views');
-        return view('products.show', compact('product'));
+        $product->logEvent('view');
+
+        $store = $product->store;
+
+        // Reviews
+        $reviews = $store->reviews()->with('user')->latest()->get();
+        $avgRating = $reviews->count() > 0 ? round($reviews->avg('rating'), 1) : 0;
+        $totalReviews = $reviews->count();
+
+        // Other products from same store
+        $storeProducts = $store->products()
+            ->where('id', '!=', $product->id)
+            ->with('images')
+            ->latest()
+            ->take(12)
+            ->get();
+
+        // Top products by favorites for Highly Liked section
+        $topProducts = $store->products()
+            ->where('id', '!=', $product->id)
+            ->with('images')
+            ->withCount('favorites')
+            ->orderBy('favorites_count', 'desc')
+            ->take(8)
+            ->get();
+
+        if ($topProducts->count() < 8) {
+            $topProducts = $store->products()
+                ->where('id', '!=', $product->id)
+                ->with('images')
+                ->latest()
+                ->take(8)
+                ->get();
+        }
+
+        // Saved product IDs
+        $savedProductIds = [];
+        if (auth()->check()) {
+            $savedProductIds = \App\Models\SavedProduct::where('user_id', auth()->id())
+                ->whereIn('product_id', $store->products()->pluck('id'))
+                ->pluck('product_id')
+                ->toArray();
+        }
+
+        return view('products.show', compact(
+            'product', 'store', 'reviews', 'avgRating', 'totalReviews',
+            'storeProducts', 'topProducts', 'savedProductIds'
+        ));
     }
 
     public function autocomplete(Request $request)
@@ -180,5 +237,15 @@ class ProductController extends Controller
         $results = collect()->concat($categories)->concat($stores)->concat($products);
 
         return response()->json($results);
+    }
+
+    public function logContact(Request $request, \App\Models\Product $product)
+    {
+        $type = $request->input('type');
+        if (in_array($type, ['whatsapp', 'call'])) {
+            $product->logEvent($type . '_click');
+            return response()->json(['success' => true]);
+        }
+        return response()->json(['success' => false], 400);
     }
 }

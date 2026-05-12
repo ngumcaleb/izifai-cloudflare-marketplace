@@ -1,185 +1,180 @@
-<x-app-layout>
-    <x-slot name="sidebar">
-        <!-- Seller Sidebar (Compact) -->
-        <aside class="w-[240px] bg-[#0A1D37] text-white flex flex-col min-h-screen sticky top-0">
-            <div class="p-6 h-20 flex items-center gap-3 border-b border-white/10 shrink-0">
-                <div class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center font-black text-sm">S</div>
-                <span class="font-black text-xs uppercase tracking-widest">Seller Dashboard</span>
-            </div>
-            <nav class="flex-1 p-3 space-y-1 overflow-y-auto">
-                <a href="{{ route('seller.dashboard') }}"
-                    class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white font-bold text-[11px] transition-all">
-                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z">
-                        </path>
-                    </svg>
-                    <span>Overview</span>
-                </a>
-                <a href="{{ route('seller.products.index') }}"
-                    class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white font-bold text-[11px] transition-all">
-                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                    </svg>
-                    <span>Product Catalog</span>
-                </a>
-                <a href="{{ route('seller.store.settings') }}"
-                    class="flex items-center gap-3 px-4 py-2.5 rounded-lg bg-green-600 text-white font-bold text-[11px] transition-all">
-                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
-                        </path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    </svg>
-                    <span>Store Profile</span>
-                </a>
-                <div class="pt-4 mt-4 border-t border-white/5">
-                    <a href="{{ route('profile.edit') }}"
-                        class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white font-bold text-[11px] transition-all">
-                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                        </svg>
-                        <span>Personal Settings</span>
-                    </a>
-                </div>
-            </nav>
-        </aside>
-    </x-slot>
+<x-seller-layout>
+    <x-slot name="title">Store Identity</x-slot>
 
-    <div class="p-6 md:p-8">
-        <div class="max-w-4xl">
-            <div class="mb-10">
-                <h1 class="text-2xl font-black text-slate-900 mb-2">Unified Profile Settings</h1>
-                <p class="text-xs text-slate-500 font-medium uppercase tracking-widest">Manage your personal identity
-                    and business storefront in one place.</p>
-            </div>
+    <div class="max-w-4xl mx-auto">
+        <form action="{{ route('seller.store.update') }}" method="POST" enctype="multipart/form-data" class="space-y-4 md:space-y-6"
+              x-data="{
+                socialLinks: {{ Js::from($store->social_links ?? []) }}.length ? {{ Js::from($store->social_links ?? []) }} : [{ platform: '', url: '' }],
+                addSocial() { this.socialLinks.push({ platform: '', url: '' }) },
+                removeSocial(i) { this.socialLinks.splice(i, 1) }
+              }">
+            @csrf @method('PUT')
 
-            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-                <!-- Combined Header -->
-                <div class="p-8 bg-slate-50 border-b border-slate-100 flex flex-col md:flex-row md:items-center gap-8">
-                    <!-- Personal Photo -->
-                    <div class="flex flex-col items-center gap-3">
-                        <div class="w-20 h-20 rounded-full bg-white border border-slate-200 overflow-hidden shadow-sm">
-                            @if(auth()->user()->profile_photo_path)
-                                <img src="{{ asset('storage/' . auth()->user()->profile_photo_path) }}"
-                                    class="w-full h-full object-cover">
-                            @else
-                                <div
-                                    class="w-full h-full flex items-center justify-center bg-slate-100 text-slate-400 font-black text-xl uppercase">
-                                    {{ substr(auth()->user()->name, 0, 1) }}
-                                </div>
-                            @endif
-                        </div>
-                        <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Personal
-                            Photo</span>
-                    </div>
-
-                    <div class="h-10 w-px bg-slate-200 hidden md:block"></div>
-
-                    <!-- Store Logo -->
-                    <div class="flex flex-col items-center gap-3">
-                        <div
-                            class="w-20 h-20 rounded-xl bg-[#0A1D37] overflow-hidden shadow-sm flex items-center justify-center">
+            <div class="bg-surface-container-lowest p-4 md:p-xl rounded-2xl md:rounded-3xl shadow-[0px_4px_20px_rgba(0,0,0,0.05)] space-y-4 md:space-y-xl">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-xl">
+                    <!-- Logo Upload -->
+                    <div class="md:col-span-1 flex flex-col items-center max-w-[200px] mx-auto md:max-w-none">
+                        <label class="relative group cursor-pointer aspect-square w-full rounded-2xl border-2 border-dashed border-outline-variant overflow-hidden flex items-center justify-center hover:border-primary transition-all bg-surface-container-low">
+                            <input type="file" name="logo" class="hidden" accept="image/*">
                             @if($store->logo)
                                 <img src="{{ asset('storage/' . $store->logo) }}" class="w-full h-full object-cover">
                             @else
-                                <span
-                                    class="text-white font-black text-xl uppercase">{{ substr($store->name, 0, 2) }}</span>
+                                <div class="flex flex-col items-center text-on-surface-variant/40">
+                                    <span class="material-symbols-outlined text-3xl">add_photo_alternate</span>
+                                    <span class="text-label-sm mt-1">Logo</span>
+                                </div>
                             @endif
-                        </div>
-                        <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Store Logo</span>
+                            <div class="absolute inset-0 bg-primary/80 opacity-0 group-hover:opacity-100 transition-all flex flex-col items-center justify-center text-white rounded-2xl">
+                                <span class="material-symbols-outlined text-2xl">camera_alt</span>
+                                <span class="font-label-md mt-1">Update</span>
+                            </div>
+                        </label>
+                        <p class="font-label-sm text-on-surface-variant mt-3">Store Logo</p>
                     </div>
 
-                    <div class="flex-1">
-                        <h3 class="text-xl font-black text-slate-900 mb-1">{{ $store->name }}</h3>
-                        <p class="text-[11px] font-bold text-slate-500">{{ auth()->user()->email }}</p>
+                    <!-- Banner Upload -->
+                    <div class="md:col-span-3">
+                        <label class="relative group cursor-pointer h-28 md:h-32 w-full rounded-2xl border-2 border-dashed border-outline-variant overflow-hidden flex items-center justify-center hover:border-primary transition-all bg-surface-container-low">
+                            <input type="file" name="banner" class="hidden" accept="image/*">
+                            @if($store->banner)
+                                <img src="{{ asset('storage/' . $store->banner) }}" class="w-full h-full object-cover">
+                            @else
+                                <div class="flex flex-col items-center text-on-surface-variant/40">
+                                    <span class="material-symbols-outlined text-3xl">panorama</span>
+                                    <span class="font-label-sm mt-1">Profile Banner</span>
+                                </div>
+                            @endif
+                            <div class="absolute inset-0 bg-primary/80 opacity-0 group-hover:opacity-100 transition-all flex flex-col items-center justify-center text-white rounded-2xl">
+                                <span class="material-symbols-outlined text-2xl">camera_alt</span>
+                                <span class="font-label-md mt-1">Upload Header</span>
+                            </div>
+                        </label>
+                        <p class="font-label-sm text-on-surface-variant mt-3">Header Image (1200x400)</p>
                     </div>
                 </div>
 
-                <form action="{{ route('seller.store.update') }}" method="POST" enctype="multipart/form-data"
-                    class="p-8 space-y-10">
-                    @csrf
-                    @method('PUT')
+                <!-- Business Info -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-md pt-4 md:pt-lg border-t border-outline-variant/30">
+                    <div class="space-y-1.5">
+                        <label class="font-label-sm text-on-surface-variant ml-0.5">Business Name</label>
+                        <input type="text" name="name" value="{{ $store->name }}" required
+                               class="w-full px-4 py-2.5 bg-surface-container-low border-none rounded-xl text-body-md focus:ring-2 focus:ring-primary outline-none">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="font-label-sm text-on-surface-variant ml-0.5">WhatsApp Number</label>
+                        <input type="text" name="whatsapp_number" value="{{ $store->whatsapp_number }}" required
+                               class="w-full px-4 py-2.5 bg-surface-container-low border-none rounded-xl text-body-md focus:ring-2 focus:ring-primary outline-none">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="font-label-sm text-on-surface-variant ml-0.5">Business Email</label>
+                        <input type="email" name="business_email" value="{{ $store->business_email }}"
+                               class="w-full px-4 py-2.5 bg-surface-container-low border-none rounded-xl text-body-md focus:ring-2 focus:ring-primary outline-none">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="font-label-sm text-on-surface-variant ml-0.5">City / Location</label>
+                        <input type="text" name="location" value="{{ $store->location }}" required
+                               class="w-full px-4 py-2.5 bg-surface-container-low border-none rounded-xl text-body-md focus:ring-2 focus:ring-primary outline-none">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="font-label-sm text-on-surface-variant ml-0.5">Display Name</label>
+                        <input type="text" name="user_name" value="{{ auth()->user()->name }}" required
+                               class="w-full px-4 py-2.5 bg-surface-container-low border-none rounded-xl text-body-md focus:ring-2 focus:ring-primary outline-none">
+                    </div>
+                    <div class="col-span-full space-y-1.5">
+                        <label class="font-label-sm text-on-surface-variant ml-0.5">Shop Description</label>
+                        <textarea name="description" rows="4"
+                                  class="w-full px-4 py-3 bg-surface-container-low border-none rounded-xl text-body-md focus:ring-2 focus:ring-primary outline-none resize-none leading-relaxed">{{ $store->description }}</textarea>
+                    </div>
+                </div>
 
-                    <!-- SECTION: PERSONAL IDENTITY -->
-                    <div>
-                        <h4
-                            class="text-[11px] font-black text-green-600 uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
-                            <span class="w-4 h-px bg-green-600/20"></span>
-                            Personal Identity
-                        </h4>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div class="space-y-2">
-                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Personal
-                                    Full Name</label>
-                                <input type="text" name="user_name" value="{{ auth()->user()->name }}" required
-                                    class="w-full px-4 py-3 rounded-md border border-slate-200 focus:border-green-600 focus:ring-0 font-bold text-sm transition-all bg-slate-50/30">
-                            </div>
-                            <div class="space-y-2">
-                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Update
-                                    Profile Picture</label>
-                                <input type="file" name="profile_photo"
-                                    class="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-[10px] file:font-black file:bg-green-50 file:text-green-700 hover:file:bg-green-100 transition-all cursor-pointer">
-                                <p class="text-[9px] text-slate-400 italic">This photo represents you in reviews and
-                                    chats.</p>
-                            </div>
+                <!-- Open Hours -->
+                <div class="pt-4 md:pt-lg border-t border-outline-variant/30">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-7 h-7 md:w-8 md:h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+                            <span class="material-symbols-outlined">schedule</span>
+                        </div>
+                        <h3 class="font-headline-sm md:font-headline-md text-on-surface">Business Hours</h3>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="space-y-1.5">
+                            <label class="font-label-sm text-on-surface-variant ml-0.5">Open Hours</label>
+                            <textarea name="open_hours" rows="4"
+                                      class="w-full px-4 py-3 bg-surface-container-low border-none rounded-xl text-body-md focus:ring-2 focus:ring-primary outline-none resize-none leading-relaxed"
+                                      placeholder="e.g.&#10;Mon - Fri: 8:00 AM - 6:00 PM&#10;Sat: 9:00 AM - 2:00 PM&#10;Sun: Closed">{{ $store->open_hours }}</textarea>
                         </div>
                     </div>
+                </div>
 
-                    <!-- SECTION: BUSINESS STOREFRONT -->
-                    <div>
-                        <h4
-                            class="text-[11px] font-black text-green-600 uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
-                            <span class="w-4 h-px bg-green-600/20"></span>
-                            Business Storefront
-                        </h4>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div class="space-y-2">
-                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Store
-                                    Display Name</label>
-                                <input type="text" name="name" value="{{ $store->name }}" required
-                                    class="w-full px-4 py-3 rounded-md border border-slate-200 focus:border-green-600 focus:ring-0 font-bold text-sm transition-all bg-slate-50/30">
-                            </div>
-                            <div class="space-y-2">
-                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">WhatsApp
-                                    Business Number</label>
-                                <input type="text" name="whatsapp_number" value="{{ $store->whatsapp_number }}" required
-                                    class="w-full px-4 py-3 rounded-md border border-slate-200 focus:border-green-600 focus:ring-0 font-bold text-sm transition-all bg-slate-50/30">
-                            </div>
-                            <div class="space-y-2">
-                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Location
-                                    (City)</label>
-                                <input type="text" name="location" value="{{ $store->location }}" required
-                                    class="w-full px-4 py-3 rounded-md border border-slate-200 focus:border-green-600 focus:ring-0 font-bold text-sm transition-all bg-slate-50/30">
-                            </div>
-                            <div class="space-y-2">
-                                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Store
-                                    Logo</label>
-                                <input type="file" name="logo"
-                                    class="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-[10px] file:font-black file:bg-green-50 file:text-green-700 hover:file:bg-green-100 transition-all cursor-pointer">
-                            </div>
+                <!-- Default Landing Page -->
+                <div class="pt-4 md:pt-lg border-t border-outline-variant/30">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-7 h-7 md:w-8 md:h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+                            <span class="material-symbols-outlined">flag</span>
                         </div>
-
-                        <div class="mt-8 space-y-2">
-                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Business
-                                Description</label>
-                            <textarea name="description" rows="4"
-                                class="w-full px-4 py-3 rounded-md border border-slate-200 focus:border-green-600 focus:ring-0 font-medium text-sm transition-all bg-slate-50/30"
-                                placeholder="Describe what you sell...">{{ $store->description }}</textarea>
-                        </div>
+                        <h3 class="font-headline-sm md:font-headline-md text-on-surface">Default Landing Page</h3>
                     </div>
+                    <p class="text-label-sm text-on-surface-variant mb-3">Choose where you land after login</p>
+                    <select name="default_page"
+                            class="w-full md:w-72 h-12 bg-surface-container-low border-none focus:ring-2 focus:ring-primary rounded-xl px-4 text-body-md outline-none">
+                        <option value="dashboard" {{ auth()->user()->default_page == 'dashboard' ? 'selected' : '' }}>My Shop Home (Dashboard)</option>
+                        <option value="products.index" {{ auth()->user()->default_page == 'products.index' ? 'selected' : '' }}>All My Items</option>
+                        <option value="products.create" {{ auth()->user()->default_page == 'products.create' ? 'selected' : '' }}>Add New Product</option>
+                        <option value="ads.index" {{ auth()->user()->default_page == 'ads.index' ? 'selected' : '' }}>Promote Items</option>
+                        <option value="store.settings" {{ auth()->user()->default_page == 'store.settings' ? 'selected' : '' }}>Store Settings</option>
+                    </select>
+                </div>
 
-                    <div class="flex items-center justify-end gap-4 pt-8 border-t border-slate-100">
-                        <button type="submit"
-                            class="bg-[#16A34A] text-white px-12 py-4 rounded-md font-bold text-xs uppercase tracking-widest hover:bg-green-700 shadow-xl shadow-green-100 transition-all active:scale-[0.98]">
-                            Save Unified Changes
+                <!-- Social Links -->
+                <div class="pt-4 md:pt-lg border-t border-outline-variant/30">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-7 h-7 md:w-8 md:h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+                                <span class="material-symbols-outlined">share</span>
+                            </div>
+                            <h3 class="font-headline-sm md:font-headline-md text-on-surface">Social Media Links</h3>
+                        </div>
+                        <button type="button" @click="addSocial"
+                                class="font-label-md text-primary hover:underline flex items-center gap-1 text-sm md:text-base">
+                            <span class="material-symbols-outlined text-[16px]">add</span>
+                            Add Link
                         </button>
                     </div>
-                </form>
+                    <div class="space-y-3">
+                        <template x-for="(link, i) in socialLinks" :key="i">
+                            <div class="flex gap-2 md:gap-3 items-start">
+                                <select name="social_platforms[]" x-model="link.platform"
+                                        class="w-36 md:w-40 h-11 bg-surface-container-low border-none focus:ring-2 focus:ring-primary rounded-xl px-3 text-body-md outline-none text-sm">
+                                    <option value="">Select</option>
+                                    <option value="facebook">Facebook</option>
+                                    <option value="instagram">Instagram</option>
+                                    <option value="twitter">Twitter / X</option>
+                                    <option value="linkedin">LinkedIn</option>
+                                    <option value="tiktok">TikTok</option>
+                                    <option value="youtube">YouTube</option>
+                                </select>
+                                <input type="url" name="social_urls[]" x-model="link.url" placeholder="https://..."
+                                       class="flex-1 h-11 bg-surface-container-low border-none focus:ring-2 focus:ring-primary rounded-xl px-3 text-body-md outline-none text-sm">
+                                <button type="button" @click="removeSocial(i)" x-show="socialLinks.length > 1"
+                                        class="p-2.5 text-error hover:bg-error-container rounded-xl transition-all shrink-0">
+                                    <span class="material-symbols-outlined">delete</span>
+                                </button>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row justify-end pt-4 md:pt-md border-t border-outline-variant/30 gap-3">
+                    <a href="{{ route('seller.dashboard') }}"
+                       class="w-full sm:w-auto text-center px-6 py-3 rounded-full font-label-md md:font-label-lg text-on-surface-variant hover:bg-surface-container-high transition-colors border border-outline-variant">
+                        Cancel
+                    </a>
+                    <button type="submit"
+                            class="w-full sm:w-auto whitespace-nowrap bg-primary text-white px-8 py-3 rounded-full font-label-md md:font-label-lg hover:opacity-90 transition-opacity shadow-lg shadow-primary/20 flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-[18px] md:text-[20px]">save</span>
+                        Save Identity
+                    </button>
+                </div>
             </div>
-        </div>
+        </form>
     </div>
-</x-app-layout>
+</x-seller-layout>

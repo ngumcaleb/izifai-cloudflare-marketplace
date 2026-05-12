@@ -66,6 +66,6 @@ class RegisteredUserController extends Controller
             return redirect()->route('seller.dashboard');
         }
 
-        return redirect(route('dashboard', absolute: false));
+        return redirect('/');
     }
 }

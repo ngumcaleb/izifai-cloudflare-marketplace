@@ -1,0 +1,181 @@
+<x-admin-layout>
+    <x-slot name="header">Settings</x-slot>
+
+    <!-- Header Card -->
+    <div class="relative bg-navy-800 rounded-xl h-[120px] md:h-[160px] overflow-hidden shadow-sm mb-6">
+        <img src="https://img.freepik.com/free-photo/minimalist-workspace-with-laptop_23-2148176682.jpg"
+             class="absolute inset-0 w-full h-full object-cover opacity-10">
+        <div class="absolute inset-0 bg-gradient-to-r from-navy-900 via-navy-800/20 to-transparent"></div>
+        <div class="relative z-10 h-full p-6 md:p-8 flex flex-col justify-center">
+            <h2 class="text-lg md:text-2xl font-bold text-white tracking-tight">
+                System <span class="text-gold-400">Settings</span>
+            </h2>
+            <p class="text-[10px] md:text-xs text-slate-400 font-medium max-w-sm mt-1">
+                Manage your platform configurations and security parameters.
+            </p>
+        </div>
+    </div>
+
+    @if(session('success'))
+    <div class="bg-navy-900 border border-gold-500/30 text-white p-4 rounded-xl shadow-lg flex items-center gap-3 mb-6">
+        <i data-lucide="check-circle" class="w-4 h-4 text-gold-400"></i>
+        <span class="text-xs font-semibold">{{ session('success') }}</span>
+    </div>
+    @endif
+
+    <div x-data="{ section: 'general' }" class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <!-- Sidebar Navigation -->
+        <div class="lg:col-span-1">
+            <div class="flex lg:flex-col overflow-x-auto no-scrollbar gap-2 lg:gap-1">
+                <button @click="section = 'general'" 
+                        :class="section === 'general' ? 'bg-white border-gold-400 text-navy-800' : 'bg-transparent border-transparent text-slate-400 hover:text-slate-600'"
+                        class="flex-shrink-0 lg:w-full flex items-center gap-3 px-4 py-3 rounded-lg border-l-4 transition-all duration-200">
+                    <i data-lucide="settings" class="w-4 h-4"></i>
+                    <span class="text-xs font-bold uppercase tracking-wider">General</span>
+                </button>
+                <button @click="section = 'verification'" 
+                        :class="section === 'verification' ? 'bg-white border-gold-400 text-navy-800' : 'bg-transparent border-transparent text-slate-400 hover:text-slate-600'"
+                        class="flex-shrink-0 lg:w-full flex items-center gap-3 px-4 py-3 rounded-lg border-l-4 transition-all duration-200">
+                    <i data-lucide="shield-check" class="w-4 h-4"></i>
+                    <span class="text-xs font-bold uppercase tracking-wider">Verification</span>
+                </button>
+                <button @click="section = 'ads'" 
+                        :class="section === 'ads' ? 'bg-white border-gold-400 text-navy-800' : 'bg-transparent border-transparent text-slate-400 hover:text-slate-600'"
+                        class="flex-shrink-0 lg:w-full flex items-center gap-3 px-4 py-3 rounded-lg border-l-4 transition-all duration-200">
+                    <i data-lucide="megaphone" class="w-4 h-4"></i>
+                    <span class="text-xs font-bold uppercase tracking-wider">Promotion</span>
+                </button>
+                <button @click="section = 'security'" 
+                        :class="section === 'security' ? 'bg-white border-gold-400 text-navy-800' : 'bg-transparent border-transparent text-slate-400 hover:text-slate-600'"
+                        class="flex-shrink-0 lg:w-full flex items-center gap-3 px-4 py-3 rounded-lg border-l-4 transition-all duration-200">
+                    <i data-lucide="lock" class="w-4 h-4"></i>
+                    <span class="text-xs font-bold uppercase tracking-wider">Security</span>
+                </button>
+            </div>
+        </div>
+
+                <!-- Form Content -->
+        <div class="lg:col-span-3">
+            <form action="{{ route('admin.settings.update') }}" method="POST" class="admin-card p-6 md:p-8 space-y-8 bg-white">
+                @csrf
+                
+                <!-- General Section -->
+                <div x-show="section === 'general'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0">
+                    <div class="mb-6">
+                        <h3 class="text-base font-bold text-navy-800">General Information</h3>
+                        <p class="text-[10px] text-slate-400 font-medium mt-0.5">Global branding and support details.</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="space-y-1.5">
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">App Name</label>
+                            <input type="text" name="site_name" value="{{ $settings['site_name'] ?? 'Izifai Marketplace' }}" class="w-full bg-slate-50 border border-slate-100 rounded-lg px-4 py-3 text-xs font-semibold text-navy-800 focus:ring-1 focus:ring-gold-400 focus:border-gold-400 outline-none transition-all">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Support Email</label>
+                            <input type="email" name="contact_email" value="{{ $settings['contact_email'] ?? 'support@izifai.com' }}" class="w-full bg-slate-50 border border-slate-100 rounded-lg px-4 py-3 text-xs font-semibold text-navy-800 focus:ring-1 focus:ring-gold-400 focus:border-gold-400 outline-none transition-all">
+                        </div>
+                        <div class="md:col-span-2 space-y-1.5">
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Platform Slogan</label>
+                            <input type="text" name="site_slogan" value="{{ $settings['site_slogan'] ?? 'The Easiest way to buy and sell in Cameroon' }}" class="w-full bg-slate-50 border border-slate-100 rounded-lg px-4 py-3 text-xs font-semibold text-navy-800 focus:ring-1 focus:ring-gold-400 focus:border-gold-400 outline-none transition-all">
+                        </div>
+                        <div class="md:col-span-2 space-y-1.5">
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Footer Branding Text</label>
+                            <input type="text" name="site_footer_branding" value="{{ $settings['site_footer_branding'] ?? "Cameroon's Professional Marketplace." }}" class="w-full bg-slate-50 border border-slate-100 rounded-lg px-4 py-3 text-xs font-semibold text-navy-800 focus:ring-1 focus:ring-gold-400 focus:border-gold-400 outline-none transition-all">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Verification Section -->
+                <div x-show="section === 'verification'" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0">
+                    <div class="mb-6">
+                        <h3 class="text-base font-bold text-navy-800">Merchant Verification</h3>
+                        <p class="text-[10px] text-slate-400 font-medium mt-0.5">Configure store authorization workflow.</p>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+                            <div class="pr-4">
+                                <p class="text-xs font-bold text-navy-800">Manual Store Approval</p>
+                                <p class="text-[10px] text-slate-500 font-medium">Admins must manually approve every new store registration.</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="hidden" name="manual_approval" value="0">
+                                <input type="checkbox" name="manual_approval" value="1" {{ ($settings['manual_approval'] ?? '1') == '1' ? 'checked' : '' }} class="sr-only peer">
+                                <div class="w-10 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-navy-800"></div>
+                            </label>
+                        </div>
+
+                        <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+                            <div class="pr-4">
+                                <p class="text-xs font-bold text-navy-800">Business Documents Required</p>
+                                <p class="text-[10px] text-slate-500 font-medium">Require merchants to upload ID or business license.</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="hidden" name="docs_required" value="0">
+                                <input type="checkbox" name="docs_required" value="1" {{ ($settings['docs_required'] ?? '1') == '1' ? 'checked' : '' }} class="sr-only peer">
+                                <div class="w-10 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-navy-800"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Promotion Section -->
+                <div x-show="section === 'ads'" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0">
+                    <div class="mb-6">
+                        <h3 class="text-base font-bold text-navy-800">Promotions & Advertising</h3>
+                        <p class="text-[10px] text-slate-400 font-medium mt-0.5">Control pricing and visibility rules.</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="space-y-1.5">
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Default Ad Duration (Days)</label>
+                            <input type="number" name="default_ad_duration" value="{{ $settings['default_ad_duration'] ?? '7' }}" class="w-full bg-slate-50 border border-slate-100 rounded-lg px-4 py-3 text-xs font-semibold text-navy-800 focus:ring-1 focus:ring-gold-400 focus:border-gold-400 outline-none transition-all">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Max Active Ads per Store</label>
+                            <input type="number" name="max_ads_per_store" value="{{ $settings['max_ads_per_store'] ?? '3' }}" class="w-full bg-slate-50 border border-slate-100 rounded-lg px-4 py-3 text-xs font-semibold text-navy-800 focus:ring-1 focus:ring-gold-400 focus:border-gold-400 outline-none transition-all">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Ad Price Per Day (XAF)</label>
+                            <input type="number" name="ad_price_per_day" value="{{ $settings['ad_price_per_day'] ?? '200' }}" class="w-full bg-slate-50 border border-slate-100 rounded-lg px-4 py-3 text-xs font-semibold text-navy-800 focus:ring-1 focus:ring-gold-400 focus:border-gold-400 outline-none transition-all">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">MTN MoMo Number</label>
+                            <input type="text" name="mtn_momo_number" value="{{ $settings['mtn_momo_number'] ?? '' }}" placeholder="e.g. 677000000" class="w-full bg-slate-50 border border-slate-100 rounded-lg px-4 py-3 text-xs font-semibold text-navy-800 focus:ring-1 focus:ring-gold-400 focus:border-gold-400 outline-none transition-all">
+                        </div>
+                        <div class="md:col-span-2 space-y-1.5">
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">MoMo Recipient Name</label>
+                            <input type="text" name="mtn_momo_name" value="{{ $settings['mtn_momo_name'] ?? '' }}" placeholder="Account Name" class="w-full bg-slate-50 border border-slate-100 rounded-lg px-4 py-3 text-xs font-semibold text-navy-800 focus:ring-1 focus:ring-gold-400 focus:border-gold-400 outline-none transition-all">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Section -->
+                <div x-show="section === 'security'" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0">
+                    <div class="mb-6">
+                        <h3 class="text-base font-bold text-navy-800">Security & Maintenance</h3>
+                        <p class="text-[10px] text-slate-400 font-medium mt-0.5">Manage platform access and security settings.</p>
+                    </div>
+                    
+                    <div class="p-4 bg-rose-50 border border-rose-100 rounded-xl flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-bold text-rose-800">Maintenance Mode</p>
+                            <p class="text-[10px] text-rose-600/70 font-medium">Disable public access during updates.</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="hidden" name="maintenance_mode" value="0">
+                            <input type="checkbox" name="maintenance_mode" value="1" {{ ($settings['maintenance_mode'] ?? '0') == '1' ? 'checked' : '' }} class="sr-only peer">
+                            <div class="w-10 h-5 bg-rose-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-rose-600"></div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="pt-6 border-t border-slate-100 flex justify-end">
+                    <button type="submit" class="w-full md:w-auto px-8 py-3 bg-navy-800 text-white rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-gold-500 hover:text-navy-900 transition-all shadow-md">
+                        Save Configurations
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</x-admin-layout>

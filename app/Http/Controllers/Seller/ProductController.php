@@ -28,7 +28,7 @@ class ProductController extends Controller
 
     public function index()
     {
-        $products = $this->getOrCreateStore()->products;
+        $products = $this->getOrCreateStore()->products()->with(['images', 'category'])->latest()->get();
         return view('seller.products.index', compact('products'));
     }
 
@@ -61,17 +61,18 @@ class ProductController extends Controller
             'old_price' => $request->old_price,
             'stock_status' => $request->stock_status ?? 'in_stock',
             'description' => $request->description,
-            'colors' => $request->colors ? array_map('trim', explode(',', $request->colors)) : [],
-            'sizes' => $request->sizes ? array_map('trim', explode(',', $request->sizes)) : [],
+            'colors' => $request->colors ?? [],
+            'sizes' => $request->sizes ?? [],
         ]);
 
         // Handle Images
         if ($request->hasFile('images')) {
+            $mainIndex = $request->input('main_image_index', 0);
             foreach ($request->file('images') as $index => $image) {
                 $path = $image->store('products', 'public');
                 $product->images()->create([
                     'path' => $path,
-                    'is_main' => $index === 0,
+                    'is_main' => (int)$index === (int)$mainIndex,
                 ]);
             }
         }
@@ -88,13 +89,13 @@ class ProductController extends Controller
             }
         }
 
-        return redirect()->route('seller.dashboard', ['tab' => 'inventory'])->with('success', 'Product posted successfully!');
+        return redirect()->route('seller.products.index')->with('success', 'Product posted successfully!');
     }
 
     public function edit($id)
     {
         $store = $this->getOrCreateStore();
-        $product = $store->products()->with('specifications')->findOrFail($id);
+        $product = $store->products()->with(['specifications', 'images'])->findOrFail($id);
         $categories = \App\Models\Category::all();
         return view('seller.products.edit', compact('product', 'categories'));
     }
@@ -123,8 +124,8 @@ class ProductController extends Controller
             'old_price' => $request->old_price,
             'stock_status' => $request->stock_status ?? 'in_stock',
             'description' => $request->description,
-            'colors' => $request->colors ? array_map('trim', explode(',', $request->colors)) : [],
-            'sizes' => $request->sizes ? array_map('trim', explode(',', $request->sizes)) : [],
+            'colors' => $request->colors ?? [],
+            'sizes' => $request->sizes ?? [],
         ]);
 
         // Handle Images
@@ -135,11 +136,12 @@ class ProductController extends Controller
                 $img->delete();
             }
 
+            $mainIndex = $request->input('main_image_index', 0);
             foreach ($request->file('images') as $index => $image) {
                 $path = $image->store('products', 'public');
                 $product->images()->create([
                     'path' => $path,
-                    'is_main' => $index === 0,
+                    'is_main' => (int)$index === (int)$mainIndex,
                 ]);
             }
         }
@@ -157,7 +159,7 @@ class ProductController extends Controller
             }
         }
 
-        return redirect()->route('seller.dashboard', ['tab' => 'inventory'])->with('success', 'Product updated successfully!');
+        return redirect()->route('seller.products.index')->with('success', 'Product updated successfully!');
     }
 
     public function destroy($id)
@@ -172,6 +174,6 @@ class ProductController extends Controller
         
         $product->delete();
 
-        return redirect()->route('seller.dashboard', ['tab' => 'inventory'])->with('success', 'Product deleted successfully!');
+        return redirect()->route('seller.products.index')->with('success', 'Product deleted successfully!');
     }
 }

@@ -21,6 +21,13 @@ return Application::configure(basePath: dirname(__DIR__))
             return route('login');
         });
     })
+    ->withSchedule(function (\Illuminate\Console\Scheduling\Schedule $schedule) {
+        $schedule->call(function () {
+            \App\Models\Product::where('featured_until', '<', now())
+                ->where('is_featured', true)
+                ->update(['is_featured' => false]);
+        })->hourly();
+    })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
     })->create();

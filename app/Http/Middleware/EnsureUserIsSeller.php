@@ -16,7 +16,7 @@ class EnsureUserIsSeller
     public function handle(Request $request, Closure $next): Response
     {
         if (!$request->user() || $request->user()->role !== 'seller') {
-            return redirect()->route('dashboard')->with('error', 'Unauthorized access.');
+            return redirect('/')->with('error', 'Unauthorized access.');
         }
 
         return $next($request);

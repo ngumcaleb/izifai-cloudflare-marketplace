@@ -16,9 +16,22 @@ class Product extends Model
         'old_price',
         'stock_status',
         'is_featured',
+        'featured_until',
         'colors',
         'sizes',
     ];
+
+    public function scopeActive($query)
+    {
+        return $query->whereHas('store', function ($q) {
+            $q->where('status', 'active');
+        });
+    }
+
+    public function images()
+    {
+        return $this->hasMany(ProductImage::class);
+    }
 
     protected $casts = [
         'colors' => 'array',
@@ -35,9 +48,14 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function images()
+    public function reports()
     {
-        return $this->hasMany(ProductImage::class);
+        return $this->hasMany(ProductReport::class);
+    }
+
+    public function advertisementRequests()
+    {
+        return $this->hasMany(AdvertisementRequest::class);
     }
 
     public function mainImage()
@@ -58,5 +76,39 @@ class Product extends Model
     public function savedUsers()
     {
         return $this->hasMany(SavedProduct::class);
+    }
+
+    public function favorites()
+    {
+        return $this->hasMany(SavedProduct::class);
+    }
+
+    public function events()
+    {
+        return $this->hasMany(ProductEvent::class);
+    }
+
+    public function logEvent($type)
+    {
+        return $this->events()->create([
+            'store_id' => $this->store_id,
+            'type' => $type,
+            'ip_address' => request()->ip(),
+        ]);
+    }
+
+    public function getDailyViewsAttribute()
+    {
+        return $this->events()->where('type', 'view')->where('created_at', '>=', now()->startOfDay())->count();
+    }
+
+    public function getTotalContactsAttribute()
+    {
+        return $this->events()->whereIn('type', ['whatsapp_click', 'call_click'])->count();
+    }
+
+    public function getDailyContactsAttribute()
+    {
+        return $this->events()->whereIn('type', ['whatsapp_click', 'call_click'])->where('created_at', '>=', now()->startOfDay())->count();
     }
 }

@@ -1,201 +1,243 @@
-<x-app-layout>
-    <x-slot name="sidebar">
-        <!-- Seller Sidebar (Compact) -->
-        <aside class="w-[240px] bg-[#0A1D37] text-white flex flex-col min-h-screen sticky top-0">
-            <div class="p-6 h-20 flex items-center gap-3 border-b border-white/10 shrink-0">
-                <div class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center font-black text-sm">S</div>
-                <span class="font-black text-xs uppercase tracking-widest">Seller Dashboard</span>
-            </div>
-            <nav class="flex-1 p-3 space-y-1 overflow-y-auto">
-                <a href="{{ route('seller.dashboard') }}"
-                    class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white font-bold text-[11px] transition-all">
-                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z">
-                        </path>
-                    </svg>
-                    <span>Overview</span>
-                </a>
-                <a href="{{ route('seller.products.index') }}"
-                    class="flex items-center gap-3 px-4 py-2.5 rounded-lg bg-green-600 text-white font-bold text-[11px] transition-all">
-                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                    </svg>
-                    <span>Product Catalog</span>
-                </a>
-            </nav>
-        </aside>
-    </x-slot>
+<x-seller-layout>
+    <x-slot name="title">Post New Listing</x-slot>
 
-    <div class="p-6 md:p-8">
-        <div class="max-w-4xl">
-            <div class="mb-10">
-                <h1 class="text-2xl font-black text-slate-900 mb-2">Post a New Product</h1>
-                <p class="text-xs text-slate-500 font-medium uppercase tracking-widest">Version 1: Product Discovery &
-                    Supplier Visibility</p>
+    <div class="max-w-4xl mx-auto">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 md:mb-6">
+            <div>
+                <h2 class="text-headline-md md:text-headline-lg text-on-surface tracking-tight">Add Product</h2>
+                <p class="font-label-sm text-on-surface-variant mt-1">Create a new product listing</p>
             </div>
+            <a href="{{ route('seller.products.index') }}" class="font-label-md text-on-surface-variant hover:text-primary flex items-center gap-2 transition-colors text-sm md:text-base">
+                <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                Back to Inventory
+            </a>
+        </div>
 
-            <form action="{{ route('seller.products.store') }}" method="POST" enctype="multipart/form-data"
-                class="space-y-8" x-data="{ 
-                    specs: [{ name: '', value: '' }],
-                    imagePreviews: [],
-                    handleImageUpload(event) {
-                        this.imagePreviews = [];
-                        const files = event.target.files;
-                        for(let i = 0; i < files.length; i++) {
-                            const reader = new FileReader();
-                            reader.onload = (e) => {
-                                this.imagePreviews.push(e.target.result);
-                            };
-                            reader.readAsDataURL(files[i]);
-                        }
+        <form action="{{ route('seller.products.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4 md:space-y-6"
+              x-data="{
+                specs: [{ name: '', value: '' }],
+                colors: [],
+                sizes: [],
+                newColor: '',
+                newSize: '',
+                addColor() {
+                    const c = this.newColor.trim();
+                    if (c && !this.colors.includes(c)) { this.colors.push(c); this.newColor = ''; }
+                },
+                removeColor(i) { this.colors.splice(i, 1); },
+                addSize() {
+                    const s = this.newSize.trim();
+                    if (s && !this.sizes.includes(s)) { this.sizes.push(s); this.newSize = ''; }
+                },
+                removeSize(i) { this.sizes.splice(i, 1); },
+                imagePreviews: [],
+                mainImageIndex: 0,
+                handleImageUpload(event) {
+                    this.imagePreviews = [];
+                    this.mainImageIndex = 0;
+                    const files = event.target.files;
+                    for(let i = 0; i < files.length; i++) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => { this.imagePreviews.push(e.target.result); };
+                        reader.readAsDataURL(files[i]);
                     }
-                }">
-                @csrf
+                }
+              }">
+            @csrf
 
-                <!-- Basic Info -->
-                <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-8">
-                    <h3 class="text-xs font-black text-green-600 uppercase tracking-[0.3em] mb-8">01. Essential Details
-                    </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="md:col-span-2 space-y-2">
-                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Product
-                                Name</label>
-                            <input type="text" name="name" required placeholder="e.g. Caterpillar Excavator 320D"
-                                class="w-full px-4 py-3 rounded-xl border-2 border-slate-50 focus:border-green-600 focus:ring-0 font-bold text-sm transition-all bg-slate-50/50">
-                        </div>
-                        <div class="space-y-2">
-                            <label
-                                class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Category</label>
-                            <select name="category_id" required
-                                class="w-full px-4 py-3 rounded-xl border-2 border-slate-50 focus:border-green-600 focus:ring-0 font-bold text-sm transition-all bg-slate-50/50 appearance-none">
-                                <option value="">Select Category</option>
-                                @foreach($categories as $cat)
-                                    <option value="{{ $cat->id }}">{{ $cat->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Stock
-                                Status</label>
-                            <select name="stock_status"
-                                class="w-full px-4 py-3 rounded-xl border-2 border-slate-50 focus:border-green-600 focus:ring-0 font-bold text-sm transition-all bg-slate-50/50 appearance-none">
-                                <option value="in_stock">In Stock</option>
-                                <option value="out_of_stock">Out of Stock</option>
-                                <option value="on_request">On Request</option>
-                            </select>
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Selling Price
-                                (XAF)</label>
-                            <input type="number" name="price" required placeholder="e.g. 150000"
-                                class="w-full px-4 py-3 rounded-xl border-2 border-slate-50 focus:border-green-600 focus:ring-0 font-bold text-sm transition-all bg-slate-50/50">
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Old Price
-                                (Optional, XAF)</label>
-                            <input type="number" name="old_price" placeholder="e.g. 180000"
-                                class="w-full px-4 py-3 rounded-xl border-2 border-slate-50 focus:border-green-600 focus:ring-0 font-bold text-sm transition-all bg-slate-50/50">
-                        </div>
+            <!-- Basic Details -->
+            <div class="bg-surface-container-lowest p-4 md:p-xl rounded-2xl md:rounded-3xl shadow-[0px_4px_20px_rgba(0,0,0,0.05)] space-y-4 md:space-y-md">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="w-7 h-7 md:w-8 md:h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+                        <span class="material-symbols-outlined">info</span>
                     </div>
+                    <h3 class="font-headline-sm md:font-headline-md text-on-surface">Essential Information</h3>
                 </div>
 
-                <!-- Description -->
-                <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-8">
-                    <h3 class="text-xs font-black text-green-600 uppercase tracking-[0.3em] mb-8">02. Detailed
-                        Description</h3>
-                    <div class="space-y-4">
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Available
-                                Colors (Comma separated)</label>
-                            <input type="text" name="colors" placeholder="e.g. Red, Blue, #000000"
-                                class="w-full px-4 py-3 rounded-xl border-2 border-slate-50 focus:border-green-600 focus:ring-0 font-bold text-sm transition-all bg-slate-50/50">
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Available
-                                Sizes / Storage (Comma separated)</label>
-                            <input type="text" name="sizes" placeholder="e.g. M, L, XL or 128GB, 256GB"
-                                class="w-full px-4 py-3 rounded-xl border-2 border-slate-50 focus:border-green-600 focus:ring-0 font-bold text-sm transition-all bg-slate-50/50">
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Product
-                                Overview</label>
-                            <textarea name="description" rows="5" required
-                                class="w-full px-4 py-3 rounded-xl border-2 border-slate-50 focus:border-green-600 focus:ring-0 font-medium text-sm transition-all bg-slate-50/50"
-                                placeholder="Describe the specifications, condition, and usage..."></textarea>
-                        </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-md">
+                    <div class="md:col-span-2 space-y-1.5">
+                        <label class="font-label-sm text-on-surface-variant ml-1">Product Title</label>
+                        <input type="text" name="name" required placeholder="e.g. Caterpillar Excavator 320D"
+                               class="w-full h-12 md:h-14 bg-surface-container-low border-none focus:ring-2 focus:ring-primary rounded-xl md:rounded-2xl px-4 md:px-6 text-body-md text-on-surface outline-none">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="font-label-sm text-on-surface-variant ml-1">Category</label>
+                        <select name="category_id" required
+                                class="w-full h-12 md:h-14 bg-surface-container-low border-none focus:ring-2 focus:ring-primary rounded-xl md:rounded-2xl px-4 md:px-6 text-body-md outline-none">
+                            <option value="">Select Category</option>
+                            @foreach($categories as $cat) <option value="{{ $cat->id }}">{{ $cat->name }}</option> @endforeach
+                        </select>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="font-label-sm text-on-surface-variant ml-1">Stock Status</label>
+                        <select name="stock_status"
+                                class="w-full h-12 md:h-14 bg-surface-container-low border-none focus:ring-2 focus:ring-primary rounded-xl md:rounded-2xl px-4 md:px-6 text-body-md outline-none">
+                            <option value="in_stock">In Stock</option>
+                            <option value="out_of_stock">Out of Stock</option>
+                            <option value="on_request">On Request</option>
+                        </select>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="font-label-sm text-on-surface-variant ml-1">Price (XAF)</label>
+                        <input type="number" name="price" required placeholder="e.g. 150000"
+                               class="w-full h-12 md:h-14 bg-surface-container-low border-none focus:ring-2 focus:ring-primary rounded-xl md:rounded-2xl px-4 md:px-6 text-body-md outline-none">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="font-label-sm text-on-surface-variant ml-1">Old Price (Optional)</label>
+                        <input type="number" name="old_price" placeholder="e.g. 180000"
+                               class="w-full h-12 md:h-14 bg-surface-container-low border-none focus:ring-2 focus:ring-primary rounded-xl md:rounded-2xl px-4 md:px-6 text-body-md outline-none">
                     </div>
                 </div>
+            </div>
 
-                <!-- Specifications -->
-                <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-8">
-                    <div class="flex items-center justify-between mb-8">
-                        <h3 class="text-xs font-black text-green-600 uppercase tracking-[0.3em]">03. Technical
-                            Specifications</h3>
+            <!-- Colors & Sizes -->
+            <div class="bg-surface-container-lowest p-4 md:p-xl rounded-2xl md:rounded-3xl shadow-[0px_4px_20px_rgba(0,0,0,0.05)] space-y-4 md:space-y-md">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="w-7 h-7 md:w-8 md:h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+                        <span class="material-symbols-outlined">palette</span>
+                    </div>
+                    <h3 class="font-headline-sm md:font-headline-md text-on-surface">Colors & Sizes</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-md">
+                    <div class="space-y-3">
+                        <label class="font-label-sm text-on-surface-variant ml-1">Available Colors</label>
+                        <div class="flex gap-2">
+                            <input type="text" x-model="newColor" @keydown.enter.prevent="addColor"
+                                   placeholder="e.g. Metallic Red"
+                                   class="flex-1 h-11 bg-surface-container-low border-none focus:ring-2 focus:ring-primary rounded-xl px-4 text-body-md outline-none">
+                            <button type="button" @click="addColor"
+                                    class="px-4 bg-primary text-white rounded-xl font-label-md hover:opacity-90 transition-opacity shrink-0">
+                                Add
+                            </button>
+                        </div>
+                        <div class="flex flex-wrap gap-2" x-show="colors.length > 0">
+                            <template x-for="(color, i) in colors" :key="i">
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 text-primary rounded-full text-label-sm">
+                                    <span x-text="color"></span>
+                                    <button type="button" @click="removeColor(i)" class="hover:text-error transition-colors">
+                                        <span class="material-symbols-outlined text-[14px]">close</span>
+                                    </button>
+                                </span>
+                            </template>
+                        </div>
+                        <template x-for="(color, i) in colors" :key="i">
+                            <input type="hidden" name="colors[]" :value="color">
+                        </template>
+                    </div>
+
+                    <div class="space-y-3">
+                        <label class="font-label-sm text-on-surface-variant ml-1">Available Sizes</label>
+                        <div class="flex gap-2">
+                            <input type="text" x-model="newSize" @keydown.enter.prevent="addSize"
+                                   placeholder="e.g. XL, 42, 500ml"
+                                   class="flex-1 h-11 bg-surface-container-low border-none focus:ring-2 focus:ring-primary rounded-xl px-4 text-body-md outline-none">
+                            <button type="button" @click="addSize"
+                                    class="px-4 bg-primary text-white rounded-xl font-label-md hover:opacity-90 transition-opacity shrink-0">
+                                Add
+                            </button>
+                        </div>
+                        <div class="flex flex-wrap gap-2" x-show="sizes.length > 0">
+                            <template x-for="(size, i) in sizes" :key="i">
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 text-primary rounded-full text-label-sm">
+                                    <span x-text="size"></span>
+                                    <button type="button" @click="removeSize(i)" class="hover:text-error transition-colors">
+                                        <span class="material-symbols-outlined text-[14px]">close</span>
+                                    </button>
+                                </span>
+                            </template>
+                        </div>
+                        <template x-for="(size, i) in sizes" :key="i">
+                            <input type="hidden" name="sizes[]" :value="size">
+                        </template>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Media Gallery -->
+            <div class="bg-surface-container-lowest p-4 md:p-xl rounded-2xl md:rounded-3xl shadow-[0px_4px_20px_rgba(0,0,0,0.05)] space-y-4 md:space-y-md">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="w-7 h-7 md:w-8 md:h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+                        <span class="material-symbols-outlined">photo_library</span>
+                    </div>
+                    <h3 class="font-headline-sm md:font-headline-md text-on-surface">Product Media</h3>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">
+                    <label class="aspect-square rounded-2xl md:rounded-3xl border-2 md:border-4 border-dashed border-outline-variant flex flex-col items-center justify-center cursor-pointer hover:border-primary hover:bg-primary/5 transition-all group overflow-hidden bg-surface-container-low">
+                        <input type="file" name="images[]" multiple required accept="image/*" class="hidden" @change="handleImageUpload">
+                        <span class="material-symbols-outlined text-2xl md:text-3xl text-on-surface-variant/40 group-hover:text-primary mb-1 md:mb-2">cloud_upload</span>
+                        <span class="font-label-sm text-on-surface-variant/60">Post Photos</span>
+                    </label>
+
+                    <template x-for="(preview, index) in imagePreviews" :key="index">
+                        <div class="aspect-square rounded-2xl md:rounded-3xl border border-outline-variant/30 overflow-hidden relative group cursor-pointer" @click="mainImageIndex = index">
+                            <img :src="preview" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-primary/40 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center" :class="mainImageIndex == index ? 'opacity-100' : ''">
+                                <span class="text-[8px] font-bold text-white uppercase tracking-widest" x-text="mainImageIndex == index ? 'Main Image' : 'Set Main'"></span>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                <input type="hidden" name="main_image_index" :value="mainImageIndex">
+            </div>
+
+            <!-- Description & Specs -->
+            <div class="bg-surface-container-lowest p-4 md:p-xl rounded-2xl md:rounded-3xl shadow-[0px_4px_20px_rgba(0,0,0,0.05)] space-y-4 md:space-y-lg">
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-7 h-7 md:w-8 md:h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+                            <span class="material-symbols-outlined">description</span>
+                        </div>
+                        <h3 class="font-headline-sm md:font-headline-md text-on-surface">Full Description</h3>
+                    </div>
+                    <textarea name="description" rows="5" required placeholder="Describe your product condition, usage, and special features..."
+                              class="w-full bg-surface-container-low border-none focus:ring-2 focus:ring-primary rounded-2xl md:rounded-3xl p-4 md:p-6 text-body-md outline-none resize-none leading-relaxed"></textarea>
+                </div>
+
+                <div class="pt-4 md:pt-lg border-t border-outline-variant/30">
+                    <div class="flex items-center justify-between mb-4 md:mb-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-7 h-7 md:w-8 md:h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+                                <span class="material-symbols-outlined">list_alt</span>
+                            </div>
+                            <h3 class="font-headline-sm md:font-headline-md text-on-surface">Specifications</h3>
+                        </div>
                         <button type="button" @click="specs.push({ name: '', value: '' })"
-                            class="text-[10px] font-black text-blue-600 uppercase tracking-widest hover:underline">+ Add
-                            Attribute</button>
+                                class="font-label-md text-primary hover:underline flex items-center gap-1 text-sm md:text-base">
+                            <span class="material-symbols-outlined text-[16px]">add</span>
+                            Add Attribute
+                        </button>
                     </div>
-                    <div class="space-y-4">
+
+                    <div class="space-y-3">
                         <template x-for="(spec, index) in specs" :key="index">
-                            <div class="flex gap-4">
-                                <input type="text" name="spec_names[]" x-model="spec.name" placeholder="e.g. Weight"
-                                    class="flex-1 px-4 py-3 rounded-xl border-2 border-slate-50 focus:border-green-600 focus:ring-0 font-bold text-sm transition-all bg-slate-50/50">
-                                <input type="text" name="spec_values[]" x-model="spec.value" placeholder="e.g. 20 Tons"
-                                    class="flex-1 px-4 py-3 rounded-xl border-2 border-slate-50 focus:border-green-600 focus:ring-0 font-bold text-sm transition-all bg-slate-50/50">
+                            <div class="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
+                                <input type="text" name="spec_names[]" x-model="spec.name" placeholder="e.g. Color"
+                                       class="w-full sm:flex-1 h-10 bg-surface-container-low border-none focus:ring-2 focus:ring-primary rounded-xl px-3 text-body-md outline-none text-sm">
+                                <input type="text" name="spec_values[]" x-model="spec.value" placeholder="e.g. Metallic Red"
+                                       class="w-full sm:flex-1 h-10 bg-surface-container-low border-none focus:ring-2 focus:ring-primary rounded-xl px-3 text-body-md outline-none text-sm">
                                 <button type="button" @click="specs.splice(index, 1)" x-show="specs.length > 1"
-                                    class="p-3 text-red-400 hover:bg-red-50 rounded-xl transition-all">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                                        </path>
-                                    </svg>
+                                        class="self-end sm:self-auto p-2 text-error hover:bg-error-container rounded-xl transition-all shrink-0">
+                                    <span class="material-symbols-outlined">close</span>
                                 </button>
                             </div>
                         </template>
                     </div>
                 </div>
+            </div>
 
-                <!-- Images -->
-                <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-8">
-                    <h3 class="text-xs font-black text-green-600 uppercase tracking-[0.3em] mb-8">04. Media Gallery</h3>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <label
-                            class="aspect-square rounded-2xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center cursor-pointer hover:border-green-600 hover:bg-green-50 transition-all group">
-                            <input type="file" name="images[]" multiple class="hidden" @change="handleImageUpload">
-                            <svg class="w-8 h-8 text-slate-300 group-hover:text-green-600 mb-2" fill="none"
-                                stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
-                                </path>
-                            </svg>
-                            <span
-                                class="text-[9px] font-black text-slate-400 group-hover:text-green-600 uppercase tracking-widest text-center px-2">Upload
-                                Images</span>
-                        </label>
-
-                        <template x-for="(preview, index) in imagePreviews" :key="index">
-                            <div
-                                class="aspect-square rounded-2xl border border-slate-200 overflow-hidden relative group">
-                                <img :src="preview" class="w-full h-full object-cover">
-                                <div
-                                    class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <span
-                                        class="text-white text-[10px] font-black tracking-widest uppercase">Preview</span>
-                                </div>
-                            </div>
-                        </template>
-                    </div>
-                </div>
-
-                <div class="flex items-center justify-end gap-4 pt-6">
-                    <button type="submit"
-                        class="bg-[#16A34A] text-white px-10 py-4 rounded-xl font-black text-sm uppercase tracking-widest hover:bg-green-700 shadow-2xl shadow-green-600/20 transition-all active:scale-[0.98]">
-                        Publish Product
-                    </button>
-                </div>
-            </form>
-        </div>
+            <div class="flex flex-col sm:flex-row justify-end gap-3">
+                <a href="{{ route('seller.products.index') }}"
+                   class="w-full sm:w-auto text-center px-6 py-3 md:py-4 rounded-full font-label-md md:font-label-lg text-on-surface-variant hover:bg-surface-container-high transition-colors border border-outline-variant">
+                    Cancel
+                </a>
+                <button type="submit"
+                        class="w-full sm:w-auto whitespace-nowrap bg-primary text-white px-8 md:px-12 py-3 md:py-4 rounded-full font-label-md md:font-label-lg hover:opacity-90 transition-opacity shadow-lg shadow-primary/20 flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-[18px] md:text-[20px]">publish</span>
+                    Publish to Marketplace
+                </button>
+            </div>
+        </form>
     </div>
-</x-app-layout>
+</x-seller-layout>

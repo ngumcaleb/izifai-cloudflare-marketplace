@@ -1,144 +1,198 @@
-<x-app-layout>
-    <x-slot name="sidebar">
-        <!-- Seller Sidebar (Compact) -->
-        <aside class="w-[240px] bg-[#0A1D37] text-white flex flex-col min-h-screen sticky top-0">
-            <div class="p-6 h-20 flex items-center gap-3 border-b border-white/10 shrink-0">
-                <div class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center font-black text-sm">S</div>
-                <span class="font-black text-xs uppercase tracking-widest">Seller Dashboard</span>
-            </div>
+<x-seller-layout>
+    <x-slot name="title">All My Items</x-slot>
 
-            <nav class="flex-1 p-3 space-y-1 overflow-y-auto">
-                <a href="{{ route('seller.dashboard') }}"
-                    class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white font-bold text-[11px] transition-all">
-                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z">
-                        </path>
-                    </svg>
-                    <span>Overview</span>
+    <div class="space-y-4 md:space-y-6">
+        <!-- Filter Bar -->
+        <div class="bg-surface-container-lowest p-4 md:p-lg rounded-2xl shadow-[0px_4px_20px_rgba(0,0,0,0.05)]">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-3 md:gap-4">
+                <div class="flex items-center bg-surface-container-low px-4 py-2 rounded-full w-full sm:w-auto sm:flex-1 md:w-96">
+                    <span class="material-symbols-outlined text-on-surface-variant mr-2">search</span>
+                    <input type="text" placeholder="Search inventory..." class="bg-transparent border-none focus:ring-0 text-body-md w-full p-0 placeholder:text-on-surface-variant/50">
+                </div>
+                <a href="{{ route('seller.products.create') }}"
+                   class="w-full sm:w-auto whitespace-nowrap flex items-center justify-center gap-2 bg-primary text-white px-5 md:px-6 py-2.5 rounded-full font-label-md md:font-label-lg hover:opacity-90 transition-opacity">
+                    <span class="material-symbols-outlined text-[18px] md:text-[20px]">add</span>
+                    <span class="text-sm md:text-base">Post New Item</span>
                 </a>
-                <a href="{{ route('seller.products.index') }}"
-                    class="flex items-center gap-3 px-4 py-2.5 rounded-lg bg-green-600 text-white font-bold text-[11px] transition-all">
-                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                    </svg>
-                    <span>Product Catalog</span>
-                </a>
-                <a href="{{ route('seller.store.settings') }}"
-                    class="flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-white/5 text-slate-400 hover:text-white font-bold text-[11px] transition-all">
-                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
-                        </path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    </svg>
-                    <span>Store Profile</span>
-                </a>
-            </nav>
-        </aside>
-    </x-slot>
-
-    <div class="p-6 md:p-8">
-        <div class="flex items-center justify-between mb-8">
-            <div>
-                <h1 class="text-xl font-black text-slate-900 mb-1 tracking-tight">Product Catalog</h1>
-                <p class="text-[11px] text-slate-500 font-medium">List and manage your commercial products.</p>
             </div>
-            <a href="{{ route('seller.products.create') }}"
-                class="bg-[#16A34A] text-white px-6 py-2.5 rounded-lg font-bold text-[11px] uppercase tracking-widest hover:bg-green-700 shadow-xl shadow-green-600/10 transition-all flex items-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                </svg>
-                Post New Item
-            </a>
         </div>
 
-        <div class="bg-white rounded-xl border border-slate-100 overflow-hidden shadow-sm">
-            <div class="overflow-x-auto">
-                <table class="w-full text-left">
-                    <thead
-                        class="bg-slate-50 text-[9px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">
-                        <tr>
-                            <th class="px-6 py-4">Product Details</th>
-                            <th class="px-6 py-4 text-center">Category</th>
-                            <th class="px-6 py-4 text-center">Price</th>
-                            <th class="px-6 py-4 text-center">Status</th>
-                            <th class="px-6 py-4 text-right">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-50">
-                        @forelse($products as $product)
-                            <tr class="hover:bg-slate-50/50 transition-colors">
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center gap-3">
-                                        <div
-                                            class="w-12 h-12 rounded bg-slate-100 overflow-hidden border border-slate-50 shrink-0 p-1">
-                                            <img src="{{ $product->images->first() ? asset('storage/' . $product->images->first()->path) : 'https://m.media-amazon.com/images/I/61pD7UeR4mL._AC_UF894,1000_QL80_.jpg' }}"
-                                                class="w-full h-full object-cover">
-                                        </div>
-                                        <div class="max-w-[200px]">
-                                            <p class="font-bold text-slate-800 text-xs line-clamp-1">{{ $product->name }}
-                                            </p>
-                                            <p
-                                                class="text-[9px] text-slate-400 font-bold uppercase tracking-tighter mt-0.5">
-                                                SKU: IZ-{{ str_pad($product->id, 4, '0', STR_PAD_LEFT) }}</p>
-                                        </div>
+        <!-- Desktop Table (hidden on small screens) -->
+        <div class="hidden md:block bg-surface-container-lowest rounded-2xl shadow-[0px_4px_20px_rgba(0,0,0,0.05)]">
+            <table class="w-full text-left table-fixed">
+                <colgroup>
+                    <col class="w-[40%]">
+                    <col class="w-[18%]">
+                    <col class="w-[14%]">
+                    <col class="w-[12%]">
+                    <col class="w-[16%]">
+                </colgroup>
+                <thead class="bg-surface-container-low/50 border-b border-outline-variant/30">
+                    <tr>
+                        <th class="px-6 py-4 font-label-md text-on-surface-variant">Product Info</th>
+                        <th class="px-6 py-4 font-label-md text-on-surface-variant">Pricing</th>
+                        <th class="px-6 py-4 font-label-md text-on-surface-variant text-center">Status</th>
+                        <th class="px-6 py-4 font-label-md text-on-surface-variant text-center">Stats</th>
+                        <th class="px-6 py-4 font-label-md text-on-surface-variant text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-outline-variant/20">
+                    @forelse($products as $product)
+                        <tr class="hover:bg-surface-container-low/30 transition-all relative" x-data="{ open: false }">
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 bg-surface-container-high rounded-xl overflow-hidden shrink-0 shadow-sm">
+                                        @if($product->images->first())
+                                            <img src="{{ asset('storage/' . $product->images->first()->path) }}" class="w-full h-full object-cover">
+                                        @else
+                                            <div class="w-full h-full flex items-center justify-center text-on-surface-variant/30">
+                                                <span class="material-symbols-outlined">image</span>
+                                            </div>
+                                        @endif
                                     </div>
-                                </td>
-                                <td class="px-6 py-4 text-center">
-                                    <span
-                                        class="text-[9px] font-black bg-slate-100 text-slate-500 px-2.5 py-1 rounded-full uppercase tracking-tighter">{{ $product->category->name }}</span>
-                                </td>
-                                <td class="px-6 py-4 text-center font-black text-slate-900 text-xs">
-                                    {{ number_format($product->price) }} XAF</td>
-                                <td class="px-6 py-4 text-center">
-                                    <span
-                                        class="inline-flex items-center gap-1 text-[8px] font-black text-green-600 bg-green-50 px-2.5 py-1 rounded-full uppercase tracking-widest">
-                                        <div class="w-1 h-1 bg-green-600 rounded-full"></div>
-                                        Active
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 text-right">
-                                    <div class="flex items-center justify-end gap-2">
-                                        <a href="{{ route('seller.products.edit', $product->id) }}"
-                                            class="p-2 text-slate-400 hover:text-green-600 transition-colors">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z">
-                                                </path>
-                                            </svg>
-                                        </a>
-                                        <button class="p-2 text-slate-400 hover:text-red-500 transition-colors">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                                                </path>
-                                            </svg>
+                                    <div class="min-w-0 truncate">
+                                        <h4 class="font-label-lg text-on-surface truncate leading-none mb-1" title="{{ $product->name }}">{{ $product->name }}</h4>
+                                        <p class="text-label-sm text-on-surface-variant uppercase tracking-wider truncate">{{ $product->category->name ?? 'General' }}</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex flex-col">
+                                    <span class="font-label-lg text-on-surface leading-none">{{ number_format($product->price) }} XAF</span>
+                                    @if($product->old_price)
+                                        <span class="text-label-sm text-on-surface-variant/60 line-through mt-1">{{ number_format($product->old_price) }} XAF</span>
+                                    @endif
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider {{ $product->stock_status === 'in_stock' ? 'bg-primary/10 text-primary' : 'bg-error-container text-error' }}">
+                                    <span class="material-symbols-outlined text-[12px]">{{ $product->stock_status === 'in_stock' ? 'check_circle' : 'cancel' }}</span>
+                                    {{ str_replace('_', ' ', $product->stock_status) }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <div class="flex items-center justify-center gap-1.5 text-on-surface-variant">
+                                    <span class="material-symbols-outlined text-[16px]">visibility</span>
+                                    <span class="text-label-sm font-bold">{{ $product->views }}</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 text-center relative">
+                                <button @click="open = !open" @click.outside="open = false"
+                                        class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container-high rounded-lg transition-all">
+                                    <span class="material-symbols-outlined">more_vert</span>
+                                </button>
+                                <div x-show="open" x-cloak
+                                     @click.outside="open = false"
+                                     class="absolute right-4 top-12 w-44 bg-surface rounded-2xl shadow-[0px_8px_30px_rgba(0,0,0,0.12)] border border-outline-variant/20 z-50 overflow-hidden"
+                                     x-transition:enter="transition ease-out duration-100"
+                                     x-transition:enter-start="opacity-0 scale-95"
+                                     x-transition:enter-end="opacity-100 scale-100"
+                                     x-transition:leave="transition ease-in duration-75"
+                                     x-transition:leave-start="opacity-100 scale-100"
+                                     x-transition:leave-end="opacity-0 scale-95">
+                                    <a href="{{ route('products.show', $product->slug) }}" target="_blank"
+                                       class="flex items-center gap-3 px-4 py-3 text-body-md text-on-surface-variant hover:bg-surface-container-low transition-colors">
+                                        <span class="material-symbols-outlined text-[18px]">open_in_new</span>
+                                        View Public Page
+                                    </a>
+                                    <a href="{{ route('seller.products.edit', $product->id) }}"
+                                       class="flex items-center gap-3 px-4 py-3 text-body-md text-on-surface-variant hover:bg-surface-container-low transition-colors">
+                                        <span class="material-symbols-outlined text-[18px]">edit</span>
+                                        Edit Listing
+                                    </a>
+                                    <form action="{{ route('seller.products.destroy', $product->id) }}" method="POST" onsubmit="return confirm('Delete this listing?')">
+                                        @csrf @method('DELETE')
+                                        <button class="w-full flex items-center gap-3 px-4 py-3 text-body-md text-error hover:bg-error-container/30 transition-colors">
+                                            <span class="material-symbols-outlined text-[18px]">delete</span>
+                                            Delete Listing
                                         </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="5" class="px-6 py-16 text-center">
-                                    <div class="flex flex-col items-center opacity-30">
-                                        <svg class="w-12 h-12 text-slate-300 mb-3" fill="none" stroke="currentColor"
-                                            viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4">
-                                            </path>
-                                        </svg>
-                                        <p class="font-black text-slate-400 uppercase tracking-widest text-[10px]">Your
-                                            catalog is empty</p>
-                                    </div>
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="px-6 py-20 text-center">
+                                <span class="material-symbols-outlined text-5xl text-on-surface-variant/30">inventory_2</span>
+                                <p class="text-headline-md text-on-surface-variant mt-4">No items found in your inventory</p>
+                                <a href="{{ route('seller.products.create') }}" class="inline-flex items-center gap-2 mt-4 bg-primary text-white px-6 py-2.5 rounded-full font-label-lg hover:opacity-90 transition-opacity">
+                                    <span class="material-symbols-outlined text-[20px]">add</span>
+                                    Start Listing
+                                </a>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Mobile Cards (shown on small screens) -->
+        <div class="md:hidden space-y-3">
+            @forelse($products as $product)
+                <div class="bg-surface-container-lowest rounded-2xl shadow-[0px_4px_20px_rgba(0,0,0,0.05)] p-4 space-y-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-14 h-14 bg-surface-container-high rounded-xl overflow-hidden shrink-0 shadow-sm">
+                            @if($product->images->first())
+                                <img src="{{ asset('storage/' . $product->images->first()->path) }}" class="w-full h-full object-cover">
+                            @else
+                                <div class="w-full h-full flex items-center justify-center text-on-surface-variant/30">
+                                    <span class="material-symbols-outlined">image</span>
+                                </div>
+                            @endif
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <h4 class="font-label-lg text-on-surface truncate leading-tight mb-0.5">{{ $product->name }}</h4>
+                            <p class="text-label-sm text-on-surface-variant uppercase tracking-wider">{{ $product->category->name ?? 'General' }}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex flex-col">
+                            <span class="font-label-lg text-on-surface leading-none">{{ number_format($product->price) }} XAF</span>
+                            @if($product->old_price)
+                                <span class="text-label-sm text-on-surface-variant/60 line-through mt-0.5">{{ number_format($product->old_price) }} XAF</span>
+                            @endif
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] font-bold uppercase tracking-wider {{ $product->stock_status === 'in_stock' ? 'bg-primary/10 text-primary' : 'bg-error-container text-error' }}">
+                                <span class="material-symbols-outlined text-[10px]">{{ $product->stock_status === 'in_stock' ? 'check_circle' : 'cancel' }}</span>
+                                {{ str_replace('_', ' ', $product->stock_status) }}
+                            </span>
+                            <div class="flex items-center gap-1 text-on-surface-variant">
+                                <span class="material-symbols-outlined text-[14px]">visibility</span>
+                                <span class="text-label-sm font-bold">{{ $product->views }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 pt-2 border-t border-outline-variant/20">
+                        <a href="{{ route('products.show', $product->slug) }}" target="_blank"
+                           class="flex-1 flex items-center justify-center gap-1.5 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-container-high rounded-xl transition-all text-label-md">
+                            <span class="material-symbols-outlined text-[16px]">open_in_new</span>
+                            View
+                        </a>
+                        <a href="{{ route('seller.products.edit', $product->id) }}"
+                           class="flex-1 flex items-center justify-center gap-1.5 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-container-high rounded-xl transition-all text-label-md">
+                            <span class="material-symbols-outlined text-[16px]">edit</span>
+                            Edit
+                        </a>
+                        <form action="{{ route('seller.products.destroy', $product->id) }}" method="POST" onsubmit="return confirm('Delete this listing?')" class="flex-1">
+                            @csrf @method('DELETE')
+                            <button class="w-full flex items-center justify-center gap-1.5 py-2 text-error hover:bg-error-container rounded-xl transition-all text-label-md">
+                                <span class="material-symbols-outlined text-[16px]">delete</span>
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            @empty
+                <div class="bg-surface-container-lowest rounded-2xl shadow-[0px_4px_20px_rgba(0,0,0,0.05)] p-8 text-center">
+                    <span class="material-symbols-outlined text-4xl text-on-surface-variant/30">inventory_2</span>
+                    <p class="text-headline-md text-on-surface-variant mt-3">No items found</p>
+                    <a href="{{ route('seller.products.create') }}" class="inline-flex items-center gap-2 mt-3 bg-primary text-white px-5 py-2.5 rounded-full font-label-md hover:opacity-90 transition-opacity">
+                        <span class="material-symbols-outlined text-[18px]">add</span>
+                        Start Listing
+                    </a>
+                </div>
+            @endforelse
         </div>
     </div>
-</x-app-layout>
+</x-seller-layout>

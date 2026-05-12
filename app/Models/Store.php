@@ -16,7 +16,16 @@ class Store extends Model
         'banner',
         'location',
         'whatsapp_number',
+        'business_email',
+        'open_hours',
+        'social_links',
         'is_verified',
+        'badge',
+        'status',
+    ];
+
+    protected $casts = [
+        'social_links' => 'array',
     ];
 
     /**
@@ -35,5 +44,15 @@ class Store extends Model
     public function reviews(): HasMany
     {
         return $this->hasMany(StoreReview::class);
+    }
+
+    public function advertisementRequests()
+    {
+        return $this->hasMany(AdvertisementRequest::class);
+    }
+
+    public function productReports()
+    {
+        return $this->hasManyThrough(ProductReport::class, Product::class);
     }
 }

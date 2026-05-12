@@ -20,5 +20,14 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         \Illuminate\Pagination\Paginator::useTailwind();
+        
+        // Share locations globally for search filters
+        view()->composer('*', function ($view) {
+            $view->with('allLocations', \App\Models\Store::whereNotNull('location')
+                ->where('location', '!=', '')
+                ->distinct()
+                ->pluck('location')
+                ->sort());
+        });
     }
 }

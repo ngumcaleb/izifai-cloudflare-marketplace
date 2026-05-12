@@ -45,11 +45,9 @@
                          class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                     
                     {{-- Small Badge --}}
-                    @if($store->is_verified)
-                    <div class="absolute top-1.5 right-1.5 w-4 h-4 bg-emerald-500 rounded-full flex items-center justify-center shadow-lg border-2 border-white">
-                        <svg class="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/></svg>
+                    <div class="absolute top-1.5 right-1.5">
+                        <x-store-badge :store="$store" size="sm" :showText="false" />
                     </div>
-                    @endif
                 </div>
 
                 {{-- Micro Info --}}
