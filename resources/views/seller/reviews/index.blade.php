@@ -16,7 +16,7 @@
                     <p class="text-4xl md:text-5xl font-black text-on-surface">{{ number_format($avgRating, 1) }}</p>
                     <div class="flex items-center gap-0.5 mt-1 justify-center">
                         @for($i = 1; $i <= 5; $i++)
-                            <i class="fa-solid fa-star {{ $i <= round($avgRating) ? 'text-amber-400' : 'text-on-surface-variant/20' }}" style="font-size: 12px;"></i>
+                            <i class="fa-solid fa-star {{ $i <= round($avgRating) ? 'text-orange-500' : 'text-on-surface-variant/20' }}" style="font-size: 12px;"></i>
                         @endfor
                     </div>
                     <p class="text-label-sm text-on-surface-variant mt-1">{{ $totalReviews }} review{{ $totalReviews !== 1 ? 's' : '' }}</p>
@@ -49,7 +49,7 @@
                                 <p class="font-label-md md:font-label-lg text-on-surface truncate">{{ $review->user->name ?? 'Anonymous' }}</p>
                                 <div class="flex items-center gap-1">
                                     @for($i = 1; $i <= 5; $i++)
-                                        <i class="fa-solid fa-star {{ $i <= $review->rating ? 'text-amber-400' : 'text-on-surface-variant/15' }}" style="font-size: 10px;"></i>
+                                        <i class="fa-solid fa-star {{ $i <= $review->rating ? 'text-orange-500' : 'text-on-surface-variant/15' }}" style="font-size: 10px;"></i>
                                     @endfor
                                 </div>
                                 <span class="text-label-sm text-on-surface-variant sm:ml-auto">{{ $review->created_at->format('M d, Y') }}</span>

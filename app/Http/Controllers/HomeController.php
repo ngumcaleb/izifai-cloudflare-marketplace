@@ -2,23 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
-use App\Models\Product;
-use App\Models\Store;
-
 class HomeController extends Controller
 {
     public function index()
     {
-        $categories = Category::withCount('products')->get();
-        $stores = Store::where('status', 'active')->with('products')->inRandomOrder()->take(8)->get();
+        $totalStores = \App\Models\Store::where('status', 'active')->count();
+        $totalProducts = \App\Models\Product::whereHas('store', function ($q) {
+            $q->where('status', 'active');
+        })->count();
+        $verifiedStores = \App\Models\Store::where('status', 'active')->where('is_verified', true)->count();
 
-        $stats = [
-            'stores' => Store::where('status', 'active')->count(),
-            'products' => Product::active()->count(),
-            'categories' => Category::count(),
-        ];
+        $featuredProducts = \App\Models\Product::active()
+            ->with(['images', 'store'])
+            ->whereHas('store', function ($q) {
+                $q->where('status', 'active');
+            })
+            ->latest()
+            ->take(4)
+            ->get();
 
-        return view('home', compact('categories', 'stores', 'stats'));
+        return view('home', compact('totalStores', 'totalProducts', 'verifiedStores', 'featuredProducts'));
     }
 }

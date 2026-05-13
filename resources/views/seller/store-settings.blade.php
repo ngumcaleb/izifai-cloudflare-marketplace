@@ -139,11 +139,11 @@
                             Add Link
                         </button>
                     </div>
-                    <div class="space-y-3">
+                    <div class="space-y-2 md:space-y-3">
                         <template x-for="(link, i) in socialLinks" :key="i">
-                            <div class="flex gap-2 md:gap-3 items-start">
+                            <div class="flex gap-1.5 md:gap-3 items-start">
                                 <select name="social_platforms[]" x-model="link.platform"
-                                        class="w-36 md:w-40 h-11 bg-surface-container-low border-none focus:ring-2 focus:ring-primary rounded-xl px-3 text-body-md outline-none text-sm">
+                                        class="w-28 md:w-40 h-11 bg-surface-container-low border-none focus:ring-2 focus:ring-primary rounded-xl px-2 md:px-3 text-body-md outline-none text-sm">
                                     <option value="">Select</option>
                                     <option value="facebook">Facebook</option>
                                     <option value="instagram">Instagram</option>
@@ -151,12 +151,13 @@
                                     <option value="linkedin">LinkedIn</option>
                                     <option value="tiktok">TikTok</option>
                                     <option value="youtube">YouTube</option>
+                                    <option value="whatsapp_group">WhatsApp Group</option>
                                 </select>
                                 <input type="url" name="social_urls[]" x-model="link.url" placeholder="https://..."
-                                       class="flex-1 h-11 bg-surface-container-low border-none focus:ring-2 focus:ring-primary rounded-xl px-3 text-body-md outline-none text-sm">
+                                       class="min-w-0 flex-1 h-11 bg-surface-container-low border-none focus:ring-2 focus:ring-primary rounded-xl px-2 md:px-3 text-body-md outline-none text-sm">
                                 <button type="button" @click="removeSocial(i)" x-show="socialLinks.length > 1"
-                                        class="p-2.5 text-error hover:bg-error-container rounded-xl transition-all shrink-0">
-                                    <span class="material-symbols-outlined">delete</span>
+                                        class="p-1.5 md:p-2.5 text-error hover:bg-error-container rounded-xl transition-all shrink-0">
+                                    <span class="material-symbols-outlined text-[18px] md:text-[24px]">delete</span>
                                 </button>
                             </div>
                         </template>

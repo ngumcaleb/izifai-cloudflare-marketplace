@@ -7,14 +7,57 @@ use Illuminate\Http\Request;
 
 class StoreController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $stores = Store::where('status', 'active')
-            ->withCount('products')
-            ->with('products.images')
-            ->latest()
-            ->paginate(16);
-        return view('stores.index', compact('stores'));
+        $query = Store::where('status', 'active')
+            ->withCount(['products', 'reviews'])
+            ->withAvg('reviews', 'rating')
+            ->with('products.images');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                  ->orWhere('location', 'like', '%' . $search . '%')
+                  ->orWhere('description', 'like', '%' . $search . '%');
+            });
+        }
+
+        if ($request->filled('category') && $request->category !== 'all') {
+            $query->whereHas('products.category', function ($q) use ($request) {
+                $q->where('slug', $request->category);
+            });
+        }
+
+        // Sort
+        $sort = $request->get('sort', 'newest');
+        switch ($sort) {
+            case 'rating':
+                $query->orderByDesc('reviews_avg_rating');
+                break;
+            case 'products':
+                $query->orderByDesc('products_count');
+                break;
+            default:
+                $query->latest();
+                break;
+        }
+
+        $stores = $query->paginate(16)->withQueryString();
+
+        // Categories that have products in active stores
+        $categoryIds = \App\Models\Product::whereHas('store', function ($q) {
+            $q->where('status', 'active');
+        })->distinct()->pluck('category_id');
+        $categories = \App\Models\Category::whereIn('id', $categoryIds)->get();
+
+        // Hero stats
+        $totalStores = Store::where('status', 'active')->count();
+        $totalProducts = \App\Models\Product::whereHas('store', function ($q) {
+            $q->where('status', 'active');
+        })->count();
+
+        return view('stores.index', compact('stores', 'categories', 'totalStores', 'totalProducts'));
     }
     public function show(Request $request, $slug)
     {
@@ -95,14 +138,42 @@ class StoreController extends Controller
         }
 
         // Store tenure
-        $storeTenureDays = $store->created_at ? $store->created_at->diffInDays(now()) : 0;
-        $tenureLabel = 'Member since ' . $storeTenureDays . ' days';
+        $joinedDate = $store->created_at ? $store->created_at->format('M d, Y') : 'N/A';
 
         return view('stores.show', compact(
             'store', 'products', 'categories', 'reviews',
             'starDistribution', 'avgRating', 'totalReviews',
-            'totalProducts', 'topProducts', 'tenureLabel',
+            'totalProducts', 'topProducts', 'joinedDate',
             'savedProductIds'
         ));
+    }
+
+    public function searchJson(Request $request, $slug)
+    {
+        $store = Store::where('slug', $slug)->where('status', 'active')->firstOrFail();
+
+        $query = $store->products()->with('images');
+
+        if ($request->filled('q')) {
+            $search = $request->q;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                  ->orWhere('description', 'like', '%' . $search . '%');
+            });
+        }
+
+        $products = $query->latest()->take(6)->get()->map(function ($p) {
+            return [
+                'id' => $p->id,
+                'name' => $p->name,
+                'slug' => $p->slug,
+                'price' => $p->price,
+                'old_price' => $p->old_price,
+                'image' => $p->images->first()?->path,
+                'category' => $p->category?->name,
+            ];
+        });
+
+        return response()->json($products);
     }
 }

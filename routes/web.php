@@ -8,10 +8,12 @@ Route::get('/', [\App\Http\Controllers\HomeController::class, 'index'])->name('h
 // === PUBLIC SHAREABLE PAGES ===
 Route::get('/stores', [\App\Http\Controllers\StoreController::class, 'index'])->name('stores.index');
 Route::get('/store/{slug}', [\App\Http\Controllers\StoreController::class, 'show'])->name('stores.show');
+Route::get('/store/{slug}/search', [\App\Http\Controllers\StoreController::class, 'searchJson'])->name('stores.search-json');
 Route::post('/store/{store}/review', [\App\Http\Controllers\StoreReviewController::class, 'store'])->name('stores.review');
 
 Route::get('/products', [\App\Http\Controllers\ProductController::class, 'index'])->name('products.index');
 Route::get('/products/search', [\App\Http\Controllers\ProductController::class, 'search'])->name('products.search');
+Route::get('/products/autocomplete', [\App\Http\Controllers\ProductController::class, 'autocompleteJson'])->name('products.autocomplete');
 Route::get('/products/{slug}', [\App\Http\Controllers\ProductController::class, 'show'])->name('products.show');
 Route::post('/products/{product}/log-contact', [\App\Http\Controllers\ProductController::class, 'logContact'])->name('products.log-contact');
 Route::post('/products/{product}/favorite', [\App\Http\Controllers\SavedProductController::class, 'toggle'])->name('products.favorite');

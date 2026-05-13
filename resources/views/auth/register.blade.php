@@ -1,139 +1,208 @@
-<x-guest-layout>
-    <div x-data="{ role: '{{ old('role', 'buyer') }}' }">
+@extends('layouts.auth')
 
-        {{-- Heading --}}
-        <div class="mb-7">
-            <h2 class="text-3xl font-black text-slate-900 tracking-tight">Join Izifai</h2>
-            <p class="text-sm text-slate-500 font-medium mt-1">Create your account to start trading in Cameroon.</p>
-        </div>
+@section('title', 'Create Your Account — iziFaii')
 
-        {{-- Role Toggle --}}
-        <div class="flex p-1.5 bg-slate-100 rounded-2xl mb-6 gap-1">
-            <button type="button" @click="role = 'buyer'"
-                    :class="role === 'buyer' ? 'bg-white text-brand shadow-sm' : 'text-slate-500 hover:text-slate-800'"
-                    class="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-[11px] uppercase tracking-widest transition-all">
-                <i class="fa-solid fa-bag-shopping"></i> Buyer
-            </button>
-            <button type="button" @click="role = 'seller'"
-                    :class="role === 'seller' ? 'bg-white text-brand shadow-sm' : 'text-slate-500 hover:text-slate-800'"
-                    class="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-[11px] uppercase tracking-widest transition-all">
-                <i class="fa-solid fa-shop"></i> Seller / Vendor
-            </button>
-        </div>
+@section('content')
 
-        {{-- Seller hint --}}
-        <div x-show="role === 'seller'" x-cloak
-             x-transition:enter="transition ease-out duration-200"
-             x-transition:enter-start="opacity-0 -translate-y-2"
-             x-transition:enter-end="opacity-100 translate-y-0"
-             class="mb-5 p-4 bg-brand/5 border border-brand/20 rounded-xl flex items-start gap-3">
-            <i class="fa-solid fa-circle-info text-brand mt-0.5 shrink-0"></i>
-            <p class="text-[12px] font-semibold text-brand leading-relaxed">
-                A free store page will be created for you. You can list products immediately after registering.
-            </p>
-        </div>
+    {{-- LEFT: VALUE PROPS (desktop only) --}}
+    <div class="hidden lg:flex lg:w-1/2 bg-primary flex-col justify-between p-10 xl:p-14 relative overflow-hidden min-h-screen">
 
-        <form method="POST" action="{{ route('register') }}" class="space-y-4">
-            @csrf
-            <input type="hidden" name="role" :value="role">
+        <div class="absolute top-[-120px] right-[-120px] w-80 h-80 rounded-full bg-white/5 blur-2xl"></div>
+        <div class="absolute bottom-[-80px] left-[-80px] w-96 h-96 rounded-full bg-white/5 blur-2xl"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-white/5 blur-3xl"></div>
 
-            {{-- Name --}}
-            <div>
-                <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">Full Name</label>
-                <div class="relative">
-                    <i class="fa-regular fa-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm pointer-events-none"></i>
-                    <input type="text" name="name" value="{{ old('name') }}" required autofocus
-                           class="w-full pl-11 pr-4 py-3.5 rounded-xl border-2 border-slate-200 bg-slate-50 text-slate-900 text-sm font-medium outline-none transition-all focus:border-brand focus:bg-white focus:ring-4 focus:ring-brand/10 placeholder:text-slate-400 placeholder:font-normal"
-                           placeholder="Your full name">
-                </div>
-                <x-input-error :messages="$errors->get('name')" class="mt-1.5 text-xs text-red-500 font-semibold" />
-            </div>
-
-            {{-- Email --}}
-            <div>
-                <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">Email Address</label>
-                <div class="relative">
-                    <i class="fa-regular fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm pointer-events-none"></i>
-                    <input type="email" name="email" value="{{ old('email') }}" required
-                           class="w-full pl-11 pr-4 py-3.5 rounded-xl border-2 border-slate-200 bg-slate-50 text-slate-900 text-sm font-medium outline-none transition-all focus:border-brand focus:bg-white focus:ring-4 focus:ring-brand/10 placeholder:text-slate-400 placeholder:font-normal"
-                           placeholder="your@email.com">
-                </div>
-                <x-input-error :messages="$errors->get('email')" class="mt-1.5 text-xs text-red-500 font-semibold" />
-            </div>
-
-            {{-- Phone --}}
-            <div>
-                <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">Phone Number</label>
-                <div class="relative flex">
-                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-sm font-bold pointer-events-none">+237</span>
-                    <input type="text" name="phone" value="{{ old('phone') }}" required
-                           class="w-full pl-16 pr-4 py-3.5 rounded-xl border-2 border-slate-200 bg-slate-50 text-slate-900 text-sm font-medium outline-none transition-all focus:border-brand focus:bg-white focus:ring-4 focus:ring-brand/10 placeholder:text-slate-400 placeholder:font-normal"
-                           placeholder="6XX XXX XXX">
-                </div>
-                <x-input-error :messages="$errors->get('phone')" class="mt-1.5 text-xs text-red-500 font-semibold" />
-            </div>
-
-            {{-- Shop Name (sellers only) --}}
-            <div x-show="role === 'seller'" x-cloak
-                 x-transition:enter="transition ease-out duration-200"
-                 x-transition:enter-start="opacity-0 -translate-y-2"
-                 x-transition:enter-end="opacity-100 translate-y-0">
-                <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">Business / Shop Name</label>
-                <div class="relative">
-                    <i class="fa-solid fa-store absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm pointer-events-none"></i>
-                    <input type="text" name="store_name" value="{{ old('store_name') }}" :required="role === 'seller'"
-                           class="w-full pl-11 pr-4 py-3.5 rounded-xl border-2 border-slate-200 bg-slate-50 text-slate-900 text-sm font-medium outline-none transition-all focus:border-brand focus:bg-white focus:ring-4 focus:ring-brand/10 placeholder:text-slate-400 placeholder:font-normal"
-                           placeholder="e.g. Grace Electronics">
-                </div>
-                <x-input-error :messages="$errors->get('store_name')" class="mt-1.5 text-xs text-red-500 font-semibold" />
-            </div>
-
-            {{-- Password --}}
-            <div class="grid grid-cols-2 gap-3">
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">Password</label>
-                    <div class="relative" x-data="{ show: false }">
-                        <input :type="show ? 'text' : 'password'" name="password" required
-                               class="w-full pr-10 pl-4 py-3.5 rounded-xl border-2 border-slate-200 bg-slate-50 text-slate-900 text-sm font-medium outline-none transition-all focus:border-brand focus:bg-white focus:ring-4 focus:ring-brand/10 placeholder:text-slate-400"
-                               placeholder="Min 8 chars">
-                        <button type="button" @click="show = !show"
-                                class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700">
-                            <i :class="show ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye'" class="text-sm"></i>
-                        </button>
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">Confirm</label>
-                    <input type="password" name="password_confirmation" required
-                           class="w-full px-4 py-3.5 rounded-xl border-2 border-slate-200 bg-slate-50 text-slate-900 text-sm font-medium outline-none transition-all focus:border-brand focus:bg-white focus:ring-4 focus:ring-brand/10 placeholder:text-slate-400"
-                           placeholder="Repeat">
-                </div>
-                <x-input-error :messages="$errors->get('password')" class="col-span-full text-xs text-red-500 font-semibold" />
-            </div>
-
-            {{-- Submit --}}
-            <button type="submit"
-                    class="w-full bg-brand text-white py-4 rounded-xl font-black text-sm uppercase tracking-widest hover:bg-brand-dark transition-all shadow-lg shadow-brand/20 active:scale-[0.99] mt-2">
-                <span x-text="role === 'seller' ? 'Open My Store →' : 'Create Account →'">Create Account →</span>
-            </button>
-        </form>
-
-        {{-- Login link --}}
-        <div class="flex items-center gap-4 my-6">
-            <div class="h-px flex-1 bg-slate-100"></div>
-            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Have an account?</span>
-            <div class="h-px flex-1 bg-slate-100"></div>
-        </div>
-
-        <a href="{{ route('login') }}"
-           class="flex items-center justify-center gap-3 w-full py-4 rounded-xl border-2 border-slate-200 text-slate-700 font-bold text-sm hover:border-brand/40 hover:text-brand transition-all group">
-            <i class="fa-solid fa-right-to-bracket text-slate-400 group-hover:text-brand transition-colors"></i>
-            Sign in to my account
+        <a href="/" class="relative z-10">
+            <x-application-logo class="h-10 w-auto brightness-0 invert" />
         </a>
 
-        <p class="text-center text-[11px] text-slate-400 font-medium mt-5 flex items-center justify-center gap-1.5">
-            <i class="fa-solid fa-shield-halved text-brand"></i>
-            Your data is encrypted and secure on Izifai.
-        </p>
+        <div class="relative z-10 space-y-8 max-w-lg">
+            <div>
+                <h1 class="text-4xl xl:text-5xl font-black text-on-primary leading-[1.15] tracking-tight">
+                    Empowering Cameroonian<br>
+                    <span class="text-primary-fixed-dim">Merchants</span>
+                </h1>
+                <p class="text-base text-on-primary/80 mt-4 leading-relaxed">
+                    Join hundreds of vendors who've transformed their business with a professional digital catalog.
+                </p>
+            </div>
+
+            <div class="space-y-3">
+                <div class="flex items-start gap-4 p-4 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10">
+                    <div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined text-on-primary-container text-[22px]" style="font-variation-settings: 'FILL' 1;">menu_book</span>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-on-primary">Create your catalog in minutes</p>
+                        <p class="text-xs text-on-primary/70 mt-0.5">Upload photos, set prices, and organize by category. No technical skills needed.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4 p-4 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10">
+                    <div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined text-on-primary-container text-[22px]" style="font-variation-settings: 'FILL' 1;">share</span>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-on-primary">Share your link on WhatsApp</p>
+                        <p class="text-xs text-on-primary/70 mt-0.5">Your catalog works with a single link. Share it anywhere — no app download needed.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4 p-4 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10">
+                    <div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined text-on-primary-container text-[22px]" style="font-variation-settings: 'FILL' 1;">trending_up</span>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-on-primary">Grow your sales</p>
+                        <p class="text-xs text-on-primary/70 mt-0.5">See which products get the most views. Know what your customers want and stock smarter.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="relative z-10">
+            <img src="{{ \App\Models\Setting::get('register_merchant_image', 'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=600&q=80') }}"
+                 alt="Cameroonian merchant"
+                 class="w-full max-w-md rounded-2xl shadow-2xl object-cover h-48 xl:h-56">
+        </div>
+
+        <p class="relative z-10 text-xs text-on-primary/50">&copy; {{ date('Y') }} iziFaii. Simplify Your Shopping.</p>
     </div>
-</x-guest-layout>
+
+    {{-- RIGHT: FORM PANEL --}}
+    <div class="flex-1 flex flex-col min-h-dvh lg:min-h-screen bg-surface-container-lowest lg:bg-surface-container-lowest">
+
+        <div class="lg:hidden flex items-center gap-3 px-6 py-5 border-b border-outline-variant/20 bg-surface">
+            <a href="/"><x-application-logo class="h-7" /></a>
+        </div>
+
+        <div class="flex-1 flex items-center justify-center px-5 py-10 lg:py-0">
+            <div class="w-full max-w-md">
+
+                <div class="mb-8">
+                    <h1 class="text-2xl font-black text-on-surface tracking-tight">Create your account</h1>
+                    <p class="text-sm text-on-surface-variant mt-1">Start building your business today. It's free and secure.</p>
+                </div>
+
+                <form method="POST" action="{{ route('register') }}" class="space-y-5" x-data="{ showPassword: false, agree: false }">
+                    @csrf
+                    <input type="hidden" name="role" value="seller">
+
+                    <div>
+                        <label class="block text-xs font-bold text-on-surface-variant mb-1.5">Full Name</label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px] pointer-events-none">person</span>
+                            <input type="text" name="name" value="{{ old('name') }}" required autofocus
+                                   class="w-full pl-11 pr-4 py-3 bg-surface-container-lowest border border-outline-variant/50 rounded-lg text-sm text-on-surface font-medium placeholder:text-on-surface-variant/40 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                   placeholder="Your full name">
+                        </div>
+                        @error('name') <p class="text-xs text-error font-semibold mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-on-surface-variant mb-1.5">Email Address</label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px] pointer-events-none">mail</span>
+                            <input type="email" name="email" value="{{ old('email') }}" required
+                                   class="w-full pl-11 pr-4 py-3 bg-surface-container-lowest border border-outline-variant/50 rounded-lg text-sm text-on-surface font-medium placeholder:text-on-surface-variant/40 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                   placeholder="your@email.com">
+                        </div>
+                        @error('email') <p class="text-xs text-error font-semibold mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-on-surface-variant mb-1.5">Business Name</label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px] pointer-events-none">storefront</span>
+                            <input type="text" name="store_name" value="{{ old('store_name') }}" required
+                                   class="w-full pl-11 pr-4 py-3 bg-surface-container-lowest border border-outline-variant/50 rounded-lg text-sm text-on-surface font-medium placeholder:text-on-surface-variant/40 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                   placeholder="e.g. Grace Fashion Boutique">
+                        </div>
+                        @error('store_name') <p class="text-xs text-error font-semibold mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-on-surface-variant mb-1.5">
+                            Phone Number
+                            <span class="text-[10px] font-medium text-on-surface-variant/60 normal-case">(WhatsApp)</span>
+                        </label>
+                        <div class="flex">
+                            <div class="flex items-center gap-1.5 px-3.5 py-3 bg-surface-container border border-outline-variant/50 border-r-0 rounded-l-lg text-sm font-medium text-on-surface shrink-0">
+                                <span class="text-base leading-none">🇨🇲</span>
+                                <span>+237</span>
+                            </div>
+                            <input type="text" name="phone" value="{{ old('phone') }}" required
+                                   class="flex-1 min-w-0 pl-3 pr-4 py-3 bg-surface-container-lowest border border-outline-variant/50 rounded-r-lg text-sm text-on-surface font-medium placeholder:text-on-surface-variant/40 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                   placeholder="6XX XXX XXX">
+                        </div>
+                        @error('phone') <p class="text-xs text-error font-semibold mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-on-surface-variant mb-1.5">Password</label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px] pointer-events-none">lock</span>
+                            <input :type="showPassword ? 'text' : 'password'" name="password" required
+                                   class="w-full pl-11 pr-11 py-3 bg-surface-container-lowest border border-outline-variant/50 rounded-lg text-sm text-on-surface font-medium placeholder:text-on-surface-variant/40 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                   placeholder="Min 8 characters">
+                            <button type="button" @click="showPassword = !showPassword"
+                                    class="absolute right-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface transition-colors">
+                                <span class="material-symbols-outlined text-[20px]" x-text="showPassword ? 'visibility_off' : 'visibility'"></span>
+                            </button>
+                        </div>
+                        @error('password') <p class="text-xs text-error font-semibold mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-on-surface-variant mb-1.5">Confirm Password</label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px] pointer-events-none">lock</span>
+                            <input type="password" name="password_confirmation" required
+                                   class="w-full pl-11 pr-4 py-3 bg-surface-container-lowest border border-outline-variant/50 rounded-lg text-sm text-on-surface font-medium placeholder:text-on-surface-variant/40 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                   placeholder="Repeat password">
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-3">
+                        <input type="checkbox" id="terms" x-model="agree" required
+                               class="mt-0.5 w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary/20 cursor-pointer">
+                        <label for="terms" class="text-xs text-on-surface-variant leading-relaxed cursor-pointer select-none">
+                            I agree to the
+                            <a href="#" class="text-primary font-bold hover:underline">Merchant Agreement</a>
+                            and
+                            <a href="#" class="text-primary font-bold hover:underline">Privacy Policy</a>
+                        </label>
+                    </div>
+
+                    <button type="submit" :disabled="!agree"
+                            class="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-primary text-on-primary rounded-lg text-sm font-bold shadow-lg hover:opacity-90 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed">
+                        Create My Catalog
+                        <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+                    </button>
+                </form>
+
+                <div class="mt-6 text-center">
+                    <p class="text-sm text-on-surface-variant">
+                        Already have an account?
+                        <a href="{{ route('login') }}" class="text-primary font-bold hover:underline">Log In</a>
+                    </p>
+                </div>
+
+                <div class="mt-6 pt-5 border-t border-outline-variant/20 flex items-center justify-center gap-6">
+                    <div class="flex items-center gap-1.5 text-xs text-on-surface-variant/60">
+                        <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+                        Secure Data
+                    </div>
+                    <div class="flex items-center gap-1.5 text-xs text-on-surface-variant/60">
+                        <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">support_agent</span>
+                        Local Support
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <p class="hidden lg:block fixed bottom-4 right-4 text-xs text-on-surface-variant/50 z-10">
+        &copy; {{ date('Y') }} iziFaii &mdash; Cameroon
+    </p>
+
+@endsection

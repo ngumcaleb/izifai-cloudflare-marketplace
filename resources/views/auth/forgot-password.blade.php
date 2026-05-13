@@ -1,37 +1,82 @@
-<x-guest-layout>
-    <div class="mb-10 text-center lg:text-left">
-        <h2 class="text-3xl font-black text-slate-900 tracking-tight leading-none mb-3">Password Recovery</h2>
-        <p class="text-sm font-medium text-slate-500">Enter your email and we'll send you a secure reset link.</p>
-    </div>
+@extends('layouts.auth')
 
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-6" :status="session('status')" />
+@section('title', 'Reset Password — iziFaii')
 
-    <form method="POST" action="{{ route('password.email') }}" class="space-y-6">
-        @csrf
+@section('content')
 
-        <!-- Email Address -->
-        <div class="group">
-            <label for="email" class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 ml-1 group-focus-within:text-brand transition-colors">Email Address</label>
-            <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus 
-                   class="block w-full px-5 py-4 rounded-xl border-2 border-slate-100 focus:border-brand focus:ring-4 focus:ring-brand/5 transition-all text-sm font-bold text-slate-700 bg-slate-50/30 placeholder:text-slate-300" 
-                   placeholder="name@company.com">
-            <x-input-error :messages="$errors->get('email')" class="mt-2 text-[10px] font-bold uppercase tracking-widest" />
-        </div>
-
-        <div>
-            <button type="submit" class="w-full bg-brand text-white py-5 rounded-xl font-black text-xs uppercase tracking-[0.2em] hover:bg-brand-700 hover:shadow-xl hover:shadow-brand/20 focus:ring-4 focus:ring-brand/10 transition-all active:scale-[0.98]">
-                Send Recovery Link
-            </button>
-        </div>
-    </form>
-
-    <div class="mt-10 pt-8 border-t border-slate-100 text-center">
-        <a href="{{ route('login') }}" class="text-[10px] font-black text-slate-400 hover:text-brand transition-colors uppercase tracking-[0.2em]">
-            Back to Secure Login
+    {{-- LEFT: branding panel (desktop only) --}}
+    <div class="hidden lg:flex lg:w-1/2 bg-primary flex-col justify-between p-10 xl:p-14 relative overflow-hidden min-h-screen">
+        <div class="absolute top-[-120px] right-[-120px] w-80 h-80 rounded-full bg-white/5 blur-2xl"></div>
+        <div class="absolute bottom-[-80px] left-[-80px] w-96 h-96 rounded-full bg-white/5 blur-2xl"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-white/5 blur-3xl"></div>
+        <a href="/" class="relative z-10">
+            <x-application-logo class="h-10 w-auto brightness-0 invert" />
         </a>
+        <div class="relative z-10 max-w-lg">
+            <h1 class="text-4xl xl:text-5xl font-black text-on-primary leading-[1.15] tracking-tight">
+                No Worries.<br>
+                <span class="text-primary-fixed-dim">We'll Help.</span>
+            </h1>
+            <p class="text-base text-on-primary/80 mt-4 leading-relaxed">
+                Enter the email address you used to register, and we'll send you a link to reset your password.
+            </p>
+        </div>
+        <div class="relative z-10">
+            <p class="text-xs text-on-primary/50">&copy; {{ date('Y') }} iziFaii. Simplify Your Shopping.</p>
+        </div>
     </div>
-</x-guest-layout>
 
+    {{-- RIGHT: FORM --}}
+    <div class="flex-1 flex flex-col min-h-dvh lg:min-h-screen bg-surface-container-lowest">
+        <div class="lg:hidden flex items-center gap-3 px-6 py-5 border-b border-outline-variant/20 bg-surface">
+            <a href="/"><x-application-logo class="h-7" /></a>
+        </div>
+        <div class="flex-1 flex items-center justify-center px-5 py-10 lg:py-0">
+            <div class="w-full max-w-md">
 
+                <div class="mb-8">
+                    <h1 class="text-2xl font-black text-on-surface tracking-tight">Reset password</h1>
+                    <p class="text-sm text-on-surface-variant mt-1">Enter your email and we'll send you a secure reset link.</p>
+                </div>
 
+                @if (session('status'))
+                    <div class="mb-5 p-3 bg-primary/10 border border-primary/20 rounded-lg text-sm text-primary font-semibold">
+                        {{ session('status') }}
+                    </div>
+                @endif
+
+                <form method="POST" action="{{ route('password.email') }}" class="space-y-5">
+                    @csrf
+                    <div>
+                        <label class="block text-xs font-bold text-on-surface-variant mb-1.5">Email Address</label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px] pointer-events-none">mail</span>
+                            <input type="email" name="email" value="{{ old('email') }}" required autofocus
+                                   class="w-full pl-11 pr-4 py-3 bg-surface-container-lowest border border-outline-variant/50 rounded-lg text-sm text-on-surface font-medium placeholder:text-on-surface-variant/40 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                   placeholder="your@email.com">
+                        </div>
+                        @error('email') <p class="text-xs text-error font-semibold mt-1">{{ $message }}</p> @enderror
+                    </div>
+                    <button type="submit"
+                            class="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-primary text-on-primary rounded-lg text-sm font-bold shadow-lg hover:opacity-90 transition-all active:scale-[0.98]">
+                        Send Recovery Link
+                        <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+                    </button>
+                </form>
+
+                <div class="mt-6 text-center">
+                    <a href="{{ route('login') }}" class="text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors">
+                        <span class="material-symbols-outlined text-[16px] align-text-bottom">arrow_back</span>
+                        Back to login
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <p class="hidden lg:block fixed bottom-4 right-4 text-xs text-on-surface-variant/50 z-10">
+        &copy; {{ date('Y') }} iziFaii &mdash; Cameroon
+    </p>
+
+@endsection

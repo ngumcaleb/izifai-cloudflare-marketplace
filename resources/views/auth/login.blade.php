@@ -1,78 +1,160 @@
-<x-guest-layout>
-    {{-- Heading --}}
-    <div class="mb-8">
-        <h2 class="text-3xl font-black text-slate-900 tracking-tight">Welcome back</h2>
-        <p class="text-sm text-slate-500 font-medium mt-1">Sign in to your Izifai account to continue.</p>
-    </div>
+@extends('layouts.auth')
 
-    {{-- Session Status --}}
-    <x-auth-session-status class="mb-5" :status="session('status')" />
+@section('title', 'Log In — iziFaii')
 
-    <form method="POST" action="{{ route('login') }}" class="space-y-5">
-        @csrf
+@section('content')
 
-        {{-- Email --}}
-        <div>
-            <label for="email" class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2">Email Address</label>
-            <div class="relative">
-                <i class="fa-regular fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm pointer-events-none"></i>
-                <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus
-                       class="w-full pl-11 pr-4 py-3.5 rounded-xl border-2 border-slate-200 bg-slate-50 text-slate-900 text-sm font-medium outline-none transition-all focus:border-brand focus:bg-white focus:ring-4 focus:ring-brand/10 placeholder:text-slate-400 placeholder:font-normal"
-                       placeholder="your@email.com">
+    {{-- LEFT: VALUE PROPS (desktop only) --}}
+    <div class="hidden lg:flex lg:w-1/2 bg-primary flex-col justify-between p-10 xl:p-14 relative overflow-hidden min-h-screen">
+
+        <div class="absolute top-[-120px] right-[-120px] w-80 h-80 rounded-full bg-white/5 blur-2xl"></div>
+        <div class="absolute bottom-[-80px] left-[-80px] w-96 h-96 rounded-full bg-white/5 blur-2xl"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full bg-white/5 blur-3xl"></div>
+
+        <a href="/" class="relative z-10">
+            <x-application-logo class="h-10 w-auto brightness-0 invert" />
+        </a>
+
+        <div class="relative z-10 space-y-8 max-w-lg">
+            <div>
+                <h1 class="text-4xl xl:text-5xl font-black text-on-primary leading-[1.15] tracking-tight">
+                    Welcome Back to<br>
+                    <span class="text-primary-fixed-dim">Your Catalog</span>
+                </h1>
+                <p class="text-base text-on-primary/80 mt-4 leading-relaxed">
+                    Access your store, manage your products, and track your sales — all from one place.
+                </p>
             </div>
-            <x-input-error :messages="$errors->get('email')" class="mt-2 text-xs text-red-500 font-semibold" />
+
+            <div class="space-y-3">
+                <div class="flex items-start gap-4 p-4 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10">
+                    <div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined text-on-primary-container text-[22px]" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-on-primary">Manage your products</p>
+                        <p class="text-xs text-on-primary/70 mt-0.5">Add, edit, or remove items. Update prices and stock in real time.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4 p-4 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10">
+                    <div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined text-on-primary-container text-[22px]" style="font-variation-settings: 'FILL' 1;">bar_chart</span>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-on-primary">Track your performance</p>
+                        <p class="text-xs text-on-primary/70 mt-0.5">See which products get the most views and clicks. Know what's working.</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4 p-4 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10">
+                    <div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined text-on-primary-container text-[22px]" style="font-variation-settings: 'FILL' 1;">support_agent</span>
+                    </div>
+                    <div>
+                        <p class="text-sm font-bold text-on-primary">Local support</p>
+                        <p class="text-xs text-on-primary/70 mt-0.5">We're here to help. Reach out anytime via WhatsApp or email.</p>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        {{-- Password --}}
-        <div x-data="{ show: false }">
-            <div class="flex items-center justify-between mb-2">
-                <label for="password" class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest">Password</label>
-                @if (Route::has('password.request'))
-                    <a href="{{ route('password.request') }}" class="text-[11px] font-bold text-brand hover:underline">Forgot password?</a>
+        <div class="relative z-10">
+            <p class="text-xs text-on-primary/50">&copy; {{ date('Y') }} iziFaii. Simplify Your Shopping.</p>
+        </div>
+    </div>
+
+    {{-- RIGHT: FORM PANEL --}}
+    <div class="flex-1 flex flex-col min-h-dvh lg:min-h-screen bg-surface-container-lowest lg:bg-surface-container-lowest">
+
+        <div class="lg:hidden flex items-center gap-3 px-6 py-5 border-b border-outline-variant/20 bg-surface">
+            <a href="/"><x-application-logo class="h-7" /></a>
+        </div>
+
+        <div class="flex-1 flex items-center justify-center px-5 py-10 lg:py-0">
+            <div class="w-full max-w-md">
+
+                <div class="mb-8">
+                    <h1 class="text-2xl font-black text-on-surface tracking-tight">Welcome back</h1>
+                    <p class="text-sm text-on-surface-variant mt-1">Sign in to your account to continue.</p>
+                </div>
+
+                @if (session('status'))
+                    <div class="mb-5 p-3 bg-primary/10 border border-primary/20 rounded-lg text-sm text-primary font-semibold">
+                        {{ session('status') }}
+                    </div>
                 @endif
+
+                <form method="POST" action="{{ route('login') }}" class="space-y-5" x-data="{ showPassword: false }">
+                    @csrf
+
+                    <div>
+                        <label class="block text-xs font-bold text-on-surface-variant mb-1.5">Email Address</label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px] pointer-events-none">mail</span>
+                            <input type="email" name="email" value="{{ old('email') }}" required autofocus
+                                   class="w-full pl-11 pr-4 py-3 bg-surface-container-lowest border border-outline-variant/50 rounded-lg text-sm text-on-surface font-medium placeholder:text-on-surface-variant/40 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                   placeholder="your@email.com">
+                        </div>
+                        @error('email') <p class="text-xs text-error font-semibold mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div>
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label class="block text-xs font-bold text-on-surface-variant">Password</label>
+                            @if (Route::has('password.request'))
+                                <a href="{{ route('password.request') }}" class="text-xs font-bold text-primary hover:underline">Forgot password?</a>
+                            @endif
+                        </div>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px] pointer-events-none">lock</span>
+                            <input :type="showPassword ? 'text' : 'password'" name="password" required
+                                   class="w-full pl-11 pr-11 py-3 bg-surface-container-lowest border border-outline-variant/50 rounded-lg text-sm text-on-surface font-medium placeholder:text-on-surface-variant/40 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                   placeholder="Enter your password">
+                            <button type="button" @click="showPassword = !showPassword"
+                                    class="absolute right-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface transition-colors">
+                                <span class="material-symbols-outlined text-[20px]" x-text="showPassword ? 'visibility_off' : 'visibility'"></span>
+                            </button>
+                        </div>
+                        @error('password') <p class="text-xs text-error font-semibold mt-1">{{ $message }}</p> @enderror
+                    </div>
+
+                    <label class="flex items-center gap-3 cursor-pointer group">
+                        <input type="checkbox" name="remember"
+                               class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary/20 cursor-pointer">
+                        <span class="text-sm font-medium text-on-surface-variant group-hover:text-on-surface transition-colors">Keep me signed in</span>
+                    </label>
+
+                    <button type="submit"
+                            class="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-primary text-on-primary rounded-lg text-sm font-bold shadow-lg hover:opacity-90 transition-all active:scale-[0.98]">
+                        Sign In
+                        <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+                    </button>
+                </form>
+
+                <div class="mt-6 text-center">
+                    <p class="text-sm text-on-surface-variant">
+                        Don't have an account?
+                        <a href="{{ route('register') }}" class="text-primary font-bold hover:underline">Create one</a>
+                    </p>
+                </div>
+
+                <div class="mt-6 pt-5 border-t border-outline-variant/20 flex items-center justify-center gap-6">
+                    <div class="flex items-center gap-1.5 text-xs text-on-surface-variant/60">
+                        <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+                        Secure Data
+                    </div>
+                    <div class="flex items-center gap-1.5 text-xs text-on-surface-variant/60">
+                        <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">support_agent</span>
+                        Local Support
+                    </div>
+                </div>
+
             </div>
-            <div class="relative">
-                <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm pointer-events-none"></i>
-                <input id="password" :type="show ? 'text' : 'password'" name="password" required
-                       class="w-full pl-11 pr-12 py-3.5 rounded-xl border-2 border-slate-200 bg-slate-50 text-slate-900 text-sm font-medium outline-none transition-all focus:border-brand focus:bg-white focus:ring-4 focus:ring-brand/10 placeholder:text-slate-400 placeholder:font-normal"
-                       placeholder="••••••••">
-                <button type="button" @click="show = !show"
-                        class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 transition-colors">
-                    <i :class="show ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye'" class="text-sm"></i>
-                </button>
-            </div>
-            <x-input-error :messages="$errors->get('password')" class="mt-2 text-xs text-red-500 font-semibold" />
         </div>
 
-        {{-- Remember me --}}
-        <label class="flex items-center gap-3 cursor-pointer group">
-            <input id="remember_me" type="checkbox" name="remember"
-                   class="w-4 h-4 rounded border-slate-300 text-brand focus:ring-brand">
-            <span class="text-sm font-medium text-slate-600 group-hover:text-slate-900 transition-colors">Keep me signed in</span>
-        </label>
-
-        {{-- Submit --}}
-        <button type="submit"
-                class="w-full bg-brand text-white py-4 rounded-xl font-black text-sm uppercase tracking-widest hover:bg-brand-dark transition-all shadow-lg shadow-brand/20 active:scale-[0.99]">
-            Sign In &nbsp;<i class="fa-solid fa-arrow-right text-xs"></i>
-        </button>
-    </form>
-
-    {{-- Divider --}}
-    <div class="flex items-center gap-4 my-7">
-        <div class="h-px flex-1 bg-slate-100"></div>
-        <span class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Or</span>
-        <div class="h-px flex-1 bg-slate-100"></div>
     </div>
 
-    <a href="{{ route('register') }}"
-       class="flex items-center justify-center gap-3 w-full py-4 rounded-xl border-2 border-slate-200 text-slate-700 font-bold text-sm hover:border-brand/40 hover:text-brand transition-all group">
-        <i class="fa-solid fa-store text-slate-400 group-hover:text-brand transition-colors text-sm"></i>
-        Create a new account
-    </a>
-
-    <p class="text-center text-[11px] text-slate-400 font-medium mt-6 flex items-center justify-center gap-1.5">
-        <i class="fa-solid fa-shield-halved text-brand"></i>
-        Your data is encrypted and secure on Izifai.
+    <p class="hidden lg:block fixed bottom-4 right-4 text-xs text-on-surface-variant/50 z-10">
+        &copy; {{ date('Y') }} iziFaii &mdash; Cameroon
     </p>
-</x-guest-layout>
+
+@endsection

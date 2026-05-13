@@ -2,7 +2,7 @@
 
 <div {{ $attributes->merge(['class' => 'flex items-center gap-3']) }}>
     <!-- Handcrafted SVG Logo for Pixel-Perfect Scaling -->
-    <svg viewBox="0 0 320 80" class="{{ $class }} w-auto overflow-visible" fill="none"
+    <svg viewBox="0 0 320 80" class="{{ $class }} w-auto overflow-hidden" fill="none"
         xmlns="http://www.w3.org/2000/svg">
         <!-- Shopping Bag Icon -->
         <defs>

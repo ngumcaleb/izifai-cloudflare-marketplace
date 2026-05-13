@@ -6,13 +6,44 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $products = \App\Models\Product::active()->with(['images', 'store', 'savedUsers'])->latest()->paginate(24);
-        $title = "New Arrivals";
-        $description = "Browse the latest wholesale and retail products from verified sellers in Cameroon.";
-        
-        return view('products.index', compact('products', 'title', 'description'));
+        $query = \App\Models\Product::active()->with(['images', 'store', 'savedUsers']);
+
+        if ($request->filled('q')) {
+            $q = $request->q;
+            $keywords = array_filter(explode(' ', $q));
+            $query->where(function($sub) use ($keywords) {
+                foreach ($keywords as $word) {
+                    $sub->orWhere('name', 'LIKE', "%{$word}%")
+                        ->orWhere('description', 'LIKE', "%{$word}%")
+                        ->orWhereHas('category', function($catQuery) use ($word) {
+                            $catQuery->where('name', 'LIKE', "%{$word}%");
+                        })
+                        ->orWhereHas('store', function($storeQuery) use ($word) {
+                            $storeQuery->where('name', 'LIKE', "%{$word}%")
+                                       ->orWhere('location', 'LIKE', "%{$word}%");
+                        });
+                }
+            });
+            $title = "Search: " . $q;
+            $description = "Search results for \"" . $q . "\" — Browse products from verified sellers.";
+        } else {
+            $title = "New Arrivals";
+            $description = "Browse the latest wholesale and retail products from verified sellers in Cameroon.";
+        }
+
+        $products = $query->latest()->paginate(24)->withQueryString();
+
+        $savedProductIds = [];
+        if (auth()->check()) {
+            $savedProductIds = \App\Models\SavedProduct::where('user_id', auth()->id())
+                ->whereIn('product_id', $products->pluck('id'))
+                ->pluck('product_id')
+                ->toArray();
+        }
+
+        return view('products.index', compact('products', 'title', 'description', 'savedProductIds'));
     }
 
     public function localSourcing(Request $request)
@@ -25,14 +56,22 @@ class ProductController extends Controller
             });
         }
 
-        $products = $query->latest()->paginate(24);
+        $products = $query->latest()->paginate(24)->withQueryString();
         
         $cities = \App\Models\Store::whereNotNull('location')->distinct()->pluck('location');
         
         $title = $request->city ? "Local Sourcing in " . $request->city : "Local Sourcing";
         $description = "Connect with suppliers in your immediate area for faster logistics and communication.";
 
-        return view('products.index', compact('products', 'title', 'description', 'cities'));
+        $savedProductIds = [];
+        if (auth()->check()) {
+            $savedProductIds = \App\Models\SavedProduct::where('user_id', auth()->id())
+                ->whereIn('product_id', $products->pluck('id'))
+                ->pluck('product_id')
+                ->toArray();
+        }
+
+        return view('products.index', compact('products', 'title', 'description', 'cities', 'savedProductIds'));
     }
     public function search(Request $request)
     {
@@ -103,12 +142,20 @@ class ProductController extends Controller
             $query->where('price', '<=', $maxPrice);
         }
 
-        $products = $query->latest()->paginate(24);
+        $products = $query->latest()->paginate(24)->withQueryString();
 
         $title = ($q ? "Search: " . $q : "Products") . ($city ? " in " . $city : "");
         $description = "Found " . $products->total() . " products matching your criteria.";
 
-        return view('products.index', compact('products', 'title', 'description'));
+        $savedProductIds = [];
+        if (auth()->check()) {
+            $savedProductIds = \App\Models\SavedProduct::where('user_id', auth()->id())
+                ->whereIn('product_id', $products->pluck('id'))
+                ->pluck('product_id')
+                ->toArray();
+        }
+
+        return view('products.index', compact('products', 'title', 'description', 'savedProductIds'));
     }
 
     public function show($slug)
@@ -118,6 +165,9 @@ class ProductController extends Controller
         $product->logEvent('view');
 
         $store = $product->store;
+
+        // Store total products count
+        $totalProducts = $store->products()->count();
 
         // Reviews
         $reviews = $store->reviews()->with('user')->latest()->get();
@@ -160,7 +210,7 @@ class ProductController extends Controller
         }
 
         return view('products.show', compact(
-            'product', 'store', 'reviews', 'avgRating', 'totalReviews',
+            'product', 'store', 'reviews', 'avgRating', 'totalReviews', 'totalProducts',
             'storeProducts', 'topProducts', 'savedProductIds'
         ));
     }
@@ -237,6 +287,34 @@ class ProductController extends Controller
         $results = collect()->concat($categories)->concat($stores)->concat($products);
 
         return response()->json($results);
+    }
+
+    public function autocompleteJson(Request $request)
+    {
+        $q = $request->query('q');
+        if (!$q || strlen($q) < 2) {
+            return response()->json([]);
+        }
+
+        $products = \App\Models\Product::active()->with('images')
+            ->where(function ($query) use ($q) {
+                $query->where('name', 'LIKE', "%{$q}%")
+                      ->orWhere('description', 'LIKE', "%{$q}%");
+            })
+            ->latest()
+            ->take(6)
+            ->get()
+            ->map(fn($p) => [
+                'id'       => $p->id,
+                'name'     => $p->name,
+                'slug'     => $p->slug,
+                'price'    => $p->price,
+                'old_price' => $p->old_price,
+                'image'    => $p->images->first()?->path,
+                'category' => $p->category?->name,
+            ]);
+
+        return response()->json($products);
     }
 
     public function logContact(Request $request, \App\Models\Product $product)

@@ -70,7 +70,7 @@
         <div class="flex items-center justify-between">
             <p class="text-[9px] font-bold text-slate-400 uppercase tracking-tight">{{ $product->category->name ?? 'Global' }}</p>
             <!-- Rating -->
-            <div class="flex items-center gap-0.5 text-amber-400">
+            <div class="flex items-center gap-0.5 text-orange-500">
                 <i class="fa-solid fa-star text-[8px]"></i>
                 <span class="text-[9px] font-bold text-slate-400">4.8</span>
             </div>
