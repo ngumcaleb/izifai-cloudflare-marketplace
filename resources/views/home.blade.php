@@ -2,10 +2,6 @@
 
 @section('title', 'Izifai — Buy and Sell in Cameroon')
 @section('description', 'Izifai connects you with trusted sellers across Cameroon. Browse, message, and buy — all from one link.')
-@section('og_title', 'Izifai — Buy and Sell in Cameroon')
-@section('og_description', 'Izifai connects you with trusted sellers across Cameroon. Browse, message, and buy — all from one link.')
-@section('twitter_title', 'Izifai — Buy and Sell in Cameroon')
-@section('twitter_description', 'Izifai connects you with trusted sellers across Cameroon. Browse, message, and buy — all from one link.')
 
 @push('styles')
 <style>
@@ -632,21 +628,5 @@
             @endauth
         });
     });
-</script>
-<script type="application/ld+json">
-{
-    "@@context": "https://schema.org",
-    "@@type": "WebSite",
-    "name": "Izifai",
-    "url": "{{ url('/') }}",
-    "potentialAction": {
-        "@@type": "SearchAction",
-        "target": {
-            "@@type": "EntryPoint",
-            "urlTemplate": "{{ url('/products/search?q={search_term_string}') }}"
-        },
-        "query-input": "required name=search_term_string"
-    }
-}
 </script>
 @endpush
