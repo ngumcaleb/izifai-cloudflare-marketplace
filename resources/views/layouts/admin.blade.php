@@ -103,6 +103,12 @@
                     <span class="text-[12px] font-semibold">Inventory</span>
                 </a>
 
+                <a href="{{ route('admin.categories.index') }}" 
+                   class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.categories.*') ? 'sidebar-active text-white shadow-lg shadow-black/10' : 'text-slate-400 hover:text-white hover:bg-white/5' }}">
+                    <i data-lucide="folder-tree" class="w-4 h-4"></i>
+                    <span class="text-[12px] font-semibold">Categories</span>
+                </a>
+
                 <a href="{{ route('admin.ads.index') }}" 
                    class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.ads.*') ? 'sidebar-active text-white shadow-lg shadow-black/10' : 'text-slate-400 hover:text-white hover:bg-white/5' }}">
                     <i data-lucide="megaphone" class="w-4 h-4"></i>

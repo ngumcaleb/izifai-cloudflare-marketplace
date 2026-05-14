@@ -12,15 +12,41 @@ class HomeController extends Controller
         })->count();
         $verifiedStores = \App\Models\Store::where('status', 'active')->where('is_verified', true)->count();
 
-        $featuredProducts = \App\Models\Product::active()
-            ->with(['images', 'store'])
-            ->whereHas('store', function ($q) {
-                $q->where('status', 'active');
-            })
-            ->latest()
-            ->take(4)
+        $categories = \App\Models\Category::whereHas('products', function ($q) {
+            $q->whereHas('store', fn($sq) => $sq->where('status', 'active'));
+        })->withCount(['products' => function ($q) {
+            $q->whereHas('store', fn($sq) => $sq->where('status', 'active'));
+        }])->orderBy('name')->get();
+
+        $products = \App\Models\Product::active()
+            ->with(['images', 'store', 'category', 'savedUsers'])
+            ->inRandomOrder()
+            ->take(12)
             ->get();
 
-        return view('home', compact('totalStores', 'totalProducts', 'verifiedStores', 'featuredProducts'));
+        $stores = \App\Models\Store::where('status', 'active')
+            ->with(['products' => function ($q) {
+                $q->with('images')->latest()->take(1);
+            }])
+            ->inRandomOrder()
+            ->take(6)
+            ->get();
+
+        $featuredStore = \App\Models\Store::where('status', 'active')
+            ->with(['products' => function ($q) {
+                $q->with('images')->latest()->take(4);
+            }])
+            ->inRandomOrder()
+            ->first();
+
+        $savedProductIds = auth()->check()
+            ? \App\Models\SavedProduct::where('user_id', auth()->id())->pluck('product_id')->toArray()
+            : [];
+
+        return view('home', compact(
+            'totalStores', 'totalProducts', 'verifiedStores',
+            'categories', 'products', 'stores',
+            'featuredStore', 'savedProductIds'
+        ));
     }
 }

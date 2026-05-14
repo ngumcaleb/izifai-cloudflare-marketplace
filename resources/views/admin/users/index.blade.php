@@ -55,6 +55,7 @@
                     <thead class="bg-slate-50/50">
                         <tr>
                             <th class="px-6 py-4 text-[9px] font-bold text-slate-400 uppercase tracking-widest">Identity</th>
+                            <th class="px-6 py-4 text-[9px] font-bold text-slate-400 uppercase tracking-widest">Contact</th>
                             <th class="px-6 py-4 text-[9px] font-bold text-slate-400 uppercase tracking-widest">Role</th>
                             <th class="px-6 py-4 text-[9px] font-bold text-slate-400 uppercase tracking-widest">Status</th>
                             <th class="px-6 py-4 text-[9px] font-bold text-slate-400 uppercase tracking-widest">Business</th>
@@ -76,6 +77,16 @@
                                 </div>
                             </td>
                             <td class="px-6 py-4">
+                                @if($user->phone)
+                                    <span class="text-[11px] font-medium text-slate-600 flex items-center gap-1">
+                                        <i data-lucide="phone" class="w-3 h-3 text-slate-400"></i>
+                                        {{ $user->phone }}
+                                    </span>
+                                @else
+                                    <span class="text-[10px] text-slate-400 italic">—</span>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4">
                                 @if($user->role === 'admin')
                                     <span class="px-2 py-0.5 bg-rose-50 text-rose-600 text-[8px] font-bold uppercase rounded border border-rose-100">Admin</span>
                                 @elseif($user->role === 'seller')
@@ -93,9 +104,12 @@
                             </td>
                             <td class="px-6 py-4">
                                 @if($user->store)
-                                    <span class="text-[11px] font-bold text-navy-800">{{ $user->store->name }}</span>
+                                    <div>
+                                        <span class="text-[11px] font-bold text-navy-800">{{ $user->store->name }}</span>
+                                        <p class="text-[9px] text-slate-400 mt-0.5">{{ $user->store->products_count ?? 0 }} products</p>
+                                    </div>
                                 @else
-                                    <span class="text-[10px] text-slate-400 italic">None</span>
+                                    <span class="text-[10px] text-slate-400 italic">—</span>
                                 @endif
                             </td>
                             <td class="px-6 py-4 text-right">
@@ -120,7 +134,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="5" class="px-6 py-20 text-center text-slate-400 italic text-sm">No users found in database.</td>
+                            <td colspan="6" class="px-6 py-20 text-center text-slate-400 italic text-sm">No users found in database.</td>
                         </tr>
                         @endforelse
                     </tbody>

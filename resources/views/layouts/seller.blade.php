@@ -10,6 +10,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 
     <script>
         tailwind.config = {
@@ -73,28 +74,44 @@
     </script>
 
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f4fcf1; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fafcfa; }
         .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
         [x-cloak] { display: none !important; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        @keyframes reveal { 0% { opacity: 0; transform: translateY(24px) scale(0.98); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+        @keyframes fadeIn { 0% { opacity: 0; } 100% { opacity: 1; } }
+        @keyframes slideDown { 0% { opacity: 0; transform: translateY(-8px); } 100% { opacity: 1; transform: translateY(0); } }
+        @keyframes scaleIn { 0% { opacity: 0; transform: scale(0.95); } 100% { opacity: 1; transform: scale(1); } }
+
+        .animate-reveal { animation: reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .animate-fade-in { animation: fadeIn 0.6s ease forwards; }
+        .animate-slide-down { animation: slideDown 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .animate-scale-in { animation: scaleIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        .header-scrolled { background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(0,0,0,0.04); }
+        .header-top { background: transparent; border-bottom: 1px solid transparent; }
+
+        ::selection { background: rgba(0, 109, 56, 0.15); color: #003317; }
     </style>
     @stack('styles')
 </head>
-<body class="text-on-surface" x-data="{ sidebarOpen: false }">
+<body class="text-gray-900 antialiased" x-data="{ sidebarOpen: false }">
 
     @php $sellerUser = auth()->user(); $sellerStore = $sellerUser->store; @endphp
 
     <!-- Mobile Overlay -->
     <div x-show="sidebarOpen" x-cloak
          @click="sidebarOpen = false"
-         class="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm lg:hidden transition-opacity"
+         class="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm lg:hidden transition-opacity"
          x-transition:enter="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="opacity-100" x-transition:leave-end="opacity-0">
     </div>
 
     <!-- Mobile Sidebar -->
     <aside x-show="sidebarOpen" x-cloak
-           class="fixed left-0 top-0 h-dvh w-sidebar-width z-50 bg-surface flex flex-col transition-transform duration-300 lg:translate-x-0 shadow-[0px_4px_20px_rgba(0,0,0,0.05)]"
+           class="fixed left-0 top-0 h-dvh w-sidebar-width z-50 bg-white flex flex-col transition-transform duration-300 lg:translate-x-0 shadow-lg border-r border-gray-100"
            :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
            style="transition-property: transform;"
            @click.away="sidebarOpen = false">
@@ -121,71 +138,71 @@
             </div>
         </div>
 
-        <div class="pt-6 lg:pt-8 px-3 lg:px-4 pb-2 lg:pb-3 border-b border-outline-variant/10 shrink-0">
-            <h2 class="text-xs lg:text-sm font-bold text-on-surface truncate">{{ $sellerStore ? $sellerStore->name : 'My Store' }}</h2>
+        <div class="pt-8 px-4 pb-3 border-b border-gray-100 shrink-0">
+            <h2 class="text-sm font-bold text-gray-900 truncate">{{ $sellerStore ? $sellerStore->name : 'My Store' }}</h2>
             <div class="flex flex-wrap items-center gap-1.5 mt-0.5">
-                <span class="inline-flex items-center gap-0.5 text-[9px] lg:text-[10px] font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded-full">
-                    <span class="material-symbols-outlined text-[10px] lg:text-[11px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+                <span class="inline-flex items-center gap-0.5 text-[10px] font-bold text-primary bg-primary/5 px-1.5 py-0.5 rounded-full">
+                    <span class="material-symbols-outlined text-[11px]" style="font-variation-settings: 'FILL' 1;">verified</span>
                     Seller
                 </span>
-                <span class="text-[9px] lg:text-[10px] text-on-surface-variant">{{ $sellerStore ? $sellerStore->products()->count() : 0 }} products</span>
+                <span class="text-[10px] text-gray-500">{{ $sellerStore ? $sellerStore->products()->count() : 0 }} products</span>
             </div>
         </div>
 
-        <nav class="flex-1 min-h-0 overflow-y-auto py-2 lg:py-3 px-2 lg:px-3 space-y-0.5">
+        <nav class="flex-1 min-h-0 overflow-y-auto py-3 px-3 space-y-0.5">
             @php $isDashboard = request()->routeIs('seller.dashboard'); @endphp
             <a href="{{ route('seller.dashboard') }}"
-               class="flex items-center gap-2.5 lg:gap-3 px-2.5 lg:px-3 py-2 lg:py-2.5 rounded-lg text-xs lg:text-sm font-semibold transition-all duration-200 {{ $isDashboard ? 'text-primary bg-primary/5 border-l-[3px] border-primary' : 'text-on-surface-variant hover:text-primary hover:bg-surface-container-higher font-medium' }}">
-                <span class="material-symbols-outlined text-[18px] lg:text-[20px]" style="font-variation-settings: 'FILL' {{ $isDashboard ? '1' : '0' }};">home</span>
+               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isDashboard ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
+                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isDashboard ? '1' : '0' }};">home</span>
                 My Shop Home
             </a>
             @php $isProducts = request()->routeIs('seller.products.*'); @endphp
             <a href="{{ route('seller.products.index') }}"
-               class="flex items-center gap-2.5 lg:gap-3 px-2.5 lg:px-3 py-2 lg:py-2.5 rounded-lg text-xs lg:text-sm font-semibold transition-all duration-200 {{ $isProducts ? 'text-primary bg-primary/5 border-l-[3px] border-primary' : 'text-on-surface-variant hover:text-primary hover:bg-surface-container-higher font-medium' }}">
-                <span class="material-symbols-outlined text-[18px] lg:text-[20px]" style="font-variation-settings: 'FILL' {{ $isProducts ? '1' : '0' }};">inventory_2</span>
+               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isProducts ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
+                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isProducts ? '1' : '0' }};">inventory_2</span>
                 All My Items
             </a>
             @php $isAds = request()->routeIs('seller.ads.*'); @endphp
             <a href="{{ route('seller.ads.index') }}"
-               class="flex items-center gap-2.5 lg:gap-3 px-2.5 lg:px-3 py-2 lg:py-2.5 rounded-lg text-xs lg:text-sm font-semibold transition-all duration-200 {{ $isAds ? 'text-primary bg-primary/5 border-l-[3px] border-primary' : 'text-on-surface-variant hover:text-primary hover:bg-surface-container-higher font-medium' }}">
-                <span class="material-symbols-outlined text-[18px] lg:text-[20px]" style="font-variation-settings: 'FILL' {{ $isAds ? '1' : '0' }};">campaign</span>
+               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isAds ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
+                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isAds ? '1' : '0' }};">campaign</span>
                 Promote Items
             </a>
             @php $isReviews = request()->routeIs('seller.reviews'); @endphp
             <a href="{{ route('seller.reviews') }}"
-               class="flex items-center gap-2.5 lg:gap-3 px-2.5 lg:px-3 py-2 lg:py-2.5 rounded-lg text-xs lg:text-sm font-semibold transition-all duration-200 {{ $isReviews ? 'text-primary bg-primary/5 border-l-[3px] border-primary' : 'text-on-surface-variant hover:text-primary hover:bg-surface-container-higher font-medium' }}">
-                <span class="material-symbols-outlined text-[18px] lg:text-[20px]" style="font-variation-settings: 'FILL' {{ $isReviews ? '1' : '0' }};">reviews</span>
+               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isReviews ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
+                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isReviews ? '1' : '0' }};">reviews</span>
                 Customer Reviews
             </a>
             @php $isSettings = request()->routeIs('seller.store.settings'); @endphp
             <a href="{{ route('seller.store.settings') }}"
-               class="flex items-center gap-2.5 lg:gap-3 px-2.5 lg:px-3 py-2 lg:py-2.5 rounded-lg text-xs lg:text-sm font-semibold transition-all duration-200 {{ $isSettings ? 'text-primary bg-primary/5 border-l-[3px] border-primary' : 'text-on-surface-variant hover:text-primary hover:bg-surface-container-higher font-medium' }}">
-                <span class="material-symbols-outlined text-[18px] lg:text-[20px]" style="font-variation-settings: 'FILL' {{ $isSettings ? '1' : '0' }};">settings</span>
+               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isSettings ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
+                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isSettings ? '1' : '0' }};">settings</span>
                 Store Settings
             </a>
         </nav>
 
-        <div class="px-2 lg:px-3 py-2 lg:py-3 border-t border-outline-variant/10 space-y-0.5 lg:space-y-1 shrink-0">
-            <div class="flex items-center gap-2 lg:gap-3 px-2.5 lg:px-3 py-2 lg:py-2.5 rounded-lg bg-surface-container/50">
-                <div class="w-7 h-7 lg:w-8 lg:h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-[10px] lg:text-xs shrink-0">
+        <div class="px-3 py-3 border-t border-gray-100 space-y-1 shrink-0">
+            <div class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-gray-50/50">
+                <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs shrink-0">
                     {{ substr($sellerUser->name, 0, 1) }}
                 </div>
                 <div class="min-w-0 flex-1">
-                    <p class="text-[10px] lg:text-xs font-bold text-on-surface truncate">{{ $sellerUser->name }}</p>
-                    <p class="text-[9px] lg:text-[10px] text-primary font-medium">Verified Seller</p>
+                    <p class="text-xs font-bold text-gray-900 truncate">{{ $sellerUser->name }}</p>
+                    <p class="text-[10px] font-medium text-primary">Verified Seller</p>
                 </div>
             </div>
             @if($sellerStore)
                 <a href="{{ route('stores.show', $sellerStore->slug) }}" target="_blank"
-                   class="flex items-center gap-2 lg:gap-3 px-2.5 lg:px-3 py-1.5 lg:py-2 rounded-lg text-[10px] lg:text-xs font-medium text-on-surface-variant hover:text-primary hover:bg-surface-container-higher transition-all duration-200">
-                    <span class="material-symbols-outlined text-[16px] lg:text-[18px]">storefront</span>
+                   class="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium text-gray-500 hover:text-primary hover:bg-gray-50 transition-all duration-200">
+                    <span class="material-symbols-outlined text-[18px]">storefront</span>
                     View My Public Store
                 </a>
             @endif
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit" class="w-full flex items-center gap-2 lg:gap-3 px-2.5 lg:px-3 py-1.5 lg:py-2 rounded-lg text-[10px] lg:text-xs font-medium text-error hover:bg-error-container/20 transition-all duration-200">
-                    <span class="material-symbols-outlined text-[16px] lg:text-[18px]">logout</span>
+                <button type="submit" class="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium text-red-600 hover:bg-red-50 transition-all duration-200">
+                    <span class="material-symbols-outlined text-[18px]">logout</span>
                     Logout
                 </button>
             </form>
@@ -193,7 +210,7 @@
     </aside>
 
     <!-- Desktop Sidebar -->
-    <aside class="fixed left-0 top-0 h-dvh w-sidebar-width z-30 bg-surface flex-col hidden lg:flex shadow-[0px_4px_20px_rgba(0,0,0,0.05)]">
+    <aside class="fixed left-0 top-0 h-dvh w-sidebar-width z-30 bg-white flex-col hidden lg:flex shadow-lg border-r border-gray-100">
         <div class="relative h-24 shrink-0">
             @if($sellerStore && $sellerStore->banner)
                 <img src="{{ asset('storage/' . $sellerStore->banner) }}" class="w-full h-full object-cover">
@@ -214,70 +231,70 @@
             </div>
         </div>
 
-        <div class="pt-8 px-4 pb-3 border-b border-outline-variant/10 shrink-0">
-            <h2 class="text-sm font-bold text-on-surface truncate">{{ $sellerStore ? $sellerStore->name : 'My Store' }}</h2>
+        <div class="pt-8 px-4 pb-3 border-b border-gray-100 shrink-0">
+            <h2 class="text-sm font-bold text-gray-900 truncate">{{ $sellerStore ? $sellerStore->name : 'My Store' }}</h2>
             <div class="flex flex-wrap items-center gap-1.5 mt-0.5">
-                <span class="inline-flex items-center gap-0.5 text-[10px] font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded-full">
+                <span class="inline-flex items-center gap-0.5 text-[10px] font-bold text-primary bg-primary/5 px-1.5 py-0.5 rounded-full">
                     <span class="material-symbols-outlined text-[11px]" style="font-variation-settings: 'FILL' 1;">verified</span>
                     Seller
                 </span>
-                <span class="text-[10px] text-on-surface-variant">{{ $sellerStore ? $sellerStore->products()->count() : 0 }} products</span>
+                <span class="text-[10px] text-gray-500">{{ $sellerStore ? $sellerStore->products()->count() : 0 }} products</span>
             </div>
         </div>
 
         <nav class="flex-1 min-h-0 overflow-y-auto py-3 px-3 space-y-0.5">
             @php $isDashboard = request()->routeIs('seller.dashboard'); @endphp
             <a href="{{ route('seller.dashboard') }}"
-               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 {{ $isDashboard ? 'text-primary bg-primary/5 border-l-[3px] border-primary' : 'text-on-surface-variant hover:text-primary hover:bg-surface-container-higher font-medium' }}">
+               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isDashboard ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
                 <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isDashboard ? '1' : '0' }};">home</span>
                 My Shop Home
             </a>
             @php $isProducts = request()->routeIs('seller.products.*'); @endphp
             <a href="{{ route('seller.products.index') }}"
-               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 {{ $isProducts ? 'text-primary bg-primary/5 border-l-[3px] border-primary' : 'text-on-surface-variant hover:text-primary hover:bg-surface-container-higher font-medium' }}">
+               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isProducts ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
                 <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isProducts ? '1' : '0' }};">inventory_2</span>
                 All My Items
             </a>
             @php $isAds = request()->routeIs('seller.ads.*'); @endphp
             <a href="{{ route('seller.ads.index') }}"
-               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 {{ $isAds ? 'text-primary bg-primary/5 border-l-[3px] border-primary' : 'text-on-surface-variant hover:text-primary hover:bg-surface-container-higher font-medium' }}">
+               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isAds ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
                 <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isAds ? '1' : '0' }};">campaign</span>
                 Promote Items
             </a>
             @php $isReviews = request()->routeIs('seller.reviews'); @endphp
             <a href="{{ route('seller.reviews') }}"
-               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 {{ $isReviews ? 'text-primary bg-primary/5 border-l-[3px] border-primary' : 'text-on-surface-variant hover:text-primary hover:bg-surface-container-higher font-medium' }}">
+               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isReviews ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
                 <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isReviews ? '1' : '0' }};">reviews</span>
                 Customer Reviews
             </a>
             @php $isSettings = request()->routeIs('seller.store.settings'); @endphp
             <a href="{{ route('seller.store.settings') }}"
-               class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 {{ $isSettings ? 'text-primary bg-primary/5 border-l-[3px] border-primary' : 'text-on-surface-variant hover:text-primary hover:bg-surface-container-higher font-medium' }}">
+               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isSettings ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
                 <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isSettings ? '1' : '0' }};">settings</span>
                 Store Settings
             </a>
         </nav>
 
-        <div class="px-3 py-3 border-t border-outline-variant/10 space-y-1 shrink-0">
-            <div class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-surface-container/50">
-                <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-xs shrink-0">
+        <div class="px-3 py-3 border-t border-gray-100 space-y-1 shrink-0">
+            <div class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-gray-50/50">
+                <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs shrink-0">
                     {{ substr($sellerUser->name, 0, 1) }}
                 </div>
                 <div class="min-w-0 flex-1">
-                    <p class="text-xs font-bold text-on-surface truncate">{{ $sellerUser->name }}</p>
-                    <p class="text-[10px] text-primary font-medium">Verified Seller</p>
+                    <p class="text-xs font-bold text-gray-900 truncate">{{ $sellerUser->name }}</p>
+                    <p class="text-[10px] font-medium text-primary">Verified Seller</p>
                 </div>
             </div>
             @if($sellerStore)
                 <a href="{{ route('stores.show', $sellerStore->slug) }}" target="_blank"
-                   class="flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-on-surface-variant hover:text-primary hover:bg-surface-container-higher transition-all duration-200">
+                   class="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium text-gray-500 hover:text-primary hover:bg-gray-50 transition-all duration-200">
                     <span class="material-symbols-outlined text-[18px]">storefront</span>
                     View My Public Store
                 </a>
             @endif
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-medium text-error hover:bg-error-container/20 transition-all duration-200">
+                <button type="submit" class="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium text-red-600 hover:bg-red-50 transition-all duration-200">
                     <span class="material-symbols-outlined text-[18px]">logout</span>
                     Logout
                 </button>
@@ -287,44 +304,43 @@
 
     <!-- Main Content -->
     <main class="lg:ml-sidebar-width min-h-screen">
-        <header class="h-header-height flex items-center justify-between px-4 md:px-xl bg-surface/80 backdrop-blur-md sticky top-0 z-30 border-b border-outline-variant/20 lg:border-0">
-            <div class="flex items-center gap-2">
-                <button @click="sidebarOpen = !sidebarOpen" class="lg:hidden p-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors">
-                    <span class="material-symbols-outlined" x-show="!sidebarOpen">menu</span>
-                    <span class="material-symbols-outlined" x-show="sidebarOpen" x-cloak>close</span>
+        <header class="header-scrolled h-16 lg:h-[72px] flex items-center justify-between px-4 md:px-6 sticky top-0 z-30">
+            <div class="flex items-center gap-3">
+                <button @click="sidebarOpen = !sidebarOpen" class="lg:hidden w-9 h-9 flex items-center justify-center rounded-xl text-gray-500 hover:text-primary hover:bg-black/5 transition-all active:scale-90">
+                    <span class="material-symbols-outlined text-[20px]" x-show="!sidebarOpen">menu</span>
+                    <span class="material-symbols-outlined text-[20px]" x-show="sidebarOpen" x-cloak>close</span>
                 </button>
-                <div class="hidden sm:flex items-center bg-surface-container-low px-4 py-2 rounded-full w-56 md:w-72 lg:w-96">
-                    <span class="material-symbols-outlined text-on-surface-variant mr-2">search</span>
-                    <input class="bg-transparent border-none focus:ring-0 text-body-md w-full p-0 placeholder:text-on-surface-variant/50" placeholder="Search..." type="text">
-                </div>
+                <a href="/" class="shrink-0 transition-opacity hover:opacity-80">
+                    <x-application-logo class="h-7 sm:h-[30px]" />
+                </a>
+                <span class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/5 text-primary text-[10px] font-bold">
+                    <span class="w-1.5 h-1.5 rounded-full bg-primary-fixed-dim"></span>
+                    Seller Center
+                </span>
             </div>
-            <div class="flex items-center gap-2 md:gap-md">
-                <button class="relative p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors">
-                    <span class="material-symbols-outlined">notifications</span>
-                    <span class="absolute top-1 right-1 w-2 h-2 bg-error rounded-full"></span>
-                </button>
+            <div class="flex items-center gap-2">
                 <a href="{{ route('seller.products.create') }}"
-                   class="bg-primary text-white px-4 md:px-6 py-2 md:py-2.5 rounded-full font-label-lg flex items-center gap-1 md:gap-2 hover:opacity-90 transition-opacity text-sm md:text-base">
-                    <span class="material-symbols-outlined text-[18px] md:text-[20px]">add</span>
-                    <span class="hidden md:inline">New Product Link</span>
+                   class="bg-primary text-white px-4 md:px-5 py-2 rounded-xl text-[13px] font-bold flex items-center gap-1.5 hover:opacity-90 active:scale-[0.97] transition-all shadow-sm">
+                    <span class="material-symbols-outlined text-[18px]">add</span>
+                    <span class="hidden md:inline">New Product</span>
                 </a>
             </div>
         </header>
 
-        <div class="p-4 md:p-xl max-w-7xl mx-auto space-y-4 md:space-y-grid-gutter">
+        <div class="px-4 md:px-6 py-4 md:py-6 max-w-7xl mx-auto space-y-4 md:space-y-6">
             @yield('content')
         </div>
 
-        <footer class="w-full py-xl mt-auto bg-surface-container-low">
-            <div class="flex flex-col md:flex-row justify-between items-center px-lg max-w-7xl mx-auto gap-md">
-                <div class="flex flex-col gap-1">
-                    <span class="text-headline-md text-on-surface">IZIFAI</span>
-                    <p class="text-body-md text-on-surface-variant">© {{ date('Y') }} IZIFAI. SIMPLIFY YOUR SHOPPING. All rights reserved.</p>
+        <footer class="w-full py-8 mt-auto bg-white border-t border-gray-100">
+            <div class="flex flex-col md:flex-row justify-between items-center px-4 md:px-6 max-w-7xl mx-auto gap-4">
+                <div class="flex flex-col gap-1.5">
+                    <a href="/" class="transition-opacity hover:opacity-80"><x-application-logo class="h-7" /></a>
+                    <p class="text-xs text-gray-400">© {{ date('Y') }} IZIFAI. Simplify Your Shopping.</p>
                 </div>
-                <div class="flex gap-lg">
-                    <a class="text-label-md text-on-surface-variant hover:text-primary underline underline-offset-4" href="#">Help Center</a>
-                    <a class="text-label-md text-on-surface-variant hover:text-primary underline underline-offset-4" href="#">Terms of Service</a>
-                    <a class="text-label-md text-on-surface-variant hover:text-primary underline underline-offset-4" href="#">Privacy Policy</a>
+                <div class="flex items-center gap-4">
+                    <a class="text-[11px] font-semibold text-gray-400 hover:text-primary transition-colors" href="#">Help Center</a>
+                    <a class="text-[11px] font-semibold text-gray-400 hover:text-primary transition-colors" href="#">Terms</a>
+                    <a class="text-[11px] font-semibold text-gray-400 hover:text-primary transition-colors" href="#">Privacy</a>
                 </div>
             </div>
         </footer>

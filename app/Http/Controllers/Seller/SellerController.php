@@ -32,6 +32,7 @@ class SellerController extends Controller
         $store = $this->getOrCreateStore();
         $products = $store->products()->with(['images', 'category'])->latest()->get();
         $user = auth()->user();
+        $productIds = $store->products()->pluck('id');
         
         $adRequests = \App\Models\AdvertisementRequest::with('product')
             ->where('store_id', $store->id)
@@ -43,10 +44,29 @@ class SellerController extends Controller
             'daily_views' => \App\Models\ProductEvent::where('store_id', $store->id)->where('type', 'view')->where('created_at', '>=', now()->startOfDay())->count(),
             'total_contacts' => \App\Models\ProductEvent::where('store_id', $store->id)->whereIn('type', ['whatsapp_click', 'call_click'])->count(),
             'daily_contacts' => \App\Models\ProductEvent::where('store_id', $store->id)->whereIn('type', ['whatsapp_click', 'call_click'])->where('created_at', '>=', now()->startOfDay())->count(),
-            'saved_count' => \App\Models\SavedProduct::whereIn('product_id', $store->products()->pluck('id'))->count(),
+            'saved_count' => \App\Models\SavedProduct::whereIn('product_id', $productIds)->count(),
         ];
 
-        return view('seller.dashboard', compact('store', 'products', 'user', 'adRequests', 'stats'));
+        $mostViewed = $store->products()->with(['images', 'category'])->orderBy('views', 'desc')->take(5)->get();
+
+        $mostContacted = \App\Models\ProductEvent::whereIn('product_id', $productIds)
+            ->whereIn('type', ['whatsapp_click', 'call_click'])
+            ->selectRaw('product_id, count(*) as total')
+            ->groupBy('product_id')
+            ->orderByDesc('total')
+            ->take(5)
+            ->get()
+            ->load('product.images');
+
+        $mostSaved = \App\Models\SavedProduct::whereIn('product_id', $productIds)
+            ->selectRaw('product_id, count(*) as total')
+            ->groupBy('product_id')
+            ->orderByDesc('total')
+            ->take(5)
+            ->get()
+            ->load('product.images');
+
+        return view('seller.dashboard', compact('store', 'products', 'user', 'adRequests', 'stats', 'mostViewed', 'mostContacted', 'mostSaved'));
     }
 
     public function storeSettings()

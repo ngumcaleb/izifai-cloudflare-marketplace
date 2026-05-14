@@ -47,11 +47,11 @@
                 </div>
                 <div class="flex items-start gap-4 p-4 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10">
                     <div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center shrink-0">
-                        <span class="material-symbols-outlined text-on-primary-container text-[22px]" style="font-variation-settings: 'FILL' 1;">support_agent</span>
+                        <span class="material-symbols-outlined text-on-primary-container text-[22px]" style="font-variation-settings: 'FILL' 1;">call</span>
                     </div>
                     <div>
-                        <p class="text-sm font-bold text-on-primary">Local support</p>
-                        <p class="text-xs text-on-primary/70 mt-0.5">We're here to help. Reach out anytime via WhatsApp or email.</p>
+                        <p class="text-sm font-bold text-on-primary">Login with WhatsApp</p>
+                        <p class="text-xs text-on-primary/70 mt-0.5">Use your registered WhatsApp number to sign in. No email needed.</p>
                     </div>
                 </div>
             </div>
@@ -65,14 +65,26 @@
     {{-- RIGHT: FORM PANEL --}}
     <div class="flex-1 flex flex-col min-h-dvh lg:min-h-screen bg-surface-container-lowest lg:bg-surface-container-lowest">
 
-        <div class="lg:hidden flex items-center gap-3 px-6 py-5 border-b border-outline-variant/20 bg-surface">
-            <a href="/"><x-application-logo class="h-7" /></a>
+        {{-- Mobile: Hero with background --}}
+        <div class="lg:hidden relative overflow-hidden bg-gradient-to-br from-[#00210d] via-[#003317] to-[#005228] px-6 pt-5 pb-8">
+            <div class="absolute top-[-60px] right-[-60px] w-40 h-40 rounded-full bg-white/5 blur-2xl"></div>
+            <div class="absolute bottom-[-40px] left-[-40px] w-48 h-48 rounded-full bg-white/5 blur-2xl"></div>
+            <a href="/" class="relative z-10 inline-block mb-5">
+                <x-application-logo class="h-7 w-auto brightness-0 invert" />
+            </a>
+            <div class="relative z-10 flex items-center gap-3">
+                <span class="text-3xl leading-none">🇨🇲</span>
+                <div>
+                    <p class="text-sm font-bold text-white">Welcome Back to Your Store</p>
+                    <p class="text-xs text-white/70">Cameroon's marketplace — manage your catalog, track sales, grow your business.</p>
+                </div>
+            </div>
         </div>
 
-        <div class="flex-1 flex items-center justify-center px-5 py-10 lg:py-0">
+        <div class="flex-1 flex items-center justify-center px-5 py-6 lg:py-0">
             <div class="w-full max-w-md">
 
-                <div class="mb-8">
+                <div class="hidden lg:block mb-8">
                     <h1 class="text-2xl font-black text-on-surface tracking-tight">Welcome back</h1>
                     <p class="text-sm text-on-surface-variant mt-1">Sign in to your account to continue.</p>
                 </div>
@@ -87,12 +99,12 @@
                     @csrf
 
                     <div>
-                        <label class="block text-xs font-bold text-on-surface-variant mb-1.5">Email Address</label>
+                        <label class="block text-xs font-bold text-on-surface-variant mb-1.5">Email or WhatsApp Number</label>
                         <div class="relative">
-                            <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px] pointer-events-none">mail</span>
-                            <input type="email" name="email" value="{{ old('email') }}" required autofocus
+                            <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px] pointer-events-none">person</span>
+                            <input type="text" name="email" value="{{ old('email') }}" required autofocus
                                    class="w-full pl-11 pr-4 py-3 bg-surface-container-lowest border border-outline-variant/50 rounded-lg text-sm text-on-surface font-medium placeholder:text-on-surface-variant/40 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                                   placeholder="your@email.com">
+                                   placeholder="your@email.com or 670 000 000">
                         </div>
                         @error('email') <p class="text-xs text-error font-semibold mt-1">{{ $message }}</p> @enderror
                     </div>

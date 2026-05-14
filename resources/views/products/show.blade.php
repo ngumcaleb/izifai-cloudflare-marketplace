@@ -1,4 +1,4 @@
-@extends('layouts.public')
+@extends('layouts.guest')
 
 @php
 $store = $product->store;
@@ -8,385 +8,142 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
 @section('title', $product->name . ' - ' . $store->name . ' Showroom')
 @section('description', strip_tags($product->description) ?: $product->name . ' on Izifai')
 
-{{-- ==================== DESKTOP SIDEBAR ==================== --}}
-@section('sidebar')
-<aside class="fixed left-0 top-0 h-full w-[260px] bg-surface flex-col shadow-md z-50 hidden lg:flex border-r border-outline-variant/10">
-    {{-- Store Profile Header --}}
-    <div class="relative h-28 shrink-0">
-        @if($store->banner)
-            <img src="{{ asset('storage/' . $store->banner) }}" class="w-full h-full object-cover">
-        @else
-            <div class="w-full h-full bg-gradient-to-br from-primary/60 to-primary"></div>
-        @endif
-        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-        <div class="absolute -bottom-8 left-4 flex items-end gap-3">
-            <div class="w-14 h-14 rounded-xl border-2 border-white bg-white shadow-lg overflow-hidden">
-                @if($store->logo)
-                    <img src="{{ asset('storage/' . $store->logo) }}" class="w-full h-full object-cover">
-                @else
-                    <div class="w-full h-full bg-primary/10 flex items-center justify-center text-lg font-black text-primary">
-                        {{ substr($store->name, 0, 1) }}
-                    </div>
-                @endif
-            </div>
-        </div>
-    </div>
-
-    {{-- Store Info --}}
-    <div class="pt-10 px-4 pb-4 border-b border-outline-variant/10">
-        <h2 class="text-base font-bold text-on-surface truncate">{{ $store->name }}</h2>
-        <div class="flex flex-wrap items-center gap-2 mt-1">
-            @if($store->is_verified)
-                <span class="inline-flex items-center gap-0.5 text-[10px] font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded-full">
-                    <span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">verified</span>
-                    {{ $store->badge ?: 'Verified' }}
-                </span>
-            @endif
-            <span class="flex items-center gap-0.5 text-[11px] text-on-surface-variant">
-                <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                {{ number_format($avgRating, 1) }}
-            </span>
-            <span class="text-[11px] text-on-surface-variant">{{ $totalProducts }} products</span>
-        </div>
-    </div>
-
-    {{-- Navigation --}}
-    <nav class="flex-1 py-4 px-3 space-y-0.5 overflow-y-auto">
-        <a href="{{ route('stores.show', $store->slug) }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-higher transition-all duration-200 text-sm font-medium">
-            <span class="material-symbols-outlined text-[20px]">storefront</span>
-            Showroom
-        </a>
-        <a href="{{ route('stores.show', $store->slug) }}#catalog" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-higher transition-all duration-200 text-sm font-medium">
-            <span class="material-symbols-outlined text-[20px]">grid_view</span>
-            Collections
-        </a>
-        <a href="{{ route('stores.show', $store->slug) }}#reviews" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-higher transition-all duration-200 text-sm font-medium">
-            <span class="material-symbols-outlined text-[20px]">star</span>
-            Reviews
-            @if($totalReviews > 0)
-                <span class="ml-auto text-[10px] font-bold bg-surface-container-high px-1.5 py-0.5 rounded-full">{{ $totalReviews }}</span>
-            @endif
-        </a>
-        <a href="{{ route('stores.show', $store->slug) }}#store-info" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-higher transition-all duration-200 text-sm font-medium">
-            <span class="material-symbols-outlined text-[20px]">info</span>
-            Store Info
-        </a>
-        @if($store->location)
-            <div class="px-3 py-2 text-[11px] text-on-surface-variant flex items-center gap-2 border-t border-outline-variant/10 pt-3 mt-2">
-                <span class="material-symbols-outlined text-[16px]">location_on</span>
-                <span class="truncate">{{ $store->location }}</span>
-            </div>
-        @endif
-    </nav>
-
-    {{-- Bottom Actions --}}
-    <div class="px-4 py-4 border-t border-outline-variant/10 space-y-2">
-        @if($store->whatsapp_number)
-            <a href="https://wa.me/{{ $store->whatsapp_number }}" target="_blank"
-               class="w-full bg-[#25D366] text-white py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#128C7E] transition-all text-xs shadow-sm">
-                {!! $whatsappIcon !!}
-                Message Seller
-            </a>
-        @endif
-        <a href="https://chat.whatsapp.com/J3of97nRhL5IdTSXpScYLl" target="_blank"
-           class="w-full py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 text-xs text-on-surface-variant border border-outline-variant/20 hover:bg-surface-container-higher transition-all">
-            <span class="material-symbols-outlined text-[16px]">groups</span>
-            Join WhatsApp Group
-        </a>
-        @auth
-            @if(auth()->id() === $store->user_id)
-                <a href="{{ route('seller.dashboard') }}"
-                   class="w-full bg-primary text-on-primary py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-all text-xs">
-                    <span class="material-symbols-outlined text-[16px]">dashboard</span>
-                    Dashboard
-                </a>
-            @else
-                <a href="{{ route('seller.dashboard') }}"
-                   class="w-full py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 text-xs text-primary border border-primary/20 hover:bg-primary/5 transition-all">
-                    <span class="material-symbols-outlined text-[16px]">store</span>
-                    Start Selling
-                </a>
-            @endif
-        @endauth
-        @guest
-            <a href="{{ url('/') }}"
-               class="w-full bg-primary/10 text-primary py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-primary/20 transition-all text-xs">
-                <span class="material-symbols-outlined text-[16px]">app_registration</span>
-                Join Izifai
-            </a>
-        @endguest
-    </div>
-</aside>
-@endsection
-
-{{-- ==================== MOBILE NAV ==================== --}}
-@section('mobile-nav')
-<template x-teleport="body">
-    <div x-show="mobileNav" x-cloak
-         class="fixed inset-0 z-[60] lg:hidden"
-         x-transition:enter="transition ease-out duration-200"
-         x-transition:enter-start="opacity-0"
-         x-transition:enter-end="opacity-100"
-         x-transition:leave="transition ease-in duration-150"
-         x-transition:leave-start="opacity-100"
-         x-transition:leave-end="opacity-0">
-        <div class="absolute inset-0 mobile-nav-overlay" @click="mobileNav = false"></div>
-        <div class="absolute left-0 top-0 h-full w-[280px] bg-surface shadow-2xl flex flex-col"
-             @click.away="mobileNav = false"
-             x-transition:enter="transition ease-out duration-200"
-             x-transition:enter-start="-translate-x-full"
-             x-transition:enter-end="translate-x-0"
-             x-transition:leave="transition ease-in duration-150"
-             x-transition:leave-start="translate-x-0"
-             x-transition:leave-end="-translate-x-full">
-            {{-- Mobile Profile Header --}}
-            <div class="relative h-24 shrink-0">
-                @if($store->banner)
-                    <img src="{{ asset('storage/' . $store->banner) }}" class="w-full h-full object-cover">
-                @else
-                    <div class="w-full h-full bg-gradient-to-br from-primary/60 to-primary"></div>
-                @endif
-                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-                <button @click="mobileNav = false"
-                        class="absolute top-2 right-2 w-7 h-7 bg-black/30 text-white rounded-full flex items-center justify-center hover:bg-black/50 transition-all">
-                    <span class="material-symbols-outlined text-[16px]">close</span>
-                </button>
-                <div class="absolute -bottom-6 left-4">
-                    <div class="w-11 h-11 rounded-xl border-2 border-white bg-white shadow-lg overflow-hidden">
-                        @if($store->logo)
-                            <img src="{{ asset('storage/' . $store->logo) }}" class="w-full h-full object-cover">
-                        @else
-                            <div class="w-full h-full bg-primary/10 flex items-center justify-center text-base font-black text-primary">
-                                {{ substr($store->name, 0, 1) }}
-                            </div>
-                        @endif
-                    </div>
-                </div>
-            </div>
-
-            {{-- Mobile Store Info --}}
-            <div class="pt-7 px-4 pb-3 border-b border-outline-variant/10">
-                <h2 class="text-sm font-bold text-on-surface truncate">{{ $store->name }}</h2>
-                <div class="flex items-center gap-2 mt-0.5">
-                    @if($store->is_verified)
-                        <span class="inline-flex items-center gap-0.5 text-[10px] font-bold text-primary">
-                            <span class="material-symbols-outlined text-[11px]" style="font-variation-settings: 'FILL' 1;">verified</span>
-                            {{ $store->badge ?: 'Verified' }}
-                        </span>
-                    @endif
-                    <span class="text-[10px] text-on-surface-variant">{{ $totalProducts }} products</span>
-                </div>
-            </div>
-
-            {{-- Mobile Navigation --}}
-            <nav class="flex-1 py-3 px-3 space-y-0.5 overflow-y-auto">
-                <a href="{{ route('stores.show', $store->slug) }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-higher transition-all text-sm font-medium" @click="mobileNav = false">
-                    <span class="material-symbols-outlined text-[20px]">storefront</span>
-                    Showroom
-                </a>
-                <a href="{{ route('stores.show', $store->slug) }}#catalog" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-higher transition-all text-sm font-medium" @click="mobileNav = false">
-                    <span class="material-symbols-outlined text-[20px]">grid_view</span>
-                    Collections
-                </a>
-                <a href="{{ route('stores.show', $store->slug) }}#reviews" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-higher transition-all text-sm font-medium" @click="mobileNav = false">
-                    <span class="material-symbols-outlined text-[20px]">star</span>
-                    Reviews
-                    @if($totalReviews > 0)
-                        <span class="ml-auto text-[10px] font-bold bg-surface-container-high px-1.5 py-0.5 rounded-full">{{ $totalReviews }}</span>
-                    @endif
-                </a>
-                <a href="{{ route('stores.show', $store->slug) }}#store-info" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-higher transition-all text-sm font-medium" @click="mobileNav = false">
-                    <span class="material-symbols-outlined text-[20px]">info</span>
-                    Store Info
-                </a>
-                @if($store->location)
-                    <div class="px-3 py-2 text-[11px] text-on-surface-variant flex items-center gap-2 border-t border-outline-variant/10 pt-3 mt-2">
-                        <span class="material-symbols-outlined text-[16px]">location_on</span>
-                        <span class="truncate">{{ $store->location }}</span>
-                    </div>
-                @endif
-            </nav>
-
-            {{-- Mobile Actions --}}
-            <div class="px-4 py-4 border-t border-outline-variant/10 space-y-2">
-                @if($store->whatsapp_number)
-                    <a href="https://wa.me/{{ $store->whatsapp_number }}" target="_blank"
-                       class="w-full bg-[#25D366] text-white py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#128C7E] transition-all text-xs shadow-sm">
-                        {!! $whatsappIcon !!}
-                        Message Seller
-                    </a>
-                @endif
-                <a href="https://chat.whatsapp.com/J3of97nRhL5IdTSXpScYLl" target="_blank"
-                   class="w-full py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 text-xs text-on-surface-variant border border-outline-variant/20 hover:bg-surface-container-higher transition-all">
-                    <span class="material-symbols-outlined text-[16px]">groups</span>
-                    Join WhatsApp Group
-                </a>
-                @auth
-                    @if(auth()->id() === $store->user_id)
-                        <a href="{{ route('seller.dashboard') }}"
-                           class="w-full bg-primary text-on-primary py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-all text-xs">
-                            <span class="material-symbols-outlined text-[16px]">dashboard</span>
-                            Dashboard
-                        </a>
-                    @else
-                        <a href="{{ route('seller.dashboard') }}"
-                           class="w-full py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 text-xs text-primary border border-primary/20 hover:bg-primary/5 transition-all">
-                            <span class="material-symbols-outlined text-[16px]">store</span>
-                            Start Selling
-                        </a>
-                    @endif
-                @endauth
-                @guest
-                    <a href="{{ url('/') }}"
-                       class="w-full bg-primary/10 text-primary py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-primary/20 transition-all text-xs">
-                        <span class="material-symbols-outlined text-[16px]">app_registration</span>
-                        Join Izifai
-                    </a>
-                @endguest
-            </div>
-        </div>
-    </div>
-</template>
-@endsection
-
-{{-- ==================== TOPBAR ==================== --}}
-@section('topbar')
-<header class="fixed top-0 right-0 left-0 lg:left-[260px] lg:w-[calc(100%-260px)] h-[64px] lg:h-[72px] bg-surface/80 backdrop-blur-md flex items-center justify-between px-4 lg:px-8 z-40 shadow-sm">
-    <div class="flex items-center gap-3 lg:gap-6 flex-1 min-w-0">
-        <button @click="mobileNav = true" class="lg:hidden p-2 -ml-2 text-on-surface-variant hover:text-primary transition-colors">
-            <span class="material-symbols-outlined">menu</span>
-        </button>
-        <div class="flex items-center gap-3 min-w-0">
-            <a href="{{ route('stores.show', $store->slug) }}" class="hover:opacity-80 transition-opacity shrink-0">
-                <div class="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-surface-container-highest overflow-hidden ring-2 ring-primary/20">
-                    @if($store->logo)
-                        <img src="{{ asset('storage/' . $store->logo) }}" alt="{{ $store->name }}" class="w-full h-full object-cover">
-                    @else
-                        <div class="w-full h-full flex items-center justify-center text-xs lg:text-sm font-bold text-primary bg-surface-container-high">
-                            {{ substr($store->name, 0, 1) }}
-                        </div>
-                    @endif
-                </div>
-            </a>
-            <h2 class="text-lg lg:text-[24px] leading-8 font-bold text-primary tracking-tight truncate">{{ $product->name }}</h2>
-        </div>
-        <div class="relative w-full max-w-md hidden sm:block"
-             x-data="storeSearch('{{ $store->slug }}')"
-             @click.away="results = []; open = false">
-            <form action="{{ route('stores.show', $store->slug) }}" method="GET" @submit="open = false">
-                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline z-10">search</span>
-                <input name="search" x-model="query" @input.debounce.300ms="search()" @focus="if (results.length) open = true"
-                       class="w-full pl-12 pr-4 py-2 bg-surface-container-low border outline-variant/30 rounded-full text-sm focus:ring-primary focus:border-primary"
-                       placeholder="Search in this store..." type="text" autocomplete="off"/>
-            </form>
-            <div x-show="open && results.length" x-cloak
-                 class="absolute top-full mt-2 left-0 right-0 bg-surface-container-lowest rounded-2xl shadow-xl border border-outline-variant/20 overflow-hidden z-50 max-h-[400px] overflow-y-auto">
-                <template x-for="product in results" :key="product.id">
-                    <a :href="'/products/' + product.slug"
-                       class="flex items-center gap-3 p-3 hover:bg-surface-container transition-all border-b border-outline-variant/10 last:border-0">
-                        <div class="w-10 h-10 rounded-lg bg-surface-container-high overflow-hidden shrink-0">
-                            <img x-show="product.image" :src="'/storage/' + product.image"
-                                 class="w-full h-full object-cover" alt="">
-                            <div x-show="!product.image"
-                                 class="w-full h-full flex items-center justify-center text-outline">
-                                <span class="material-symbols-outlined text-[18px]">image</span>
-                            </div>
-                        </div>
-                        <div class="min-w-0 flex-1">
-                            <p class="text-sm font-bold text-on-surface truncate" x-text="product.name"></p>
-                            <p class="text-xs text-on-surface-variant" x-show="product.category" x-text="product.category"></p>
-                        </div>
-                        <div class="text-right shrink-0">
-                            <p class="text-sm font-black text-primary" x-text="Number(product.price).toLocaleString() + ' FCFA'"></p>
-                            <p x-show="product.old_price" class="text-[10px] text-on-surface-variant line-through"
-                               x-text="Number(product.old_price).toLocaleString() + ' FCFA'"></p>
-                        </div>
-                    </a>
-                </template>
-            </div>
-            <div x-show="open && !results.length && query.length > 2" x-cloak
-                 class="absolute top-full mt-2 left-0 right-0 bg-surface-container-lowest rounded-2xl shadow-xl border border-outline-variant/20 overflow-hidden z-50">
-                <div class="p-6 text-center text-sm text-on-surface-variant">
-                    <span class="material-symbols-outlined text-2xl">search_off</span>
-                    <p class="mt-1 font-medium">No products found</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="flex items-center gap-2 lg:gap-4">
-        <button @click="document.getElementById('mobile-search').classList.toggle('hidden')" class="sm:hidden p-2 text-on-surface-variant hover:text-primary transition-colors">
-            <span class="material-symbols-outlined">search</span>
-        </button>
-        @guest
-            <a href="{{ url('/') }}"
-               class="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 bg-primary text-on-primary rounded-full text-xs font-bold hover:opacity-90 transition-all shadow-sm whitespace-nowrap">
-                <span class="material-symbols-outlined text-[16px]">app_registration</span>
-                Join Izifai Today
-            </a>
-        @endguest
-        <div class="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-surface-container-highest overflow-hidden ring-2 ring-primary/20 shrink-0 hidden sm:block">
+{{-- ==================== STORE NAV ==================== --}}
+@section('store-nav')
+<div class="flex items-center gap-3 py-2.5 overflow-x-auto no-scrollbar">
+    <a href="{{ route('stores.show', $store->slug) }}" class="flex items-center gap-1 text-xs font-semibold text-primary hover:underline shrink-0">
+        <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+        <span class="hidden sm:inline">Back to Store</span>
+    </a>
+    <span class="w-px h-5 bg-gray-200 shrink-0"></span>
+    <a href="{{ route('stores.show', $store->slug) }}" class="flex items-center gap-2.5 shrink-0 group">
+        <div class="w-8 h-8 rounded-lg overflow-hidden ring-2 ring-primary/10 bg-white shrink-0">
             @if($store->logo)
-                <img src="{{ asset('storage/' . $store->logo) }}" alt="{{ $store->name }}" class="w-full h-full object-cover">
+                <img src="{{ asset('storage/' . $store->logo) }}" class="w-full h-full object-cover">
             @else
-                <div class="w-full h-full flex items-center justify-center text-xs lg:text-sm font-bold text-primary bg-surface-container-high">
+                <div class="w-full h-full bg-primary/5 flex items-center justify-center text-xs font-bold text-primary">
+                    {{ substr($store->name, 0, 1) }}
+                </div>
+            @endif
+        </div>
+        <div class="min-w-0">
+            <p class="text-sm font-bold text-on-surface truncate max-w-[120px] lg:max-w-none group-hover:text-primary transition-colors">{{ $store->name }}</p>
+        </div>
+    </a>
+    <nav class="flex items-center gap-1 shrink-0">
+        <a href="{{ route('stores.show', $store->slug) }}" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-primary text-on-primary whitespace-nowrap">Showroom</a>
+        <a href="{{ route('stores.show', $store->slug) }}#catalog" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-on-surface-variant hover:bg-gray-100 whitespace-nowrap transition-colors">Collections</a>
+        <a href="{{ route('stores.show', $store->slug) }}#reviews" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-on-surface-variant hover:bg-gray-100 whitespace-nowrap transition-colors">Reviews</a>
+        <a href="{{ route('stores.show', $store->slug) }}#store-info" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-on-surface-variant hover:bg-gray-100 whitespace-nowrap transition-colors">Store Info</a>
+    </nav>
+</div>
+@endsection
+
+{{-- ==================== STORE SIDEBAR (DESKTOP) ==================== --}}
+@section('store-sidebar')
+<div class="relative h-28 shrink-0">
+    @if($store->banner)
+        <img src="{{ asset('storage/' . $store->banner) }}" class="w-full h-full object-cover">
+    @else
+        <div class="w-full h-full bg-gradient-to-br from-primary/60 to-primary"></div>
+    @endif
+    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+    <div class="absolute -bottom-8 left-4 flex items-end gap-3">
+        <div class="w-14 h-14 rounded-xl border-2 border-white bg-white shadow-lg overflow-hidden">
+            @if($store->logo)
+                <img src="{{ asset('storage/' . $store->logo) }}" class="w-full h-full object-cover">
+            @else
+                <div class="w-full h-full bg-primary/10 flex items-center justify-center text-lg font-black text-primary">
                     {{ substr($store->name, 0, 1) }}
                 </div>
             @endif
         </div>
     </div>
-</header>
-@endsection
-
-{{-- ==================== MOBILE SEARCH ==================== --}}
-@section('mobile-search')
-<div id="mobile-search" class="hidden fixed top-[64px] left-0 right-0 bg-surface/95 backdrop-blur-md px-4 py-3 z-30 lg:hidden border-b border-outline-variant/10"
-     x-data="storeSearch('{{ $store->slug }}')"
-     @click.away="results = []; open = false">
-    <form action="{{ route('stores.show', $store->slug) }}" method="GET" @submit="open = false">
-        <div class="relative">
-            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline z-10">search</span>
-            <input name="search" x-model="query" @input.debounce.300ms="search()" @focus="if (results.length) open = true"
-                   class="w-full pl-12 pr-4 py-3 bg-surface-container-low border outline-variant/30 rounded-full text-sm focus:ring-primary focus:border-primary"
-                   placeholder="Search in this store..." type="text" autocomplete="off"/>
+</div>
+<div class="pt-10 px-4 pb-4 border-b border-gray-100">
+    <h2 class="text-base font-bold text-on-surface truncate">{{ $store->name }}</h2>
+    <div class="flex flex-wrap items-center gap-2 mt-1">
+        @if($store->is_verified)
+            <span class="inline-flex items-center gap-0.5 text-[10px] font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded-full">
+                <span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+                {{ $store->badge ?: 'Verified' }}
+            </span>
+        @endif
+        <span class="flex items-center gap-0.5 text-[11px] text-on-surface-variant">
+            <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+            {{ number_format($avgRating, 1) }}
+        </span>
+        <span class="text-[11px] text-on-surface-variant">{{ $store->products()->count() }} products</span>
+    </div>
+</div>
+<nav class="flex-1 py-4 px-3 space-y-0.5 overflow-y-auto">
+    <a href="{{ route('stores.show', $store->slug) }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-primary font-semibold bg-primary/5 border-l-[3px] border-primary transition-all text-sm">
+        <span class="material-symbols-outlined text-[20px]">storefront</span>
+        Showroom
+    </a>
+    <a href="{{ route('stores.show', $store->slug) }}#catalog" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-gray-50 transition-all text-sm font-medium">
+        <span class="material-symbols-outlined text-[20px]">grid_view</span>
+        Collections
+    </a>
+    <a href="{{ route('stores.show', $store->slug) }}#reviews" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-gray-50 transition-all text-sm font-medium">
+        <span class="material-symbols-outlined text-[20px]">star</span>
+        Reviews
+        @if($totalReviews > 0)
+            <span class="ml-auto text-[10px] font-bold bg-gray-100 px-1.5 py-0.5 rounded-full">{{ $totalReviews }}</span>
+        @endif
+    </a>
+    <a href="{{ route('stores.show', $store->slug) }}#store-info" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-gray-50 transition-all text-sm font-medium">
+        <span class="material-symbols-outlined text-[20px]">info</span>
+        Store Info
+    </a>
+    @if($store->location)
+        <div class="px-3 py-2 text-[11px] text-on-surface-variant flex items-center gap-2 border-t border-gray-100 pt-3 mt-2">
+            <span class="material-symbols-outlined text-[16px]">location_on</span>
+            <span class="truncate">{{ $store->location }}</span>
         </div>
-    </form>
-    <div x-show="open && results.length" x-cloak
-         class="mt-2 bg-surface-container-lowest rounded-2xl shadow-xl border border-outline-variant/20 overflow-hidden max-h-[360px] overflow-y-auto">
-        <template x-for="product in results" :key="product.id">
-            <a :href="'/products/' + product.slug"
-               class="flex items-center gap-3 p-3 hover:bg-surface-container transition-all border-b border-outline-variant/10 last:border-0">
-                <div class="w-10 h-10 rounded-lg bg-surface-container-high overflow-hidden shrink-0">
-                    <img x-show="product.image" :src="'/storage/' + product.image"
-                         class="w-full h-full object-cover" alt="">
-                    <div x-show="!product.image"
-                         class="w-full h-full flex items-center justify-center text-outline">
-                        <span class="material-symbols-outlined text-[18px]">image</span>
-                    </div>
-                </div>
-                <div class="min-w-0 flex-1">
-                    <p class="text-sm font-bold text-on-surface truncate" x-text="product.name"></p>
-                    <p class="text-xs text-on-surface-variant" x-show="product.category" x-text="product.category"></p>
-                </div>
-                <div class="text-right shrink-0">
-                    <p class="text-sm font-black text-primary" x-text="Number(product.price).toLocaleString() + ' FCFA'"></p>
-                    <p x-show="product.old_price" class="text-[10px] text-on-surface-variant line-through"
-                       x-text="Number(product.old_price).toLocaleString() + ' FCFA'"></p>
-                </div>
+    @endif
+</nav>
+<div class="px-4 py-4 border-t border-gray-100 space-y-2">
+    @if($store->whatsapp_number)
+        <a href="https://wa.me/{{ $store->whatsapp_number }}?text={{ urlencode('Hi, I am interested in ' . $product->name . ' on Izifai.') }}" target="_blank"
+           class="w-full bg-[#25D366] text-white py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#128C7E] transition-all text-xs shadow-sm">
+            {!! $whatsappIcon !!}
+            Message Seller
+        </a>
+    @endif
+    <a href="https://chat.whatsapp.com/J3of97nRhL5IdTSXpScYLl" target="_blank"
+       class="w-full py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 text-xs text-on-surface-variant border border-gray-200 hover:bg-gray-50 transition-all">
+        <span class="material-symbols-outlined text-[16px]">groups</span>
+        Join WhatsApp Group
+    </a>
+    @auth
+        @if(auth()->id() === $store->user_id)
+            <a href="{{ route('seller.dashboard') }}"
+               class="w-full bg-primary text-on-primary py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-all text-xs">
+                <span class="material-symbols-outlined text-[16px]">dashboard</span>
+                Dashboard
             </a>
-        </template>
-    </div>
-    <div x-show="open && !results.length && query.length > 2" x-cloak
-         class="mt-2 bg-surface-container-lowest rounded-2xl shadow-xl border border-outline-variant/20 overflow-hidden">
-        <div class="p-6 text-center text-sm text-on-surface-variant">
-            <span class="material-symbols-outlined text-2xl">search_off</span>
-            <p class="mt-1 font-medium">No products found</p>
-        </div>
-    </div>
+        @else
+            <a href="{{ route('seller.dashboard') }}"
+               class="w-full py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 text-xs text-primary border border-primary/20 hover:bg-primary/5 transition-all">
+                <span class="material-symbols-outlined text-[16px]">store</span>
+                Start Selling
+            </a>
+        @endif
+    @endauth
+    @guest
+        <a href="{{ url('/') }}"
+           class="w-full bg-primary/10 text-primary py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-primary/20 transition-all text-xs">
+            <span class="material-symbols-outlined text-[16px]">app_registration</span>
+            Join Izifai
+        </a>
+    @endguest
 </div>
 @endsection
 
 {{-- ==================== CONTENT ==================== --}}
 @section('content')
+<div class="px-4 sm:px-6 lg:px-8 pt-14 lg:pt-4 pb-4 sm:pb-6">
 <div x-data="productPage()" class="space-y-6 sm:space-y-8 lg:space-y-12">
 
     {{-- Breadcrumb --}}
@@ -518,6 +275,13 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                 </div>
                 @endif
 
+                {{-- Views --}}
+                <div class="flex items-center gap-2 text-xs text-on-surface-variant">
+                    <span class="material-symbols-outlined text-[16px] text-outline">visibility</span>
+                    <span class="font-semibold">{{ number_format($product->views ?? 0) }}</span>
+                    <span class="text-outline">views</span>
+                </div>
+
                 {{-- Action Buttons --}}
                 <div class="space-y-2.5 sm:space-y-3 pt-1 sm:pt-2">
                     @if($store->whatsapp_number)
@@ -537,6 +301,11 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                             class="flex items-center justify-center gap-2 w-full py-2 sm:py-2.5 border border-outline-variant/30 text-on-surface-variant rounded-xl text-[11px] sm:text-xs font-bold hover:bg-surface-container transition-all">
                         <span class="material-symbols-outlined text-[16px] sm:text-[18px] copy-icon">share</span>
                         <span class="copy-label">Share Link</span>
+                    </button>
+                    <button @click="openReport()"
+                            class="flex items-center justify-center gap-2 w-full py-2.5 sm:py-3 border border-outline-variant/30 text-on-surface-variant rounded-xl text-xs sm:text-sm font-bold hover:bg-surface-container transition-all">
+                        <span class="material-symbols-outlined text-[16px] sm:text-[18px]">flag</span>
+                        Report Listing
                     </button>
                 </div>
             </div>
@@ -562,7 +331,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
             <p class="text-[10px] sm:text-xs font-bold text-on-surface-variant uppercase tracking-wider">Connect With Us</p>
             <div class="flex flex-wrap justify-center gap-1.5 sm:gap-2">
                 @if($store->whatsapp_number)
-                <a href="https://wa.me/{{ $store->whatsapp_number }}" target="_blank"
+                <a href="https://wa.me/{{ $store->whatsapp_number }}?text={{ urlencode('Hello, I found you on Izifai.') }}" target="_blank"
                    class="w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white transition-all" title="WhatsApp">
                     <svg viewBox="0 0 24 24" fill="currentColor" class="w-[14px] h-[14px] sm:w-[18px] sm:h-[18px]" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c 0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
                 </a>
@@ -612,6 +381,97 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                         <p class="text-[10px] sm:text-xs text-on-surface-variant">Fast delivery across {{ $store->location ? $store->location : "Cameroon's major cities" }}</p>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- REPORT MODAL --}}
+    <div x-show="reportOpen" x-cloak
+         class="fixed inset-0 z-[100] flex items-end sm:items-center justify-center"
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0">
+        <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" @click="closeReport()"></div>
+        <div class="relative bg-white w-full sm:max-w-lg rounded-t-2xl sm:rounded-2xl shadow-2xl z-10 overflow-hidden"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="translate-y-full sm:translate-y-4 sm:scale-95 opacity-0"
+             x-transition:enter-end="translate-y-0 sm:translate-y-0 sm:scale-100 opacity-100"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="translate-y-0 sm:translate-y-0 sm:scale-100 opacity-100"
+             x-transition:leave-end="translate-y-full sm:translate-y-4 sm:scale-95 opacity-0">
+
+            {{-- Header --}}
+            <div class="flex items-center justify-between px-5 sm:px-6 pt-4 sm:pt-5 pb-3 border-b border-gray-100">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-error/5 flex items-center justify-center text-error">
+                        <span class="material-symbols-outlined text-[18px]">flag</span>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-bold text-on-surface">Report Listing</h3>
+                        <p class="text-[10px] text-on-surface-variant/70">Help us keep the marketplace safe</p>
+                    </div>
+                </div>
+                <button @click="closeReport()" class="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center text-on-surface-variant hover:bg-gray-200 transition-colors">
+                    <span class="material-symbols-outlined text-[16px]">close</span>
+                </button>
+            </div>
+
+            {{-- Success State --}}
+            <div x-show="reportSubmitted" class="px-5 sm:px-6 py-10 sm:py-12 text-center">
+                <div class="w-14 h-14 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-500 mx-auto mb-4">
+                    <span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                </div>
+                <h3 class="text-base font-bold text-on-surface mb-1">Report Submitted</h3>
+                <p class="text-xs text-on-surface-variant leading-relaxed max-w-xs mx-auto">Thank you for your report. Our team will review this listing shortly.</p>
+            </div>
+
+            {{-- Form --}}
+            <div x-show="!reportSubmitted" class="px-5 sm:px-6 py-4 sm:py-5 space-y-2.5 max-h-[60vh] overflow-y-auto no-scrollbar">
+                <p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">Why are you reporting this?</p>
+
+                <template x-for="reason in ['Sexual Content', 'Scam / Fraud', 'Fake Product', 'Counterfeit', 'Offensive / Abusive', 'Spam', 'Other']" :key="reason">
+                    <button @click="selectReason(reason)"
+                            class="flex items-center gap-3 w-full px-4 py-3 rounded-xl border transition-all text-left"
+                            :class="reportReason === reason ? 'border-error/30 bg-error/5 text-error font-bold' : 'border-gray-100 bg-white hover:border-gray-200 text-on-surface font-medium'">
+                        <div class="w-4 h-4 rounded-full border-2 shrink-0 flex items-center justify-center transition-colors"
+                             :class="reportReason === reason ? 'border-error' : 'border-gray-300'">
+                            <div x-show="reportReason === reason" class="w-2 h-2 rounded-full bg-error"></div>
+                        </div>
+                        <span class="text-xs" x-text="reason"></span>
+                    </button>
+                </template>
+
+                <div x-show="otherSelected" class="pt-1">
+                    <textarea x-model="reportDetails"
+                              placeholder="Please describe the issue..."
+                              class="w-full px-4 py-3 bg-gray-50 border-none rounded-xl text-xs font-medium focus:ring-2 focus:ring-error/20 transition-all resize-none"
+                              rows="3"
+                              maxlength="1000"></textarea>
+                    <p class="text-[9px] text-on-surface-variant/50 text-right mt-1" x-text="reportDetails.length + '/1000'"></p>
+                </div>
+
+                <div x-show="reportError" class="bg-rose-50 text-rose-600 text-[10px] font-medium px-4 py-2.5 rounded-xl" x-text="reportError"></div>
+            </div>
+
+            {{-- Footer --}}
+            <div x-show="!reportSubmitted" class="flex items-center gap-3 px-5 sm:px-6 py-3 sm:py-4 border-t border-gray-100">
+                <button @click="closeReport()"
+                        class="flex-1 py-2.5 rounded-xl border border-gray-200 text-[11px] font-bold text-on-surface-variant hover:bg-gray-50 transition-all">
+                    Cancel
+                </button>
+                <button @click="submitReport()"
+                        :disabled="!reportReason || (otherSelected && !reportDetails.trim()) || reportSubmitting"
+                        class="flex-1 py-2.5 rounded-xl text-[11px] font-bold text-white transition-all flex items-center justify-center gap-2"
+                        :class="(!reportReason || (otherSelected && !reportDetails.trim()) || reportSubmitting) ? 'bg-gray-300 cursor-not-allowed' : 'bg-error hover:bg-error/90'">
+                    <span x-show="!reportSubmitting">Submit Report</span>
+                    <span x-show="reportSubmitting" class="flex items-center gap-2">
+                        <svg class="animate-spin w-4 h-4" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                        Submitting...
+                    </span>
+                </button>
             </div>
         </div>
     </div>
@@ -775,6 +635,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
     @endif
 
 </div>
+</div>
 @endsection
 
 {{-- ==================== FOOTER ==================== --}}
@@ -825,7 +686,72 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
         return {
             selectedImage: @js($product->images->first() ? asset('storage/' . $product->images->first()->path) : ''),
             selectedColor: null,
-            selectedSize: null
+            selectedSize: null,
+            reportOpen: false,
+            reportReason: '',
+            reportDetails: '',
+            reportSubmitted: false,
+            reportSubmitting: false,
+            reportError: '',
+            otherSelected: false,
+            openReport() {
+                @auth
+                    this.reportOpen = true;
+                    this.reportReason = '';
+                    this.reportDetails = '';
+                    this.reportSubmitted = false;
+                    this.reportError = '';
+                    this.otherSelected = false;
+                @endauth
+                @guest
+                    window.location.href = '{{ route('login') }}';
+                @endguest
+            },
+            closeReport() {
+                this.reportOpen = false;
+            },
+            selectReason(reason) {
+                this.reportReason = reason;
+                this.otherSelected = reason === 'Other';
+                if (!this.otherSelected) this.reportDetails = '';
+            },
+            submitReport() {
+                if (!this.reportReason) return;
+                if (this.otherSelected && !this.reportDetails.trim()) return;
+                this.reportSubmitting = true;
+                this.reportError = '';
+                const formData = new FormData();
+                formData.append('reason', this.reportReason);
+                formData.append('details', this.otherSelected ? this.reportDetails : this.reportReason);
+                @auth
+                fetch('{{ route('products.report', $product) }}', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    },
+                    body: formData
+                })
+                .then(r => {
+                    if (!r.ok && r.status === 422) return r.json().then(e => { throw new Error(Object.values(e.errors || {}).flat().join(', ')); });
+                    if (!r.ok) throw new Error('Server error');
+                    return r.json();
+                })
+                .then(data => {
+                    this.reportSubmitting = false;
+                    if (data.success) {
+                        this.reportSubmitted = true;
+                        setTimeout(() => { this.reportOpen = false; }, 2500);
+                    } else {
+                        this.reportError = data.error || 'Something went wrong.';
+                    }
+                })
+                .catch(e => {
+                    this.reportSubmitting = false;
+                    this.reportError = e.message || 'Network error. Please try again.';
+                });
+                @endauth
+            }
         }
     }
 

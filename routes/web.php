@@ -14,9 +14,11 @@ Route::post('/store/{store}/review', [\App\Http\Controllers\StoreReviewControlle
 Route::get('/products', [\App\Http\Controllers\ProductController::class, 'index'])->name('products.index');
 Route::get('/products/search', [\App\Http\Controllers\ProductController::class, 'search'])->name('products.search');
 Route::get('/products/autocomplete', [\App\Http\Controllers\ProductController::class, 'autocompleteJson'])->name('products.autocomplete');
+Route::get('/search/autocomplete', [\App\Http\Controllers\SearchController::class, 'autocomplete'])->name('search.autocomplete');
 Route::get('/products/{slug}', [\App\Http\Controllers\ProductController::class, 'show'])->name('products.show');
 Route::post('/products/{product}/log-contact', [\App\Http\Controllers\ProductController::class, 'logContact'])->name('products.log-contact');
 Route::post('/products/{product}/favorite', [\App\Http\Controllers\SavedProductController::class, 'toggle'])->name('products.favorite');
+Route::post('/products/{product}/report', [\App\Http\Controllers\ProductReportController::class, 'store'])->name('products.report');
 
 // === SELLER ROUTES (middleware: auth, seller) ===
 Route::middleware(['auth', 'seller'])->prefix('seller')->name('seller.')->group(function () {
@@ -63,6 +65,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('users', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('users.index');
         Route::post('users/{user}/status', [\App\Http\Controllers\Admin\UserController::class, 'toggleStatus'])->name('users.status');
         Route::delete('users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('users.destroy');
+
+        Route::get('categories', [\App\Http\Controllers\Admin\CategoryController::class, 'index'])->name('categories.index');
+        Route::get('categories/create', [\App\Http\Controllers\Admin\CategoryController::class, 'create'])->name('categories.create');
+        Route::post('categories', [\App\Http\Controllers\Admin\CategoryController::class, 'store'])->name('categories.store');
+        Route::get('categories/{category}/edit', [\App\Http\Controllers\Admin\CategoryController::class, 'edit'])->name('categories.edit');
+        Route::put('categories/{category}', [\App\Http\Controllers\Admin\CategoryController::class, 'update'])->name('categories.update');
+        Route::delete('categories/{category}', [\App\Http\Controllers\Admin\CategoryController::class, 'destroy'])->name('categories.destroy');
 
         Route::get('reports', [\App\Http\Controllers\Admin\ReportController::class, 'index'])->name('reports.index');
         Route::get('reports/{type}/{id}', [\App\Http\Controllers\Admin\ReportController::class, 'show'])->name('reports.show');

@@ -1,455 +1,218 @@
-@extends('layouts.public')
+@extends('layouts.guest')
 
 @section('title', $store->name . ' - Izifai Showroom')
 @section('description', $store->description ? strip_tags($store->description) : $store->name . ' on Izifai')
 
 @php $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c 0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>'; @endphp
 
-{{-- ==================== DESKTOP SIDEBAR ==================== --}}
-@section('sidebar')
-<aside class="fixed left-0 top-0 h-full w-[260px] bg-surface flex-col shadow-md z-50 hidden lg:flex border-r border-outline-variant/10">
-    {{-- Store Profile Header --}}
-    <div class="relative h-28 shrink-0">
-        @if($store->banner)
-            <img src="{{ asset('storage/' . $store->banner) }}" class="w-full h-full object-cover">
-        @else
-            <div class="w-full h-full bg-gradient-to-br from-primary/60 to-primary"></div>
-        @endif
-        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-        <div class="absolute -bottom-8 left-4 flex items-end gap-3">
-            <div class="w-14 h-14 rounded-xl border-2 border-white bg-white shadow-lg overflow-hidden">
-                @if($store->logo)
-                    <img src="{{ asset('storage/' . $store->logo) }}" class="w-full h-full object-cover">
-                @else
-                    <div class="w-full h-full bg-primary/10 flex items-center justify-center text-lg font-black text-primary">
-                        {{ substr($store->name, 0, 1) }}
-                    </div>
-                @endif
-            </div>
-        </div>
-    </div>
-
-    {{-- Store Info --}}
-    <div class="pt-10 px-4 pb-4 border-b border-outline-variant/10">
-        <h2 class="text-base font-bold text-on-surface truncate">{{ $store->name }}</h2>
-        <div class="flex flex-wrap items-center gap-2 mt-1">
-            @if($store->is_verified)
-                <span class="inline-flex items-center gap-0.5 text-[10px] font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded-full">
-                    <span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">verified</span>
-                    {{ $store->badge ?: 'Verified' }}
-                </span>
-            @endif
-            <span class="flex items-center gap-0.5 text-[11px] text-on-surface-variant">
-                <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                {{ number_format($avgRating, 1) }}
-            </span>
-            <span class="text-[11px] text-on-surface-variant">{{ $totalProducts }} products</span>
-        </div>
-    </div>
-
-    {{-- Navigation --}}
-    <nav class="flex-1 py-4 px-3 space-y-0.5 overflow-y-auto">
-        <a href="#showroom" class="scroll-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-primary font-semibold bg-primary/5 border-l-[3px] border-primary transition-all duration-200 text-sm">
-            <span class="material-symbols-outlined text-[20px]">storefront</span>
-            Showroom
-        </a>
-        <a href="#catalog" class="scroll-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-higher transition-all duration-200 text-sm font-medium">
-            <span class="material-symbols-outlined text-[20px]">grid_view</span>
-            Collections
-        </a>
-        <a href="#reviews" class="scroll-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-higher transition-all duration-200 text-sm font-medium">
-            <span class="material-symbols-outlined text-[20px]">star</span>
-            Reviews
-            @if($totalReviews > 0)
-                <span class="ml-auto text-[10px] font-bold bg-surface-container-high px-1.5 py-0.5 rounded-full">{{ $totalReviews }}</span>
-            @endif
-        </a>
-        <a href="#store-info" class="scroll-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-higher transition-all duration-200 text-sm font-medium">
-            <span class="material-symbols-outlined text-[20px]">info</span>
-            Store Info
-        </a>
-        @if($store->location)
-            <div class="px-3 py-2 text-[11px] text-on-surface-variant flex items-center gap-2 border-t border-outline-variant/10 pt-3 mt-2">
-                <span class="material-symbols-outlined text-[16px]">location_on</span>
-                <span class="truncate">{{ $store->location }}</span>
-            </div>
-        @endif
-    </nav>
-
-    {{-- Bottom Actions --}}
-    <div class="px-4 py-4 border-t border-outline-variant/10 space-y-2">
-        @if($store->whatsapp_number)
-            <a href="https://wa.me/{{ $store->whatsapp_number }}" target="_blank"
-               class="w-full bg-[#25D366] text-white py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#128C7E] transition-all text-xs shadow-sm">
-                {!! $whatsappIcon !!}
-                Message Seller
-            </a>
-        @endif
-        <a href="https://chat.whatsapp.com/J3of97nRhL5IdTSXpScYLl" target="_blank"
-           class="w-full py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 text-xs text-on-surface-variant border border-outline-variant/20 hover:bg-surface-container-higher transition-all">
-            <span class="material-symbols-outlined text-[16px]">groups</span>
-            Join WhatsApp Group
-        </a>
-        @auth
-            @if(auth()->id() === $store->user_id)
-                <a href="{{ route('seller.dashboard') }}"
-                   class="w-full bg-primary text-on-primary py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-all text-xs">
-                    <span class="material-symbols-outlined text-[16px]">dashboard</span>
-                    Dashboard
-                </a>
-            @else
-                <a href="{{ route('seller.dashboard') }}"
-                   class="w-full py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 text-xs text-primary border border-primary/20 hover:bg-primary/5 transition-all">
-                    <span class="material-symbols-outlined text-[16px]">store</span>
-                    Start Selling
-                </a>
-            @endif
-        @endauth
-        @guest
-            <a href="{{ url('/') }}"
-               class="w-full bg-primary/10 text-primary py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-primary/20 transition-all text-xs">
-                <span class="material-symbols-outlined text-[16px]">app_registration</span>
-                Join Izifai
-            </a>
-        @endguest
-    </div>
-</aside>
-@endsection
-
-{{-- ==================== MOBILE NAV ==================== --}}
-@section('mobile-nav')
-<template x-teleport="body">
-    <div x-show="mobileNav" x-cloak
-         class="fixed inset-0 z-[60] lg:hidden"
-         x-transition:enter="transition ease-out duration-200"
-         x-transition:enter-start="opacity-0"
-         x-transition:enter-end="opacity-100"
-         x-transition:leave="transition ease-in duration-150"
-         x-transition:leave-start="opacity-100"
-         x-transition:leave-end="opacity-0">
-        <div class="absolute inset-0 mobile-nav-overlay" @click="mobileNav = false"></div>
-        <div class="absolute left-0 top-0 h-full w-[280px] bg-surface shadow-2xl flex flex-col"
-             @click.away="mobileNav = false"
-             x-transition:enter="transition ease-out duration-200"
-             x-transition:enter-start="-translate-x-full"
-             x-transition:enter-end="translate-x-0"
-             x-transition:leave="transition ease-in duration-150"
-             x-transition:leave-start="translate-x-0"
-             x-transition:leave-end="-translate-x-full">
-            {{-- Mobile Profile Header --}}
-            <div class="relative h-24 shrink-0">
-                @if($store->banner)
-                    <img src="{{ asset('storage/' . $store->banner) }}" class="w-full h-full object-cover">
-                @else
-                    <div class="w-full h-full bg-gradient-to-br from-primary/60 to-primary"></div>
-                @endif
-                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-                <button @click="mobileNav = false"
-                        class="absolute top-2 right-2 w-7 h-7 bg-black/30 text-white rounded-full flex items-center justify-center hover:bg-black/50 transition-all">
-                    <span class="material-symbols-outlined text-[16px]">close</span>
-                </button>
-                <div class="absolute -bottom-6 left-4">
-                    <div class="w-11 h-11 rounded-xl border-2 border-white bg-white shadow-lg overflow-hidden">
-                        @if($store->logo)
-                            <img src="{{ asset('storage/' . $store->logo) }}" class="w-full h-full object-cover">
-                        @else
-                            <div class="w-full h-full bg-primary/10 flex items-center justify-center text-base font-black text-primary">
-                                {{ substr($store->name, 0, 1) }}
-                            </div>
-                        @endif
-                    </div>
-                </div>
-            </div>
-
-            {{-- Mobile Store Info --}}
-            <div class="pt-7 px-4 pb-3 border-b border-outline-variant/10">
-                <h2 class="text-sm font-bold text-on-surface truncate">{{ $store->name }}</h2>
-                <div class="flex items-center gap-2 mt-0.5">
-                    @if($store->is_verified)
-                        <span class="inline-flex items-center gap-0.5 text-[10px] font-bold text-primary">
-                            <span class="material-symbols-outlined text-[11px]" style="font-variation-settings: 'FILL' 1;">verified</span>
-                            {{ $store->badge ?: 'Verified' }}
-                        </span>
-                    @endif
-                    <span class="text-[10px] text-on-surface-variant">{{ $totalProducts }} products</span>
-                </div>
-            </div>
-
-            {{-- Mobile Navigation --}}
-            <nav class="flex-1 py-3 px-3 space-y-0.5 overflow-y-auto">
-                <a href="#showroom" class="scroll-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-primary font-semibold bg-primary/5 border-l-[3px] border-primary transition-all text-sm" @click="mobileNav = false">
-                    <span class="material-symbols-outlined text-[20px]">storefront</span>
-                    Showroom
-                </a>
-                <a href="#catalog" class="scroll-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-higher transition-all text-sm font-medium" @click="mobileNav = false">
-                    <span class="material-symbols-outlined text-[20px]">grid_view</span>
-                    Collections
-                </a>
-                <a href="#reviews" class="scroll-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-higher transition-all text-sm font-medium" @click="mobileNav = false">
-                    <span class="material-symbols-outlined text-[20px]">star</span>
-                    Reviews
-                    @if($totalReviews > 0)
-                        <span class="ml-auto text-[10px] font-bold bg-surface-container-high px-1.5 py-0.5 rounded-full">{{ $totalReviews }}</span>
-                    @endif
-                </a>
-                <a href="#store-info" class="scroll-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container-higher transition-all text-sm font-medium" @click="mobileNav = false">
-                    <span class="material-symbols-outlined text-[20px]">info</span>
-                    Store Info
-                </a>
-                @if($store->location)
-                    <div class="px-3 py-2 text-[11px] text-on-surface-variant flex items-center gap-2 border-t border-outline-variant/10 pt-3 mt-2">
-                        <span class="material-symbols-outlined text-[16px]">location_on</span>
-                        <span class="truncate">{{ $store->location }}</span>
-                    </div>
-                @endif
-            </nav>
-
-            {{-- Mobile Actions --}}
-            <div class="px-4 py-4 border-t border-outline-variant/10 space-y-2">
-                @if($store->whatsapp_number)
-                    <a href="https://wa.me/{{ $store->whatsapp_number }}" target="_blank"
-                       class="w-full bg-[#25D366] text-white py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#128C7E] transition-all text-xs shadow-sm">
-                        {!! $whatsappIcon !!}
-                        Message Seller
-                    </a>
-                @endif
-                <a href="https://chat.whatsapp.com/J3of97nRhL5IdTSXpScYLl" target="_blank"
-                   class="w-full py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 text-xs text-on-surface-variant border border-outline-variant/20 hover:bg-surface-container-higher transition-all">
-                    <span class="material-symbols-outlined text-[16px]">groups</span>
-                    Join WhatsApp Group
-                </a>
-                @auth
-                    @if(auth()->id() === $store->user_id)
-                        <a href="{{ route('seller.dashboard') }}"
-                           class="w-full bg-primary text-on-primary py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-all text-xs">
-                            <span class="material-symbols-outlined text-[16px]">dashboard</span>
-                            Dashboard
-                        </a>
-                    @else
-                        <a href="{{ route('seller.dashboard') }}"
-                           class="w-full py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 text-xs text-primary border border-primary/20 hover:bg-primary/5 transition-all">
-                            <span class="material-symbols-outlined text-[16px]">store</span>
-                            Start Selling
-                        </a>
-                    @endif
-                @endauth
-                @guest
-                    <a href="{{ url('/') }}"
-                       class="w-full bg-primary/10 text-primary py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-primary/20 transition-all text-xs">
-                        <span class="material-symbols-outlined text-[16px]">app_registration</span>
-                        Join Izifai
-                    </a>
-                @endguest
-            </div>
-        </div>
-    </div>
-</template>
-@endsection
-
-{{-- ==================== TOPBAR ==================== --}}
-@section('topbar')
-<header class="fixed top-0 right-0 left-0 lg:left-[260px] lg:w-[calc(100%-260px)] h-[64px] lg:h-[72px] bg-surface/80 backdrop-blur-md flex items-center justify-between px-4 lg:px-8 z-40 shadow-sm">
-    <div class="flex items-center gap-3 lg:gap-6 flex-1 min-w-0">
-        <button @click="mobileNav = true" class="lg:hidden p-2 -ml-2 text-on-surface-variant hover:text-primary transition-colors">
-            <span class="material-symbols-outlined">menu</span>
-        </button>
-        <h2 class="text-lg lg:text-[24px] leading-8 font-bold text-primary tracking-tight truncate">{{ $store->name }}</h2>
-        <div class="relative w-full max-w-md hidden sm:block"
-             x-data="storeSearch('{{ $store->slug }}')"
-             @click.away="results = []; open = false">
-            <form action="{{ route('stores.show', $store->slug) }}" method="GET" @submit="open = false">
-                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline z-10">search</span>
-                <input name="search" x-model="query" @input.debounce.300ms="search()" @focus="if (results.length) open = true"
-                       class="w-full pl-12 pr-4 py-2 bg-surface-container-low border outline-variant/30 rounded-full text-sm focus:ring-primary focus:border-primary"
-                       placeholder="Search in this store..." type="text" autocomplete="off"/>
-            </form>
-            <div x-show="open && results.length" x-cloak
-                 class="absolute top-full mt-2 left-0 right-0 bg-surface-container-lowest rounded-2xl shadow-xl border border-outline-variant/20 overflow-hidden z-50 max-h-[400px] overflow-y-auto">
-                <template x-for="product in results" :key="product.id">
-                    <a :href="'/products/' + product.slug"
-                       class="flex items-center gap-3 p-3 hover:bg-surface-container transition-all border-b border-outline-variant/10 last:border-0">
-                        <div class="w-10 h-10 rounded-lg bg-surface-container-high overflow-hidden shrink-0">
-                            <img x-show="product.image" :src="'/storage/' + product.image"
-                                 class="w-full h-full object-cover" alt="">
-                            <div x-show="!product.image"
-                                 class="w-full h-full flex items-center justify-center text-outline">
-                                <span class="material-symbols-outlined text-[18px]">image</span>
-                            </div>
-                        </div>
-                        <div class="min-w-0 flex-1">
-                            <p class="text-sm font-bold text-on-surface truncate" x-text="product.name"></p>
-                            <p class="text-xs text-on-surface-variant" x-show="product.category" x-text="product.category"></p>
-                        </div>
-                        <div class="text-right shrink-0">
-                            <p class="text-sm font-black text-primary" x-text="Number(product.price).toLocaleString() + ' FCFA'"></p>
-                            <p x-show="product.old_price" class="text-[10px] text-on-surface-variant line-through"
-                               x-text="Number(product.old_price).toLocaleString() + ' FCFA'"></p>
-                        </div>
-                    </a>
-                </template>
-            </div>
-            <div x-show="open && !results.length && query.length > 2" x-cloak
-                 class="absolute top-full mt-2 left-0 right-0 bg-surface-container-lowest rounded-2xl shadow-xl border border-outline-variant/20 overflow-hidden z-50">
-                <div class="p-6 text-center text-sm text-on-surface-variant">
-                    <span class="material-symbols-outlined text-2xl">search_off</span>
-                    <p class="mt-1 font-medium">No products found</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="flex items-center gap-2 lg:gap-4">
-        <button @click="document.getElementById('mobile-search').classList.toggle('hidden')" class="sm:hidden p-2 text-on-surface-variant hover:text-primary transition-colors">
-            <span class="material-symbols-outlined">search</span>
-        </button>
-        @guest
-            <a href="{{ url('/') }}"
-               class="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 bg-primary text-on-primary rounded-full text-xs font-bold hover:opacity-90 transition-all shadow-sm whitespace-nowrap">
-                <span class="material-symbols-outlined text-[16px]">app_registration</span>
-                Join Izifai Today
-            </a>
-        @endguest
-        @auth
-            @if(auth()->id() !== $store->user_id)
-                <button class="p-2 text-on-surface-variant hover:text-primary transition-colors hidden sm:block">
-                    <span class="material-symbols-outlined">favorite</span>
-                </button>
-            @endif
-        @endauth
-        <div class="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-surface-container-highest overflow-hidden ring-2 ring-primary/20 shrink-0">
+{{-- ==================== STORE NAV (MOBILE) ==================== --}}
+@section('store-nav')
+<div class="flex items-center gap-3 py-2.5 overflow-x-auto no-scrollbar">
+    <div class="flex items-center gap-2.5 shrink-0">
+        <div class="w-8 h-8 rounded-lg overflow-hidden ring-2 ring-primary/10 bg-white shrink-0">
             @if($store->logo)
-                <img src="{{ asset('storage/' . $store->logo) }}" alt="{{ $store->name }}"
-                     class="w-full h-full object-cover">
+                <img src="{{ asset('storage/' . $store->logo) }}" class="w-full h-full object-cover">
             @else
-                <div class="w-full h-full flex items-center justify-center text-xs lg:text-sm font-bold text-primary bg-surface-container-high">
+                <div class="w-full h-full bg-primary/5 flex items-center justify-center text-xs font-bold text-primary">
+                    {{ substr($store->name, 0, 1) }}
+                </div>
+            @endif
+        </div>
+        <div class="min-w-0">
+            <p class="text-sm font-bold text-on-surface truncate max-w-[120px] lg:max-w-none">{{ $store->name }}</p>
+        </div>
+    </div>
+    <span class="w-px h-5 bg-gray-200 shrink-0"></span>
+    <nav class="flex items-center gap-1 shrink-0">
+        <a href="#showroom" class="scroll-link px-3 py-1.5 rounded-lg text-xs font-semibold bg-primary text-on-primary whitespace-nowrap">Showroom</a>
+        <a href="#catalog" class="scroll-link px-3 py-1.5 rounded-lg text-xs font-semibold text-on-surface-variant hover:bg-gray-100 whitespace-nowrap transition-colors">Collections</a>
+        <a href="#reviews" class="scroll-link px-3 py-1.5 rounded-lg text-xs font-semibold text-on-surface-variant hover:bg-gray-100 whitespace-nowrap transition-colors">Reviews</a>
+        <a href="#store-info" class="scroll-link px-3 py-1.5 rounded-lg text-xs font-semibold text-on-surface-variant hover:bg-gray-100 whitespace-nowrap transition-colors">Store Info</a>
+    </nav>
+</div>
+@endsection
+
+{{-- ==================== STORE SIDEBAR (DESKTOP) ==================== --}}
+@section('store-sidebar')
+<div class="relative h-28 shrink-0">
+    @if($store->banner)
+        <img src="{{ asset('storage/' . $store->banner) }}" class="w-full h-full object-cover">
+    @else
+        <div class="w-full h-full bg-gradient-to-br from-primary/60 to-primary"></div>
+    @endif
+    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+    <div class="absolute -bottom-8 left-4 flex items-end gap-3">
+        <div class="w-14 h-14 rounded-xl border-2 border-white bg-white shadow-lg overflow-hidden">
+            @if($store->logo)
+                <img src="{{ asset('storage/' . $store->logo) }}" class="w-full h-full object-cover">
+            @else
+                <div class="w-full h-full bg-primary/10 flex items-center justify-center text-lg font-black text-primary">
                     {{ substr($store->name, 0, 1) }}
                 </div>
             @endif
         </div>
     </div>
-</header>
-@endsection
-
-{{-- ==================== MOBILE SEARCH ==================== --}}
-@section('mobile-search')
-<div id="mobile-search" class="hidden fixed top-[64px] left-0 right-0 bg-surface/95 backdrop-blur-md px-4 py-3 z-30 lg:hidden border-b border-outline-variant/10"
-     x-data="storeSearch('{{ $store->slug }}')"
-     @click.away="results = []; open = false">
-    <form action="{{ route('stores.show', $store->slug) }}" method="GET" @submit="open = false">
-        <div class="relative">
-            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline z-10">search</span>
-            <input name="search" x-model="query" @input.debounce.300ms="search()" @focus="if (results.length) open = true"
-                   class="w-full pl-12 pr-4 py-3 bg-surface-container-low border outline-variant/30 rounded-full text-sm focus:ring-primary focus:border-primary"
-                   placeholder="Search in this store..." type="text" autocomplete="off"/>
+</div>
+<div class="pt-10 px-4 pb-4 border-b border-gray-100">
+    <h2 class="text-base font-bold text-on-surface truncate">{{ $store->name }}</h2>
+    <div class="flex flex-wrap items-center gap-2 mt-1">
+        @if($store->is_verified)
+            <span class="inline-flex items-center gap-0.5 text-[10px] font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded-full">
+                <span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+                {{ $store->badge ?: 'Verified' }}
+            </span>
+        @endif
+        <span class="flex items-center gap-0.5 text-[11px] text-on-surface-variant">
+            <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+            {{ number_format($avgRating, 1) }}
+        </span>
+        <span class="text-[11px] text-on-surface-variant">{{ $totalProducts }} products</span>
+    </div>
+</div>
+<nav class="flex-1 py-4 px-3 space-y-0.5 overflow-y-auto">
+    <a href="#showroom" class="scroll-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-primary font-semibold bg-primary/5 border-l-[3px] border-primary transition-all text-sm">
+        <span class="material-symbols-outlined text-[20px]">storefront</span>
+        Showroom
+    </a>
+    <a href="#catalog" class="scroll-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-gray-50 transition-all text-sm font-medium">
+        <span class="material-symbols-outlined text-[20px]">grid_view</span>
+        Collections
+    </a>
+    <a href="#reviews" class="scroll-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-gray-50 transition-all text-sm font-medium">
+        <span class="material-symbols-outlined text-[20px]">star</span>
+        Reviews
+        @if($totalReviews > 0)
+            <span class="ml-auto text-[10px] font-bold bg-gray-100 px-1.5 py-0.5 rounded-full">{{ $totalReviews }}</span>
+        @endif
+    </a>
+    <a href="#store-info" class="scroll-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-gray-50 transition-all text-sm font-medium">
+        <span class="material-symbols-outlined text-[20px]">info</span>
+        Store Info
+    </a>
+    @if($store->location)
+        <div class="px-3 py-2 text-[11px] text-on-surface-variant flex items-center gap-2 border-t border-gray-100 pt-3 mt-2">
+            <span class="material-symbols-outlined text-[16px]">location_on</span>
+            <span class="truncate">{{ $store->location }}</span>
         </div>
-    </form>
-    <div x-show="open && results.length" x-cloak
-         class="mt-2 bg-surface-container-lowest rounded-2xl shadow-xl border border-outline-variant/20 overflow-hidden max-h-[360px] overflow-y-auto">
-        <template x-for="product in results" :key="product.id">
-            <a :href="'/products/' + product.slug"
-               class="flex items-center gap-3 p-3 hover:bg-surface-container transition-all border-b border-outline-variant/10 last:border-0">
-                <div class="w-10 h-10 rounded-lg bg-surface-container-high overflow-hidden shrink-0">
-                    <img x-show="product.image" :src="'/storage/' + product.image"
-                         class="w-full h-full object-cover" alt="">
-                    <div x-show="!product.image"
-                         class="w-full h-full flex items-center justify-center text-outline">
-                        <span class="material-symbols-outlined text-[18px]">image</span>
-                    </div>
-                </div>
-                <div class="min-w-0 flex-1">
-                    <p class="text-sm font-bold text-on-surface truncate" x-text="product.name"></p>
-                    <p class="text-xs text-on-surface-variant" x-show="product.category" x-text="product.category"></p>
-                </div>
-                <div class="text-right shrink-0">
-                    <p class="text-sm font-black text-primary" x-text="Number(product.price).toLocaleString() + ' FCFA'"></p>
-                </div>
+    @endif
+</nav>
+<div class="px-4 py-4 border-t border-gray-100 space-y-2">
+    @if($store->whatsapp_number)
+        <a href="https://wa.me/{{ $store->whatsapp_number }}?text={{ urlencode('Hi ' . $store->name . ', I saw your store on Izifai and would like to know more.') }}" target="_blank"
+           class="w-full bg-[#25D366] text-white py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#128C7E] transition-all text-xs shadow-sm">
+            {!! $whatsappIcon !!}
+            Message Seller
+        </a>
+    @endif
+    <a href="https://chat.whatsapp.com/J3of97nRhL5IdTSXpScYLl" target="_blank"
+       class="w-full py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 text-xs text-on-surface-variant border border-gray-200 hover:bg-gray-50 transition-all">
+        <span class="material-symbols-outlined text-[16px]">groups</span>
+        Join WhatsApp Group
+    </a>
+    @auth
+        @if(auth()->id() === $store->user_id)
+            <a href="{{ route('seller.dashboard') }}"
+               class="w-full bg-primary text-on-primary py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-all text-xs">
+                <span class="material-symbols-outlined text-[16px]">dashboard</span>
+                Dashboard
             </a>
-        </template>
-    </div>
-    <div x-show="open && !results.length && query.length > 2" x-cloak
-         class="mt-2 bg-surface-container-lowest rounded-2xl shadow-xl border border-outline-variant/20 overflow-hidden">
-        <div class="p-4 text-center text-sm text-on-surface-variant">
-            <span class="material-symbols-outlined text-2xl">search_off</span>
-            <p class="mt-1 font-medium">No products found</p>
-        </div>
-    </div>
+        @else
+            <a href="{{ route('seller.dashboard') }}"
+               class="w-full py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 text-xs text-primary border border-primary/20 hover:bg-primary/5 transition-all">
+                <span class="material-symbols-outlined text-[16px]">store</span>
+                Start Selling
+            </a>
+        @endif
+    @endauth
+    @guest
+        <a href="{{ url('/') }}"
+           class="w-full bg-primary/10 text-primary py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-primary/20 transition-all text-xs">
+            <span class="material-symbols-outlined text-[16px]">app_registration</span>
+            Join Izifai
+        </a>
+    @endguest
 </div>
 @endsection
 
 {{-- ==================== CONTENT ==================== --}}
 @section('content')
+<div class="px-4 sm:px-6 lg:px-8 pt-12 lg:pt-4 pb-4 sm:pb-6 space-y-4 sm:space-y-6 lg:space-y-8">
 
 {{-- HERO BANNER --}}
 @php $heroProductThumbs = $topProducts->take(4); @endphp
-<section id="showroom" class="-mx-4 sm:-mx-0 relative h-[240px] sm:h-[300px] lg:h-[360px] overflow-hidden">
-    @if($store->banner)
-        <img class="w-full h-full object-cover" src="{{ asset('storage/' . $store->banner) }}" alt="{{ $store->name }}">
-    @else
-        <div class="w-full h-full bg-gradient-to-br from-primary/80 to-primary"></div>
-    @endif
-    <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
-    <div class="absolute bottom-0 left-0 right-0 p-4 sm:p-6 lg:p-8">
-        <div class="flex items-end justify-between gap-3">
-            <div class="flex items-center gap-3 lg:gap-4 min-w-0">
-                <div class="w-14 h-14 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-xl lg:rounded-2xl bg-white p-1 lg:p-1.5 shadow-lg ring-4 ring-primary/10 shrink-0 -mt-8 sm:-mt-12 lg:-mt-16">
-                    @if($store->logo)
-                        <img src="{{ asset('storage/' . $store->logo) }}" alt="{{ $store->name }} Logo"
-                             class="w-full h-full object-cover rounded-lg lg:rounded-xl">
-                    @else
-                        <div class="w-full h-full rounded-lg lg:rounded-xl bg-primary/10 flex items-center justify-center text-lg lg:text-3xl font-black text-primary">
-                            {{ substr($store->name, 0, 1) }}
-                        </div>
-                    @endif
-                </div>
-                <div class="text-white min-w-0 mt-2 sm:mt-0">
-                    <div class="flex flex-wrap items-center gap-1.5 mb-0.5">
-                        <h1 class="text-lg sm:text-2xl lg:text-[28px] lg:leading-[34px] font-bold tracking-tight truncate">{{ $store->name }}</h1>
-                        @if($store->is_verified)
-                            <span class="bg-primary-container text-on-primary-container px-1.5 py-0.5 rounded-full text-[8px] lg:text-[10px] font-bold flex items-center gap-0.5 shrink-0">
-                                <span class="material-symbols-outlined text-[10px] lg:text-[12px]" style="font-variation-settings: 'FILL' 1;">verified</span>
-                                <span class="hidden xs:inline">VERIFIED</span>
-                            </span>
-                        @endif
-                    </div>
-                    @if($store->description)
-                        <p class="text-[11px] sm:text-sm lg:text-base opacity-90 max-w-xl line-clamp-1 lg:line-clamp-2">{{ $store->description }}</p>
-                    @endif
-                    <div class="flex flex-wrap items-center gap-1.5 mt-1.5">
-                        @if($heroProductThumbs->count() > 0)
-                        <div class="flex -space-x-2">
-                            @foreach($heroProductThumbs as $p)
-                                <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-full overflow-hidden border-2 border-white/80 shadow-sm shrink-0">
-                                    @if($p->images->first())
-                                        <img src="{{ asset('storage/' . $p->images->first()->path) }}" class="w-full h-full object-cover" alt="">
-                                    @else
-                                        <div class="w-full h-full bg-white/20 flex items-center justify-center text-white/60">
-                                            <span class="material-symbols-outlined text-[10px]">shopping_bag</span>
-                                        </div>
+<section id="showroom" class="mt-3 sm:mt-4">
+    <div class="relative min-h-[180px] sm:min-h-[260px] lg:min-h-[320px] overflow-hidden rounded-2xl shadow-sm">
+        @if($store->banner)
+            <img class="absolute inset-0 w-full h-full object-cover" src="{{ asset('storage/' . $store->banner) }}" alt="{{ $store->name }}">
+        @else
+            <div class="absolute inset-0 bg-gradient-to-br from-primary/80 to-primary"></div>
+        @endif
+        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+        <div class="absolute top-[-120px] right-[-80px] w-[400px] h-[400px] rounded-full bg-white/5 blur-[80px]"></div>
+        <div class="absolute bottom-[-100px] left-[-60px] w-[300px] h-[300px] rounded-full bg-white/5 blur-[80px]"></div>
+        <div class="absolute bottom-0 left-0 right-0 px-5 sm:px-6 lg:px-8 py-3 sm:py-6 lg:py-8">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex items-end justify-between gap-4">
+                    <div class="min-w-0 max-w-2xl">
+                        <div class="flex items-center gap-2">
+                            <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-white shrink-0 ring-2 ring-white/30">
+                                @if($store->logo)
+                                    <img src="{{ asset('storage/' . $store->logo) }}" alt="" class="w-6 h-6 sm:w-7 sm:h-7 object-cover rounded-lg">
+                                @else
+                                    <span class="material-symbols-outlined text-lg sm:text-[22px]" style="font-variation-settings: 'FILL' 1;">store</span>
+                                @endif
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-1.5">
+                                    <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-white tracking-tight truncate">{{ $store->name }}</h1>
+                                    @if($store->is_verified)
+                                        <span class="bg-primary-container text-on-primary-container px-1.5 py-0.5 rounded-full text-[8px] lg:text-[10px] font-bold flex items-center gap-0.5 shrink-0">
+                                            <span class="material-symbols-outlined text-[10px] lg:text-[12px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+                                            <span class="hidden xs:inline">VERIFIED</span>
+                                        </span>
                                     @endif
                                 </div>
-                            @endforeach
+                                @if($store->description)
+                                    <p class="text-[11px] sm:text-sm text-white/80 max-w-xl line-clamp-1">{{ $store->description }}</p>
+                                @endif
+                            </div>
                         </div>
+                        <div class="flex flex-wrap items-center gap-1.5 mt-1 sm:mt-2">
+                            @if($heroProductThumbs->count() > 0)
+                            <div class="flex -space-x-1.5">
+                                @foreach($heroProductThumbs as $p)
+                                    <a href="{{ route('products.show', $p->slug) }}" class="w-5 h-5 sm:w-6 sm:h-6 rounded-full border-[1.5px] border-white/70 overflow-hidden bg-white shadow-sm hover:z-10 relative transition-transform hover:scale-110">
+                                        @if($p->images->first())
+                                            <img src="{{ asset('storage/' . $p->images->first()->path) }}" class="w-full h-full object-cover" alt="">
+                                        @else
+                                            <div class="w-full h-full bg-white/30 flex items-center justify-center"><span class="material-symbols-outlined text-[8px] text-white/60">photo</span></div>
+                                        @endif
+                                    </a>
+                                @endforeach
+                            </div>
+                            @endif
+                            <span class="text-white/80 text-[10px] sm:text-xs font-bold">
+                                <span class="text-sm sm:text-base font-black">{{ $totalProducts }}</span> products
+                            </span>
+                            <span class="text-white/30 hidden sm:inline">•</span>
+                            <span class="text-white/60 text-[9px] sm:text-[11px] font-medium hidden sm:inline">Shop on Izifai</span>
+                        </div>
+                    </div>
+                    <div class="flex gap-1.5 sm:gap-2 shrink-0">
+                        @if($store->whatsapp_number)
+                        <a href="https://wa.me/{{ $store->whatsapp_number }}?text={{ urlencode('Hi ' . $store->name . ', I saw your store on Izifai!') }}" target="_blank"
+                           class="flex items-center justify-center gap-1 p-2 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl text-white text-[10px] sm:text-xs font-bold bg-[#25D366] hover:bg-[#128C7E] transition-all shadow-sm">
+                            {!! $whatsappIcon !!}
+                            <span class="hidden sm:inline">WhatsApp</span>
+                        </a>
                         @endif
-                        <span class="text-white text-[11px] sm:text-sm font-bold opacity-90">
-                            <span class="text-base sm:text-lg font-black">{{ $totalProducts }}</span> products
-                        </span>
-                        <span class="text-white/40">•</span>
-                        <span class="text-white/70 text-[10px] sm:text-xs font-medium">Shop on Izifai</span>
+                        <button onclick="copyToClipboard(window.location.href, this, 'Done!')"
+                                class="flex items-center justify-center gap-1 p-2 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl text-white text-[10px] sm:text-xs font-bold bg-white/20 hover:bg-white/30 transition-all backdrop-blur-sm">
+                            <span class="material-symbols-outlined text-[16px] sm:text-[18px] copy-icon">share</span>
+                            <span class="hidden sm:inline copy-label">Share</span>
+                        </button>
                     </div>
                 </div>
-            </div>
-            <div class="flex gap-1.5 sm:gap-2 shrink-0">
-                @if($store->whatsapp_number)
-                <a href="https://wa.me/{{ $store->whatsapp_number }}" target="_blank"
-                   class="flex items-center justify-center gap-1 p-2 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl text-white text-[10px] sm:text-xs font-bold bg-[#25D366] hover:bg-[#128C7E] transition-all shadow-sm">
-                    {!! $whatsappIcon !!}
-                    <span class="hidden sm:inline">WhatsApp</span>
-                </a>
-                @endif
-                <button onclick="copyToClipboard(window.location.href, this, 'Done!')"
-                        class="flex items-center justify-center gap-1 p-2 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl text-white text-[10px] sm:text-xs font-bold bg-white/20 hover:bg-white/30 transition-all backdrop-blur-sm">
-                    <span class="material-symbols-outlined text-[16px] sm:text-[18px] copy-icon">share</span>
-                    <span class="hidden sm:inline copy-label">Share</span>
-                </button>
             </div>
         </div>
     </div>
@@ -679,7 +442,7 @@
                 <p class="text-sm font-bold text-on-surface-variant mt-3">No products found</p>
                 @if($store->whatsapp_number)
                     <p class="text-xs text-on-surface-variant mt-1">Contact the seller for available items</p>
-                    <a href="https://wa.me/{{ $store->whatsapp_number }}" target="_blank"
+                    <a href="https://wa.me/{{ $store->whatsapp_number }}?text={{ urlencode('Hi ' . $store->name . ', I am interested in your products on Izifai.') }}" target="_blank"
                        class="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-[#25D366] text-white rounded-lg text-xs font-bold hover:bg-[#128C7E] transition-all">
                         {!! $whatsappIcon !!}
                         Contact via WhatsApp
@@ -798,7 +561,7 @@
 
 {{-- STORE INFO --}}
 <section id="store-info" class="scroll-mt-[64px] lg:scroll-mt-[72px]"
-         x-data="{ showInfo: false }">
+         x-data="{ showInfo: true }">
     <button @click="showInfo = !showInfo"
             class="w-full flex items-center justify-between p-3 sm:p-4 bg-surface-container-lowest rounded-xl border border-outline-variant/10 hover:shadow-sm transition-all">
         <span class="text-sm font-bold text-on-surface flex items-center gap-2">
@@ -812,6 +575,17 @@
          x-transition:enter="transition ease-out duration-200"
          x-transition:enter-start="opacity-0 -translate-y-1"
          x-transition:enter-end="opacity-100 translate-y-0">
+        @if($store->description)
+        <div class="flex items-start gap-2.5">
+            <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0 mt-0.5">
+                <span class="material-symbols-outlined text-[16px]">description</span>
+            </div>
+            <div class="min-w-0 flex-1">
+                <p class="text-[9px] font-semibold text-on-surface-variant uppercase tracking-wider">About</p>
+                <p class="text-xs text-on-surface leading-relaxed">{{ $store->description }}</p>
+            </div>
+        </div>
+        @endif
         @if($store->location)
         <div class="flex items-center gap-2.5">
             <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
@@ -830,7 +604,7 @@
             </div>
             <div class="min-w-0">
                 <p class="text-[9px] font-semibold text-on-surface-variant uppercase tracking-wider">WhatsApp</p>
-                <a href="https://wa.me/{{ $store->whatsapp_number }}" target="_blank"
+                <a href="https://wa.me/{{ $store->whatsapp_number }}?text={{ urlencode('Hi, I found your store on Izifai.') }}" target="_blank"
                    class="text-xs font-bold text-primary hover:underline truncate block">{{ $store->whatsapp_number }}</a>
             </div>
         </div>
@@ -883,6 +657,7 @@
     </div>
 </section>
 
+</div>
 @endsection
 
 {{-- ==================== FOOTER ==================== --}}

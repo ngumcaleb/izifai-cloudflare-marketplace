@@ -28,13 +28,26 @@
 
     {{-- RIGHT: CONTENT --}}
     <div class="flex-1 flex flex-col min-h-dvh lg:min-h-screen bg-surface-container-lowest">
-        <div class="lg:hidden flex items-center gap-3 px-6 py-5 border-b border-outline-variant/20 bg-surface">
-            <a href="/"><x-application-logo class="h-7" /></a>
+        {{-- Mobile: Hero with background --}}
+        <div class="lg:hidden relative overflow-hidden bg-gradient-to-br from-[#00210d] via-[#003317] to-[#005228] px-6 pt-5 pb-8">
+            <div class="absolute top-[-60px] right-[-60px] w-40 h-40 rounded-full bg-white/5 blur-2xl"></div>
+            <div class="absolute bottom-[-40px] left-[-40px] w-48 h-48 rounded-full bg-white/5 blur-2xl"></div>
+            <a href="/" class="relative z-10 inline-block mb-5">
+                <x-application-logo class="h-7 w-auto brightness-0 invert" />
+            </a>
+            <div class="relative z-10 flex items-center gap-3">
+                <span class="text-3xl leading-none">🇨🇲</span>
+                <div>
+                    <p class="text-sm font-bold text-white">One Last Step — Verify Your Email</p>
+                    <p class="text-xs text-white/70">Check your inbox for the verification link. Activate your store and start selling.</p>
+                </div>
+            </div>
         </div>
-        <div class="flex-1 flex items-center justify-center px-5 py-10 lg:py-0">
+
+        <div class="flex-1 flex items-center justify-center px-5 py-6 lg:py-0">
             <div class="w-full max-w-md">
 
-                <div class="mb-8">
+                <div class="hidden lg:block mb-8">
                     <h2 class="text-2xl font-black text-on-surface tracking-tight">Verify email</h2>
                     <p class="text-sm text-on-surface-variant mt-4 leading-relaxed">
                         Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you?

@@ -8,7 +8,7 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $query = \App\Models\Product::active()->with(['images', 'store', 'savedUsers']);
+        $query = \App\Models\Product::active()->with(['images', 'store', 'savedUsers', 'category']);
 
         if ($request->filled('q')) {
             $q = $request->q;
@@ -33,17 +33,80 @@ class ProductController extends Controller
             $description = "Browse the latest wholesale and retail products from verified sellers in Cameroon.";
         }
 
-        $products = $query->latest()->paginate(24)->withQueryString();
+        if ($request->filled('category')) {
+            $query->whereHas('category', function ($q) use ($request) {
+                $q->where('slug', $request->category);
+            });
+        }
+
+        if ($request->filled('min_price')) {
+            $query->where('price', '>=', (int) $request->min_price);
+        }
+
+        if ($request->filled('max_price')) {
+            $query->where('price', '<=', (int) $request->max_price);
+        }
+
+        $sort = $request->get('sort', 'random');
+        switch ($sort) {
+            case 'price_low':
+                $query->orderBy('price', 'asc');
+                break;
+            case 'price_high':
+                $query->orderBy('price', 'desc');
+                break;
+            default:
+                $query->inRandomOrder();
+                break;
+        }
+
+        $products = $query->paginate(24)->withQueryString();
+
+        $categories = \App\Models\Category::whereHas('products', function ($q) {
+            $q->whereHas('store', fn($s) => $s->where('status', 'active'));
+        })->get();
+
+        $selectedCategory = $request->category;
+
+        $trendingProducts = \App\Models\Product::active()
+            ->with(['images', 'store'])
+            ->inRandomOrder()
+            ->take(8)
+            ->get();
+
+        $mostContactedProducts = \App\Models\Product::active()
+            ->with(['images', 'store'])
+            ->inRandomOrder()
+            ->take(8)
+            ->get();
+
+        $topStores = \App\Models\Store::where('status', 'active')
+            ->withCount(['products' => fn($q) => $q->active()])
+            ->having('products_count', '>', 0)
+            ->orderBy('is_verified', 'desc')
+            ->orderBy('products_count', 'desc')
+            ->take(4)
+            ->get();
+
+        $allProductIds = collect($products->pluck('id'))
+            ->concat($trendingProducts->pluck('id'))
+            ->concat($mostContactedProducts->pluck('id'))
+            ->unique()
+            ->toArray();
 
         $savedProductIds = [];
         if (auth()->check()) {
             $savedProductIds = \App\Models\SavedProduct::where('user_id', auth()->id())
-                ->whereIn('product_id', $products->pluck('id'))
+                ->whereIn('product_id', $allProductIds)
                 ->pluck('product_id')
                 ->toArray();
         }
 
-        return view('products.index', compact('products', 'title', 'description', 'savedProductIds'));
+        return view('products.index', compact(
+            'products', 'title', 'description', 'savedProductIds',
+            'categories', 'selectedCategory', 'trendingProducts',
+            'mostContactedProducts', 'topStores'
+        ));
     }
 
     public function localSourcing(Request $request)
