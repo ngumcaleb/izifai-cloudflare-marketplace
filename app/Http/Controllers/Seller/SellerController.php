@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Store;
 use App\Models\PaymentMethod;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class SellerController extends Controller
 {
@@ -117,14 +118,23 @@ class SellerController extends Controller
         }
 
         if ($request->hasFile('logo')) {
+            if ($store->logo) {
+                Storage::disk('public')->delete($store->logo);
+            }
             $data['logo'] = $request->file('logo')->store('stores/logos', 'public');
         }
 
         if ($request->hasFile('banner')) {
+            if ($store->banner) {
+                Storage::disk('public')->delete($store->banner);
+            }
             $data['banner'] = $request->file('banner')->store('stores/banners', 'public');
         }
 
         if ($request->hasFile('profile_photo')) {
+            if ($user->profile_photo_path) {
+                Storage::disk('public')->delete($user->profile_photo_path);
+            }
             $user->profile_photo_path = $request->file('profile_photo')->store('profile_photos', 'public');
         }
         
