@@ -7,6 +7,39 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
 
 @section('title', $product->name . ' - ' . $store->name . ' Showroom')
 @section('description', strip_tags($product->description) ?: $product->name . ' on Izifai')
+@section('og_title', $product->name . ' - ' . $store->name)
+@section('og_description', strip_tags($product->description) ?: $product->name . ' on Izifai')
+@section('twitter_title', $product->name . ' - ' . $store->name)
+@section('twitter_description', strip_tags($product->description) ?: $product->name . ' on Izifai')
+@php
+    $ogImg = $product->images->first() ? asset('storage/' . $product->images->first()->path) : asset('favicon.ico');
+@endphp
+@section('og_image', $ogImg)
+@section('twitter_image', $ogImg)
+
+@push('scripts')
+<script type="application/ld+json">
+{
+    "@@context": "https://schema.org",
+    "@@type": "Product",
+    "name": "{{ $product->name }}",
+    "description": "{{ strip_tags($product->description) ?: $product->name }}",
+    "image": "{{ $ogImg ?: asset('favicon.ico') }}",
+    "offers": {
+        "@@type": "Offer",
+        "priceCurrency": "XAF",
+        "price": "{{ $product->price }}",
+        "availability": "{{ $product->stock_status === 'in_stock' ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock' }}",
+        "url": "{{ url()->current() }}",
+        "seller": {
+            "@@type": "Store",
+            "name": "{{ $store->name }}",
+            "url": "{{ route('stores.show', $store->slug) }}"
+        }
+    }
+}
+</script>
+@endpush
 
 {{-- ==================== STORE NAV ==================== --}}
 @section('store-nav')
