@@ -58,9 +58,6 @@
     .animate-dot-pulse { animation: dotPulse 1.5s ease-in-out infinite; }
     .animate-dot-pulse-delayed { animation: dotPulse 1.5s ease-in-out 0.5s infinite; }
     .animate-dot-pulse-slower { animation: dotPulse 1.5s ease-in-out 1s infinite; }
-    .hero-bg-home {
-        background: linear-gradient(135deg, #00210d 0%, #003317 30%, #005228 60%, #006d38 100%);
-    }
 </style>
 @endpush
 
@@ -69,8 +66,9 @@
 {{-- ===== 1. HERO ===== --}}
 <section class="mx-3 sm:mx-6 lg:mx-8 mt-3 sm:mt-4">
     <div class="relative flex flex-col justify-end min-h-[280px] sm:min-h-[300px] lg:min-h-[380px] overflow-hidden rounded-2xl shadow-sm">
-        <div class="absolute inset-0 hero-bg-home"></div>
-        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+        @php $heroImage = \App\Models\Setting::get('hero_image'); @endphp
+        <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('{{ $heroImage ? r2_url($heroImage) : 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?q=80&w=2070&auto=format&fit=crop' }}');"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/10"></div>
         <div class="absolute top-[-120px] right-[-80px] w-[400px] h-[400px] rounded-full bg-white/5 blur-[80px]"></div>
         <div class="absolute bottom-[-100px] left-[-60px] w-[300px] h-[300px] rounded-full bg-white/5 blur-[80px]"></div>
         <div class="absolute inset-0 pointer-events-none overflow-hidden opacity-[0.04]">

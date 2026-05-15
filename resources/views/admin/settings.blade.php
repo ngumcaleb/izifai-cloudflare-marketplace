@@ -56,7 +56,7 @@
 
                 <!-- Form Content -->
         <div class="lg:col-span-3">
-            <form action="{{ route('admin.settings.update') }}" method="POST" class="admin-card p-6 md:p-8 space-y-8 bg-white">
+            <form action="{{ route('admin.settings.update') }}" method="POST" enctype="multipart/form-data" class="admin-card p-6 md:p-8 space-y-8 bg-white">
                 @csrf
                 
                 <!-- General Section -->
@@ -82,6 +82,24 @@
                         <div class="md:col-span-2 space-y-1.5">
                             <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Footer Branding Text</label>
                             <input type="text" name="site_footer_branding" value="{{ $settings['site_footer_branding'] ?? "Cameroon's Professional Marketplace." }}" class="w-full bg-slate-50 border border-slate-100 rounded-lg px-4 py-3 text-xs font-semibold text-navy-800 focus:ring-1 focus:ring-gold-400 focus:border-gold-400 outline-none transition-all">
+                        </div>
+                        <div class="md:col-span-2 space-y-1.5">
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Hero Background Image</label>
+                            <div class="flex items-start gap-4">
+                                <div class="shrink-0 w-32 h-20 rounded-lg overflow-hidden bg-slate-100 border border-slate-200">
+                                    @if(!empty($settings['hero_image']))
+                                        <img src="{{ r2_url($settings['hero_image']) }}" class="w-full h-full object-cover">
+                                    @else
+                                        <div class="w-full h-full flex items-center justify-center text-slate-300">
+                                            <i data-lucide="image" class="w-6 h-6"></i>
+                                        </div>
+                                    @endif
+                                </div>
+                                <div class="flex-1">
+                                    <input type="file" name="hero_image" accept="image/*" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-navy-800 file:text-white hover:file:bg-gold-500 hover:file:text-navy-900 file:transition-all file:cursor-pointer">
+                                    <p class="text-[10px] text-slate-400 mt-1.5">Recommended: 1920x600px, JPEG or WebP. Uploading a new image replaces the current one.</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

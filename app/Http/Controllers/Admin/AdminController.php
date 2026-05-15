@@ -72,8 +72,14 @@ class AdminController extends Controller
     public function updateSettings(Request $request)
     {
         $data = $request->except('_token');
-        
+
+        if ($request->hasFile('hero_image')) {
+            $path = $request->file('hero_image')->store('hero', 'r2');
+            \App\Models\Setting::set('hero_image', $path);
+        }
+
         foreach ($data as $key => $value) {
+            if ($key === 'hero_image') continue;
             \App\Models\Setting::set($key, $value);
         }
 
