@@ -117,7 +117,7 @@
            @click.away="sidebarOpen = false">
         <div class="relative h-16 lg:h-24 shrink-0">
             @if($sellerStore && $sellerStore->banner)
-                <img src="{{ asset('storage/' . $sellerStore->banner) }}" class="w-full h-full object-cover">
+                <img src="{{ $sellerStore->banner_url }}" class="w-full h-full object-cover">
             @else
                 <div class="w-full h-full bg-gradient-to-br from-primary/50 to-primary"></div>
             @endif
@@ -128,7 +128,7 @@
             <div class="absolute -bottom-6 lg:-bottom-7 left-3 lg:left-4">
                 <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-xl border-2 border-white bg-white shadow-lg overflow-hidden">
                     @if($sellerStore && $sellerStore->logo)
-                        <img src="{{ asset('storage/' . $sellerStore->logo) }}" class="w-full h-full object-cover">
+                        <img src="{{ $sellerStore->logo_url }}" class="w-full h-full object-cover">
                     @else
                         <div class="w-full h-full bg-primary/10 flex items-center justify-center text-base lg:text-lg font-black text-primary">
                             {{ $sellerStore ? substr($sellerStore->name, 0, 1) : 'S' }}
@@ -213,7 +213,7 @@
     <aside class="fixed left-0 top-0 h-dvh w-sidebar-width z-30 bg-white flex-col hidden lg:flex shadow-lg border-r border-gray-100">
         <div class="relative h-24 shrink-0">
             @if($sellerStore && $sellerStore->banner)
-                <img src="{{ asset('storage/' . $sellerStore->banner) }}" class="w-full h-full object-cover">
+                <img src="{{ $sellerStore->banner_url }}" class="w-full h-full object-cover">
             @else
                 <div class="w-full h-full bg-gradient-to-br from-primary/50 to-primary"></div>
             @endif
@@ -221,7 +221,7 @@
             <div class="absolute -bottom-7 left-4">
                 <div class="w-12 h-12 rounded-xl border-2 border-white bg-white shadow-lg overflow-hidden">
                     @if($sellerStore && $sellerStore->logo)
-                        <img src="{{ asset('storage/' . $sellerStore->logo) }}" class="w-full h-full object-cover">
+                        <img src="{{ $sellerStore->logo_url }}" class="w-full h-full object-cover">
                     @else
                         <div class="w-full h-full bg-primary/10 flex items-center justify-center text-lg font-black text-primary">
                             {{ $sellerStore ? substr($sellerStore->name, 0, 1) : 'S' }}

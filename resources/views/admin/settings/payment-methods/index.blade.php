@@ -27,7 +27,7 @@
                 <div class="flex items-center gap-5">
                     <div class="w-16 h-16 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-center overflow-hidden p-0 group-hover:scale-105 transition-transform duration-500">
                         @if($method->icon)
-                            <img src="{{ asset('storage/' . $method->icon) }}" class="w-full h-full object-cover">
+                            <img src="{{ $method->icon_url }}" class="w-full h-full object-cover">
                         @else
                             <div class="w-full h-full flex items-center justify-center bg-navy-800 text-white">
                                 <i data-lucide="credit-card" class="w-8 h-8"></i>

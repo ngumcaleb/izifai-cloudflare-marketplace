@@ -12,4 +12,9 @@ class ProductImage extends Model
     {
         return $this->belongsTo(Product::class);
     }
+
+    public function getUrlAttribute(): ?string
+    {
+        return $this->path ? url('/r2/' . ltrim($this->path, '/')) : null;
+    }
 }

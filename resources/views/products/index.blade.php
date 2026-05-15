@@ -89,7 +89,7 @@
                     <a href="{{ route('stores.show', $store->slug) }}" class="store-card flex items-center gap-2.5 bg-surface-container-lowest rounded-xl p-2.5 border border-black/[0.03] transition-all hover:border-primary/20">
                         @if($store->logo)
                             <div class="store-avatar w-9 h-9 rounded-xl overflow-hidden shrink-0 bg-white">
-                                <img src="{{ asset('storage/' . $store->logo) }}" alt="" class="w-full h-full object-cover">
+                                <img src="{{ $store->logo_url }}" alt="" class="w-full h-full object-cover">
                             </div>
                         @else
                             <div class="store-avatar w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 text-primary font-extrabold text-sm">
@@ -218,7 +218,7 @@
                            class="flex items-center gap-2.5 p-2 rounded-xl hover:bg-black/[0.02] transition-all group">
                             <div class="w-10 h-10 rounded-lg overflow-hidden shrink-0 bg-surface-container-low">
                                 @if($product->images->first())
-                                    <img src="{{ asset('storage/' . $product->images->first()->path) }}" alt="" class="w-full h-full object-cover">
+                                    <img src="{{ $product->images->first()->url }}" alt="" class="w-full h-full object-cover">
                                 @else
                                     <div class="w-full h-full flex items-center justify-center text-on-surface-variant/20"><span class="material-symbols-outlined text-sm">image</span></div>
                                 @endif
@@ -277,7 +277,7 @@
                                     @foreach($heroProducts as $product)
                                         <a href="{{ route('products.show', $product->slug) }}" class="w-5 h-5 sm:w-6 sm:h-6 rounded-full border-[1.5px] border-white/70 overflow-hidden bg-white shadow-sm hover:z-10 relative transition-transform hover:scale-110">
                                             @if($product->images->first())
-                                                <img src="{{ asset('storage/' . $product->images->first()->path) }}" alt="" class="w-full h-full object-cover">
+                                                <img src="{{ $product->images->first()->url }}" alt="" class="w-full h-full object-cover">
                                             @else
                                                 <div class="w-full h-full flex items-center justify-center bg-white/30"><span class="material-symbols-outlined text-[8px] text-white/60">photo</span></div>
                                             @endif
@@ -331,7 +331,7 @@
                                 @foreach($heroDesktopProducts as $product)
                                     <a href="{{ route('products.show', $product->slug) }}" class="w-9 h-9 lg:w-10 lg:h-10 rounded-full border-2 border-white/80 overflow-hidden bg-white shadow-sm hover:z-10 relative transition-transform hover:scale-110 hover:-translate-y-1">
                                         @if($product->images->first())
-                                            <img src="{{ asset('storage/' . $product->images->first()->path) }}" alt="" class="w-full h-full object-cover">
+                                            <img src="{{ $product->images->first()->url }}" alt="" class="w-full h-full object-cover">
                                         @else
                                             <div class="w-full h-full flex items-center justify-center bg-white/30"><span class="material-symbols-outlined text-white/60 text-sm">photo</span></div>
                                         @endif
@@ -373,7 +373,7 @@
                         <a href="{{ route('products.show', $product->slug) }}" class="block product-card bg-white rounded-xl overflow-hidden border border-black/[0.04] shadow-sm group">
                             <div class="aspect-square relative overflow-hidden bg-surface-container-low">
                                 @if($product->images->first())
-                                    <img src="{{ asset('storage/' . $product->images->first()->path) }}" alt="{{ $product->name }}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                    <img src="{{ $product->images->first()->url }}" alt="{{ $product->name }}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                                 @else
                                     <div class="w-full h-full flex items-center justify-center text-on-surface-variant/20"><span class="material-symbols-outlined text-3xl">image</span></div>
                                 @endif
@@ -409,7 +409,7 @@
                     <div class="trending-grid-card bg-white rounded-xl overflow-hidden border border-black/[0.04] shadow-sm flex gap-3 p-2">
                         <a href="{{ route('products.show', $product->slug) }}" class="w-20 h-20 rounded-lg overflow-hidden shrink-0 bg-surface-container-low block">
                             @if($product->images->first())
-                                <img src="{{ asset('storage/' . $product->images->first()->path) }}" alt="" class="w-full h-full object-cover">
+                                <img src="{{ $product->images->first()->url }}" alt="" class="w-full h-full object-cover">
                             @else
                                 <div class="w-full h-full flex items-center justify-center text-on-surface-variant/20"><span class="material-symbols-outlined text-xl">image</span></div>
                             @endif
@@ -516,12 +516,12 @@
                                     <div class="aspect-square relative overflow-hidden bg-surface-container-low">
                                         @if($product->images->first())
                                             <img class="img-primary w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
-                                                 src="{{ asset('storage/' . $product->images->first()->path) }}"
+                                                 src="{{ $product->images->first()->url }}"
                                                  alt="{{ $product->name }}" loading="lazy"
                                                  onerror="this.parentElement.innerHTML = '<div class=\'w-full h-full flex items-center justify-center text-on-surface-variant/20\'><span class=\'material-symbols-outlined text-4xl\'>image</span></div>'">
                                             @if($product->images->count() > 1)
                                                 <img class="img-secondary absolute inset-0 w-full h-full object-cover"
-                                                     src="{{ asset('storage/' . $product->images->skip(1)->first()->path) }}"
+                                                     src="{{ $product->images->skip(1)->first()->url }}"
                                                      alt="{{ $product->name }}" loading="lazy"
                                                      onerror="this.style.display='none'">
                                             @endif
@@ -636,7 +636,7 @@
                                         <div class="aspect-square relative overflow-hidden bg-surface-container-low">
                                             @if($product->images->first())
                                                 <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                                     src="{{ asset('storage/' . $product->images->first()->path) }}"
+                                                     src="{{ $product->images->first()->url }}"
                                                      alt="{{ $product->name }}" loading="lazy">
                                             @else
                                                 <div class="w-full h-full flex items-center justify-center text-on-surface-variant/20">
@@ -696,7 +696,7 @@
                                         <a href="{{ route('stores.show', $store->slug) }}" class="store-card block bg-white rounded-xl overflow-hidden border border-black/[0.04] shadow-sm">
                                             @if($store->banner)
                                                 <div class="h-12 overflow-hidden bg-surface-container-low">
-                                                    <img src="{{ asset('storage/' . $store->banner) }}" alt="" class="w-full h-full object-cover">
+                                                    <img src="{{ $store->banner_url }}" alt="" class="w-full h-full object-cover">
                                                 </div>
                                             @else
                                                 <div class="h-12 bg-gradient-to-r from-primary/5 to-primary-container/20 flex items-center justify-center">
@@ -707,7 +707,7 @@
                                                 <div class="flex items-end -mt-5 mb-1.5">
                                                     @if($store->logo)
                                                         <div class="store-avatar w-8 h-8 rounded-lg overflow-hidden shrink-0 bg-white">
-                                                            <img src="{{ asset('storage/' . $store->logo) }}" alt="" class="w-full h-full object-cover">
+                                                            <img src="{{ $store->logo_url }}" alt="" class="w-full h-full object-cover">
                                                         </div>
                                                     @else
                                                         <div class="store-avatar w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 text-primary font-extrabold text-[10px]">
@@ -787,7 +787,7 @@
                     <div class="trending-grid-card bg-white rounded-xl overflow-hidden border border-black/[0.04] shadow-sm flex gap-2 p-2">
                         <a href="{{ route('products.show', $product->slug) }}" class="w-[52px] h-[52px] rounded-lg overflow-hidden shrink-0 bg-surface-container-low block">
                             @if($product->images->first())
-                                <img src="{{ asset('storage/' . $product->images->first()->path) }}" alt="" class="w-full h-full object-cover">
+                                <img src="{{ $product->images->first()->url }}" alt="" class="w-full h-full object-cover">
                             @else
                                 <div class="w-full h-full flex items-center justify-center text-on-surface-variant/20"><span class="material-symbols-outlined text-lg">image</span></div>
                             @endif

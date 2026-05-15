@@ -30,7 +30,7 @@
                     if (s && !this.sizes.includes(s)) { this.sizes.push(s); this.newSize = ''; }
                 },
                 removeSize(i) { this.sizes.splice(i, 1); },
-                imagePreviews: {{ Js::from($product->images->map(fn($i) => asset('storage/' . $i->path))) }},
+                imagePreviews: {{ Js::from($product->images->map(fn($i) => $i->url)) }},
                 mainImageIndex: {{ $product->images->search(fn($i) => $i->is_main) ?: 0 }},
                 handleImageUpload(event) {
                     this.imagePreviews = [];

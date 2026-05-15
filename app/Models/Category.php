@@ -22,4 +22,9 @@ class Category extends Model
     {
         return $this->hasMany(Product::class);
     }
+
+    public function getImageUrlAttribute(): ?string
+    {
+        return $this->image_path ? url('/r2/' . ltrim($this->image_path, '/')) : null;
+    }
 }

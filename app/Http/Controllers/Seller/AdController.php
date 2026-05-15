@@ -46,7 +46,7 @@ class AdController extends Controller
 
         $proofPath = null;
         if ($request->hasFile('payment_proof')) {
-            $proofPath = $request->file('payment_proof')->store('payment_proofs', 'public');
+            $proofPath = $request->file('payment_proof')->store('payment_proofs', 'r2');
         }
 
         AdvertisementRequest::create([

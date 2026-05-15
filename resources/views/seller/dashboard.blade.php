@@ -188,7 +188,7 @@
                                     <span class="w-5 text-center text-[10px] font-black {{ $i < 3 ? 'text-primary' : 'text-gray-300' }}">{{ $i + 1 }}</span>
                                     <div class="w-7 h-7 rounded-md bg-gray-100 overflow-hidden shrink-0">
                                         @if($p->images->first())
-                                            <img src="{{ asset('storage/' . $p->images->first()->path) }}" class="w-full h-full object-cover">
+                                            <img src="{{ $p->images->first()->url }}" class="w-full h-full object-cover">
                                         @else
                                             <div class="w-full h-full flex items-center justify-center text-gray-300">
                                                 <span class="material-symbols-outlined text-[12px]">image</span>
@@ -226,7 +226,7 @@
                                     <span class="w-5 text-center text-[10px] font-black {{ $i < 3 ? 'text-primary' : 'text-gray-300' }}">{{ $i + 1 }}</span>
                                     <div class="w-7 h-7 rounded-md bg-gray-100 overflow-hidden shrink-0">
                                         @if($event->product->images->first())
-                                            <img src="{{ asset('storage/' . $event->product->images->first()->path) }}" class="w-full h-full object-cover">
+                                            <img src="{{ $event->product->images->first()->url }}" class="w-full h-full object-cover">
                                         @else
                                             <div class="w-full h-full flex items-center justify-center text-gray-300">
                                                 <span class="material-symbols-outlined text-[12px]">image</span>
@@ -265,7 +265,7 @@
                                     <span class="w-5 text-center text-[10px] font-black {{ $i < 3 ? 'text-primary' : 'text-gray-300' }}">{{ $i + 1 }}</span>
                                     <div class="w-7 h-7 rounded-md bg-gray-100 overflow-hidden shrink-0">
                                         @if($saved->product->images->first())
-                                            <img src="{{ asset('storage/' . $saved->product->images->first()->path) }}" class="w-full h-full object-cover">
+                                            <img src="{{ $saved->product->images->first()->url }}" class="w-full h-full object-cover">
                                         @else
                                             <div class="w-full h-full flex items-center justify-center text-gray-300">
                                                 <span class="material-symbols-outlined text-[12px]">image</span>
@@ -303,7 +303,7 @@
                         <div class="group bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-sm border border-gray-100/80 hover:shadow-md hover:border-gray-200 transition-all">
                             <div class="aspect-[4/3] relative overflow-hidden bg-gray-100">
                                 @if($product->images->first())
-                                    <img src="{{ asset('storage/' . $product->images->first()->path) }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                    <img src="{{ $product->images->first()->url }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                                 @else
                                     <div class="w-full h-full flex items-center justify-center text-gray-300">
                                         <span class="material-symbols-outlined text-3xl">image</span>

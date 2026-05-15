@@ -20,20 +20,20 @@
                     <div class="w-full md:w-64 shrink-0">
                         <div class="aspect-square bg-slate-50 rounded-xl overflow-hidden border border-slate-100 group relative">
                             @if($ad->product->mainImage)
-                                <img src="{{ asset('storage/' . $ad->product->mainImage->path) }}" class="w-full h-full object-cover">
-                            @elseif($ad->product->images->first())
-                                <img src="{{ asset('storage/' . $ad->product->images->first()->path) }}" class="w-full h-full object-cover">
-                            @else
-                                <div class="w-full h-full flex items-center justify-center text-slate-200">
-                                    <i data-lucide="image" class="w-12 h-12"></i>
-                                </div>
-                            @endif
-                        </div>
-                    </div>
+<img src="{{ $ad->product->mainImage->url }}" class="w-full h-full object-cover">
+                             @elseif($ad->product->images->first())
+                                 <img src="{{ $ad->product->images->first()->url }}" class="w-full h-full object-cover">
+                             @else
+                                 <div class="w-full h-full flex items-center justify-center text-slate-200">
+                                     <i data-lucide="image" class="w-12 h-12"></i>
+                                 </div>
+                             @endif
+                         </div>
+                     </div>
 
-                    <div class="flex-1">
-                        <div class="flex items-center gap-2 mb-2">
-                            <span class="px-2 py-0.5 bg-navy-800 text-white text-[8px] font-bold uppercase rounded">{{ $ad->product->category->name ?? 'Product' }}</span>
+                     <div class="flex-1">
+                         <div class="flex items-center gap-2 mb-2">
+                             <span class="px-2 py-0.5 bg-navy-800 text-white text-[8px] font-bold uppercase rounded">{{ $ad->product->category->name ?? 'Product' }}</span>
                             @if($ad->status === 'pending')
                                 <span class="px-2 py-0.5 bg-amber-50 text-amber-600 text-[8px] font-bold uppercase rounded">Pending Review</span>
                             @elseif($ad->status === 'approved')
@@ -86,8 +86,8 @@
                                 <i data-lucide="camera" class="w-3 h-3 text-emerald-500"></i>
                                 Payment Evidence (Screenshot)
                             </h4>
-                            <a href="{{ asset('storage/' . $ad->payment_proof) }}" target="_blank" class="block w-48 aspect-[3/4] bg-white rounded-xl border border-slate-200 overflow-hidden group relative shadow-sm hover:shadow-md transition-all">
-                                <img src="{{ asset('storage/' . $ad->payment_proof) }}" class="w-full h-full object-cover">
+<a href="{{ $ad->payment_proof_url }}" target="_blank" class="block w-48 aspect-[3/4] bg-white rounded-xl border border-slate-200 overflow-hidden group relative shadow-sm hover:shadow-md transition-all">
+                                 <img src="{{ $ad->payment_proof_url }}" class="w-full h-full object-cover">
                                 <div class="absolute inset-0 bg-navy-800/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                     <span class="text-[10px] font-bold text-white uppercase tracking-widest">View Full Size</span>
                                 </div>

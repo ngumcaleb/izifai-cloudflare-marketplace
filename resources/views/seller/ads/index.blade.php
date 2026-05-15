@@ -45,7 +45,7 @@
                             @forelse($paymentMethods as $pm)
                                 <div class="flex items-center gap-3 p-2.5 bg-white rounded-xl border border-gray-100">
                                     <div class="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center p-1 shrink-0">
-                                        @if($pm->icon) <img src="{{ asset('storage/' . $pm->icon) }}" class="w-full h-full object-contain"> @else <span class="material-symbols-outlined text-[16px] text-gray-300">account_balance</span> @endif
+                                        @if($pm->icon) <img src="{{ $pm->icon_url }}" class="w-full h-full object-contain"> @else <span class="material-symbols-outlined text-[16px] text-gray-300">account_balance</span> @endif
                                     </div>
                                     <div class="min-w-0 flex-1">
                                         <p class="text-xs font-bold text-gray-900">{{ $pm->name }}</p>
@@ -108,7 +108,7 @@
                                         <div class="flex items-center gap-3">
                                             <div class="w-9 h-9 rounded-xl bg-gray-100 overflow-hidden shrink-0 border border-gray-200 group-hover:border-primary/50 transition-all">
                                                 @if($ad->product->images->first())
-                                                    <img src="{{ asset('storage/' . $ad->product->images->first()->path) }}" class="w-full h-full object-cover">
+                                                    <img src="{{ $ad->product->images->first()->url }}" class="w-full h-full object-cover">
                                                 @else
                                                     <div class="w-full h-full flex items-center justify-center text-gray-300">
                                                         <span class="material-symbols-outlined text-[16px]">image</span>
@@ -164,7 +164,7 @@
                             <div class="flex items-center gap-3">
                                 <div class="w-10 h-10 rounded-xl bg-gray-100 overflow-hidden shrink-0 border border-gray-200">
                                     @if($ad->product->images->first())
-                                        <img src="{{ asset('storage/' . $ad->product->images->first()->path) }}" class="w-full h-full object-cover">
+                                        <img src="{{ $ad->product->images->first()->url }}" class="w-full h-full object-cover">
                                     @else
                                         <div class="w-full h-full flex items-center justify-center text-gray-300">
                                             <span class="material-symbols-outlined text-[16px]">image</span>

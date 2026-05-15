@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 
 class Store extends Model
 {
@@ -54,5 +55,15 @@ class Store extends Model
     public function productReports()
     {
         return $this->hasManyThrough(ProductReport::class, Product::class);
+    }
+
+    public function getLogoUrlAttribute()
+    {
+        return $this->logo ? url('/r2/' . ltrim($this->logo, '/')) : null;
+    }
+
+    public function getBannerUrlAttribute()
+    {
+        return $this->banner ? url('/r2/' . ltrim($this->banner, '/')) : null;
     }
 }

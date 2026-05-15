@@ -180,14 +180,14 @@
                     <a href="{{ route('admin.products.index', ['search' => $product->name]) }}" class="flex items-center gap-3 group hover:bg-slate-50 -mx-2 px-2 py-1 rounded-xl transition-all">
                         <div class="w-12 h-12 rounded-lg bg-slate-100 overflow-hidden shrink-0 border border-slate-50 group-hover:border-gold-400/30 transition-colors">
                             @if($product->mainImage)
-                                <img src="{{ asset('storage/' . $product->mainImage->path) }}" class="w-full h-full object-cover">
-                            @elseif($product->images->first())
-                                <img src="{{ asset('storage/' . $product->images->first()->path) }}" class="w-full h-full object-cover">
-                            @else
-                                <div class="w-full h-full flex items-center justify-center text-slate-300">
-                                    <i data-lucide="image" class="w-5 h-5"></i>
-                                </div>
-                            @endif
+<img src="{{ $product->mainImage->url }}" class="w-full h-full object-cover">
+                             @elseif($product->images->first())
+                                 <img src="{{ $product->images->first()->url }}" class="w-full h-full object-cover">
+                             @else
+                                 <div class="w-full h-full flex items-center justify-center text-slate-300">
+                                     <i data-lucide="image" class="w-5 h-5"></i>
+                                 </div>
+                             @endif
                         </div>
                         <div class="min-w-0 flex-1">
                             <h4 class="text-[11px] font-bold text-navy-800 truncate group-hover:text-gold-500 transition-colors">{{ $product->name }}</h4>

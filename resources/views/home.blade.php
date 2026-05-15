@@ -68,7 +68,7 @@
 
 {{-- ===== 1. HERO ===== --}}
 <section class="mx-3 sm:mx-6 lg:mx-8 mt-3 sm:mt-4">
-    <div class="relative min-h-[220px] sm:min-h-[300px] lg:min-h-[380px] overflow-hidden rounded-2xl shadow-sm">
+    <div class="relative flex flex-col justify-end min-h-[280px] sm:min-h-[300px] lg:min-h-[380px] overflow-hidden rounded-2xl shadow-sm">
         <div class="absolute inset-0 hero-bg-home"></div>
         <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
         <div class="absolute top-[-120px] right-[-80px] w-[400px] h-[400px] rounded-full bg-white/5 blur-[80px]"></div>
@@ -80,7 +80,7 @@
             <div class="absolute bottom-40 right-[20%] w-1.5 h-1.5 rounded-full bg-white animate-dot-pulse-delayed"></div>
             <div class="absolute bottom-20 left-[40%] w-1 h-1 rounded-full bg-white animate-dot-pulse"></div>
         </div>
-        <div class="absolute bottom-0 left-0 right-0 px-5 sm:px-8 lg:px-12 py-4 sm:py-8 lg:py-12">
+        <div class="relative px-5 sm:px-8 lg:px-12 py-4 sm:py-8 lg:py-12">
             <div class="max-w-7xl mx-auto">
                 <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
                     <div class="max-w-2xl">
@@ -95,14 +95,14 @@
                         <p class="text-xs sm:text-sm lg:text-base text-white/80 max-w-xl leading-relaxed mt-2 sm:mt-3 font-[350]">
                             Izifai connects you with trusted sellers across Cameroon. Browse products, message directly, and buy — all from one link, no app needed.
                         </p>
-                        <div class="flex flex-wrap items-center gap-2 sm:gap-3 mt-3 sm:mt-5">
+                        <div class="flex flex-nowrap items-center gap-2 sm:gap-3 mt-3 sm:mt-5">
                             <a href="{{ route('register') }}"
-                               class="inline-flex items-center justify-center gap-2 px-5 sm:px-7 py-2.5 sm:py-3 bg-white text-[#00210d] rounded-full text-[12px] sm:text-[13px] font-bold hover:bg-white/90 active:scale-[0.97] transition-all duration-200 shadow-sm group">
+                               class="inline-flex items-center justify-center gap-1 sm:gap-2 px-4 sm:px-7 py-2.5 sm:py-3 bg-white text-[#00210d] rounded-full text-[11px] sm:text-[13px] font-bold hover:bg-white/90 active:scale-[0.97] transition-all duration-200 shadow-sm group flex-1 sm:flex-none">
                                 Start Selling Free
-                                <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+                                <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:translate-x-0.5 transition-transform shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
                             </a>
                             <a href="{{ route('products.index') }}"
-                               class="inline-flex items-center justify-center gap-2 px-5 sm:px-7 py-2.5 sm:py-3 bg-white/10 backdrop-blur-sm text-white rounded-full text-[12px] sm:text-[13px] font-bold border border-white/20 hover:bg-white/20 active:scale-[0.97] transition-all duration-200">
+                               class="inline-flex items-center justify-center gap-2 px-4 sm:px-7 py-2.5 sm:py-3 bg-white/10 backdrop-blur-sm text-white rounded-full text-[11px] sm:text-[13px] font-bold border border-white/20 hover:bg-white/20 active:scale-[0.97] transition-all duration-200 flex-1 sm:flex-none">
                                 Browse Products
                             </a>
                         </div>
@@ -112,7 +112,7 @@
                                 @foreach($heroStoreAvatars as $s)
                                     <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 border-white/80 overflow-hidden bg-white/20">
                                         @if($s->logo)
-                                            <img src="{{ asset('storage/' . $s->logo) }}" class="w-full h-full object-cover" alt="">
+                                            <img src="{{ $s->logo_url }}" class="w-full h-full object-cover" alt="">
                                         @else
                                             <div class="w-full h-full flex items-center justify-center text-white/70 text-[9px] font-black">{{ substr($s->name, 0, 1) }}</div>
                                         @endif
@@ -142,7 +142,7 @@
                                         @foreach($featuredStore->products->take(4) as $p)
                                             <a href="{{ route('products.show', $p->slug) }}" class="aspect-square rounded-lg overflow-hidden bg-white/10 ring-1 ring-white/10 group/card">
                                                 @if($p->images->first())
-                                                    <img src="{{ asset('storage/' . $p->images->first()->path) }}" class="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-500">
+                                                    <img src="{{ $p->images->first()->url }}" class="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-500">
                                                 @else
                                                     <div class="w-full h-full flex items-center justify-center text-white/20">
                                                         <span class="material-symbols-outlined text-lg">image</span>
@@ -188,7 +188,7 @@
                             <div class="aspect-square relative overflow-hidden bg-surface-container-low">
                                 @if($product->images->first())
                                     <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                         src="{{ asset('storage/' . $product->images->first()->path) }}"
+                                         src="{{ $product->images->first()->url }}"
                                          alt="{{ $product->name }}" loading="lazy">
                                 @else
                                     <div class="w-full h-full flex items-center justify-center text-on-surface-variant/20">
@@ -257,12 +257,12 @@
                         <div class="aspect-square relative overflow-hidden bg-surface-container-low">
                             @if($product->images->first())
                                 <img class="img-primary w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
-                                     src="{{ asset('storage/' . $product->images->first()->path) }}"
+                                     src="{{ $product->images->first()->url }}"
                                      alt="{{ $product->name }}" loading="lazy"
                                      onerror="this.parentElement.innerHTML = '<div class=\'w-full h-full flex items-center justify-center text-on-surface-variant/20\'><span class=\'material-symbols-outlined text-4xl\'>image</span></div>'">
                                 @if($product->images->count() > 1)
                                     <img class="img-secondary absolute inset-0 w-full h-full object-cover"
-                                         src="{{ asset('storage/' . $product->images->skip(1)->first()->path) }}"
+                                         src="{{ $product->images->skip(1)->first()->url }}"
                                          alt="{{ $product->name }}" loading="lazy"
                                          onerror="this.style.display='none'">
                                 @endif
@@ -485,7 +485,7 @@
                 <a href="{{ route('stores.show', $store->slug) }}" class="store-card bg-white rounded-xl overflow-hidden border border-black/[0.04] shadow-sm group">
                     <div class="aspect-[4/3] relative overflow-hidden bg-surface-container-low">
                         @if($store->banner)
-                            <img src="{{ asset('storage/' . $store->banner) }}" alt="" class="store-banner w-full h-full object-cover">
+                            <img src="{{ $store->banner_url }}" alt="" class="store-banner w-full h-full object-cover">
                         @else
                             <div class="store-banner w-full h-full bg-gradient-to-br from-primary/10 to-primary/5"></div>
                         @endif
@@ -493,7 +493,7 @@
                         <div class="absolute -bottom-6 left-1/2 -translate-x-1/2">
                             <div class="store-logo w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-white p-1 shadow-lg ring-2 ring-white">
                                 @if($store->logo)
-                                    <img src="{{ asset('storage/' . $store->logo) }}" alt="" class="w-full h-full object-cover rounded-lg">
+                                    <img src="{{ $store->logo_url }}" alt="" class="w-full h-full object-cover rounded-lg">
                                 @else
                                     <div class="w-full h-full rounded-lg bg-primary/5 flex items-center justify-center text-primary font-black text-sm sm:text-base">{{ substr($store->name, 0, 1) }}</div>
                                 @endif

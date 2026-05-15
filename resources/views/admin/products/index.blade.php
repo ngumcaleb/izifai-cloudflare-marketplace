@@ -59,9 +59,9 @@
                                 <div class="flex items-center gap-4">
                                     <div class="w-12 h-12 bg-slate-100 rounded-lg overflow-hidden shrink-0 border border-slate-50 shadow-sm">
                                         @if($product->mainImage)
-                                            <img src="{{ asset('storage/' . $product->mainImage->path) }}" class="w-full h-full object-cover">
-                                        @elseif($product->images->first())
-                                            <img src="{{ asset('storage/' . $product->images->first()->path) }}" class="w-full h-full object-cover">
+<img src="{{ $product->mainImage->url }}" class="w-full h-full object-cover">
+                                         @elseif($product->images->first())
+                                             <img src="{{ $product->images->first()->url }}" class="w-full h-full object-cover">
                                         @else
                                             <div class="w-full h-full flex items-center justify-center text-slate-300">
                                                 <i data-lucide="image" class="w-5 h-5"></i>
@@ -128,18 +128,18 @@
                 <div class="p-4 flex items-center gap-4 hover:bg-slate-50 transition-colors">
                     <div class="w-16 h-16 rounded-lg bg-slate-100 overflow-hidden shrink-0 border border-slate-50 shadow-sm">
                         @if($product->mainImage)
-                            <img src="{{ asset('storage/' . $product->mainImage->path) }}" class="w-full h-full object-cover">
-                        @elseif($product->images->first())
-                            <img src="{{ asset('storage/' . $product->images->first()->path) }}" class="w-full h-full object-cover">
-                        @else
-                            <div class="w-full h-full flex items-center justify-center text-slate-300">
-                                <i data-lucide="image" class="w-6 h-6"></i>
-                            </div>
-                        @endif
-                    </div>
-                    <div class="min-w-0 flex-1">
-                        <div class="flex items-start justify-between">
-                            <h4 class="text-[13px] font-bold text-navy-800 truncate leading-tight">{{ $product->name }}</h4>
+                            <img src="{{ $product->mainImage->url }}" class="w-full h-full object-cover">
+                         @elseif($product->images->first())
+                             <img src="{{ $product->images->first()->url }}" class="w-full h-full object-cover">
+                         @else
+                             <div class="w-full h-full flex items-center justify-center text-slate-300">
+                                 <i data-lucide="image" class="w-6 h-6"></i>
+                             </div>
+                         @endif
+                     </div>
+                     <div class="min-w-0 flex-1">
+                         <div class="flex items-start justify-between">
+                             <h4 class="text-[13px] font-bold text-navy-800 truncate leading-tight">{{ $product->name }}</h4>
                             <span class="text-[10px] font-bold text-navy-800 whitespace-nowrap ml-2">XAF {{ number_format($product->price) }}</span>
                         </div>
                         <p class="text-[10px] text-slate-500 truncate mt-0.5">{{ $product->store->name }}</p>

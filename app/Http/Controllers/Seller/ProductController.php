@@ -69,7 +69,7 @@ class ProductController extends Controller
         if ($request->hasFile('images')) {
             $mainIndex = $request->input('main_image_index', 0);
             foreach ($request->file('images') as $index => $image) {
-                $path = $image->store('products', 'public');
+                $path = $image->store('products', 'r2');
                 $product->images()->create([
                     'path' => $path,
                     'is_main' => (int)$index === (int)$mainIndex,
@@ -77,7 +77,6 @@ class ProductController extends Controller
             }
         }
 
-        // Handle Specifications
         if ($request->has('spec_names')) {
             foreach ($request->spec_names as $index => $name) {
                 if (!empty($name) && !empty($request->spec_values[$index])) {
@@ -130,15 +129,14 @@ class ProductController extends Controller
 
         // Handle Images
         if ($request->hasFile('images')) {
-            // Delete old images (simplified for now)
             foreach ($product->images as $img) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete($img->path);
+                \Illuminate\Support\Facades\Storage::disk('r2')->delete($img->path);
                 $img->delete();
             }
 
             $mainIndex = $request->input('main_image_index', 0);
             foreach ($request->file('images') as $index => $image) {
-                $path = $image->store('products', 'public');
+                $path = $image->store('products', 'r2');
                 $product->images()->create([
                     'path' => $path,
                     'is_main' => (int)$index === (int)$mainIndex,
@@ -146,9 +144,8 @@ class ProductController extends Controller
             }
         }
 
-        // Handle Specifications
         if ($request->has('spec_names')) {
-            $product->specifications()->delete(); // clear old
+            $product->specifications()->delete();
             foreach ($request->spec_names as $index => $name) {
                 if (!empty($name) && !empty($request->spec_values[$index])) {
                     $product->specifications()->create([
@@ -166,12 +163,11 @@ class ProductController extends Controller
     {
         $store = $this->getOrCreateStore();
         $product = $store->products()->findOrFail($id);
-        
-        // Delete images from storage
+
         foreach ($product->images as $img) {
-            \Illuminate\Support\Facades\Storage::disk('public')->delete($img->path);
+            \Illuminate\Support\Facades\Storage::disk('r2')->delete($img->path);
         }
-        
+
         $product->delete();
 
         return redirect()->route('seller.products.index')->with('success', 'Product deleted successfully!');

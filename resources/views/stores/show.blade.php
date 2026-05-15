@@ -13,7 +13,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
     <div class="flex items-center gap-2.5 shrink-0">
         <div class="w-8 h-8 rounded-lg overflow-hidden ring-2 ring-primary/10 bg-white shrink-0">
             @if($store->logo)
-                <img src="{{ asset('storage/' . $store->logo) }}" class="w-full h-full object-cover">
+                <img src="{{ $store->logo_url }}" class="w-full h-full object-cover">
             @else
                 <div class="w-full h-full bg-primary/5 flex items-center justify-center text-xs font-bold text-primary">
                     {{ substr($store->name, 0, 1) }}
@@ -38,7 +38,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
 @section('store-sidebar')
 <div class="relative h-28 shrink-0">
     @if($store->banner)
-        <img src="{{ asset('storage/' . $store->banner) }}" class="w-full h-full object-cover">
+        <img src="{{ $store->banner_url }}" class="w-full h-full object-cover">
     @else
         <div class="w-full h-full bg-gradient-to-br from-primary/60 to-primary"></div>
     @endif
@@ -46,7 +46,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
     <div class="absolute -bottom-8 left-4 flex items-end gap-3">
         <div class="w-14 h-14 rounded-xl border-2 border-white bg-white shadow-lg overflow-hidden">
             @if($store->logo)
-                <img src="{{ asset('storage/' . $store->logo) }}" class="w-full h-full object-cover">
+                <img src="{{ $store->logo_url }}" class="w-full h-full object-cover">
             @else
                 <div class="w-full h-full bg-primary/10 flex items-center justify-center text-lg font-black text-primary">
                     {{ substr($store->name, 0, 1) }}
@@ -145,7 +145,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
 <section id="showroom" class="mt-3 sm:mt-4">
     <div class="relative min-h-[180px] sm:min-h-[260px] lg:min-h-[320px] overflow-hidden rounded-2xl shadow-sm">
         @if($store->banner)
-            <img class="absolute inset-0 w-full h-full object-cover" src="{{ asset('storage/' . $store->banner) }}" alt="{{ $store->name }}">
+            <img class="absolute inset-0 w-full h-full object-cover" src="{{ $store->banner_url }}" alt="{{ $store->name }}">
         @else
             <div class="absolute inset-0 bg-gradient-to-br from-primary/80 to-primary"></div>
         @endif
@@ -159,7 +159,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                         <div class="flex items-center gap-2">
                             <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-white shrink-0 ring-2 ring-white/30">
                                 @if($store->logo)
-                                    <img src="{{ asset('storage/' . $store->logo) }}" alt="" class="w-6 h-6 sm:w-7 sm:h-7 object-cover rounded-lg">
+                                    <img src="{{ $store->logo_url }}" alt="" class="w-6 h-6 sm:w-7 sm:h-7 object-cover rounded-lg">
                                 @else
                                     <span class="material-symbols-outlined text-lg sm:text-[22px]" style="font-variation-settings: 'FILL' 1;">store</span>
                                 @endif
@@ -185,7 +185,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                                 @foreach($heroProductThumbs as $p)
                                     <a href="{{ route('products.show', $p->slug) }}" class="w-5 h-5 sm:w-6 sm:h-6 rounded-full border-[1.5px] border-white/70 overflow-hidden bg-white shadow-sm hover:z-10 relative transition-transform hover:scale-110">
                                         @if($p->images->first())
-                                            <img src="{{ asset('storage/' . $p->images->first()->path) }}" class="w-full h-full object-cover" alt="">
+                                            <img src="{{ $p->images->first()->url }}" class="w-full h-full object-cover" alt="">
                                         @else
                                             <div class="w-full h-full bg-white/30 flex items-center justify-center"><span class="material-symbols-outlined text-[8px] text-white/60">photo</span></div>
                                         @endif
@@ -305,7 +305,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                 <div class="h-24 sm:h-28 lg:h-28 overflow-hidden relative bg-surface-container-high">
                     @if($product->images->first())
                         <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                             src="{{ asset('storage/' . $product->images->first()->path) }}" alt="{{ $product->name }}">
+                             src="{{ $product->images->first()->url }}" alt="{{ $product->name }}">
                     @else
                         <div class="w-full h-full flex items-center justify-center text-on-surface-variant/30">
                             <span class="material-symbols-outlined text-2xl">image</span>
@@ -408,7 +408,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                 <div class="aspect-square lg:aspect-[4/3] relative overflow-hidden bg-surface-container-high">
                                 @if($product->images->first())
                                     <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                         src="{{ asset('storage/' . $product->images->first()->path) }}" alt="{{ $product->name }}">
+                                         src="{{ $product->images->first()->url }}" alt="{{ $product->name }}">
                                 @else
                                     <div class="w-full h-full flex items-center justify-center text-on-surface-variant/30">
                                         <span class="material-symbols-outlined text-3xl">image</span>

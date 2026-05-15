@@ -198,7 +198,7 @@
                         <a href="{{ route('stores.show', $store->slug) }}" class="block store-card bg-white rounded-xl overflow-hidden border border-black/[0.04] shadow-sm group">
                             <div class="aspect-square relative overflow-hidden bg-surface-container-low">
                                 @if($store->banner)
-                                    <img src="{{ asset('storage/' . $store->banner) }}" alt="{{ $store->name }}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                    <img src="{{ $store->banner_url }}" alt="{{ $store->name }}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                                 @else
                                     <div class="w-full h-full bg-gradient-to-br from-primary/10 via-primary/5 to-surface-container-low"></div>
                                 @endif
@@ -234,7 +234,7 @@
                     <div class="trending-grid-card bg-white rounded-xl overflow-hidden border border-black/[0.04] shadow-sm flex gap-3 p-2">
                         <a href="{{ route('stores.show', $store->slug) }}" class="w-16 h-16 rounded-lg overflow-hidden shrink-0 bg-surface-container-low block">
                             @if($store->logo)
-                                <img src="{{ asset('storage/' . $store->logo) }}" alt="" class="w-full h-full object-cover">
+                                <img src="{{ $store->logo_url }}" alt="" class="w-full h-full object-cover">
                             @else
                                 <div class="w-full h-full store-logo-placeholder flex items-center justify-center text-white font-black text-lg">{{ substr($store->name, 0, 1) }}</div>
                             @endif
@@ -338,7 +338,7 @@
                                 <a href="{{ route('stores.show', $store->slug) }}" class="block">
                                     <div class="aspect-[4/3] relative overflow-hidden bg-surface-container-low">
                                         @if($store->banner)
-                                            <img src="{{ asset('storage/' . $store->banner) }}" alt="{{ $store->name }}" loading="lazy" class="store-banner w-full h-full object-cover">
+                                            <img src="{{ $store->banner_url }}" alt="{{ $store->name }}" loading="lazy" class="store-banner w-full h-full object-cover">
                                         @else
                                             <div class="w-full h-full bg-gradient-to-br from-primary/10 via-primary/5 to-surface-container-low"></div>
                                         @endif
@@ -346,7 +346,7 @@
                                         <div class="absolute bottom-2.5 left-2.5 flex items-center gap-1.5">
                                             <div class="store-logo w-8 h-8 rounded-lg overflow-hidden bg-white shadow-md ring-2 ring-white shrink-0">
                                                 @if($store->logo)
-                                                    <img src="{{ asset('storage/' . $store->logo) }}" alt="" class="w-full h-full object-cover">
+                                                    <img src="{{ $store->logo_url }}" alt="" class="w-full h-full object-cover">
                                                 @else
                                                     <div class="w-full h-full store-logo-placeholder flex items-center justify-center text-white font-black text-[12px]">{{ substr($store->name, 0, 1) }}</div>
                                                 @endif
@@ -411,7 +411,7 @@
                                     <a href="{{ route('stores.show', $store->slug) }}" class="block">
                                         <div class="aspect-[4/3] relative overflow-hidden bg-surface-container-low">
                                             @if($store->banner)
-                                                <img src="{{ asset('storage/' . $store->banner) }}" alt="{{ $store->name }}" loading="lazy" class="w-full h-full object-cover">
+                                                <img src="{{ $store->banner_url }}" alt="{{ $store->name }}" loading="lazy" class="w-full h-full object-cover">
                                             @else
                                                 <div class="w-full h-full bg-gradient-to-br from-primary/10 via-primary/5 to-surface-container-low"></div>
                                             @endif
@@ -419,7 +419,7 @@
                                             <div class="absolute bottom-2 left-2">
                                                 <div class="store-logo w-7 h-7 rounded-md overflow-hidden bg-white shadow-md ring-2 ring-white">
                                                     @if($store->logo)
-                                                        <img src="{{ asset('storage/' . $store->logo) }}" alt="" class="w-full h-full object-cover">
+                                                        <img src="{{ $store->logo_url }}" alt="" class="w-full h-full object-cover">
                                                     @else
                                                         <div class="w-full h-full store-logo-placeholder flex items-center justify-center text-white font-black text-[9px]">{{ substr($store->name, 0, 1) }}</div>
                                                     @endif

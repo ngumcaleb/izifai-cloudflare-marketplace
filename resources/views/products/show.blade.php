@@ -19,7 +19,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
     <a href="{{ route('stores.show', $store->slug) }}" class="flex items-center gap-2.5 shrink-0 group">
         <div class="w-8 h-8 rounded-lg overflow-hidden ring-2 ring-primary/10 bg-white shrink-0">
             @if($store->logo)
-                <img src="{{ asset('storage/' . $store->logo) }}" class="w-full h-full object-cover">
+                <img src="{{ $store->logo_url }}" class="w-full h-full object-cover">
             @else
                 <div class="w-full h-full bg-primary/5 flex items-center justify-center text-xs font-bold text-primary">
                     {{ substr($store->name, 0, 1) }}
@@ -43,7 +43,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
 @section('store-sidebar')
 <div class="relative h-28 shrink-0">
     @if($store->banner)
-        <img src="{{ asset('storage/' . $store->banner) }}" class="w-full h-full object-cover">
+        <img src="{{ $store->banner_url }}" class="w-full h-full object-cover">
     @else
         <div class="w-full h-full bg-gradient-to-br from-primary/60 to-primary"></div>
     @endif
@@ -51,7 +51,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
     <div class="absolute -bottom-8 left-4 flex items-end gap-3">
         <div class="w-14 h-14 rounded-xl border-2 border-white bg-white shadow-lg overflow-hidden">
             @if($store->logo)
-                <img src="{{ asset('storage/' . $store->logo) }}" class="w-full h-full object-cover">
+                <img src="{{ $store->logo_url }}" class="w-full h-full object-cover">
             @else
                 <div class="w-full h-full bg-primary/10 flex items-center justify-center text-lg font-black text-primary">
                     {{ substr($store->name, 0, 1) }}
@@ -176,10 +176,10 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
             @if($product->images->count() > 0)
             <div class="flex gap-2 sm:gap-3 overflow-x-auto no-scrollbar pb-0.5">
                 @foreach($product->images as $idx => $img)
-                <button @click="selectedImage = '{{ asset('storage/' . $img->path) }}'"
+                <button @click="selectedImage = '{{ $img->url }}'"
                         class="shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-lg sm:rounded-xl overflow-hidden border-2 transition-all relative"
-                        :class="selectedImage === '{{ asset('storage/' . $img->path) }}' ? 'border-primary ring-2 ring-primary/20' : 'border-outline-variant/20 hover:border-outline-variant/50'">
-                    <img src="{{ asset('storage/' . $img->path) }}" class="w-full h-full object-cover">
+                        :class="selectedImage === '{{ $img->url }}' ? 'border-primary ring-2 ring-primary/20' : 'border-outline-variant/20 hover:border-outline-variant/50'">
+                    <img src="{{ $img->url }}" class="w-full h-full object-cover">
                     @if($loop->iteration === 4 && $product->images->count() > 4)
                     <div class="absolute inset-0 bg-black/50 flex items-center justify-center rounded-[inherit]">
                         <span class="text-white font-bold text-xs sm:text-sm">+{{ $product->images->count() - 4 }}</span>
@@ -545,7 +545,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                     </div>
                     @if($product->images->first())
                     <div class="sm:w-40 lg:w-48 h-40 sm:h-auto shrink-0">
-                        <img src="{{ asset('storage/' . $product->images->first()->path) }}"
+                        <img src="{{ $product->images->first()->url }}"
                              class="w-full h-full object-cover"
                              alt="{{ $product->name }}">
                     </div>
@@ -576,7 +576,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                 <a href="{{ route('products.show', $p->slug) }}" class="block">
                     <div class="aspect-square relative overflow-hidden bg-surface-container-high">
                         @if($p->images->first())
-                        <img src="{{ asset('storage/' . $p->images->first()->path) }}"
+                        <img src="{{ $p->images->first()->url }}"
                              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                              alt="{{ $p->name }}">
                         @else
@@ -615,7 +615,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                class="bg-surface-container-lowest rounded-lg sm:rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all border border-outline-variant/10 group">
                 <div class="aspect-square overflow-hidden bg-surface-container-high">
                     @if($sp->images->first())
-                    <img src="{{ asset('storage/' . $sp->images->first()->path) }}"
+                    <img src="{{ $sp->images->first()->url }}"
                          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                          alt="{{ $sp->name }}">
                     @else
@@ -684,7 +684,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
 <script>
     function productPage() {
         return {
-            selectedImage: @js($product->images->first() ? asset('storage/' . $product->images->first()->path) : ''),
+            selectedImage: @js($product->images->first()?->url ?? ''),
             selectedColor: null,
             selectedSize: null,
             reportOpen: false,

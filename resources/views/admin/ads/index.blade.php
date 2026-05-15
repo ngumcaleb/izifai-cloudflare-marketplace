@@ -59,9 +59,9 @@
                                 <div class="flex items-center gap-3">
                                     <div class="w-10 h-10 bg-slate-100 rounded-lg overflow-hidden shrink-0 border border-slate-100">
                                         @if($ad->product->mainImage)
-                                            <img src="{{ asset('storage/' . $ad->product->mainImage->path) }}" class="w-full h-full object-cover">
-                                        @elseif($ad->product->images->first())
-                                            <img src="{{ asset('storage/' . $ad->product->images->first()->path) }}" class="w-full h-full object-cover">
+<img src="{{ $ad->product->mainImage->url }}" class="w-full h-full object-cover">
+                                         @elseif($ad->product->images->first())
+                                             <img src="{{ $ad->product->images->first()->url }}" class="w-full h-full object-cover">
                                         @else
                                             <div class="w-full h-full flex items-center justify-center text-slate-300">
                                                 <i data-lucide="image" class="w-4 h-4"></i>
@@ -126,9 +126,9 @@
                     <div class="flex items-center gap-3 min-w-0">
                         <div class="w-10 h-10 bg-slate-100 rounded-lg overflow-hidden shrink-0 border border-slate-100">
                             @if($ad->product->mainImage)
-                                <img src="{{ asset('storage/' . $ad->product->mainImage->path) }}" class="w-full h-full object-cover">
+                                <img src="{{ $ad->product->mainImage->url }}" class="w-full h-full object-cover">
                             @elseif($ad->product->images->first())
-                                <img src="{{ asset('storage/' . $ad->product->images->first()->path) }}" class="w-full h-full object-cover">
+                                <img src="{{ $ad->product->images->first()->url }}" class="w-full h-full object-cover">
                             @else
                                 <div class="w-full h-full flex items-center justify-center text-slate-300">
                                     <i data-lucide="image" class="w-4 h-4"></i>

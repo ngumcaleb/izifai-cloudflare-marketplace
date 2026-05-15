@@ -36,7 +36,7 @@
                     <div class="flex flex-col sm:flex-row items-center gap-4 md:gap-6 p-4 bg-slate-50 rounded-xl">
                         <div class="w-20 h-20 md:w-32 md:h-32 bg-white rounded-lg overflow-hidden shrink-0 border border-slate-100 shadow-sm">
                             @if($report->product->mainImage)
-                                <img src="{{ asset('storage/' . $report->product->mainImage->path) }}" class="w-full h-full object-cover">
+                                <img src="{{ $report->product->mainImage->url }}" class="w-full h-full object-cover">
                             @else
                                 <div class="w-full h-full flex items-center justify-center text-slate-300">
                                     <i data-lucide="package" class="w-8 h-8"></i>

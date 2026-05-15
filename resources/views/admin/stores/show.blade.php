@@ -16,7 +16,7 @@
                 <div class="flex items-center gap-6">
                     <div class="w-20 h-20 md:w-24 md:h-24 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center font-black text-3xl md:text-4xl text-white border border-white/20 shrink-0 shadow-2xl overflow-hidden">
                         @if($store->logo)
-                            <img src="{{ asset('storage/' . $store->logo) }}" class="w-full h-full object-cover">
+                            <img src="{{ $store->logo_url }}" class="w-full h-full object-cover">
                         @else
                             {{ substr($store->name, 0, 1) }}
                         @endif
@@ -136,9 +136,9 @@
                         @foreach($store->products->take(4) as $product)
                         <div class="group relative aspect-square bg-slate-100 rounded-xl overflow-hidden border border-slate-100 shadow-sm">
                             @if($product->mainImage)
-                                <img src="{{ asset('storage/' . $product->mainImage->path) }}" class="w-full h-full object-cover group-hover:scale-110 transition-all">
-                            @elseif($product->images->first())
-                                <img src="{{ asset('storage/' . $product->images->first()->path) }}" class="w-full h-full object-cover group-hover:scale-110 transition-all">
+<img src="{{ $product->mainImage->url }}" class="w-full h-full object-cover group-hover:scale-110 transition-all">
+                             @elseif($product->images->first())
+                                 <img src="{{ $product->images->first()->url }}" class="w-full h-full object-cover group-hover:scale-110 transition-all">
                             @else
                                 <div class="w-full h-full flex items-center justify-center text-slate-300">
                                     <i data-lucide="image" class="w-6 h-6"></i>

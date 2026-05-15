@@ -58,7 +58,7 @@
                                 <div class="flex items-center gap-3">
                                     <div class="w-10 h-10 bg-slate-100 rounded-lg overflow-hidden shrink-0">
                                         @if($report->product->mainImage)
-                                            <img src="{{ asset('storage/' . $report->product->mainImage->path) }}" class="w-full h-full object-cover">
+<img src="{{ $report->product->mainImage->url }}" class="w-full h-full object-cover">
                                         @else
                                             <div class="w-full h-full flex items-center justify-center text-slate-300">
                                                 <i data-lucide="package" class="w-5 h-5"></i>
@@ -102,7 +102,7 @@
                     <div class="flex items-center gap-3 min-w-0">
                         <div class="w-12 h-12 bg-slate-100 rounded-lg overflow-hidden shrink-0 border border-slate-50">
                              @if($report->product->mainImage)
-                                <img src="{{ asset('storage/' . $report->product->mainImage->path) }}" class="w-full h-full object-cover">
+                                <img src="{{ $report->product->mainImage->url }}" class="w-full h-full object-cover">
                             @endif
                         </div>
                         <div class="min-w-0">

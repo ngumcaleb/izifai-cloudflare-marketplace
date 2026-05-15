@@ -95,7 +95,7 @@
                                         @if($category->icon && str_starts_with($category->icon, '<'))
                                             <span class="text-xs">{!! $category->icon !!}</span>
                                         @elseif($category->image_path)
-                                            <img src="{{ asset('storage/' . $category->image_path) }}" class="w-full h-full object-cover rounded-lg">
+                                            <img src="{{ $category->image_url }}" class="w-full h-full object-cover rounded-lg">
                                         @else
                                             <i data-lucide="folder" class="w-4 h-4 text-slate-400"></i>
                                         @endif

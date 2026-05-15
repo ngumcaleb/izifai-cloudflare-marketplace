@@ -7,6 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
@@ -33,7 +34,11 @@ class ProfileController extends Controller
         }
 
         if ($request->hasFile('profile_photo')) {
-            $request->user()->profile_photo_path = $request->file('profile_photo')->store('profile_photos', 'public');
+            $user = $request->user();
+            if ($user->profile_photo_path) {
+                Storage::disk('r2')->delete($user->profile_photo_path);
+            }
+            $user->profile_photo_path = $request->file('profile_photo')->store('profile_photos', 'r2');
         }
 
         $request->user()->save();

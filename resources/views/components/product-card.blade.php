@@ -55,7 +55,7 @@
 
     <!-- Image Area -->
     <a href="{{ route('products.show', $product->slug) }}" class="relative aspect-[4/5] overflow-hidden bg-slate-50 mb-3 rounded-lg block">
-        <img src="{{ $product->images->first() ? asset('storage/' . $product->images->first()->path) : 'https://placehold.co/600x750/f8fafc/94a3b8?text=No+Image' }}" 
+        <img src="{{ $product->images->first() ? $product->images->first()->url : 'https://placehold.co/600x750/f8fafc/94a3b8?text=No+Image' }}" 
              alt="{{ $product->name }}"
              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
         

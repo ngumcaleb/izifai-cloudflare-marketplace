@@ -35,4 +35,9 @@ class AdvertisementRequest extends Model
     {
         return $this->belongsTo(Store::class);
     }
+
+    public function getPaymentProofUrlAttribute(): ?string
+    {
+        return $this->payment_proof ? url('/r2/' . ltrim($this->payment_proof, '/')) : null;
+    }
 }

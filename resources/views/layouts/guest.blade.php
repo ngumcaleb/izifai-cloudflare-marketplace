@@ -222,7 +222,7 @@
                     <a href="{{ $dashboard }}"
                        class="w-8 h-8 rounded-full overflow-hidden bg-black/5 flex items-center justify-center text-on-surface/60 text-xs font-bold hover:bg-primary hover:text-on-primary hover:scale-105 active:scale-95 transition-all ring-1 ring-black/5">
                         @if($userStore && $userStore->logo)
-                            <img src="{{ asset('storage/' . $userStore->logo) }}" alt="{{ $userStore->name }}" class="w-full h-full object-cover">
+                            <img src="{{ $userStore->logo_url }}" alt="{{ $userStore->name }}" class="w-full h-full object-cover">
                         @else
                             {{ substr(auth()->user()->name ?? auth()->user()->email, 0, 1) }}
                         @endif
@@ -439,154 +439,173 @@
     </div>
 
     {{-- ============ SEARCH OVERLAY ============ --}}
-    {{-- Mobile: full screen | Desktop: panel below header --}}
+    {{-- Mobile: full screen native-app feel | Desktop: dropdown panel --}}
     <div x-data="globalSearch()"
          @open-search.window="searchOpen = true; $nextTick(() => $refs.searchInput?.focus())"
          @keydown.escape.window="searchOpen = false"
          x-show="searchOpen"
          x-cloak
-         class="fixed inset-0 z-[100] sm:inset-x-0 sm:top-[108px] sm:bottom-auto sm:z-40">
-        {{-- Desktop backdrop --}}
-        <div class="hidden sm:block absolute inset-0 bg-black/20" @click="searchOpen = false"></div>
-        {{-- Panel --}}
-        <div class="relative h-full sm:h-auto sm:max-w-3xl sm:mx-auto sm:mt-2 bg-white sm:rounded-2xl sm:shadow-2xl sm:border sm:border-gray-100 overflow-hidden"
-             @click.away="searchOpen = false">
-            {{-- Header --}}
-            <div class="bg-gradient-to-r from-primary/5 to-primary/[0.02] border-b border-gray-100">
-                <div class="flex items-center gap-3 px-4 h-14">
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-[100] sm:inset-x-0 sm:top-[108px] sm:bottom-auto sm:z-40 bg-black/30 sm:bg-transparent"
+         @click="searchOpen = false">
+        {{-- Mobile: full screen card slide up | Desktop: centered panel --}}
+        <div @click.stop
+             x-transition:enter="sm:transition sm:ease-out sm:duration-300"
+             x-transition:enter-start="sm:opacity-0 sm:scale-95"
+             x-transition:enter-end="sm:opacity-100 sm:scale-100"
+             x-transition:leave="sm:transition sm:ease-in sm:duration-200"
+             x-transition:leave-start="sm:opacity-100 sm:scale-100"
+             x-transition:leave-end="sm:opacity-0 sm:scale-95"
+             class="absolute inset-x-0 top-0 sm:relative sm:max-w-3xl sm:mx-auto sm:mt-2 w-full bg-white sm:rounded-2xl sm:shadow-2xl sm:border sm:border-gray-100 rounded-b-2xl overflow-hidden shadow-lg sm:shadow-none"
+             style="max-height: 92vh;">
+
+            {{-- Search Bar --}}
+            <div class="flex items-center gap-3 px-5 py-4 sm:py-3.5 sm:px-4 border-b border-gray-100">
+                 <div class="flex-1 min-w-0 flex items-center gap-3 bg-gray-50 sm:bg-transparent sm:border-0 rounded-2xl sm:rounded-none px-4 sm:px-0 py-3 sm:py-0 border border-gray-100 sm:border-0">
                     <svg class="w-5 h-5 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
                     <input x-ref="searchInput" x-model="query" @input.debounce.100ms="search()"
                            type="text" placeholder="Search products, stores, people..."
                            class="flex-1 text-sm focus:outline-none placeholder:text-gray-300 bg-transparent">
-                    <button @click="searchOpen = false; results = { products: [], stores: [], categories: [], locations: [], users: [] }; query = ''"
-                            class="text-xs font-semibold text-gray-400 hover:text-gray-600 transition-colors px-3 py-1.5 rounded-lg hover:bg-gray-100/50 shrink-0 sm:hidden">Cancel</button>
-                    <button @click="searchOpen = false; results = { products: [], stores: [], categories: [], locations: [], users: [] }; query = ''"
-                            class="hidden sm:flex items-center justify-center w-7 h-7 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-all shrink-0">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-                    </button>
                 </div>
+                <button @click="searchOpen = false; results = { products: [], stores: [], categories: [], locations: [], users: [] }; query = ''"
+                        class="text-sm font-bold text-primary hover:text-primary/80 transition-colors px-3 py-2 rounded-xl hover:bg-primary/5 shrink-0">
+                    Cancel
+                </button>
             </div>
+
             {{-- Body --}}
-            <div class="overflow-y-auto max-h-[calc(100vh-56px)] sm:max-h-[70vh]">
-                {{-- Hero area when no query or loading --}}
-                <div x-show="query.length < 2 || loading" class="px-4 py-10 sm:py-8 text-center">
-                    <template x-if="!loading">
-                        <div>
-                            <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
-                                <svg class="w-6 h-6 text-primary/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
-                            </div>
-                            <p class="text-base font-semibold text-gray-800">Discover products, stores &amp; people</p>
-                            <p class="text-sm text-gray-400 mt-1">Search results will appear here as you type</p>
-                        </div>
-                    </template>
-                    <template x-if="loading">
-                        <div class="flex items-center justify-center gap-3 text-sm text-gray-400">
-                            <svg class="w-5 h-5 animate-spin text-primary" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-                            <span>Searching for "<span class="text-gray-500 font-medium" x-text="query"></span>"...</span>
-                        </div>
-                    </template>
+            <div class="overflow-y-auto" :style="'max-height: calc(92vh - ' + (query.length >= 2 ? '60px' : '60px') + ')'">
+                {{-- Empty / idle state --}}
+                <div x-show="query.length < 2 && !loading" class="px-6 py-16 sm:py-10 text-center">
+                    <div class="w-16 h-16 mx-auto mb-5 rounded-3xl bg-gradient-to-br from-primary/[0.07] to-primary/[0.02] flex items-center justify-center ring-1 ring-primary/5">
+                        <svg class="w-7 h-7 text-primary/30" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
+                    </div>
+                    <p class="text-lg font-bold text-gray-800">What are you looking for?</p>
+                    <p class="text-sm text-gray-400 mt-1.5 max-w-xs mx-auto leading-relaxed">Search across products, shops, categories &mdash; find what you need in Cameroon.</p>
+                    <div class="flex flex-wrap items-center justify-center gap-2 mt-6">
+                        <span class="px-3 py-1.5 bg-gray-50 text-[11px] font-semibold text-gray-500 rounded-full border border-gray-100">Electronics</span>
+                        <span class="px-3 py-1.5 bg-gray-50 text-[11px] font-semibold text-gray-500 rounded-full border border-gray-100">Fashion</span>
+                        <span class="px-3 py-1.5 bg-gray-50 text-[11px] font-semibold text-gray-500 rounded-full border border-gray-100">Phones</span>
+                        <span class="px-3 py-1.5 bg-gray-50 text-[11px] font-semibold text-gray-500 rounded-full border border-gray-100">Beauty</span>
+                    </div>
                 </div>
+
+                {{-- Loading --}}
+                <div x-show="loading" class="px-6 py-20 sm:py-12 text-center">
+                    <svg class="w-8 h-8 mx-auto animate-spin text-primary mb-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                    <p class="text-sm text-gray-400">Searching <span class="text-gray-500 font-medium" x-text="query"></span>&hellip;</p>
+                </div>
+
                 {{-- Results --}}
-                <div x-show="!loading && query.length >= 2" class="divide-y divide-gray-50">
+                <div x-show="!loading && query.length >= 2" class="pb-4 sm:pb-2">
                     <template x-if="hasResults">
                         <div>
                             {{-- Categories --}}
                             <template x-if="results.categories.length">
-                                <div class="px-4 py-3">
-                                    <p class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Categories</p>
+                                <div class="px-5 sm:px-4 pt-4 pb-2">
+                                    <p class="text-[11px] font-bold text-gray-400 uppercase tracking-[0.08em] mb-2.5">Categories</p>
                                     <div class="space-y-0.5">
                                         <template x-for="cat in results.categories" :key="cat.id">
                                             <a :href="cat.url" @click="searchOpen = false"
-                                               class="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-gray-50 transition-all">
-                                                <span class="w-7 h-7 rounded-lg bg-primary/5 flex items-center justify-center text-primary shrink-0">
-                                                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7"/></svg>
+                                               class="flex items-center gap-3.5 px-3.5 py-3 sm:py-2 rounded-xl hover:bg-gray-50 active:bg-gray-100 transition-all -mx-1">
+                                                <span class="w-8 h-8 sm:w-7 sm:h-7 rounded-xl bg-primary/[0.06] flex items-center justify-center text-primary shrink-0">
+                                                    <svg class="w-4 h-4 sm:w-3.5 sm:h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7"/></svg>
                                                 </span>
-                                                <span class="text-sm font-medium text-gray-800" x-text="cat.name"></span>
+                                                <span class="text-sm font-semibold text-gray-800" x-text="cat.name"></span>
                                             </a>
                                         </template>
                                     </div>
                                 </div>
                             </template>
-                            {{-- Users --}}
+
+                            {{-- People --}}
                             <template x-if="results.users.length">
-                                <div class="px-4 py-3">
-                                    <p class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">People</p>
+                                <div class="px-5 sm:px-4 pt-3 pb-2">
+                                    <p class="text-[11px] font-bold text-gray-400 uppercase tracking-[0.08em] mb-2.5">People</p>
                                     <div class="space-y-0.5">
                                         <template x-for="user in results.users" :key="user.id">
                                             <a :href="user.url" @click="searchOpen = false"
-                                               class="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-gray-50 transition-all">
-                                                <div class="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center text-primary font-bold text-xs shrink-0 ring-1 ring-primary/20">
+                                               class="flex items-center gap-3.5 px-3.5 py-3 sm:py-2 rounded-xl hover:bg-gray-50 active:bg-gray-100 transition-all -mx-1">
+                                                <div class="w-8 h-8 sm:w-7 sm:h-7 rounded-xl bg-primary/[0.08] flex items-center justify-center text-primary font-bold text-xs shrink-0">
                                                     <span x-text="user.name.charAt(0).toUpperCase()"></span>
                                                 </div>
                                                 <div class="min-w-0 flex-1">
-                                                    <p class="text-sm font-medium text-gray-800 truncate" x-text="user.name"></p>
+                                                    <p class="text-sm font-semibold text-gray-800 truncate" x-text="user.name"></p>
                                                     <p class="text-xs text-gray-400 truncate" x-show="user.store" x-text="user.store"></p>
                                                 </div>
-                                                <span x-show="user.url" class="text-[10px] font-semibold text-primary shrink-0">View Store</span>
+                                                <span x-show="user.url" class="text-xs font-semibold text-primary/70 shrink-0">View</span>
                                             </a>
                                         </template>
                                     </div>
                                 </div>
                             </template>
+
                             {{-- Stores --}}
                             <template x-if="results.stores.length">
-                                <div class="px-4 py-3">
-                                    <p class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Shops</p>
+                                <div class="px-5 sm:px-4 pt-3 pb-2">
+                                    <p class="text-[11px] font-bold text-gray-400 uppercase tracking-[0.08em] mb-2.5">Shops</p>
                                     <div class="space-y-0.5">
                                         <template x-for="store in results.stores" :key="store.id">
                                             <a :href="store.url" @click="searchOpen = false"
-                                               class="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-gray-50 transition-all">
-                                                <div class="w-7 h-7 rounded-lg bg-gray-100 overflow-hidden shrink-0 ring-1 ring-black/5 flex items-center justify-center">
-                                                    <img x-show="store.logo" :src="'/storage/' + store.logo" class="w-full h-full object-cover" alt="">
-                                                    <span x-show="!store.logo" class="text-[9px] font-bold text-gray-400" x-text="store.name.charAt(0).toUpperCase()"></span>
+                                               class="flex items-center gap-3.5 px-3.5 py-3 sm:py-2 rounded-xl hover:bg-gray-50 active:bg-gray-100 transition-all -mx-1">
+                                                <div class="w-8 h-8 sm:w-7 sm:h-7 rounded-xl bg-gray-100 overflow-hidden shrink-0 flex items-center justify-center">
+                                                    <img x-show="store.logo" :src="store.logo_url" class="w-full h-full object-cover" alt="">
+                                                    <span x-show="!store.logo" class="text-[10px] font-bold text-gray-400" x-text="store.name.charAt(0).toUpperCase()"></span>
                                                 </div>
                                                 <div class="min-w-0 flex-1">
-                                                    <p class="text-sm font-medium text-gray-800 truncate" x-text="store.name"></p>
+                                                    <p class="text-sm font-semibold text-gray-800 truncate" x-text="store.name"></p>
                                                 </div>
-                                                <span x-show="store.is_verified" class="text-[10px] text-primary shrink-0">
-                                                    <span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+                                                <span x-show="store.is_verified" class="text-primary shrink-0">
+                                                    <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">verified</span>
                                                 </span>
                                             </a>
                                         </template>
                                     </div>
                                 </div>
                             </template>
+
                             {{-- Locations --}}
                             <template x-if="results.locations.length">
-                                <div class="px-4 py-3">
-                                    <p class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Locations</p>
+                                <div class="px-5 sm:px-4 pt-3 pb-2">
+                                    <p class="text-[11px] font-bold text-gray-400 uppercase tracking-[0.08em] mb-2.5">Locations</p>
                                     <div class="space-y-0.5">
                                         <template x-for="loc in results.locations" :key="loc.name">
                                             <a :href="'/stores?location=' + encodeURIComponent(loc.name)" @click="searchOpen = false"
-                                               class="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-gray-50 transition-all">
-                                                <span class="w-7 h-7 rounded-lg bg-primary/5 flex items-center justify-center text-primary shrink-0">
-                                                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
+                                               class="flex items-center gap-3.5 px-3.5 py-3 sm:py-2 rounded-xl hover:bg-gray-50 active:bg-gray-100 transition-all -mx-1">
+                                                <span class="w-8 h-8 sm:w-7 sm:h-7 rounded-xl bg-primary/[0.06] flex items-center justify-center text-primary shrink-0">
+                                                    <svg class="w-4 h-4 sm:w-3.5 sm:h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
                                                 </span>
-                                                <span class="text-sm font-medium text-gray-800" x-text="loc.name"></span>
+                                                <span class="text-sm font-semibold text-gray-800" x-text="loc.name"></span>
                                             </a>
                                         </template>
                                     </div>
                                 </div>
                             </template>
+
                             {{-- Products --}}
                             <template x-if="results.products.length">
-                                <div class="px-4 py-3">
-                                    <p class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Products</p>
+                                <div class="px-5 sm:px-4 pt-3 pb-2">
+                                    <p class="text-[11px] font-bold text-gray-400 uppercase tracking-[0.08em] mb-2.5">Products</p>
                                     <div class="space-y-0.5">
                                         <template x-for="product in results.products" :key="product.id">
                                             <a :href="product.url" @click="searchOpen = false"
-                                               class="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-gray-50 transition-all">
-                                                <div class="w-7 h-7 rounded-lg bg-gray-100 overflow-hidden shrink-0 ring-1 ring-black/5">
-                                                    <img x-show="product.image" :src="'/storage/' + product.image" class="w-full h-full object-cover" alt="">
+                                               class="flex items-center gap-3.5 px-3.5 py-3 sm:py-2 rounded-xl hover:bg-gray-50 active:bg-gray-100 transition-all -mx-1">
+                                                <div class="w-10 h-10 sm:w-8 sm:h-8 rounded-xl bg-gray-100 overflow-hidden shrink-0">
+                                                    <img x-show="product.image" :src="'/r2/' + product.image" class="w-full h-full object-cover" alt="">
                                                     <div x-show="!product.image" class="w-full h-full flex items-center justify-center text-gray-300">
-                                                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z"/></svg>
+                                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z"/></svg>
                                                     </div>
                                                 </div>
                                                 <div class="min-w-0 flex-1">
-                                                    <p class="text-sm font-medium text-gray-800 truncate" x-text="product.name"></p>
+                                                    <p class="text-sm font-semibold text-gray-800 truncate" x-text="product.name"></p>
                                                     <p class="text-xs text-gray-400" x-text="product.category"></p>
                                                 </div>
-                                                <p class="text-xs font-bold text-primary shrink-0" x-text="Number(product.price).toLocaleString() + ' FCFA'"></p>
+                                                <p class="text-xs font-bold text-primary shrink-0 whitespace-nowrap" x-text="Number(product.price).toLocaleString() + ' FCFA'"></p>
                                             </a>
                                         </template>
                                     </div>
@@ -594,11 +613,14 @@
                             </template>
                         </div>
                     </template>
+
                     {{-- No results --}}
-                    <div x-show="!hasResults" class="px-4 py-10 text-center">
-                        <svg class="w-10 h-10 mx-auto text-gray-200 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
-                        <p class="text-sm text-gray-400">No results found for "<span class="text-gray-500 font-medium" x-text="query"></span>"</p>
-                        <p class="text-xs text-gray-300 mt-1">Try different keywords or browse categories</p>
+                    <div x-show="!hasResults" class="px-6 py-16 sm:py-10 text-center">
+                        <div class="w-14 h-14 mx-auto mb-4 rounded-3xl bg-gray-50 flex items-center justify-center">
+                            <svg class="w-6 h-6 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
+                        </div>
+                        <p class="text-base font-bold text-gray-800">No results for "<span class="text-primary" x-text="query"></span>"</p>
+                        <p class="text-sm text-gray-400 mt-1.5 max-w-xs mx-auto leading-relaxed">Try different keywords, check your spelling, or browse categories above.</p>
                     </div>
                 </div>
             </div>

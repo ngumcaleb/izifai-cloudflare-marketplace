@@ -37,7 +37,7 @@
                     <div class="flex-1 min-w-0 flex items-center gap-3">
                         <div class="w-10 h-10 bg-gray-100 rounded-lg overflow-hidden shrink-0">
                             @if($product->images->first())
-                                <img src="{{ asset('storage/' . $product->images->first()->path) }}" class="w-full h-full object-cover">
+                                <img src="{{ $product->images->first()->url }}" class="w-full h-full object-cover">
                             @else
                                 <div class="w-full h-full flex items-center justify-center text-gray-300">
                                     <span class="material-symbols-outlined text-[18px]">image</span>
@@ -124,7 +124,7 @@
                     <div class="flex items-center gap-3">
                         <div class="w-14 h-14 bg-gray-100 rounded-xl overflow-hidden shrink-0">
                             @if($product->images->first())
-                                <img src="{{ asset('storage/' . $product->images->first()->path) }}" class="w-full h-full object-cover">
+                                <img src="{{ $product->images->first()->url }}" class="w-full h-full object-cover">
                             @else
                                 <div class="w-full h-full flex items-center justify-center text-gray-300">
                                     <span class="material-symbols-outlined">image</span>

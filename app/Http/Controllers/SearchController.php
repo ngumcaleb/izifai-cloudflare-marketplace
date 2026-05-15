@@ -8,6 +8,7 @@ use App\Models\Store;
 use App\Models\Product;
 use App\Models\User;
 
+
 class SearchController extends Controller
 {
     public function autocomplete(Request $request)
@@ -44,6 +45,7 @@ class SearchController extends Controller
             'name'       => $store->name,
             'slug'       => $store->slug,
             'logo'       => $store->logo,
+            'logo_url'   => $store->logo_url,
             'is_verified' => $store->is_verified,
             'url'        => route('stores.show', $store->slug),
         ]);

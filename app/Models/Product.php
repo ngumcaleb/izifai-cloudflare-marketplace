@@ -97,6 +97,12 @@ class Product extends Model
         ]);
     }
 
+    public function getMainImageUrlAttribute(): ?string
+    {
+        $image = $this->images->first();
+        return $image?->url;
+    }
+
     public function getDailyViewsAttribute()
     {
         return $this->events()->where('type', 'view')->where('created_at', '>=', now()->startOfDay())->count();

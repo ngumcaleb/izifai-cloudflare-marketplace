@@ -13,4 +13,9 @@ class PaymentMethod extends Model
         'account_name',
         'is_active',
     ];
+
+    public function getIconUrlAttribute(): ?string
+    {
+        return $this->icon ? url('/r2/' . ltrim($this->icon, '/')) : null;
+    }
 }

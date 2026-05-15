@@ -27,7 +27,7 @@ class PaymentMethodController extends Controller
         $data = $request->only(['name', 'number', 'account_name']);
         
         if ($request->hasFile('icon')) {
-            $data['icon'] = $request->file('icon')->store('payment_icons', 'public');
+            $data['icon'] = $request->file('icon')->store('payment_icons', 'r2');
         }
 
         PaymentMethod::create($data);
@@ -47,11 +47,10 @@ class PaymentMethodController extends Controller
         $data = $request->only(['name', 'number', 'account_name']);
         
         if ($request->hasFile('icon')) {
-            // Delete old icon
             if ($paymentMethod->icon) {
-                Storage::disk('public')->delete($paymentMethod->icon);
+                Storage::disk('r2')->delete($paymentMethod->icon);
             }
-            $data['icon'] = $request->file('icon')->store('payment_icons', 'public');
+            $data['icon'] = $request->file('icon')->store('payment_icons', 'r2');
         }
 
         $paymentMethod->update($data);
@@ -62,7 +61,7 @@ class PaymentMethodController extends Controller
     public function destroy(PaymentMethod $paymentMethod)
     {
         if ($paymentMethod->icon) {
-            Storage::disk('public')->delete($paymentMethod->icon);
+            Storage::disk('r2')->delete($paymentMethod->icon);
         }
         $paymentMethod->delete();
         return back()->with('success', 'Payment method deleted.');

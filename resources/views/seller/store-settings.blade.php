@@ -16,8 +16,18 @@
         <form action="{{ route('seller.store.update') }}" method="POST" enctype="multipart/form-data" class="space-y-4 md:space-y-6"
               x-data="{
                 socialLinks: {{ Js::from($store->social_links ?? []) }}.length ? {{ Js::from($store->social_links ?? []) }} : [{ platform: '', url: '' }],
+                logoPreview: null,
+                bannerPreview: null,
                 addSocial() { this.socialLinks.push({ platform: '', url: '' }) },
-                removeSocial(i) { this.socialLinks.splice(i, 1) }
+                removeSocial(i) { this.socialLinks.splice(i, 1) },
+                previewLogo(event) {
+                    const file = event.target.files[0];
+                    if (file) { const r = new FileReader(); r.onload = e => this.logoPreview = e.target.result; r.readAsDataURL(file); }
+                },
+                previewBanner(event) {
+                    const file = event.target.files[0];
+                    if (file) { const r = new FileReader(); r.onload = e => this.bannerPreview = e.target.result; r.readAsDataURL(file); }
+                }
               }">
             @csrf @method('PUT')
 
@@ -26,15 +36,18 @@
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-5">
                     <div class="md:col-span-1 flex flex-col items-center max-w-[200px] mx-auto md:max-w-none">
                         <label class="relative group cursor-pointer aspect-square w-full rounded-2xl border-2 border-dashed border-gray-200 overflow-hidden flex items-center justify-center hover:border-primary transition-all bg-gray-50">
-                            <input type="file" name="logo" class="hidden" accept="image/*">
-                            @if($store->logo)
-                                <img src="{{ asset('storage/' . $store->logo) }}" class="w-full h-full object-cover">
-                            @else
-                                <div class="flex flex-col items-center text-gray-300">
-                                    <span class="material-symbols-outlined text-3xl">add_photo_alternate</span>
-                                    <span class="text-xs font-semibold mt-1">Logo</span>
-                                </div>
-                            @endif
+                            <input type="file" name="logo" class="hidden" accept="image/*" @change="previewLogo">
+                            <img x-show="logoPreview" :src="logoPreview" class="w-full h-full object-cover">
+                            <div x-show="!logoPreview" class="w-full h-full">
+                                @if($store->logo)
+                                    <img src="{{ $store->logo_url }}" class="w-full h-full object-cover">
+                                @else
+                                    <div class="w-full h-full flex flex-col items-center justify-center text-gray-300">
+                                        <span class="material-symbols-outlined text-3xl">add_photo_alternate</span>
+                                        <span class="text-xs font-semibold mt-1">Logo</span>
+                                    </div>
+                                @endif
+                            </div>
                             <div class="absolute inset-0 bg-primary/80 opacity-0 group-hover:opacity-100 transition-all flex flex-col items-center justify-center text-white rounded-2xl">
                                 <span class="material-symbols-outlined text-2xl">camera_alt</span>
                                 <span class="text-xs font-bold mt-1">Update</span>
@@ -45,15 +58,18 @@
 
                     <div class="md:col-span-3">
                         <label class="relative group cursor-pointer h-28 md:h-32 w-full rounded-2xl border-2 border-dashed border-gray-200 overflow-hidden flex items-center justify-center hover:border-primary transition-all bg-gray-50">
-                            <input type="file" name="banner" class="hidden" accept="image/*">
-                            @if($store->banner)
-                                <img src="{{ asset('storage/' . $store->banner) }}" class="w-full h-full object-cover">
-                            @else
-                                <div class="flex flex-col items-center text-gray-300">
-                                    <span class="material-symbols-outlined text-3xl">panorama</span>
-                                    <span class="text-xs font-semibold mt-1">Banner</span>
-                                </div>
-                            @endif
+                            <input type="file" name="banner" class="hidden" accept="image/*" @change="previewBanner">
+                            <img x-show="bannerPreview" :src="bannerPreview" class="w-full h-full object-cover">
+                            <div x-show="!bannerPreview" class="w-full h-full">
+                                @if($store->banner)
+                                    <img src="{{ $store->banner_url }}" class="w-full h-full object-cover">
+                                @else
+                                    <div class="w-full h-full flex flex-col items-center justify-center text-gray-300">
+                                        <span class="material-symbols-outlined text-3xl">panorama</span>
+                                        <span class="text-xs font-semibold mt-1">Banner</span>
+                                    </div>
+                                @endif
+                            </div>
                             <div class="absolute inset-0 bg-primary/80 opacity-0 group-hover:opacity-100 transition-all flex flex-col items-center justify-center text-white rounded-2xl">
                                 <span class="material-symbols-outlined text-2xl">camera_alt</span>
                                 <span class="text-xs font-bold mt-1">Upload Header</span>

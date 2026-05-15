@@ -41,7 +41,7 @@
                 {{-- Square Preview --}}
                 <div class="relative aspect-square rounded-lg overflow-hidden bg-slate-50 mb-3">
                     @php $img = $store->products->first()?->images->first()?->path; @endphp
-                    <img src="{{ $img ? asset('storage/' . $img) : 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=200&h=200&auto=format&fit=crop' }}" 
+                    <img src="{{ $img ? r2_url($img) : 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=200&h=200&auto=format&fit=crop' }}" 
                          class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                     
                     {{-- Small Badge --}}

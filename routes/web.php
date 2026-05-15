@@ -89,4 +89,22 @@ Route::prefix('admin')->name('admin.')->group(function () {
     });
 });
 
+// === R2 IMAGE PROXY (serves images from Cloudflare R2 for environments without public access) ===
+Route::get('/r2/{path}', function (string $path) {
+    $disk = \Illuminate\Support\Facades\Storage::disk('r2');
+
+    if (!$disk->exists($path)) {
+        abort(404);
+    }
+
+    $mime = $disk->mimeType($path);
+    $contents = $disk->get($path);
+
+    return response($contents, 200, [
+        'Content-Type' => $mime,
+        'Cache-Control' => 'public, max-age=31536000, immutable',
+        'X-Content-Type-Options' => 'nosniff',
+    ]);
+})->where('path', '.*')->name('r2.image');
+
 require __DIR__ . '/auth.php';
