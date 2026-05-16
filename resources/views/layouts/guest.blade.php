@@ -10,11 +10,17 @@
     <link rel="apple-touch-icon" href="{{ asset('images/favicon.svg') }}">
     <title>@yield('title', 'Izifai — Your Store in a Link')</title>
     <meta name="description" content="@yield('description', 'Izifai helps Cameroon merchants create beautiful, shareable product catalogs. No app needed — just a link.')">
-    <meta property="og:title" content="Izifai — Your Store in a Link">
-    <meta property="og:description" content="Izifai helps Cameroon merchants create beautiful, shareable product catalogs. No app needed — just a link.">
+    <meta property="og:title" content="@yield('og_title', 'Izifai — Your Store in a Link')">
+    <meta property="og:description" content="@yield('og_description', 'Izifai helps Cameroon merchants create beautiful, shareable product catalogs. No app needed — just a link.')">
+    <meta property="og:image" content="@yield('og_image', asset('images/logo.png'))">
     <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:type" content="@yield('og_type', 'website')">
     <meta property="og:site_name" content="Izifai">
     <meta property="og:locale" content="{{ str_replace('_', '-', app()->getLocale()) }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="@yield('twitter_title', 'Izifai — Your Store in a Link')">
+    <meta name="twitter:description" content="@yield('twitter_description', 'Izifai helps Cameroon merchants create beautiful, shareable product catalogs.')">
+    <meta name="twitter:image" content="@yield('twitter_image', asset('images/logo.png'))">
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">

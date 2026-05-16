@@ -7,6 +7,13 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
 
 @section('title', $product->name . ' - ' . $store->name . ' Showroom')
 @section('description', strip_tags($product->description) ?: $product->name . ' on Izifai')
+@section('og_title', $product->name . ' - ' . $store->name)
+@section('og_description', str($product->description ? strip_tags($product->description) : $product->name . ' on Izifai')->limit(160))
+@section('og_image', $product->images->first()?->url ?: asset('images/logo.png'))
+@section('og_type', 'product')
+@section('twitter_title', $product->name . ' - ' . $store->name)
+@section('twitter_description', str($product->description ? strip_tags($product->description) : $product->name . ' on Izifai')->limit(160))
+@section('twitter_image', $product->images->first()?->url ?: asset('images/logo.png'))
 
 {{-- ==================== STORE NAV ==================== --}}
 @section('store-nav')
