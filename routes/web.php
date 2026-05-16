@@ -18,6 +18,7 @@ Route::get('/products', [\App\Http\Controllers\ProductController::class, 'index'
 Route::get('/products/search', [\App\Http\Controllers\ProductController::class, 'search'])->name('products.search');
 Route::get('/products/autocomplete', [\App\Http\Controllers\ProductController::class, 'autocompleteJson'])->name('products.autocomplete');
 Route::get('/search/autocomplete', [\App\Http\Controllers\SearchController::class, 'autocomplete'])->name('search.autocomplete');
+Route::get('/search/trending', [\App\Http\Controllers\SearchController::class, 'trending'])->name('search.trending');
 Route::get('/products/{slug}', [\App\Http\Controllers\ProductController::class, 'show'])->name('products.show');
 Route::post('/products/{product}/log-contact', [\App\Http\Controllers\ProductController::class, 'logContact'])->name('products.log-contact');
 Route::post('/products/{product}/favorite', [\App\Http\Controllers\SavedProductController::class, 'toggle'])->name('products.favorite');

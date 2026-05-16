@@ -11,6 +11,22 @@ use App\Models\User;
 
 class SearchController extends Controller
 {
+    public function trending()
+    {
+        $categories = Category::whereHas('products', fn($q) => $q->active())
+            ->withCount(['products' => fn($q) => $q->active()])
+            ->orderByDesc('products_count')
+            ->take(8)
+            ->get()
+            ->map(fn($cat) => [
+                'id'   => $cat->id,
+                'name' => $cat->name,
+                'url'  => route('products.index', ['category' => $cat->slug]),
+            ]);
+
+        return response()->json($categories);
+    }
+
     public function autocomplete(Request $request)
     {
         $q = $request->query('q');
@@ -20,8 +36,8 @@ class SearchController extends Controller
 
         $keywords = array_filter(explode(' ', $q));
 
-        // 1. Categories (max 3)
-        $categories = Category::query();
+        // 1. Categories with active products (max 3)
+        $categories = Category::whereHas('products', fn($q) => $q->active());
         foreach ($keywords as $word) {
             $categories->where('name', 'LIKE', "%{$word}%");
         }
