@@ -100,9 +100,9 @@
                             </td>
                             <td class="px-6 py-4 text-right">
                                 <div class="flex items-center justify-end gap-2">
-                                    <span class="p-2 bg-slate-50 text-slate-300 rounded-lg inline-flex">
+                                    <a href="{{ route('products.show', $product->slug) }}" target="_blank" class="p-2 bg-slate-50 text-slate-400 hover:text-navy-800 hover:bg-slate-100 rounded-lg transition-all inline-flex" title="View on site">
                                         <i data-lucide="external-link" class="w-4 h-4"></i>
-                                    </span>
+                                    </a>
                                     <form action="{{ route('admin.products.destroy', $product) }}" method="POST" onsubmit="return confirm('Delete this product permanently?')">
                                         @csrf
                                         @method('DELETE')
@@ -152,9 +152,9 @@
                             </span>
                         </div>
                     </div>
-                    <span class="p-2 bg-slate-50 text-slate-300 rounded-lg inline-flex">
+                    <a href="{{ route('products.show', $product->slug) }}" target="_blank" class="p-2 bg-slate-50 text-slate-400 hover:text-navy-800 hover:bg-slate-100 rounded-lg transition-all inline-flex" title="View on site">
                         <i data-lucide="eye" class="w-4 h-4"></i>
-                    </span>
+                    </a>
                 </div>
                 @empty
                 <div class="p-10 text-center text-slate-400 italic text-xs">Inventory is empty.</div>

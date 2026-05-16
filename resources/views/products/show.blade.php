@@ -70,12 +70,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
 <div class="pt-10 px-4 pb-4 border-b border-gray-100">
     <h2 class="text-base font-bold text-on-surface truncate">{{ $store->name }}</h2>
     <div class="flex flex-wrap items-center gap-2 mt-1">
-        @if($store->is_verified)
-            <span class="inline-flex items-center gap-0.5 text-[10px] font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded-full">
-                <span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">verified</span>
-                {{ $store->badge ?: 'Verified' }}
-            </span>
-        @endif
+        <x-store-badge :store="$store" />
         <span class="flex items-center gap-0.5 text-[11px] text-on-surface-variant">
             <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
             {{ number_format($avgRating, 1) }}

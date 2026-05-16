@@ -202,12 +202,9 @@
                                 @else
                                     <div class="w-full h-full bg-gradient-to-br from-primary/10 via-primary/5 to-surface-container-low"></div>
                                 @endif
-                                @if($store->is_verified)
-                                    <span class="store-badge absolute top-1.5 left-1.5 text-white text-[7px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-1 shadow-sm">
-                                        <span class="material-symbols-outlined text-[8px]" style="font-variation-settings: 'FILL' 1;">verified</span>
-                                        Verified
-                                    </span>
-                                @endif
+                                <div class="absolute top-1.5 left-1.5">
+                                    <x-store-badge :store="$store" size="sm" />
+                                </div>
                                 @if($store->created_at && $store->created_at->diffInDays(now()) <= 7)
                                     <span class="absolute top-1.5 right-1.5 bg-amber-500/90 backdrop-blur-sm text-white text-[7px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-1 shadow-sm">
                                         <span class="material-symbols-outlined text-[8px]" style="font-variation-settings: 'FILL' 1;">new_releases</span>
@@ -248,12 +245,7 @@
                             </div>
                             <div class="flex items-center justify-between">
                                 <span class="text-[9px] font-semibold text-on-surface-variant/60">{{ $store->products_count ?? 0 }} products</span>
-                                @if($store->is_verified)
-                                    <span class="flex items-center gap-0.5 text-[7px] font-bold text-primary">
-                                        <span class="material-symbols-outlined text-[7px]" style="font-variation-settings: 'FILL' 1;">verified</span>
-                                        Verified
-                                    </span>
-                                @endif
+                                <x-store-badge :store="$store" size="sm" />
                             </div>
                         </div>
                     </div>
@@ -352,12 +344,9 @@
                                                 @endif
                                             </div>
                                         </div>
-                                        @if($store->is_verified)
-                                            <span class="absolute top-2 right-2 store-badge text-on-primary text-[8px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-lg">
-                                                <span class="material-symbols-outlined text-[10px]" style="font-variation-settings: 'FILL' 1;">verified</span>
-                                                Verified
-                                            </span>
-                                        @endif
+                                        <div class="absolute top-2 right-2">
+                                            <x-store-badge :store="$store" size="sm" />
+                                        </div>
                                         @if($store->created_at && $store->created_at->diffInDays(now()) <= 7)
                                             <span class="absolute top-2 left-2 bg-amber-500/90 backdrop-blur-sm text-white text-[8px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-lg">
                                                 <span class="material-symbols-outlined text-[10px]" style="font-variation-settings: 'FILL' 1;">new_releases</span>
@@ -425,9 +414,9 @@
                                                     @endif
                                                 </div>
                                             </div>
-                                            @if($store->is_verified)
-                                                <span class="absolute top-1.5 right-1.5 store-badge text-white text-[7px] font-bold px-1.5 py-0.5 rounded-full shadow-sm">Verified</span>
-                                            @endif
+                                            <div class="absolute top-1.5 right-1.5">
+                                                <x-store-badge :store="$store" size="sm" />
+                                            </div>
                                             @if($store->created_at && $store->created_at->diffInDays(now()) <= 7)
                                                 <span class="absolute top-1.5 left-1.5 bg-amber-500/90 backdrop-blur-sm text-white text-[7px] font-bold px-1.5 py-0.5 rounded-full shadow-sm">New</span>
                                             @endif

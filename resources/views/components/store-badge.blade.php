@@ -6,35 +6,53 @@
 
     $colors = [
         'Premium Seller' => [
-            'bg' => 'bg-red-50',
+            'bg' => 'bg-gradient-to-r from-red-50 to-rose-50',
             'text' => 'text-red-600',
             'icon' => 'text-red-500',
-            'border' => 'border-red-100',
+            'border' => 'border-red-200',
             'dark_bg' => 'bg-red-600/20',
             'dark_text' => 'text-red-200',
             'dark_border' => 'border-red-500/30'
         ],
         'Trusted Store' => [
-            'bg' => 'bg-amber-50',
+            'bg' => 'bg-gradient-to-r from-amber-50 to-orange-50',
             'text' => 'text-amber-600',
             'icon' => 'text-amber-500',
-            'border' => 'border-amber-100',
+            'border' => 'border-amber-200',
             'dark_bg' => 'bg-amber-600/20',
             'dark_text' => 'text-amber-200',
             'dark_border' => 'border-amber-500/30'
         ],
         'Verified Seller' => [
-            'bg' => 'bg-green-50',
+            'bg' => 'bg-gradient-to-r from-green-50 to-emerald-50',
             'text' => 'text-green-600',
             'icon' => 'text-green-500',
-            'border' => 'border-green-100',
+            'border' => 'border-green-200',
             'dark_bg' => 'bg-green-600/20',
             'dark_text' => 'text-green-200',
             'dark_border' => 'border-green-500/30'
         ],
+        'Legit Business' => [
+            'bg' => 'bg-gradient-to-r from-blue-50 to-indigo-50',
+            'text' => 'text-blue-600',
+            'icon' => 'text-blue-500',
+            'border' => 'border-blue-200',
+            'dark_bg' => 'bg-blue-600/20',
+            'dark_text' => 'text-blue-200',
+            'dark_border' => 'border-blue-500/30'
+        ],
+        'Top Rated' => [
+            'bg' => 'bg-gradient-to-r from-violet-50 to-purple-50',
+            'text' => 'text-violet-600',
+            'icon' => 'text-violet-500',
+            'border' => 'border-violet-200',
+            'dark_bg' => 'bg-violet-600/20',
+            'dark_text' => 'text-violet-200',
+            'dark_border' => 'border-violet-500/30'
+        ],
         'default' => [
-            'bg' => 'bg-slate-100',
-            'text' => 'text-slate-600',
+            'bg' => 'bg-gradient-to-r from-slate-50 to-gray-50',
+            'text' => 'text-slate-500',
             'icon' => 'text-slate-400',
             'border' => 'border-slate-200',
             'dark_bg' => 'bg-slate-800/40',

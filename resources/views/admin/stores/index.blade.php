@@ -17,18 +17,48 @@
     </div>
 
     <div class="space-y-6">
-        <!-- Search & Actions -->
+        <!-- Search & Filters -->
         <div class="admin-card p-4 md:p-6">
-            <form action="{{ route('admin.stores.index') }}" method="GET" class="flex flex-col md:flex-row gap-4">
-                <div class="flex-1 relative">
-                    <input type="text" name="search" value="{{ request('search') }}" 
-                           placeholder="Search stores, owners, or emails..." 
-                           class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border-none rounded-lg text-sm font-medium focus:ring-2 focus:ring-gold-400/20 transition-all">
-                    <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+            <form action="{{ route('admin.stores.index') }}" method="GET" class="space-y-4">
+                <div class="flex flex-col md:flex-row gap-4">
+                    <div class="flex-1 relative">
+                        <input type="text" name="search" value="{{ request('search') }}" 
+                               placeholder="Search stores, owners, or emails..." 
+                               class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border-none rounded-lg text-sm font-medium focus:ring-2 focus:ring-gold-400/20 transition-all">
+                        <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+                    </div>
+                    <button type="submit" class="px-6 py-2.5 bg-navy-800 text-white rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-navy-900 transition-all shadow-sm">
+                        Find Merchant
+                    </button>
+                    @if(request()->anyFilled(['search', 'location', 'status', 'badge']))
+                    <a href="{{ route('admin.stores.index') }}" class="px-4 py-2.5 bg-slate-100 text-slate-500 rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-slate-200 transition-all flex items-center gap-2">
+                        <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                        Clear
+                    </a>
+                    @endif
                 </div>
-                <button type="submit" class="px-6 py-2.5 bg-navy-800 text-white rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-navy-900 transition-all shadow-sm">
-                    Find Merchant
-                </button>
+                <div class="flex flex-wrap gap-3">
+                    <select name="location" class="flex-1 min-w-[140px] px-3.5 py-2 bg-slate-50 border-none rounded-lg text-xs font-medium focus:ring-2 focus:ring-gold-400/20 transition-all">
+                        <option value="">All Locations</option>
+                        @foreach($locations as $loc)
+                        <option value="{{ $loc }}" {{ request('location') === $loc ? 'selected' : '' }}>{{ $loc }}</option>
+                        @endforeach
+                    </select>
+                    <select name="status" class="flex-1 min-w-[120px] px-3.5 py-2 bg-slate-50 border-none rounded-lg text-xs font-medium focus:ring-2 focus:ring-gold-400/20 transition-all">
+                        <option value="">All Status</option>
+                        <option value="verified" {{ request('status') === 'verified' ? 'selected' : '' }}>Verified</option>
+                        <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>Pending</option>
+                        <option value="suspended" {{ request('status') === 'suspended' ? 'selected' : '' }}>Suspended</option>
+                    </select>
+                    <select name="badge" class="flex-1 min-w-[140px] px-3.5 py-2 bg-slate-50 border-none rounded-lg text-xs font-medium focus:ring-2 focus:ring-gold-400/20 transition-all">
+                        <option value="">All Badges</option>
+                        <option value="Verified Seller" {{ request('badge') === 'Verified Seller' ? 'selected' : '' }}>Verified Seller</option>
+                        <option value="Trusted Store" {{ request('badge') === 'Trusted Store' ? 'selected' : '' }}>Trusted Store</option>
+                        <option value="Premium Seller" {{ request('badge') === 'Premium Seller' ? 'selected' : '' }}>Premium Seller</option>
+                        <option value="Legit Business" {{ request('badge') === 'Legit Business' ? 'selected' : '' }}>Legit Business</option>
+                        <option value="Top Rated" {{ request('badge') === 'Top Rated' ? 'selected' : '' }}>Top Rated</option>
+                    </select>
+                </div>
             </form>
         </div>
 
@@ -57,8 +87,12 @@
                         <tr class="hover:bg-slate-50/30 transition-colors group">
                             <td class="px-6 py-5">
                                 <div class="flex items-center gap-4">
-                                    <div class="w-10 h-10 bg-navy-800 rounded-lg flex items-center justify-center text-white font-bold text-sm shrink-0">
-                                        {{ substr($store->name, 0, 1) }}
+                                    <div class="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center text-navy-800 font-bold text-sm shrink-0 overflow-hidden">
+                                        @if($store->logo)
+                                            <img src="{{ $store->logo_url }}" class="w-full h-full object-cover">
+                                        @else
+                                            {{ substr($store->name, 0, 1) }}
+                                        @endif
                                     </div>
                                     <div>
                                         <h4 class="text-[13px] font-bold text-navy-800">{{ $store->name }}</h4>
@@ -111,8 +145,12 @@
                 @forelse($stores as $store)
                 <div class="p-4 flex items-center justify-between hover:bg-slate-50 transition-colors">
                     <div class="flex items-center gap-3 min-w-0">
-                        <div class="w-12 h-12 bg-navy-800 rounded-lg flex items-center justify-center text-white text-base font-bold shrink-0">
-                            {{ substr($store->name, 0, 1) }}
+                        <div class="w-12 h-12 bg-slate-100 rounded-lg flex items-center justify-center text-navy-800 text-base font-bold shrink-0 overflow-hidden">
+                            @if($store->logo)
+                                <img src="{{ $store->logo_url }}" class="w-full h-full object-cover">
+                            @else
+                                {{ substr($store->name, 0, 1) }}
+                            @endif
                         </div>
                         <div class="min-w-0">
                             <h4 class="text-sm font-bold text-navy-800 truncate">{{ $store->name }}</h4>

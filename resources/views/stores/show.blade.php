@@ -73,12 +73,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
 <div class="pt-10 px-4 pb-4 border-b border-gray-100">
     <h2 class="text-base font-bold text-on-surface truncate">{{ $store->name }}</h2>
     <div class="flex flex-wrap items-center gap-2 mt-1">
-        @if($store->is_verified)
-            <span class="inline-flex items-center gap-0.5 text-[10px] font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded-full">
-                <span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">verified</span>
-                {{ $store->badge ?: 'Verified' }}
-            </span>
-        @endif
+        <x-store-badge :store="$store" />
         <span class="flex items-center gap-0.5 text-[11px] text-on-surface-variant">
             <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
             {{ number_format($avgRating, 1) }}
@@ -182,12 +177,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                             <div>
                                 <div class="flex items-center gap-1.5">
                                     <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-white tracking-tight truncate">{{ $store->name }}</h1>
-                                    @if($store->is_verified)
-                                        <span class="bg-primary-container text-on-primary-container px-1.5 py-0.5 rounded-full text-[8px] lg:text-[10px] font-bold flex items-center gap-0.5 shrink-0">
-                                            <span class="material-symbols-outlined text-[10px] lg:text-[12px]" style="font-variation-settings: 'FILL' 1;">verified</span>
-                                            <span class="hidden xs:inline">VERIFIED</span>
-                                        </span>
-                                    @endif
+                                    <x-store-badge :store="$store" dark size="sm" />
                                 </div>
                                 @if($store->description)
                                     <p class="text-[11px] sm:text-sm text-white/80 max-w-xl line-clamp-1">{{ $store->description }}</p>
