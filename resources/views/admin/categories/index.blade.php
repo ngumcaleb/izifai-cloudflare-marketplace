@@ -46,7 +46,7 @@
                     </button>
                 </form>
                 <a href="{{ route('admin.categories.create') }}" 
-                   class="flex items-center gap-2 px-5 py-2.5 bg-gold-500 text-navy-900 rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-gold-400 transition-all shadow-sm shrink-0">
+                    class="flex items-center gap-2 px-5 py-2.5 bg-gold-500 text-white rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-gold-400 transition-all shadow-sm shrink-0">
                     <i data-lucide="plus" class="w-4 h-4"></i>
                     New Category
                 </a>

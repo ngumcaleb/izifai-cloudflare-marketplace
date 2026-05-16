@@ -80,7 +80,7 @@
                     <a href="{{ route('admin.categories.index') }}" class="text-[11px] font-bold text-slate-400 hover:text-navy-800 transition-colors">
                         ← Back to Categories
                     </a>
-                    <button type="submit" class="px-6 py-3 bg-gold-500 text-navy-900 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-gold-400 transition-all shadow-sm">
+                    <button type="submit" class="px-6 py-3 bg-gold-500 text-white rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-gold-400 transition-all shadow-sm">
                         Create Category
                     </button>
                 </div>

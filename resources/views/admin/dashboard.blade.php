@@ -2,18 +2,19 @@
     <x-slot name="header">E-Commerce Dashboard</x-slot>
 
     <!-- 1. Header Card -->
-    <div class="relative bg-navy-800 rounded-xl h-[160px] md:h-[220px] overflow-hidden shadow-sm mb-6">
-        <img src="https://img.freepik.com/free-photo/diverse-businesspeople-working-together_23-2148908922.jpg"
-             class="absolute inset-0 w-full h-full object-cover opacity-10">
-        <div class="absolute inset-0 bg-gradient-to-r from-navy-900 via-navy-800/40 to-transparent"></div>
+    <div class="relative bg-white rounded-xl h-[160px] md:h-[200px] overflow-hidden shadow-sm border border-slate-100 mb-6">
+        <div class="absolute inset-0 bg-gradient-to-br from-green-50 via-white to-green-50/30"></div>
+        <div class="absolute -right-8 -top-8 w-40 h-40 bg-[#006d38]/5 rounded-full"></div>
+        <div class="absolute -left-4 -bottom-4 w-32 h-32 bg-[#006d38]/5 rounded-full"></div>
         <div class="relative z-10 h-full p-6 md:p-10 flex flex-col justify-center">
-            <div class="inline-block bg-gold-500 text-navy-900 text-[8px] md:text-[10px] font-bold px-3 py-1 rounded transform -skew-x-12 uppercase tracking-widest mb-3 w-fit">
+            <div class="inline-flex items-center gap-1.5 text-[#006d38] text-[8px] md:text-[10px] font-bold mb-3 w-fit">
+                <span class="material-symbols-outlined text-[14px]">dashboard</span>
                 Control Center
             </div>
-            <h2 class="text-xl md:text-3xl font-bold text-white leading-tight mb-2 tracking-tight">
-                Welcome back, <br class="md:hidden"> <span class="text-gold-400">{{ Auth::guard('admin')->user()->name }}</span>
+            <h2 class="text-xl md:text-3xl font-bold text-slate-800 leading-tight mb-2 tracking-tight">
+                Welcome back, <br class="md:hidden"> <span class="text-[#006d38]">{{ Auth::guard('admin')->user()->name }}</span>
             </h2>
-            <p class="text-[10px] md:text-sm text-slate-300 font-medium max-w-md">
+            <p class="text-[10px] md:text-sm text-slate-500 font-medium max-w-md">
                 Monitor performance, manage sellers and keep the marketplace growing.
             </p>
         </div>
@@ -203,8 +204,8 @@
             </div>
 
             <!-- Ad Requests Quick View -->
-            <div class="admin-card p-6 bg-navy-900 border-none relative overflow-hidden">
-                <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-gold-400/10 rounded-full"></div>
+            <div class="admin-card p-6 bg-[#006d38] border-none relative overflow-hidden">
+                <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-white/5 rounded-full"></div>
                 <div class="relative z-10">
                     <h3 class="text-sm font-bold text-white mb-4">Ad Queue</h3>
                     <div class="space-y-3">
@@ -218,7 +219,7 @@
                         </div>
                         @endforeach
                     </div>
-                    <a href="{{ route('admin.ads.index') }}" class="block text-center mt-6 py-3 bg-gold-500 text-navy-900 rounded-lg text-[10px] font-bold uppercase tracking-widest shadow-sm">Manage Ads</a>
+                    <a href="{{ route('admin.ads.index') }}" class="block text-center mt-6 py-3 bg-gold-500 text-white rounded-lg text-[10px] font-bold uppercase tracking-widest shadow-sm">Manage Ads</a>
                 </div>
             </div>
         </div>

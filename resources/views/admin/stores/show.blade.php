@@ -28,7 +28,7 @@
                                 @if($store->is_verified)
                                     <span class="px-2.5 py-1 bg-emerald-500 text-white text-[8px] font-bold uppercase tracking-widest rounded-lg shadow-lg shadow-emerald-500/20">Verified Partner</span>
                                 @else
-                                    <span class="px-2.5 py-1 bg-gold-500 text-navy-900 text-[8px] font-bold uppercase tracking-widest rounded-lg">Awaiting Review</span>
+                                    <span class="px-2.5 py-1 bg-gold-500 text-white text-[8px] font-bold uppercase tracking-widest rounded-lg">Awaiting Review</span>
                                 @endif
                                 @if($store->status === 'suspended')
                                     <span class="px-2.5 py-1 bg-rose-500 text-white text-[8px] font-bold uppercase tracking-widest rounded-lg shadow-lg shadow-rose-500/20">Suspended</span>
@@ -47,7 +47,7 @@
                     @if(!$store->is_verified)
                     <form action="{{ route('admin.stores.verify', $store) }}" method="POST">
                         @csrf
-                        <button type="submit" class="px-6 py-3 bg-gold-500 text-navy-900 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-white transition-all shadow-lg shadow-gold-500/20 flex items-center gap-2">
+                        <button type="submit" class="px-6 py-3 bg-gold-500 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-white hover:text-[#006d38] transition-all shadow-lg shadow-gold-500/20 flex items-center gap-2">
                             <i data-lucide="shield-check" class="w-4 h-4"></i>
                             Approve Store
                         </button>
@@ -170,7 +170,7 @@
                         </label>
                         @endforeach
 
-                        <button type="submit" class="w-full mt-4 py-3 bg-gold-500 text-navy-900 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all shadow-lg shadow-gold-500/20 hover:scale-[1.02]">
+                        <button type="submit" class="w-full mt-4 py-3 bg-gold-500 text-white rounded-xl text-[11px] font-black uppercase tracking-widest transition-all shadow-lg shadow-gold-500/20 hover:scale-[1.02]">
                             Apply Changes
                         </button>
                     </form>

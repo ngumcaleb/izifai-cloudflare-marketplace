@@ -7,7 +7,7 @@
              class="absolute inset-0 w-full h-full object-cover opacity-20">
         <div class="absolute inset-0 bg-gradient-to-r from-navy-900 via-navy-800/60 to-transparent"></div>
         <div class="relative z-10 h-full p-6 md:p-10 flex flex-col justify-center">
-            <div class="inline-block bg-gold-500 text-navy-900 text-[8px] md:text-[10px] font-bold px-3 py-1 rounded transform -skew-x-12 uppercase tracking-widest mb-3 w-fit">
+            <div class="inline-block bg-gold-500 text-white text-[8px] md:text-[10px] font-bold px-3 py-1 rounded transform -skew-x-12 uppercase tracking-widest mb-3 w-fit">
                 Deep Insights
             </div>
             <h2 class="text-xl md:text-3xl font-bold text-white leading-tight mb-2 tracking-tight">

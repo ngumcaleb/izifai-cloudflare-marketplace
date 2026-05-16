@@ -96,7 +96,7 @@
                                     @endif
                                 </div>
                                 <div class="flex-1">
-                                    <input type="file" name="hero_image" accept="image/*" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-navy-800 file:text-white hover:file:bg-gold-500 hover:file:text-navy-900 file:transition-all file:cursor-pointer">
+                                    <input type="file" name="hero_image" accept="image/*" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-navy-800 file:text-white hover:file:bg-gold-400 hover:file:text-white file:transition-all file:cursor-pointer">
                                     <p class="text-[10px] text-slate-400 mt-1.5">Recommended: 1920x600px, JPEG or WebP. Uploading a new image replaces the current one.</p>
                                 </div>
                             </div>
@@ -189,7 +189,7 @@
                 </div>
 
                 <div class="pt-6 border-t border-slate-100 flex justify-end">
-                    <button type="submit" class="w-full md:w-auto px-8 py-3 bg-navy-800 text-white rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-gold-500 hover:text-navy-900 transition-all shadow-md">
+                    <button type="submit" class="w-full md:w-auto px-8 py-3 bg-navy-800 text-white rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-gold-400 hover:text-white transition-all shadow-md">
                         Save Configurations
                     </button>
                 </div>
