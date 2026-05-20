@@ -36,7 +36,7 @@
     .store-card:hover .store-banner { transform: scale(1.05); }
     .store-card .store-logo { transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
     .store-card:hover .store-logo { transform: scale(1.1) rotate(-3deg); }
-    .category-chip { transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
+    .category-chip { transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1); touch-action: manipulation; cursor: pointer; }
     .favorite-btn { transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
     .favorite-btn:active { transform: scale(0.85); }
     .stock-dot { width: 5px; height: 5px; border-radius: 50%; display: inline-block; }
@@ -47,6 +47,7 @@
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     .h-scroll { scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scroll-padding-left: 12px; scroll-padding-right: 12px; }
+    .mobile-scroll { -webkit-overflow-scrolling: touch; touch-action: pan-x pinch-zoom; }
     .h-scroll > * { scroll-snap-align: start; }
     .section-scroll { scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scroll-padding-left: 12px; scroll-padding-right: 12px; }
     .section-scroll > * { scroll-snap-align: start; }
@@ -260,7 +261,7 @@
                         <h2 class="text-[11px] sm:text-xs font-bold text-on-surface uppercase tracking-wider">Categories</h2>
                         <a href="{{ route('products.index') }}" class="text-[10px] font-semibold text-primary hover:underline">View All</a>
                     </div>
-                    <div class="flex gap-2 overflow-x-auto no-scrollbar h-scroll pb-1 -mx-3 px-3 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0 lg:flex-wrap lg:gap-2">
+                    <div class="flex gap-2 overflow-x-auto no-scrollbar mobile-scroll pb-1 -mx-3 px-3 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0 lg:flex-wrap lg:gap-2">
                         @foreach($categories as $cat)
                             <a href="{{ route('products.index', ['category' => $cat->slug]) }}"
                                class="category-chip shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-black/8 text-[11px] font-semibold text-on-surface-variant bg-white hover:border-primary/30 hover:text-primary transition-all">
