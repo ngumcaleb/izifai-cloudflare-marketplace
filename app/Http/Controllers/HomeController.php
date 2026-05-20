@@ -24,7 +24,20 @@ class HomeController extends Controller
             ->take(12)
             ->get();
 
+        $trendingProducts = \App\Models\Product::active()
+            ->with(['images', 'store'])
+            ->orderBy('views', 'desc')
+            ->take(8)
+            ->get();
+
+        $latestProducts = \App\Models\Product::active()
+            ->with(['images', 'store', 'category'])
+            ->inRandomOrder()
+            ->take(12)
+            ->get();
+
         $stores = \App\Models\Store::where('status', 'active')
+            ->has('products')
             ->with(['products' => function ($q) {
                 $q->with('images')->latest()->take(1);
             }])
@@ -32,7 +45,15 @@ class HomeController extends Controller
             ->take(6)
             ->get();
 
+        $topStores = \App\Models\Store::where('status', 'active')
+            ->has('products')
+            ->withCount('products')
+            ->orderBy('products_count', 'desc')
+            ->take(4)
+            ->get();
+
         $featuredStore = \App\Models\Store::where('status', 'active')
+            ->has('products')
             ->with(['products' => function ($q) {
                 $q->with('images')->latest()->take(4);
             }])
@@ -45,7 +66,8 @@ class HomeController extends Controller
 
         return view('home', compact(
             'totalStores', 'totalProducts', 'verifiedStores',
-            'categories', 'products', 'stores',
+            'categories', 'products', 'trendingProducts', 'latestProducts',
+            'stores', 'topStores',
             'featuredStore', 'savedProductIds'
         ));
     }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Store;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class StoreController extends Controller
 {
@@ -100,6 +101,34 @@ class StoreController extends Controller
         $store->user->update(['status' => $newStatus]);
 
         return back()->with('success', 'Store and owner account ' . $newStatus . ' successfully.');
+    }
+
+    public function updateImages(Request $request, Store $store)
+    {
+        $request->validate([
+            'logo' => 'nullable|image|max:1024',
+            'banner' => 'nullable|image|max:2048',
+        ]);
+
+        $data = [];
+
+        if ($request->hasFile('logo')) {
+            if ($store->logo) {
+                Storage::disk('r2')->delete($store->logo);
+            }
+            $data['logo'] = $request->file('logo')->store('stores/logos', 'r2');
+        }
+
+        if ($request->hasFile('banner')) {
+            if ($store->banner) {
+                Storage::disk('r2')->delete($store->banner);
+            }
+            $data['banner'] = $request->file('banner')->store('stores/banners', 'r2');
+        }
+
+        $store->update($data);
+
+        return back()->with('success', 'Store images updated successfully.');
     }
 
     public function destroy(Store $store)

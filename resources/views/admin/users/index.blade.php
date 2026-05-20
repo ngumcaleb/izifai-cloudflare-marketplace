@@ -115,6 +115,9 @@
                             <td class="px-6 py-4 text-right">
                                 @if($user->role !== 'admin')
                                 <div class="flex items-center justify-end gap-2">
+                                    <a href="{{ route('admin.users.edit', $user) }}" class="p-2 bg-slate-50 text-slate-400 hover:text-navy-800 hover:bg-slate-100 rounded-lg transition-all" title="Edit user">
+                                        <i data-lucide="edit-3" class="w-4 h-4"></i>
+                                    </a>
                                     <form action="{{ route('admin.users.status', $user) }}" method="POST">
                                         @csrf
                                         <button class="p-2 bg-slate-50 {{ $user->status === 'active' ? 'text-amber-500 hover:bg-amber-500' : 'text-emerald-500 hover:bg-emerald-500' }} hover:text-white rounded-lg transition-all" title="{{ $user->status === 'active' ? 'Suspend' : 'Activate' }}">
@@ -161,6 +164,9 @@
                     </div>
                     @if($user->role !== 'admin')
                     <div class="flex gap-2 shrink-0">
+                        <a href="{{ route('admin.users.edit', $user) }}" class="p-2 bg-slate-50 text-slate-400 hover:text-navy-800 rounded-lg">
+                            <i data-lucide="edit-3" class="w-4 h-4"></i>
+                        </a>
                         <form action="{{ route('admin.users.status', $user) }}" method="POST">
                             @csrf
                             <button class="p-2 bg-slate-50 {{ $user->status === 'active' ? 'text-amber-500' : 'text-emerald-500' }} rounded-lg">

@@ -119,7 +119,7 @@
             @if($sellerStore && $sellerStore->banner)
                 <img src="{{ $sellerStore->banner_url }}" class="w-full h-full object-cover">
             @else
-                <div class="w-full h-full bg-gradient-to-br from-primary/50 to-primary"></div>
+                <x-store-default-banner :store="$sellerStore" variant="sidebar" />
             @endif
             <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
             <button @click="sidebarOpen = false" class="lg:hidden absolute top-2 right-2 w-6 h-6 bg-black/30 text-white rounded-full flex items-center justify-center hover:bg-black/50 transition-all">
@@ -130,9 +130,7 @@
                     @if($sellerStore && $sellerStore->logo)
                         <img src="{{ $sellerStore->logo_url }}" class="w-full h-full object-cover">
                     @else
-                        <div class="w-full h-full bg-primary/10 flex items-center justify-center text-base lg:text-lg font-black text-primary">
-                            {{ $sellerStore ? substr($sellerStore->name, 0, 1) : 'S' }}
-                        </div>
+                        <x-store-default-logo :store="$sellerStore" size="md" />
                     @endif
                 </div>
             </div>
@@ -215,7 +213,7 @@
             @if($sellerStore && $sellerStore->banner)
                 <img src="{{ $sellerStore->banner_url }}" class="w-full h-full object-cover">
             @else
-                <div class="w-full h-full bg-gradient-to-br from-primary/50 to-primary"></div>
+                <x-store-default-banner :store="$sellerStore" variant="sidebar" />
             @endif
             <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
             <div class="absolute -bottom-7 left-4">
@@ -223,9 +221,7 @@
                     @if($sellerStore && $sellerStore->logo)
                         <img src="{{ $sellerStore->logo_url }}" class="w-full h-full object-cover">
                     @else
-                        <div class="w-full h-full bg-primary/10 flex items-center justify-center text-lg font-black text-primary">
-                            {{ $sellerStore ? substr($sellerStore->name, 0, 1) : 'S' }}
-                        </div>
+                        <x-store-default-logo :store="$sellerStore" size="lg" />
                     @endif
                 </div>
             </div>

@@ -70,6 +70,9 @@ return [
             'use_path_style_endpoint' => true,
             'throw' => false,
             'report' => false,
+            'http' => [
+                'verify' => env('AWS_VERIFY_SSL', false),
+            ],
         ],
 
     ],

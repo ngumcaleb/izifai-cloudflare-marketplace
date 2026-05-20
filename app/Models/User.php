@@ -96,4 +96,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(SavedProduct::class);
     }
+
+    public function getProfilePhotoUrlAttribute(): ?string
+    {
+        return $this->profile_photo_path ? url('/r2/' . ltrim($this->profile_photo_path, '/')) : null;
+    }
 }

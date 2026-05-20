@@ -19,7 +19,7 @@ class ProductController extends Controller
                 'user_id' => $user->id,
                 'name' => $user->name . "'s Store",
                 'slug' => Str::slug($user->name . ' store') . '-' . Str::random(5),
-                'whatsapp_number' => $user->phone ?? '000000000',
+                'whatsapp_number' => $user->phone,
             ]);
         }
 

@@ -87,11 +87,11 @@
                         <tr class="hover:bg-slate-50/30 transition-colors group">
                             <td class="px-6 py-5">
                                 <div class="flex items-center gap-4">
-                                    <div class="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center text-navy-800 font-bold text-sm shrink-0 overflow-hidden">
+                                    <div class="w-10 h-10 rounded-lg overflow-hidden shrink-0">
                                         @if($store->logo)
                                             <img src="{{ $store->logo_url }}" class="w-full h-full object-cover">
                                         @else
-                                            {{ substr($store->name, 0, 1) }}
+                                            <x-store-default-logo :store="$store" size="sm" />
                                         @endif
                                     </div>
                                     <div>
@@ -145,11 +145,11 @@
                 @forelse($stores as $store)
                 <div class="p-4 flex items-center justify-between hover:bg-slate-50 transition-colors">
                     <div class="flex items-center gap-3 min-w-0">
-                        <div class="w-12 h-12 bg-slate-100 rounded-lg flex items-center justify-center text-navy-800 text-base font-bold shrink-0 overflow-hidden">
+                        <div class="w-12 h-12 rounded-lg overflow-hidden shrink-0">
                             @if($store->logo)
                                 <img src="{{ $store->logo_url }}" class="w-full h-full object-cover">
                             @else
-                                {{ substr($store->name, 0, 1) }}
+                                <x-store-default-logo :store="$store" size="md" />
                             @endif
                         </div>
                         <div class="min-w-0">

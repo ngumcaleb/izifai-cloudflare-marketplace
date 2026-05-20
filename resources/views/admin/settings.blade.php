@@ -45,6 +45,12 @@
                     <i data-lucide="megaphone" class="w-4 h-4"></i>
                     <span class="text-xs font-bold uppercase tracking-wider">Promotion</span>
                 </button>
+                <button @click="section = 'store-images'" 
+                        :class="section === 'store-images' ? 'bg-white border-gold-400 text-navy-800' : 'bg-transparent border-transparent text-slate-400 hover:text-slate-600'"
+                        class="flex-shrink-0 lg:w-full flex items-center gap-3 px-4 py-3 rounded-lg border-l-4 transition-all duration-200">
+                    <i data-lucide="store" class="w-4 h-4"></i>
+                    <span class="text-xs font-bold uppercase tracking-wider">Store Images</span>
+                </button>
                 <button @click="section = 'security'" 
                         :class="section === 'security' ? 'bg-white border-gold-400 text-navy-800' : 'bg-transparent border-transparent text-slate-400 hover:text-slate-600'"
                         class="flex-shrink-0 lg:w-full flex items-center gap-3 px-4 py-3 rounded-lg border-l-4 transition-all duration-200">
@@ -164,6 +170,40 @@
                         <div class="md:col-span-2 space-y-1.5">
                             <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">MoMo Recipient Name</label>
                             <input type="text" name="mtn_momo_name" value="{{ $settings['mtn_momo_name'] ?? '' }}" placeholder="Account Name" class="w-full bg-slate-50 border border-slate-100 rounded-lg px-4 py-3 text-xs font-semibold text-navy-800 focus:ring-1 focus:ring-gold-400 focus:border-gold-400 outline-none transition-all">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Store Images Section -->
+                <div x-show="section === 'store-images'" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0">
+                    <div class="mb-6">
+                        <h3 class="text-base font-bold text-navy-800">Default Store Images</h3>
+                        <p class="text-[10px] text-slate-400 font-medium mt-0.5">Upload default logo and cover images shown when a store hasn't set their own.</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="space-y-1.5">
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Default Store Logo</label>
+                            <div class="flex items-start gap-4">
+                                <div class="shrink-0 w-20 h-20 rounded-xl overflow-hidden bg-slate-100 border border-slate-200">
+                                    <img src="{{ url('/r2/default-logo.jpg') }}?v={{ $settings['default_logo_version'] ?? '1' }}" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='<div class=&quot;w-full h-full flex items-center justify-center text-slate-300&quot;><i data-lucide=&quot;image&quot; class=&quot;w-6 h-6&quot;></i></div>'">
+                                </div>
+                                <div class="flex-1">
+                                    <input type="file" name="default_store_logo" accept="image/*" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-navy-800 file:text-white hover:file:bg-gold-400 hover:file:text-white file:transition-all file:cursor-pointer">
+                                    <p class="text-[10px] text-slate-400 mt-1.5">Square image recommended. JPEG, PNG, or WebP.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Default Store Cover</label>
+                            <div class="flex items-start gap-4">
+                                <div class="shrink-0 w-28 h-20 rounded-xl overflow-hidden bg-slate-100 border border-slate-200">
+                                    <img src="{{ url('/r2/default-banner.jpg') }}?v={{ $settings['default_banner_version'] ?? '1' }}" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='<div class=&quot;w-full h-full flex items-center justify-center text-slate-300&quot;><i data-lucide=&quot;image&quot; class=&quot;w-6 h-6&quot;></i></div>'">
+                                </div>
+                                <div class="flex-1">
+                                    <input type="file" name="default_store_banner" accept="image/*" class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-navy-800 file:text-white hover:file:bg-gold-400 hover:file:text-white file:transition-all file:cursor-pointer">
+                                    <p class="text-[10px] text-slate-400 mt-1.5">1200x400px recommended. JPEG, PNG, or WebP.</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -14,11 +14,11 @@
             
             <div class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
                 <div class="flex items-center gap-6">
-                    <div class="w-20 h-20 md:w-24 md:h-24 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center font-black text-3xl md:text-4xl text-white border border-white/20 shrink-0 shadow-2xl overflow-hidden">
+                    <div class="w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden shrink-0 shadow-2xl ring-2 ring-white/20">
                         @if($store->logo)
                             <img src="{{ $store->logo_url }}" class="w-full h-full object-cover">
                         @else
-                            {{ substr($store->name, 0, 1) }}
+                            <x-store-default-logo :store="$store" size="2xl" class="rounded-2xl" />
                         @endif
                     </div>
                     <div>
@@ -282,6 +282,73 @@
 
                         <button type="submit" class="w-full mt-4 py-3 bg-gold-500 text-white rounded-xl text-[11px] font-black uppercase tracking-widest transition-all shadow-lg shadow-gold-500/20 hover:scale-[1.02]">
                             Apply Changes
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Store Images -->
+                <div class="admin-card p-8 border-none bg-white shadow-xl">
+                    <h3 class="text-sm font-bold text-navy-800 mb-2">Store Appearance</h3>
+                    <p class="text-[10px] text-slate-400 font-medium uppercase tracking-widest mb-6">Logo & banner images</p>
+
+                    <form action="{{ route('admin.stores.images', $store) }}" method="POST" enctype="multipart/form-data" class="space-y-5"
+                          x-data="{
+                              logoPreview: null,
+                              bannerPreview: null,
+                              previewLogo(event) {
+                                  const file = event.target.files[0];
+                                  if (file) { const r = new FileReader(); r.onload = e => this.logoPreview = e.target.result; r.readAsDataURL(file); }
+                              },
+                              previewBanner(event) {
+                                  const file = event.target.files[0];
+                                  if (file) { const r = new FileReader(); r.onload = e => this.bannerPreview = e.target.result; r.readAsDataURL(file); }
+                              }
+                          }">
+                        @csrf
+                        <div class="space-y-3">
+                            <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Store Logo</label>
+                            <label class="relative group cursor-pointer aspect-square w-32 rounded-xl border-2 border-dashed border-slate-200 overflow-hidden flex items-center justify-center hover:border-gold-400 transition-all bg-slate-50 mx-auto">
+                                <input type="file" name="logo" class="hidden" accept="image/*" @change="previewLogo">
+                                <img x-show="logoPreview" :src="logoPreview" class="w-full h-full object-cover">
+                                <div x-show="!logoPreview" class="w-full h-full">
+                                    @if($store->logo)
+                                        <img src="{{ $store->logo_url }}" class="w-full h-full object-cover">
+                                    @else
+                                        <div class="w-full h-full flex flex-col items-center justify-center text-slate-300">
+                                            <span class="material-symbols-outlined text-2xl">add_photo_alternate</span>
+                                            <span class="text-[9px] font-bold mt-1">Logo</span>
+                                        </div>
+                                    @endif
+                                </div>
+                                <div class="absolute inset-0 bg-navy-900/80 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center text-white rounded-xl">
+                                    <span class="material-symbols-outlined text-xl">camera_alt</span>
+                                </div>
+                            </label>
+                        </div>
+
+                        <div class="space-y-3">
+                            <label class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Banner Image</label>
+                            <label class="relative group cursor-pointer h-20 rounded-xl border-2 border-dashed border-slate-200 overflow-hidden flex items-center justify-center hover:border-gold-400 transition-all bg-slate-50">
+                                <input type="file" name="banner" class="hidden" accept="image/*" @change="previewBanner">
+                                <img x-show="bannerPreview" :src="bannerPreview" class="w-full h-full object-cover">
+                                <div x-show="!bannerPreview" class="w-full h-full">
+                                    @if($store->banner)
+                                        <img src="{{ $store->banner_url }}" class="w-full h-full object-cover">
+                                    @else
+                                        <div class="w-full h-full flex items-center justify-center text-slate-300">
+                                            <span class="material-symbols-outlined text-lg">panorama</span>
+                                            <span class="text-[9px] font-bold ml-2">Banner (1200x400)</span>
+                                        </div>
+                                    @endif
+                                </div>
+                                <div class="absolute inset-0 bg-navy-900/80 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center text-white rounded-xl">
+                                    <span class="material-symbols-outlined text-xl">camera_alt</span>
+                                </div>
+                            </label>
+                        </div>
+
+                        <button type="submit" class="w-full py-3 bg-navy-800 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-navy-900 transition-all shadow-lg">
+                            Update Images
                         </button>
                     </form>
                 </div>

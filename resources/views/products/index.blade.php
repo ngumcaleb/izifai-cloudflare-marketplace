@@ -69,6 +69,13 @@
     .price-old-line { color: #dc2626; text-decoration: line-through; opacity: 0.6; }
     .trending-grid-card { transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
     .trending-grid-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px -12px rgba(0,0,0,0.1); }
+    @keyframes dotPulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.8; } }
+    @keyframes scalePulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+    .animate-dot-pulse { animation: dotPulse 1.5s ease-in-out infinite; }
+    .animate-dot-pulse-delayed { animation: dotPulse 1.5s ease-in-out 0.5s infinite; }
+    .animate-dot-pulse-slower { animation: dotPulse 1.5s ease-in-out 1s infinite; }
+    .animate-scale-pulse { animation: scalePulse 2s ease-in-out infinite; }
+    .hero-pattern { background-image: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.05) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255,255,255,0.08) 0%, transparent 50%); }
 </style>
 @endpush
 
@@ -92,9 +99,7 @@
                                 <img src="{{ $store->logo_url }}" alt="" class="w-full h-full object-cover">
                             </div>
                         @else
-                            <div class="store-avatar w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 text-primary font-extrabold text-sm">
-                                {{ strtoupper(substr($store->name, 0, 2)) }}
-                            </div>
+                            <x-store-default-logo :store="$store" size="sm" class="store-avatar rounded-xl" />
                         @endif
                         <div class="min-w-0 flex-1">
                             <div class="flex items-center gap-1">
@@ -245,113 +250,105 @@
 @endsection
 
 @section('content')
-<div x-data="productsPage()" class="min-h-screen bg-surface pb-20 lg:pb-0">
+<div x-data="{ openMobileFilters: false }" class="min-h-screen bg-surface pb-20 lg:pb-0">
 
     {{-- ===== 1. HERO ===== --}}
     <section class="mx-3 sm:mx-6 lg:mx-8 mt-3 sm:mt-4">
-        <div class="relative min-h-[180px] sm:min-h-[260px] lg:min-h-[320px] overflow-hidden rounded-2xl shadow-sm">
-        <div class="absolute inset-0 hero-bg"></div>
-        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
-        <div class="absolute top-[-120px] right-[-80px] w-[400px] h-[400px] rounded-full bg-white/5 blur-[80px]"></div>
-        <div class="absolute bottom-[-100px] left-[-60px] w-[300px] h-[300px] rounded-full bg-white/5 blur-[80px]"></div>
-        <div class="absolute bottom-0 left-0 right-0 px-5 sm:px-6 lg:px-8 py-3 sm:py-6 lg:py-8">
-            <div class="max-w-7xl mx-auto">
-                <div class="flex items-end justify-between gap-4">
-                    <div class="min-w-0 max-w-2xl">
-                        <div class="flex items-center gap-2">
-                            <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-white shrink-0 ring-2 ring-white/30">
-                                <span class="material-symbols-outlined text-lg sm:text-[22px]" style="font-variation-settings: 'FILL' 1;">storefront</span>
+        <div class="relative min-h-[220px] sm:min-h-[280px] lg:min-h-[300px] rounded-2xl shadow-sm">
+            <div class="absolute inset-0 bg-cover bg-center rounded-2xl hero-bg"></div>
+            <div class="absolute inset-0 rounded-2xl bg-gradient-to-t from-black/70 via-black/30 to-black/10"></div>
+            <div class="absolute inset-0 rounded-2xl hero-pattern"></div>
+            <div class="absolute top-[-120px] right-[-80px] w-[400px] h-[400px] rounded-full bg-white/5 blur-[80px]"></div>
+            <div class="absolute bottom-[-100px] left-[-60px] w-[300px] h-[300px] rounded-full bg-white/5 blur-[80px]"></div>
+            <div class="absolute inset-0 pointer-events-none opacity-[0.04]">
+                <div class="absolute top-20 left-[15%] w-1 h-1 rounded-full bg-white animate-dot-pulse"></div>
+                <div class="absolute top-40 left-[35%] w-1.5 h-1.5 rounded-full bg-white animate-dot-pulse-delayed"></div>
+                <div class="absolute top-10 right-[25%] w-1 h-1 rounded-full bg-white animate-dot-pulse-slower"></div>
+                <div class="absolute bottom-40 right-[20%] w-1.5 h-1.5 rounded-full bg-white animate-dot-pulse-delayed"></div>
+                <div class="absolute bottom-20 left-[40%] w-1 h-1 rounded-full bg-white animate-dot-pulse"></div>
+            </div>
+            <div class="absolute bottom-0 left-0 right-0 px-5 sm:px-6 lg:px-10 py-4 sm:py-6 lg:py-8">
+                <div class="max-w-7xl mx-auto">
+                    <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
+                        <div class="max-w-2xl min-w-0">
+                            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/15 mb-2 sm:mb-3">
+                                <span class="w-1.5 h-1.5 rounded-full bg-[#00a859] animate-scale-pulse"></span>
+                                <span class="text-[8px] sm:text-[10px] font-bold text-white/90 tracking-wide truncate max-w-[180px] sm:max-w-none">Cameroon's Trusted Marketplace</span>
                             </div>
-                            <div>
-                                <h1 class="text-2xl sm:text-3xl lg:text-4xl lg:leading-[44px] font-bold text-white tracking-tight">
-                                    Buy and Sell in <span class="text-[#00a859]">Cameroon</span>
-                                </h1>
-                                <p class="text-xs sm:text-sm text-white/80 max-w-xl line-clamp-2">Izifai connects you with trusted sellers across Cameroon. Browse, message, and buy — all from one link.</p>
+                            <h1 class="text-xl sm:text-3xl lg:text-5xl font-black leading-[1.1] sm:leading-[1.04] tracking-[-0.03em] text-white text-balance">
+                                Buy and Sell in <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#00a859] to-[#4ade80]">Cameroon</span>
+                            </h1>
+                            <p class="text-[10px] sm:text-sm text-white/80 max-w-xl leading-snug sm:leading-relaxed mt-1 sm:mt-2 line-clamp-1 sm:line-clamp-none">
+                                Browse the latest wholesale and retail products from verified sellers across Cameroon.
+                            </p>
+                            <div class="flex flex-wrap items-center gap-1.5 sm:gap-3 mt-2 sm:mt-4">
+                                <a href="{{ route('register') }}"
+                                   class="inline-flex items-center justify-center gap-1 px-4 sm:px-6 py-2 sm:py-3 bg-white text-[#00210d] rounded-full text-[10px] sm:text-[13px] font-bold hover:bg-white/90 active:scale-[0.97] transition-all duration-200 shadow-sm group shrink-0">
+                                    Start Selling Free
+                                    <svg class="w-3 h-3 sm:w-4 sm:h-4 group-hover:translate-x-0.5 transition-transform shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+                                </a>
+                                <a href="#products-section"
+                                   class="inline-flex items-center justify-center gap-1.5 px-4 sm:px-6 py-2 sm:py-3 bg-white/10 backdrop-blur-sm text-white rounded-full text-[10px] sm:text-[13px] font-bold border border-white/20 hover:bg-white/20 active:scale-[0.97] transition-all duration-200 shrink-0">
+                                    Browse Products
+                                </a>
                             </div>
-                        </div>
+                            <div class="flex flex-wrap items-center gap-2 sm:gap-5 mt-2 sm:mt-4">
+                                @if($trendingProducts->count() > 0)
+                                    <div class="flex -space-x-1.5 sm:-space-x-2">
+                                        @php $heroProducts = $trendingProducts->take(3); @endphp
+                                        @foreach($heroProducts as $product)
+                                            <a href="{{ route('products.show', $product->slug) }}" class="w-6 h-6 sm:w-8 sm:h-8 rounded-full border-2 border-white/80 overflow-hidden bg-white shadow-sm hover:z-10 relative transition-transform hover:scale-110">
+                                                @if($product->images->first())
+                                                    <img src="{{ $product->images->first()->url }}" alt="" class="w-full h-full object-cover">
+                                                @else
+                                                    <div class="w-full h-full flex items-center justify-center bg-white/30"><span class="material-symbols-outlined text-[8px] text-white/60">photo</span></div>
+                                                @endif
+                                            </a>
+                                        @endforeach
+                                    </div>
+                                @endif
+                                <span class="text-white text-[10px] sm:text-sm font-bold">
+                                    <span class="text-sm sm:text-lg font-black">{{ number_format($products->total()) }}</span> Products
+                                </span>
+                                <span class="text-white/60 text-[8px] sm:text-[10px]">Shop on Izifai</span>
+                            </div>
 
-                        <div class="flex flex-wrap items-center gap-1.5 mt-1 sm:mt-2">
-                            @if($trendingProducts->count() > 0)
-                                <div class="flex -space-x-1.5">
-                                    @php $heroProducts = $trendingProducts->take(4); @endphp
-                                    @foreach($heroProducts as $product)
-                                        <a href="{{ route('products.show', $product->slug) }}" class="w-5 h-5 sm:w-6 sm:h-6 rounded-full border-[1.5px] border-white/70 overflow-hidden bg-white shadow-sm hover:z-10 relative transition-transform hover:scale-110">
-                                            @if($product->images->first())
-                                                <img src="{{ $product->images->first()->url }}" alt="" class="w-full h-full object-cover">
+                            @if(request('q') || request('category') || request('min_price') || request('max_price') || (request('sort') && request('sort') !== 'random'))
+                                <div class="flex flex-wrap items-center gap-1 mt-1">
+                                    @if(request('category'))
+                                        @php $catName = $categories->firstWhere('slug', request('category'))?->name ?? request('category'); @endphp
+                                        <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-white/12 text-white rounded-full text-[7px] font-semibold backdrop-blur-sm border border-white/10">
+                                            {{ $catName }}
+                                            <a href="{{ route('products.index', request()->except(['category', 'page'])) }}"><span class="material-symbols-outlined text-[8px] cursor-pointer hover:text-white/70">close</span></a>
+                                        </span>
+                                    @endif
+                                    @if(request('min_price') || request('max_price'))
+                                        <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-white/12 text-white rounded-full text-[7px] font-semibold backdrop-blur-sm border border-white/10">
+                                            @if(request('min_price') && request('max_price'))
+                                                {{ number_format((int)request('min_price')) }}–{{ number_format((int)request('max_price')) }} FCFA
+                                            @elseif(request('min_price'))
+                                                From {{ number_format((int)request('min_price')) }} FCFA
                                             @else
-                                                <div class="w-full h-full flex items-center justify-center bg-white/30"><span class="material-symbols-outlined text-[8px] text-white/60">photo</span></div>
+                                                Up to {{ number_format((int)request('max_price')) }} FCFA
                                             @endif
-                                        </a>
-                                    @endforeach
+                                            <a href="{{ route('products.index', request()->except(['min_price', 'max_price', 'page'])) }}"><span class="material-symbols-outlined text-[8px] cursor-pointer hover:text-white/70">close</span></a>
+                                        </span>
+                                    @endif
+                                    @if(request('sort') && request('sort') !== 'random')
+                                        <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-white/12 text-white rounded-full text-[7px] font-semibold backdrop-blur-sm border border-white/10">
+                                            {{ request('sort') === 'price_low' ? 'Low→High' : 'High→Low' }}
+                                            <a href="{{ route('products.index', request()->except(['sort', 'page'])) }}"><span class="material-symbols-outlined text-[8px] cursor-pointer hover:text-white/70">close</span></a>
+                                        </span>
+                                    @endif
+                                    <a href="{{ route('products.index') }}" class="text-[7px] font-semibold text-white/60 hover:text-white underline underline-offset-2 transition-colors">Clear</a>
                                 </div>
                             @endif
-                            <span class="text-white/80 text-[10px] sm:text-xs font-bold">
-                                <span class="text-sm sm:text-base font-black">{{ number_format($products->total()) }}</span> products
-                            </span>
-                            <span class="text-white/30 hidden sm:inline">•</span>
-                            <span class="text-white/60 text-[9px] sm:text-[11px] font-medium hidden sm:inline">Shop on Izifai</span>
                         </div>
-
-                        @if(request('q') || request('category') || request('min_price') || request('max_price') || (request('sort') && request('sort') !== 'random'))
-                            <div class="flex flex-wrap items-center gap-1 mt-1">
-                                @if(request('category'))
-                                    @php $catName = $categories->firstWhere('slug', request('category'))?->name ?? request('category'); @endphp
-                                    <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-white/12 text-white rounded-full text-[7px] font-semibold backdrop-blur-sm border border-white/10">
-                                        {{ $catName }}
-                                        <a href="{{ route('products.index', request()->except(['category', 'page'])) }}"><span class="material-symbols-outlined text-[8px] cursor-pointer hover:text-white/70">close</span></a>
-                                    </span>
-                                @endif
-                                @if(request('min_price') || request('max_price'))
-                                    <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-white/12 text-white rounded-full text-[7px] font-semibold backdrop-blur-sm border border-white/10">
-                                        @if(request('min_price') && request('max_price'))
-                                            {{ number_format((int)request('min_price')) }}–{{ number_format((int)request('max_price')) }} FCFA
-                                        @elseif(request('min_price'))
-                                            From {{ number_format((int)request('min_price')) }} FCFA
-                                        @else
-                                            Up to {{ number_format((int)request('max_price')) }} FCFA
-                                        @endif
-                                        <a href="{{ route('products.index', request()->except(['min_price', 'max_price', 'page'])) }}"><span class="material-symbols-outlined text-[8px] cursor-pointer hover:text-white/70">close</span></a>
-                                    </span>
-                                @endif
-                                @if(request('sort') && request('sort') !== 'random')
-                                    <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-white/12 text-white rounded-full text-[7px] font-semibold backdrop-blur-sm border border-white/10">
-                                        {{ request('sort') === 'price_low' ? 'Low→High' : 'High→Low' }}
-                                        <a href="{{ route('products.index', request()->except(['sort', 'page'])) }}"><span class="material-symbols-outlined text-[8px] cursor-pointer hover:text-white/70">close</span></a>
-                                    </span>
-                                @endif
-                                <a href="{{ route('products.index') }}" class="text-[7px] font-semibold text-white/60 hover:text-white underline underline-offset-2 transition-colors">Clear</a>
-                            </div>
-                        @endif
                     </div>
-
-                    @if($trendingProducts->count() > 0)
-                        <div class="hidden sm:flex flex-col items-end shrink-0 gap-1.5">
-                            <div class="flex items-center -space-x-2.5">
-                                @php $heroDesktopProducts = $trendingProducts->take(5); @endphp
-                                @foreach($heroDesktopProducts as $product)
-                                    <a href="{{ route('products.show', $product->slug) }}" class="w-9 h-9 lg:w-10 lg:h-10 rounded-full border-2 border-white/80 overflow-hidden bg-white shadow-sm hover:z-10 relative transition-transform hover:scale-110 hover:-translate-y-1">
-                                        @if($product->images->first())
-                                            <img src="{{ $product->images->first()->url }}" alt="" class="w-full h-full object-cover">
-                                        @else
-                                            <div class="w-full h-full flex items-center justify-center bg-white/30"><span class="material-symbols-outlined text-white/60 text-sm">photo</span></div>
-                                        @endif
-                                    </a>
-                                @endforeach
-                                <div class="w-9 h-9 lg:w-10 lg:h-10 rounded-full border-2 border-white/80 bg-black/25 backdrop-blur-sm flex items-center justify-center text-white text-[7px] font-extrabold relative z-[5] shadow-sm">
-                                    +
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-1.5 bg-white/10 backdrop-blur-sm px-2 py-0.5 rounded-full border border-white/10">
-                                <span class="material-symbols-outlined text-[8px] text-amber-300" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
-                                <span class="text-[7px] font-semibold text-white/70">Trending now</span>
-                            </div>
-                        </div>
-                    @endif
                 </div>
             </div>
         </div>
-        </div>
-        </section>
+    </section>
 
     {{-- ===== 2. TRENDING ===== --}}
     @if($trendingProducts->count() > 0)
@@ -699,9 +696,7 @@
                                                     <img src="{{ $store->banner_url }}" alt="" class="w-full h-full object-cover">
                                                 </div>
                                             @else
-                                                <div class="h-12 bg-gradient-to-r from-primary/5 to-primary-container/20 flex items-center justify-center">
-                                                    <span class="material-symbols-outlined text-xl text-primary/20">store</span>
-                                                </div>
+                                                <x-store-default-banner :store="$store" variant="card" class="h-12" />
                                             @endif
                                             <div class="px-2.5 pb-2.5 relative">
                                                 <div class="flex items-end -mt-5 mb-1.5">
@@ -710,9 +705,7 @@
                                                             <img src="{{ $store->logo_url }}" alt="" class="w-full h-full object-cover">
                                                         </div>
                                                     @else
-                                                        <div class="store-avatar w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 text-primary font-extrabold text-[10px]">
-                                                            {{ strtoupper(substr($store->name, 0, 2)) }}
-                                                        </div>
+                                                        <x-store-default-logo :store="$store" size="sm" class="store-avatar rounded-lg" />
                                                     @endif
                                                     @if($store->is_verified)
                                                         <span class="ml-1 mb-0.5 w-3 h-3 rounded-full bg-primary/10 flex items-center justify-center">
@@ -940,12 +933,6 @@
 
 @push('scripts')
 <script>
-    function productsPage() {
-        return {
-            openMobileFilters: false,
-        }
-    }
-
     document.addEventListener('DOMContentLoaded', function() {
         const params = new URLSearchParams(window.location.search);
         const filterParams = ['q', 'category', 'min_price', 'max_price', 'sort'];

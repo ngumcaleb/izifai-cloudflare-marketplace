@@ -1,5 +1,6 @@
 @extends('layouts.guest')
 
+@section('storeWhatsApp', $product->store->whatsapp_number)
 @php
 $store = $product->store;
 $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c 0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>';
@@ -28,9 +29,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
             @if($store->logo)
                 <img src="{{ $store->logo_url }}" class="w-full h-full object-cover">
             @else
-                <div class="w-full h-full bg-primary/5 flex items-center justify-center text-xs font-bold text-primary">
-                    {{ substr($store->name, 0, 1) }}
-                </div>
+                <x-store-default-logo :store="$store" size="sm" />
             @endif
         </div>
         <div class="min-w-0">
@@ -52,7 +51,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
     @if($store->banner)
         <img src="{{ $store->banner_url }}" class="w-full h-full object-cover">
     @else
-        <div class="w-full h-full bg-gradient-to-br from-primary/60 to-primary"></div>
+        <x-store-default-banner :store="$store" variant="sidebar" />
     @endif
     <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
     <div class="absolute -bottom-8 left-4 flex items-end gap-3">
@@ -60,17 +59,17 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
             @if($store->logo)
                 <img src="{{ $store->logo_url }}" class="w-full h-full object-cover">
             @else
-                <div class="w-full h-full bg-primary/10 flex items-center justify-center text-lg font-black text-primary">
-                    {{ substr($store->name, 0, 1) }}
-                </div>
+                <x-store-default-logo :store="$store" size="lg" />
             @endif
         </div>
     </div>
 </div>
 <div class="pt-10 px-4 pb-4 border-b border-gray-100">
-    <h2 class="text-base font-bold text-on-surface truncate">{{ $store->name }}</h2>
+    <div class="flex items-center gap-1.5 min-w-0">
+        <h2 class="text-base font-bold text-on-surface truncate min-w-0 shrink">{{ $store->name }}</h2>
+        <x-store-badge :store="$store" size="sm" />
+    </div>
     <div class="flex flex-wrap items-center gap-2 mt-1">
-        <x-store-badge :store="$store" />
         <span class="flex items-center gap-0.5 text-[11px] text-on-surface-variant">
             <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
             {{ number_format($avgRating, 1) }}
@@ -107,7 +106,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
 </nav>
 <div class="px-4 py-4 border-t border-gray-100 space-y-2">
     @if($store->whatsapp_number)
-        <a href="https://wa.me/{{ $store->whatsapp_number }}?text={{ urlencode('Hi, I am interested in ' . $product->name . ' on Izifai.') }}" target="_blank"
+        <a href="https://wa.me/{{ wa_url($store->whatsapp_number) }}?text={{ urlencode('Hi, I am interested in ' . $product->name . ' on Izifai.') }}" target="_blank"
            class="w-full bg-[#25D366] text-white py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#128C7E] transition-all text-xs shadow-sm">
             {!! $whatsappIcon !!}
             Message Seller
@@ -287,7 +286,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                 {{-- Action Buttons --}}
                 <div class="space-y-2.5 sm:space-y-3 pt-1 sm:pt-2">
                     @if($store->whatsapp_number)
-                    <a href="https://wa.me/{{ $store->whatsapp_number }}?text={{ urlencode('Hi, I am interested in ' . $product->name . ' on Izifai.') }}"
+                    <a href="https://wa.me/{{ wa_url($store->whatsapp_number) }}?text={{ urlencode('Hi, I am interested in ' . $product->name . ' on Izifai.') }}"
                        target="_blank" onclick="logContact('whatsapp')"
                        class="flex items-center justify-center gap-2 sm:gap-3 w-full py-3 sm:py-3.5 bg-[#25D366] text-white rounded-xl text-xs sm:text-sm font-bold hover:bg-[#128C7E] transition-all shadow-lg shadow-[#25D366]/20">
                         {!! $whatsappIcon !!}
@@ -333,7 +332,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
             <p class="text-[10px] sm:text-xs font-bold text-on-surface-variant uppercase tracking-wider">Connect With Us</p>
             <div class="flex flex-wrap justify-center gap-1.5 sm:gap-2">
                 @if($store->whatsapp_number)
-                <a href="https://wa.me/{{ $store->whatsapp_number }}?text={{ urlencode('Hello, I found you on Izifai.') }}" target="_blank"
+                <a href="https://wa.me/{{ wa_url($store->whatsapp_number) }}?text={{ urlencode('Hello, I found you on Izifai.') }}" target="_blank"
                    class="w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white transition-all" title="WhatsApp">
                     <svg viewBox="0 0 24 24" fill="currentColor" class="w-[14px] h-[14px] sm:w-[18px] sm:h-[18px]" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c 0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
                 </a>
@@ -783,7 +782,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
             body: JSON.stringify({ type: type })
         });
         if (type === 'whatsapp') {
-            window.open('https://wa.me/{{ $store->whatsapp_number ?? '' }}?text={{ urlencode('Hi, I am interested in ' . $product->name . ' on Izifai.') }}', '_blank');
+            window.open('https://wa.me/{{ wa_url($store->whatsapp_number ?? '') }}?text={{ urlencode('Hi, I am interested in ' . $product->name . ' on Izifai.') }}', '_blank');
         }
     }
 

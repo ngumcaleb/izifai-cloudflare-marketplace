@@ -21,7 +21,7 @@ class SellerController extends Controller
                 'user_id' => $user->id,
                 'name' => $user->name . "'s Store",
                 'slug' => Str::slug($user->name . ' store') . '-' . Str::random(5),
-                'whatsapp_number' => $user->phone ?? '000000000',
+                'whatsapp_number' => $user->phone,
             ]);
         }
 
@@ -113,6 +113,7 @@ class SellerController extends Controller
         $data['open_hours'] = $request->open_hours;
         $user = auth()->user();
         $user->name = $request->user_name;
+        $user->phone = $request->whatsapp_number;
         if ($request->has('default_page')) {
             $user->default_page = $request->default_page;
         }

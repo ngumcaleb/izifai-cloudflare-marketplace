@@ -72,14 +72,25 @@ class AdminController extends Controller
     public function updateSettings(Request $request)
     {
         $data = $request->except('_token');
+        $fileKeys = ['hero_image', 'default_store_logo', 'default_store_banner'];
 
         if ($request->hasFile('hero_image')) {
             $path = $request->file('hero_image')->store('hero', 'r2');
             \App\Models\Setting::set('hero_image', $path);
         }
 
+        if ($request->hasFile('default_store_logo')) {
+            $request->file('default_store_logo')->storeAs('', 'default-logo.jpg', 'r2');
+            \App\Models\Setting::set('default_logo_version', now()->timestamp);
+        }
+
+        if ($request->hasFile('default_store_banner')) {
+            $request->file('default_store_banner')->storeAs('', 'default-banner.jpg', 'r2');
+            \App\Models\Setting::set('default_banner_version', now()->timestamp);
+        }
+
         foreach ($data as $key => $value) {
-            if ($key === 'hero_image') continue;
+            if (in_array($key, $fileKeys)) continue;
             \App\Models\Setting::set($key, $value);
         }
 

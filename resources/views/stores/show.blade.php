@@ -1,5 +1,6 @@
 @extends('layouts.guest')
 
+@section('storeWhatsApp', $store->whatsapp_number)
 @section('title', $store->name . ' - Izifai Showroom')
 @section('description', $store->description ? strip_tags($store->description) : $store->name . ' on Izifai')
 @php
@@ -18,6 +19,18 @@ $ogStoreImage = $ogStoreImage ?: asset('images/logo.png');
 @section('twitter_description', $store->description ? str(strip_tags($store->description))->limit(160) : 'Browse products from ' . $store->name . ' on Izifai.')
 @section('twitter_image', $ogStoreImage)
 
+@push('styles')
+<style>
+    @keyframes dotPulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.8; } }
+    @keyframes scalePulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+    .animate-dot-pulse { animation: dotPulse 1.5s ease-in-out infinite; }
+    .animate-dot-pulse-delayed { animation: dotPulse 1.5s ease-in-out 0.5s infinite; }
+    .animate-dot-pulse-slower { animation: dotPulse 1.5s ease-in-out 1s infinite; }
+    .animate-scale-pulse { animation: scalePulse 2s ease-in-out infinite; }
+    .hero-pattern { background-image: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.05) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255,255,255,0.08) 0%, transparent 50%); }
+</style>
+@endpush
+
 @php
 $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c 0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>';
 @endphp
@@ -30,9 +43,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
             @if($store->logo)
                 <img src="{{ $store->logo_url }}" class="w-full h-full object-cover">
             @else
-                <div class="w-full h-full bg-primary/5 flex items-center justify-center text-xs font-bold text-primary">
-                    {{ substr($store->name, 0, 1) }}
-                </div>
+                <x-store-default-logo :store="$store" size="sm" />
             @endif
         </div>
         <div class="min-w-0">
@@ -55,7 +66,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
     @if($store->banner)
         <img src="{{ $store->banner_url }}" class="w-full h-full object-cover">
     @else
-        <div class="w-full h-full bg-gradient-to-br from-primary/60 to-primary"></div>
+        <x-store-default-banner :store="$store" variant="sidebar" />
     @endif
     <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
     <div class="absolute -bottom-8 left-4 flex items-end gap-3">
@@ -63,17 +74,17 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
             @if($store->logo)
                 <img src="{{ $store->logo_url }}" class="w-full h-full object-cover">
             @else
-                <div class="w-full h-full bg-primary/10 flex items-center justify-center text-lg font-black text-primary">
-                    {{ substr($store->name, 0, 1) }}
-                </div>
+                <x-store-default-logo :store="$store" size="lg" />
             @endif
         </div>
     </div>
 </div>
 <div class="pt-10 px-4 pb-4 border-b border-gray-100">
-    <h2 class="text-base font-bold text-on-surface truncate">{{ $store->name }}</h2>
+    <div class="flex items-center gap-1.5 min-w-0">
+        <h2 class="text-base font-bold text-on-surface truncate min-w-0 shrink">{{ $store->name }}</h2>
+        <x-store-badge :store="$store" size="sm" />
+    </div>
     <div class="flex flex-wrap items-center gap-2 mt-1">
-        <x-store-badge :store="$store" />
         <span class="flex items-center gap-0.5 text-[11px] text-on-surface-variant">
             <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
             {{ number_format($avgRating, 1) }}
@@ -110,7 +121,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
 </nav>
 <div class="px-4 py-4 border-t border-gray-100 space-y-2">
     @if($store->whatsapp_number)
-        <a href="https://wa.me/{{ $store->whatsapp_number }}?text={{ urlencode('Hi ' . $store->name . ', I saw your store on Izifai and would like to know more.') }}" target="_blank"
+        <a href="https://wa.me/{{ wa_url($store->whatsapp_number) }}?text={{ urlencode('Hi ' . $store->name . ', I saw your store on Izifai and would like to know more.') }}" target="_blank"
            class="w-full bg-[#25D366] text-white py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#128C7E] transition-all text-xs shadow-sm">
             {!! $whatsappIcon !!}
             Message Seller
@@ -153,42 +164,54 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
 {{-- HERO BANNER --}}
 @php $heroProductThumbs = $topProducts->take(4); @endphp
 <section id="showroom" class="mt-3 sm:mt-4">
-    <div class="relative min-h-[180px] sm:min-h-[260px] lg:min-h-[320px] overflow-hidden rounded-2xl shadow-sm">
+        <div class="relative min-h-[220px] sm:min-h-[280px] lg:min-h-[300px] rounded-2xl shadow-sm">
         @if($store->banner)
-            <img class="absolute inset-0 w-full h-full object-cover" src="{{ $store->banner_url }}" alt="{{ $store->name }}">
+            <img class="absolute inset-0 w-full h-full object-cover rounded-2xl" src="{{ $store->banner_url }}" alt="{{ $store->name }}">
         @else
-            <div class="absolute inset-0 bg-gradient-to-br from-primary/80 to-primary"></div>
+            <x-store-default-banner :store="$store" variant="hero" class="absolute inset-0 rounded-2xl" />
         @endif
-        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+        <div class="absolute inset-0 rounded-2xl bg-gradient-to-t from-black/70 via-black/30 to-black/10"></div>
+        <div class="absolute inset-0 rounded-2xl hero-pattern"></div>
         <div class="absolute top-[-120px] right-[-80px] w-[400px] h-[400px] rounded-full bg-white/5 blur-[80px]"></div>
         <div class="absolute bottom-[-100px] left-[-60px] w-[300px] h-[300px] rounded-full bg-white/5 blur-[80px]"></div>
-        <div class="absolute bottom-0 left-0 right-0 px-5 sm:px-6 lg:px-8 py-3 sm:py-6 lg:py-8">
+        <div class="absolute inset-0 pointer-events-none opacity-[0.04]">
+            <div class="absolute top-20 left-[15%] w-1 h-1 rounded-full bg-white animate-dot-pulse"></div>
+            <div class="absolute top-40 left-[35%] w-1.5 h-1.5 rounded-full bg-white animate-dot-pulse-delayed"></div>
+            <div class="absolute top-10 right-[25%] w-1 h-1 rounded-full bg-white animate-dot-pulse-slower"></div>
+            <div class="absolute bottom-40 right-[20%] w-1.5 h-1.5 rounded-full bg-white animate-dot-pulse-delayed"></div>
+            <div class="absolute bottom-20 left-[40%] w-1 h-1 rounded-full bg-white animate-dot-pulse"></div>
+        </div>
+        <div class="absolute bottom-0 left-0 right-0 px-5 sm:px-6 lg:px-10 py-4 sm:py-6 lg:py-8">
             <div class="max-w-7xl mx-auto">
-                <div class="flex items-end justify-between gap-4">
-                    <div class="min-w-0 max-w-2xl">
-                        <div class="flex items-center gap-2">
-                            <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-white shrink-0 ring-2 ring-white/30">
+                <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-3 lg:gap-4">
+                    <div class="max-w-2xl min-w-0">
+                        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/15 mb-2 sm:mb-3">
+                            <span class="w-1.5 h-1.5 rounded-full bg-[#00a859] animate-scale-pulse"></span>
+                            <span class="text-[8px] sm:text-[10px] font-bold text-white/90 tracking-wide truncate max-w-[140px] sm:max-w-none">Store Showroom</span>
+                        </div>
+                        <div class="flex items-center gap-2 sm:gap-3">
+                            <div class="w-9 h-9 sm:w-14 sm:h-14 rounded-full overflow-hidden bg-white/20 ring-2 ring-white/30 shrink-0">
                                 @if($store->logo)
-                                    <img src="{{ $store->logo_url }}" alt="" class="w-6 h-6 sm:w-7 sm:h-7 object-cover rounded-lg">
+                                    <img src="{{ $store->logo_url }}" alt="" class="w-full h-full object-cover rounded-full">
                                 @else
-                                    <span class="material-symbols-outlined text-lg sm:text-[22px]" style="font-variation-settings: 'FILL' 1;">store</span>
+                                    <x-store-default-logo :store="$store" size="sm" class="rounded-full" />
                                 @endif
                             </div>
-                            <div>
-                                <div class="flex items-center gap-1.5">
-                                    <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-white tracking-tight truncate">{{ $store->name }}</h1>
-                                    <x-store-badge :store="$store" dark size="sm" />
+                            <div class="min-w-0">
+                                <div class="flex items-center gap-1">
+                                    <h1 class="text-base sm:text-3xl lg:text-4xl font-black leading-[1.1] sm:leading-[1.04] tracking-[-0.02em] text-white truncate">{{ $store->name }}</h1>
+                                    <x-store-badge :store="$store" dark size="sm" class="shrink-0" />
                                 </div>
                                 @if($store->description)
-                                    <p class="text-[11px] sm:text-sm text-white/80 max-w-xl line-clamp-1">{{ $store->description }}</p>
+                                    <p class="text-[9px] sm:text-sm text-white/80 max-w-xl line-clamp-3 sm:line-clamp-2">{{ $store->description }}</p>
                                 @endif
                             </div>
                         </div>
-                        <div class="flex flex-wrap items-center gap-1.5 mt-1 sm:mt-2">
+                        <div class="flex flex-wrap items-center gap-2 sm:gap-5 mt-1.5 sm:mt-3">
                             @if($heroProductThumbs->count() > 0)
-                            <div class="flex -space-x-1.5">
+                            <div class="flex -space-x-1.5 sm:-space-x-2">
                                 @foreach($heroProductThumbs as $p)
-                                    <a href="{{ route('products.show', $p->slug) }}" class="w-5 h-5 sm:w-6 sm:h-6 rounded-full border-[1.5px] border-white/70 overflow-hidden bg-white shadow-sm hover:z-10 relative transition-transform hover:scale-110">
+                                    <a href="{{ route('products.show', $p->slug) }}" class="w-6 h-6 sm:w-8 sm:h-8 rounded-full border-2 border-white/80 overflow-hidden bg-white shadow-sm hover:z-10 relative transition-transform hover:scale-110">
                                         @if($p->images->first())
                                             <img src="{{ $p->images->first()->url }}" class="w-full h-full object-cover" alt="">
                                         @else
@@ -198,24 +221,23 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                                 @endforeach
                             </div>
                             @endif
-                            <span class="text-white/80 text-[10px] sm:text-xs font-bold">
-                                <span class="text-sm sm:text-base font-black">{{ $totalProducts }}</span> products
+                            <span class="text-white text-[10px] sm:text-sm font-bold">
+                                <span class="text-sm sm:text-lg font-black">{{ $totalProducts }}</span> Products
                             </span>
-                            <span class="text-white/30 hidden sm:inline">•</span>
-                            <span class="text-white/60 text-[9px] sm:text-[11px] font-medium hidden sm:inline">Shop on Izifai</span>
+                            <span class="text-white/60 text-[8px] sm:text-[10px]">Shop on Izifai</span>
                         </div>
                     </div>
                     <div class="flex gap-1.5 sm:gap-2 shrink-0">
                         @if($store->whatsapp_number)
-                        <a href="https://wa.me/{{ $store->whatsapp_number }}?text={{ urlencode('Hi ' . $store->name . ', I saw your store on Izifai!') }}" target="_blank"
-                           class="flex items-center justify-center gap-1 p-2 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl text-white text-[10px] sm:text-xs font-bold bg-[#25D366] hover:bg-[#128C7E] transition-all shadow-sm">
+                        <a href="https://wa.me/{{ wa_url($store->whatsapp_number) }}?text={{ urlencode('Hi ' . $store->name . ', I saw your store on Izifai!') }}" target="_blank"
+                           class="inline-flex items-center justify-center gap-1 px-3 sm:px-5 py-2 sm:py-3 bg-[#25D366] text-white rounded-full text-[10px] sm:text-[13px] font-bold hover:bg-[#128C7E] active:scale-[0.97] transition-all duration-200 shadow-sm">
                             {!! $whatsappIcon !!}
                             <span class="hidden sm:inline">WhatsApp</span>
                         </a>
                         @endif
                         <button onclick="copyToClipboard(window.location.href, this, 'Done!')"
-                                class="flex items-center justify-center gap-1 p-2 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl text-white text-[10px] sm:text-xs font-bold bg-white/20 hover:bg-white/30 transition-all backdrop-blur-sm">
-                            <span class="material-symbols-outlined text-[16px] sm:text-[18px] copy-icon">share</span>
+                                class="inline-flex items-center justify-center gap-1 px-3 sm:px-5 py-2 sm:py-3 bg-white/10 backdrop-blur-sm text-white rounded-full text-[10px] sm:text-[13px] font-bold border border-white/20 hover:bg-white/20 active:scale-[0.97] transition-all duration-200">
+                            <span class="material-symbols-outlined text-[14px] sm:text-[16px] copy-icon">share</span>
                             <span class="hidden sm:inline copy-label">Share</span>
                         </button>
                     </div>
@@ -244,48 +266,48 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
 @endif
 
 {{-- QUICK STATS --}}
-<section class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
-    <div class="bg-surface-container-lowest rounded-xl p-3 sm:p-4 shadow-sm border border-outline-variant/10">
-        <div class="flex items-center gap-2">
-            <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<section class="grid grid-cols-4 gap-1.5 sm:gap-3">
+    <div class="bg-surface-container-lowest rounded-lg sm:rounded-xl p-2 sm:p-4 shadow-sm border border-outline-variant/10">
+        <div class="flex flex-col sm:flex-row items-center sm:items-center gap-1 sm:gap-2 text-center sm:text-left">
+            <div class="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                <span class="material-symbols-outlined text-[12px] sm:text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
             </div>
             <div class="min-w-0">
-                <p class="text-[9px] font-semibold text-on-surface-variant uppercase tracking-wider">Rating</p>
-                <p class="text-sm sm:text-base font-bold text-on-surface truncate">{{ number_format($avgRating, 1) }}</p>
+                <p class="text-[7px] sm:text-[9px] font-semibold text-on-surface-variant uppercase tracking-wider leading-tight">Rating</p>
+                <p class="text-[11px] sm:text-base font-bold text-on-surface truncate leading-tight">{{ number_format($avgRating, 1) }}</p>
             </div>
         </div>
     </div>
-    <div class="bg-surface-container-lowest rounded-xl p-3 sm:p-4 shadow-sm border border-outline-variant/10">
-        <div class="flex items-center gap-2">
-            <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">reviews</span>
+    <div class="bg-surface-container-lowest rounded-lg sm:rounded-xl p-2 sm:p-4 shadow-sm border border-outline-variant/10">
+        <div class="flex flex-col sm:flex-row items-center sm:items-center gap-1 sm:gap-2 text-center sm:text-left">
+            <div class="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                <span class="material-symbols-outlined text-[12px] sm:text-[16px]" style="font-variation-settings: 'FILL' 1;">reviews</span>
             </div>
             <div class="min-w-0">
-                <p class="text-[9px] font-semibold text-on-surface-variant uppercase tracking-wider">Reviews</p>
-                <p class="text-sm sm:text-base font-bold text-on-surface truncate">{{ $totalReviews }}</p>
+                <p class="text-[7px] sm:text-[9px] font-semibold text-on-surface-variant uppercase tracking-wider leading-tight">Reviews</p>
+                <p class="text-[11px] sm:text-base font-bold text-on-surface truncate leading-tight">{{ $totalReviews }}</p>
             </div>
         </div>
     </div>
-    <div class="bg-surface-container-lowest rounded-xl p-3 sm:p-4 shadow-sm border border-outline-variant/10">
-        <div class="flex items-center gap-2">
-            <div class="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600 shrink-0">
-                <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
+    <div class="bg-surface-container-lowest rounded-lg sm:rounded-xl p-2 sm:p-4 shadow-sm border border-outline-variant/10">
+        <div class="flex flex-col sm:flex-row items-center sm:items-center gap-1 sm:gap-2 text-center sm:text-left">
+            <div class="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600 shrink-0">
+                <span class="material-symbols-outlined text-[12px] sm:text-[16px]" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
             </div>
             <div class="min-w-0">
-                <p class="text-[9px] font-semibold text-on-surface-variant uppercase tracking-wider">Products</p>
-                <p class="text-sm sm:text-base font-bold text-on-surface truncate">{{ $totalProducts }}</p>
+                <p class="text-[7px] sm:text-[9px] font-semibold text-on-surface-variant uppercase tracking-wider leading-tight">Products</p>
+                <p class="text-[11px] sm:text-base font-bold text-on-surface truncate leading-tight">{{ $totalProducts }}</p>
             </div>
         </div>
     </div>
-    <div class="bg-surface-container-lowest rounded-xl p-3 sm:p-4 shadow-sm border border-outline-variant/10">
-        <div class="flex items-center gap-2">
-            <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">calendar_month</span>
+    <div class="bg-surface-container-lowest rounded-lg sm:rounded-xl p-2 sm:p-4 shadow-sm border border-outline-variant/10">
+        <div class="flex flex-col sm:flex-row items-center sm:items-center gap-1 sm:gap-2 text-center sm:text-left">
+            <div class="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                <span class="material-symbols-outlined text-[12px] sm:text-[16px]" style="font-variation-settings: 'FILL' 1;">calendar_month</span>
             </div>
             <div class="min-w-0">
-                <p class="text-[9px] font-semibold text-on-surface-variant uppercase tracking-wider">Since</p>
-                <p class="text-sm sm:text-base font-bold text-on-surface truncate">{{ $joinedDate ? date('Y', strtotime($joinedDate)) : 'N/A' }}</p>
+                <p class="text-[7px] sm:text-[9px] font-semibold text-on-surface-variant uppercase tracking-wider leading-tight">Since</p>
+                <p class="text-[11px] sm:text-base font-bold text-on-surface truncate leading-tight">{{ $joinedDate ? date('Y', strtotime($joinedDate)) : 'N/A' }}</p>
             </div>
         </div>
     </div>
@@ -449,7 +471,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                 <p class="text-sm font-bold text-on-surface-variant mt-3">No products found</p>
                 @if($store->whatsapp_number)
                     <p class="text-xs text-on-surface-variant mt-1">Contact the seller for available items</p>
-                    <a href="https://wa.me/{{ $store->whatsapp_number }}?text={{ urlencode('Hi ' . $store->name . ', I am interested in your products on Izifai.') }}" target="_blank"
+                    <a href="https://wa.me/{{ wa_url($store->whatsapp_number) }}?text={{ urlencode('Hi ' . $store->name . ', I am interested in your products on Izifai.') }}" target="_blank"
                        class="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-[#25D366] text-white rounded-lg text-xs font-bold hover:bg-[#128C7E] transition-all">
                         {!! $whatsappIcon !!}
                         Contact via WhatsApp
@@ -611,7 +633,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
             </div>
             <div class="min-w-0">
                 <p class="text-[9px] font-semibold text-on-surface-variant uppercase tracking-wider">WhatsApp</p>
-                <a href="https://wa.me/{{ $store->whatsapp_number }}?text={{ urlencode('Hi, I found your store on Izifai.') }}" target="_blank"
+                <a href="https://wa.me/{{ wa_url($store->whatsapp_number) }}?text={{ urlencode('Hi, I found your store on Izifai.') }}" target="_blank"
                    class="text-xs font-bold text-primary hover:underline truncate block">{{ $store->whatsapp_number }}</a>
             </div>
         </div>

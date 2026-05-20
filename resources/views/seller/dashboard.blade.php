@@ -115,7 +115,7 @@
                         <span class="text-[10px] font-bold text-gray-500 group-hover:text-primary text-center leading-tight">Reviews</span>
                     </a>
                     @if($store->whatsapp_number)
-                        <a href="https://wa.me/{{ $store->whatsapp_number }}" target="_blank"
+                        <a href="https://wa.me/{{ wa_url($store->whatsapp_number) }}" target="_blank"
                            class="flex flex-col items-center gap-1.5 min-w-[80px] p-3 bg-white rounded-xl border border-gray-100 hover:border-green-300 hover:bg-green-50/30 transition-all group shrink-0">
                             <div class="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center text-green-600 group-hover:scale-110 transition-transform">
                                 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">chat</span>

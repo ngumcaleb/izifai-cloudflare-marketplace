@@ -129,9 +129,7 @@
                             <tr class="hover:bg-slate-50/30 transition-colors">
                                 <td class="px-6 py-4">
                                     <div class="flex items-center gap-3">
-                                        <div class="w-8 h-8 rounded-lg bg-navy-800 flex items-center justify-center text-white text-[10px] font-bold shrink-0">
-                                            {{ substr($store->name, 0, 1) }}
-                                        </div>
+                                        <x-store-default-logo :store="$store" size="xs" class="rounded-lg" />
                                         <span class="text-xs font-bold text-navy-800 truncate">{{ $store->name }}</span>
                                     </div>
                                 </td>
@@ -152,9 +150,7 @@
                     @foreach($recentStores as $store)
                     <div class="p-4 flex items-center justify-between">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-lg bg-navy-800 flex items-center justify-center text-white text-xs font-bold shrink-0">
-                                {{ substr($store->name, 0, 1) }}
-                            </div>
+                            <x-store-default-logo :store="$store" size="sm" class="rounded-lg" />
                             <div>
                                 <h4 class="text-xs font-bold text-navy-800">{{ $store->name }}</h4>
                                 <p class="text-[10px] text-slate-500">{{ $store->user->name }}</p>

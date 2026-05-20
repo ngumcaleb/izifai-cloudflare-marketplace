@@ -39,7 +39,6 @@
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     .mobile-sticky-bar { box-shadow: 0 -4px 20px rgba(0,0,0,0.06); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
     .hero-gradient { background: linear-gradient(135deg, #00210d 0%, #003317 50%, #005228 100%); }
-    .store-logo-placeholder { background: linear-gradient(135deg, #006d38, #00a859); }
     .section-scroll { scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scroll-padding-left: 12px; scroll-padding-right: 12px; }
     .section-scroll > * { scroll-snap-align: start; }
     .trending-grid-card { transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -48,6 +47,13 @@
     .filter-sheet.open { transform: translateY(0); }
     .store-badge { background: linear-gradient(135deg, #006d38, #00a859); }
     .store-hero-bg { background-image: url('https://images.unsplash.com/photo-1601597111158-2fceff292cdc?w=1400&q=80'); background-size: cover; background-position: center; }
+    @keyframes dotPulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.8; } }
+    @keyframes scalePulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+    .animate-dot-pulse { animation: dotPulse 1.5s ease-in-out infinite; }
+    .animate-dot-pulse-delayed { animation: dotPulse 1.5s ease-in-out 0.5s infinite; }
+    .animate-dot-pulse-slower { animation: dotPulse 1.5s ease-in-out 1s infinite; }
+    .animate-scale-pulse { animation: scalePulse 2s ease-in-out infinite; }
+    .hero-pattern { background-image: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.05) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255,255,255,0.08) 0%, transparent 50%); }
 </style>
 @endpush
 
@@ -115,65 +121,73 @@
 
     {{-- ===== 1. HERO ===== --}}
     <section class="mx-3 sm:mx-6 lg:mx-8 mt-3 sm:mt-4">
-        <div class="relative min-h-[180px] sm:min-h-[260px] lg:min-h-[320px] overflow-hidden rounded-2xl shadow-sm">
-        <div class="absolute inset-0 store-hero-bg"></div>
-        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
-        <div class="absolute top-[-120px] right-[-80px] w-[400px] h-[400px] rounded-full bg-white/5 blur-[80px]"></div>
-        <div class="absolute bottom-[-100px] left-[-60px] w-[300px] h-[300px] rounded-full bg-white/5 blur-[80px]"></div>
-        <div class="absolute bottom-0 left-0 right-0 px-5 sm:px-6 lg:px-8 py-3 sm:py-6 lg:py-8">
-            <div class="max-w-7xl mx-auto">
-                <div class="flex items-end justify-between gap-4">
-                    <div class="min-w-0 max-w-2xl">
-                        <div class="flex items-center gap-2">
-                            <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-white shrink-0 ring-2 ring-white/30">
-                                <span class="material-symbols-outlined text-lg sm:text-[22px]" style="font-variation-settings: 'FILL' 1;">communities</span>
+        <div class="relative min-h-[220px] sm:min-h-[280px] lg:min-h-[300px] rounded-2xl shadow-sm">
+            <div class="absolute inset-0 bg-cover bg-center rounded-2xl store-hero-bg"></div>
+            <div class="absolute inset-0 rounded-2xl bg-gradient-to-t from-black/70 via-black/30 to-black/10"></div>
+            <div class="absolute inset-0 rounded-2xl hero-pattern"></div>
+            <div class="absolute top-[-120px] right-[-80px] w-[400px] h-[400px] rounded-full bg-white/5 blur-[80px]"></div>
+            <div class="absolute bottom-[-100px] left-[-60px] w-[300px] h-[300px] rounded-full bg-white/5 blur-[80px]"></div>
+            <div class="absolute inset-0 pointer-events-none opacity-[0.04]">
+                <div class="absolute top-20 left-[15%] w-1 h-1 rounded-full bg-white animate-dot-pulse"></div>
+                <div class="absolute top-40 left-[35%] w-1.5 h-1.5 rounded-full bg-white animate-dot-pulse-delayed"></div>
+                <div class="absolute top-10 right-[25%] w-1 h-1 rounded-full bg-white animate-dot-pulse-slower"></div>
+                <div class="absolute bottom-40 right-[20%] w-1.5 h-1.5 rounded-full bg-white animate-dot-pulse-delayed"></div>
+                <div class="absolute bottom-20 left-[40%] w-1 h-1 rounded-full bg-white animate-dot-pulse"></div>
+            </div>
+            <div class="absolute bottom-0 left-0 right-0 px-5 sm:px-6 lg:px-10 py-4 sm:py-6 lg:py-8">
+                <div class="max-w-7xl mx-auto">
+                    <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
+                        <div class="max-w-2xl min-w-0">
+                            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/15 mb-2 sm:mb-3">
+                                <span class="w-1.5 h-1.5 rounded-full bg-[#00a859] animate-scale-pulse"></span>
+                                <span class="text-[8px] sm:text-[10px] font-bold text-white/90 tracking-wide truncate max-w-[180px] sm:max-w-none">Trusted Stores in Cameroon</span>
                             </div>
-                            <div>
-                                <h1 class="text-2xl sm:text-3xl lg:text-4xl lg:leading-[44px] font-bold text-white tracking-tight">
-                                    Discover <span class="text-[#00a859]">Stores</span>
-                                </h1>
-                                <p class="text-xs sm:text-sm text-white/80 max-w-xl line-clamp-2">Browse trusted sellers and find exactly what you need from merchants across Cameroon.</p>
+                            <h1 class="text-xl sm:text-3xl lg:text-5xl font-black leading-[1.1] sm:leading-[1.04] tracking-[-0.03em] text-white text-balance">
+                                Discover <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#00a859] to-[#4ade80]">Stores</span>
+                            </h1>
+                            <p class="text-[10px] sm:text-sm text-white/80 max-w-xl leading-snug sm:leading-relaxed mt-1 sm:mt-2 line-clamp-1 sm:line-clamp-none">
+                                Browse trusted sellers and find exactly what you need from merchants across Cameroon.
+                            </p>
+                            <div class="flex flex-wrap items-center gap-1.5 sm:gap-3 mt-2 sm:mt-4">
+                                <a href="{{ route('register') }}"
+                                   class="inline-flex items-center justify-center gap-1 px-4 sm:px-6 py-2 sm:py-3 bg-white text-[#00210d] rounded-full text-[10px] sm:text-[13px] font-bold hover:bg-white/90 active:scale-[0.97] transition-all duration-200 shadow-sm group shrink-0">
+                                    Start Selling Free
+                                    <svg class="w-3 h-3 sm:w-4 sm:h-4 group-hover:translate-x-0.5 transition-transform shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+                                </a>
+                                <a href="#stores-section"
+                                   class="inline-flex items-center justify-center gap-1.5 px-4 sm:px-6 py-2 sm:py-3 bg-white/10 backdrop-blur-sm text-white rounded-full text-[10px] sm:text-[13px] font-bold border border-white/20 hover:bg-white/20 active:scale-[0.97] transition-all duration-200 shrink-0">
+                                    Browse Stores
+                                </a>
                             </div>
-                        </div>
-
-                        <div class="flex flex-wrap items-center gap-1.5 mt-1 sm:mt-2">
-                            <span class="text-white/80 text-[10px] sm:text-xs font-bold">
-                                <span class="text-sm sm:text-base font-black">{{ $totalStores }}+</span> active stores
-                            </span>
-                            <span class="text-white/30 hidden sm:inline">•</span>
-                            <span class="text-white/60 text-[9px] sm:text-[11px] font-medium hidden sm:inline">{{ number_format($totalProducts) }}+ products listed</span>
-                        </div>
-
-                        @if(request('search') || request('category'))
-                            <div class="flex flex-wrap items-center gap-1 mt-1">
-                                @if(request('category'))
-                                    @php $catName = $categories->firstWhere('slug', request('category'))?->name ?? request('category'); @endphp
-                                    <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-white/12 text-white rounded-full text-[7px] font-semibold backdrop-blur-sm border border-white/10">
-                                        {{ $catName }}
-                                        <a href="{{ route('stores.index', request()->except(['category', 'page'])) }}"><span class="material-symbols-outlined text-[8px] cursor-pointer hover:text-white/70">close</span></a>
-                                    </span>
-                                @endif
-                                @if(request('search'))
-                                    <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-white/12 text-white rounded-full text-[7px] font-semibold backdrop-blur-sm border border-white/10">
-                                        "{{ request('search') }}"
-                                        <a href="{{ route('stores.index', request()->except(['search', 'page'])) }}"><span class="material-symbols-outlined text-[8px] cursor-pointer hover:text-white/70">close</span></a>
-                                    </span>
-                                @endif
-                                <a href="{{ route('stores.index') }}" class="text-[7px] font-semibold text-white/60 hover:text-white underline underline-offset-2 transition-colors">Clear</a>
+                            <div class="flex flex-wrap items-center gap-2 sm:gap-5 mt-2 sm:mt-4">
+                                <span class="text-white text-[10px] sm:text-sm font-bold">
+                                    <span class="text-sm sm:text-lg font-black">{{ $totalStores }}+</span> Active Stores
+                                </span>
+                                <span class="text-white/60 text-[8px] sm:text-[10px]">{{ number_format($totalProducts) }}+ products listed</span>
                             </div>
-                        @endif
-                    </div>
 
-                    {{-- Desktop decorative badge --}}
-                    <div class="hidden sm:flex flex-col items-end shrink-0 gap-1.5">
-                        <div class="flex items-center gap-1.5 bg-white/10 backdrop-blur-sm px-2 py-0.5 rounded-full border border-white/10">
-                            <span class="material-symbols-outlined text-[8px] text-primary-fixed-dim" style="font-variation-settings: 'FILL' 1;">verified</span>
-                            <span class="text-[7px] font-semibold text-white/70">Trusted Marketplace</span>
+                            @if(request('search') || request('category'))
+                                <div class="flex flex-wrap items-center gap-1 mt-1">
+                                    @if(request('category'))
+                                        @php $catName = $categories->firstWhere('slug', request('category'))?->name ?? request('category'); @endphp
+                                        <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-white/12 text-white rounded-full text-[7px] font-semibold backdrop-blur-sm border border-white/10">
+                                            {{ $catName }}
+                                            <a href="{{ route('stores.index', request()->except(['category', 'page'])) }}"><span class="material-symbols-outlined text-[8px] cursor-pointer hover:text-white/70">close</span></a>
+                                        </span>
+                                    @endif
+                                    @if(request('search'))
+                                        <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-white/12 text-white rounded-full text-[7px] font-semibold backdrop-blur-sm border border-white/10">
+                                            "{{ request('search') }}"
+                                            <a href="{{ route('stores.index', request()->except(['search', 'page'])) }}"><span class="material-symbols-outlined text-[8px] cursor-pointer hover:text-white/70">close</span></a>
+                                        </span>
+                                    @endif
+                                    <a href="{{ route('stores.index') }}" class="text-[7px] font-semibold text-white/60 hover:text-white underline underline-offset-2 transition-colors">Clear</a>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
         </div>
     </section>
 
@@ -200,7 +214,7 @@
                                 @if($store->banner)
                                     <img src="{{ $store->banner_url }}" alt="{{ $store->name }}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                                 @else
-                                    <div class="w-full h-full bg-gradient-to-br from-primary/10 via-primary/5 to-surface-container-low"></div>
+                                    <x-store-default-banner :store="$store" variant="card" />
                                 @endif
                                 <div class="absolute top-1.5 left-1.5">
                                     <x-store-badge :store="$store" size="sm" />
@@ -233,7 +247,7 @@
                             @if($store->logo)
                                 <img src="{{ $store->logo_url }}" alt="" class="w-full h-full object-cover">
                             @else
-                                <div class="w-full h-full store-logo-placeholder flex items-center justify-center text-white font-black text-lg">{{ substr($store->name, 0, 1) }}</div>
+                                <x-store-default-logo :store="$store" size="lg" />
                             @endif
                         </a>
                         <div class="min-w-0 flex-1 flex flex-col justify-between py-0.5">
@@ -332,7 +346,7 @@
                                         @if($store->banner)
                                             <img src="{{ $store->banner_url }}" alt="{{ $store->name }}" loading="lazy" class="store-banner w-full h-full object-cover">
                                         @else
-                                            <div class="w-full h-full bg-gradient-to-br from-primary/10 via-primary/5 to-surface-container-low"></div>
+                                            <x-store-default-banner :store="$store" variant="card" />
                                         @endif
                                         <div class="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
                                         <div class="absolute bottom-2.5 left-2.5 flex items-center gap-1.5">
@@ -340,7 +354,7 @@
                                                 @if($store->logo)
                                                     <img src="{{ $store->logo_url }}" alt="" class="w-full h-full object-cover">
                                                 @else
-                                                    <div class="w-full h-full store-logo-placeholder flex items-center justify-center text-white font-black text-[12px]">{{ substr($store->name, 0, 1) }}</div>
+                                                    <x-store-default-logo :store="$store" size="sm" />
                                                 @endif
                                             </div>
                                         </div>
@@ -355,8 +369,8 @@
                                         @endif
                                     </div>
                                     <div class="p-3 pt-2.5">
-                                        <div class="flex items-center gap-1">
-                                            <h3 class="text-[12px] sm:text-sm font-bold text-on-surface truncate group-hover:text-primary transition-colors">{{ $store->name }}</h3>
+                                        <div class="flex items-center gap-1 min-w-0">
+                                            <h3 class="text-[12px] sm:text-sm font-bold text-on-surface truncate min-w-0 shrink group-hover:text-primary transition-colors">{{ $store->name }}</h3>
                                             @if($store->products_count >= 10)
                                                 <span class="material-symbols-outlined text-[12px] text-primary shrink-0" style="font-variation-settings: 'FILL' 1;">verified</span>
                                             @endif
@@ -402,7 +416,7 @@
                                             @if($store->banner)
                                                 <img src="{{ $store->banner_url }}" alt="{{ $store->name }}" loading="lazy" class="w-full h-full object-cover">
                                             @else
-                                                <div class="w-full h-full bg-gradient-to-br from-primary/10 via-primary/5 to-surface-container-low"></div>
+                                                <x-store-default-banner :store="$store" variant="card" />
                                             @endif
                                             <div class="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
                                             <div class="absolute bottom-2 left-2">
@@ -410,7 +424,7 @@
                                                     @if($store->logo)
                                                         <img src="{{ $store->logo_url }}" alt="" class="w-full h-full object-cover">
                                                     @else
-                                                        <div class="w-full h-full store-logo-placeholder flex items-center justify-center text-white font-black text-[9px]">{{ substr($store->name, 0, 1) }}</div>
+                                                        <x-store-default-logo :store="$store" size="xs" />
                                                     @endif
                                                 </div>
                                             </div>

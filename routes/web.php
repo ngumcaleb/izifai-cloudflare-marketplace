@@ -56,6 +56,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('stores/{store}', [\App\Http\Controllers\Admin\StoreController::class, 'show'])->name('stores.show');
         Route::post('stores/{store}/verify', [\App\Http\Controllers\Admin\StoreController::class, 'verify'])->name('stores.verify');
         Route::post('stores/{store}/badge', [\App\Http\Controllers\Admin\StoreController::class, 'updateBadge'])->name('stores.badge');
+        Route::post('stores/{store}/images', [\App\Http\Controllers\Admin\StoreController::class, 'updateImages'])->name('stores.images');
         Route::post('stores/{store}/status', [\App\Http\Controllers\Admin\StoreController::class, 'toggleStatus'])->name('stores.status');
         Route::delete('stores/{store}', [\App\Http\Controllers\Admin\StoreController::class, 'destroy'])->name('stores.destroy');
 
@@ -67,6 +68,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('ads/{ad}/action', [\App\Http\Controllers\Admin\AdRequestController::class, 'handleAction'])->name('ads.action');
 
         Route::get('users', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('users.index');
+        Route::get('users/{user}/edit', [\App\Http\Controllers\Admin\UserController::class, 'edit'])->name('users.edit');
+        Route::put('users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'update'])->name('users.update');
         Route::post('users/{user}/status', [\App\Http\Controllers\Admin\UserController::class, 'toggleStatus'])->name('users.status');
         Route::delete('users/{user}', [\App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('users.destroy');
 
