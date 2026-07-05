@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\AuditLogger;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Category;
@@ -19,11 +20,22 @@ class CategoryController extends Controller
             $query->where('name', 'like', '%' . $request->search . '%');
         }
 
-        $categories = $query->orderBy('name')->paginate(20);
+        if ($request->parent_id) {
+            if ($request->parent_id === 'none') {
+                $query->whereNull('parent_id');
+            } else {
+                $query->where('parent_id', $request->parent_id);
+            }
+        }
+
+        $perPage = $request->input('per_page', 20);
+        $categories = $query->orderBy('name')->paginate($perPage);
 
         $totalProducts = $categories->sum('products_count');
 
-        return view('admin.categories.index', compact('categories', 'totalProducts'));
+        $allCategories = Category::orderBy('name')->get();
+
+        return view('admin.categories.index', compact('categories', 'totalProducts', 'allCategories'));
     }
 
     public function create()
@@ -44,7 +56,9 @@ class CategoryController extends Controller
 
         $validated['slug'] = $validated['slug'] ?? Str::slug($validated['name']);
 
-        Category::create($validated);
+        $category = Category::create($validated);
+
+        AuditLogger::log('category.created', "Created category #{$category->id}: {$category->name}", $category);
 
         return redirect()->route('admin.categories.index')
             ->with('success', 'Category "' . $validated['name'] . '" created successfully.');
@@ -68,7 +82,11 @@ class CategoryController extends Controller
 
         $validated['slug'] = $validated['slug'] ?? Str::slug($validated['name']);
 
+        $oldValues = $category->only(['name', 'slug', 'parent_id']);
         $category->update($validated);
+        $newValues = $category->only(['name', 'slug', 'parent_id']);
+
+        AuditLogger::log('category.updated', "Updated category #{$category->id}: {$category->name}", $category, $oldValues, $newValues);
 
         return redirect()->route('admin.categories.index')
             ->with('success', 'Category "' . $validated['name'] . '" updated successfully.');
@@ -81,6 +99,8 @@ class CategoryController extends Controller
         }
 
         $category->delete();
+
+        AuditLogger::log('category.deleted', "Deleted category #{$category->id}: {$category->name}");
 
         return back()->with('success', 'Category deleted successfully.');
     }

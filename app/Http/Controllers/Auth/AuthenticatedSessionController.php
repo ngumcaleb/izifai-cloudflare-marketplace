@@ -28,16 +28,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        $user = $request->user();
-        if ($user->role === 'seller') {
-            $page = $user->default_page ?? 'dashboard';
-            $route = 'seller.' . $page;
-            if (in_array($page, ['products.index', 'ads.index', 'store.settings', 'products.create']) && app('router')->has($route)) {
-                return redirect()->route($route);
-            }
-            return redirect()->route('seller.dashboard');
-        }
-
         return redirect()->intended('/');
     }
 

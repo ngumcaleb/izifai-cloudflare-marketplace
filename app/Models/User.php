@@ -2,103 +2,131 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Database\Factories\UserFactory;
+use App\Enums\Role;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'role',
-        'phone',
-        'profile_photo_path',
-        'status',
-        'default_page',
+        'name', 'email', 'password', 'role', 'phone',
+        'profile_photo_path', 'cover_photo_path', 'status', 'default_page',
+        'email_verified', 'phone_verified', 'verification_level',
+        'trust_score', 'fcm_token',
+        'account_type', 'location', 'joined_at',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
+    protected $appends = ['profile_photo_url', 'cover_photo_url'];
+
     protected $hidden = [
-        'password',
-        'remember_token',
+        'password', 'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'email_verified' => 'boolean',
+            'phone_verified' => 'boolean',
+            'joined_at' => 'datetime',
+            'role' => Role::class,
         ];
     }
 
-    /**
-     * Get the store associated with the user.
-     */
-    public function store()
+    public function store(): HasOne
     {
         return $this->hasOne(Store::class);
     }
 
-    public function reviews()
+    public function reviews(): HasMany
     {
         return $this->hasMany(StoreReview::class);
     }
 
-    /**
-     * Check if the user is an admin.
-     */
-    public function isAdmin(): bool
-    {
-        return $this->role === 'admin';
-    }
-
-    /**
-     * Check if the user is a seller.
-     */
-    public function isSeller(): bool
-    {
-        return $this->role === 'seller';
-    }
-
-    /**
-     * Check if the user is a buyer.
-     */
-    public function isBuyer(): bool
-    {
-        return $this->role === 'buyer';
-    }
-
-    /**
-     * Get the products saved by the user.
-     */
-    public function savedProducts()
+    public function savedProducts(): HasMany
     {
         return $this->hasMany(SavedProduct::class);
     }
 
+    public function cart(): HasOne
+    {
+        return $this->hasOne(Cart::class);
+    }
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
+    public function wallet(): HasOne
+    {
+        return $this->hasOne(Wallet::class);
+    }
+
+    public function productReviews(): HasMany
+    {
+        return $this->hasMany(ProductReview::class);
+    }
+
+    public function serviceReviews(): HasMany
+    {
+        return $this->hasMany(ServiceReview::class);
+    }
+
+    public function serviceBookings(): HasMany
+    {
+        return $this->hasMany(ServiceBooking::class);
+    }
+
+    public function follows(): HasMany
+    {
+        return $this->hasMany(Follow::class);
+    }
+
+    public function shippingAddresses(): HasMany
+    {
+        return $this->hasMany(ShippingAddress::class);
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === Role::Superadmin;
+    }
+
+    public function isSeller(): bool
+    {
+        return $this->store !== null;
+    }
+
     public function getProfilePhotoUrlAttribute(): ?string
     {
-        return $this->profile_photo_path ? url('/r2/' . ltrim($this->profile_photo_path, '/')) : null;
+        if ($this->profile_photo_path) {
+            return url('/r2/'.ltrim($this->profile_photo_path, '/'));
+        }
+        $name = urlencode($this->name ?? 'User');
+
+        return "https://ui-avatars.com/api/?name={$name}&background=339933&color=fff&size=128&bold=true";
+    }
+
+    public function getCoverPhotoUrlAttribute(): ?string
+    {
+        if ($this->cover_photo_path) {
+            return url('/r2/'.ltrim($this->cover_photo_path, '/'));
+        }
+
+        return null;
     }
 }

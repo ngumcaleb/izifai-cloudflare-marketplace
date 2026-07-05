@@ -273,13 +273,13 @@
                         <div class="max-w-2xl min-w-0">
                             <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/15 mb-2 sm:mb-3">
                                 <span class="w-1.5 h-1.5 rounded-full bg-[#00a859] animate-scale-pulse"></span>
-                                <span class="text-[8px] sm:text-[10px] font-bold text-white/90 tracking-wide truncate max-w-[180px] sm:max-w-none">Cameroon's Trusted Marketplace</span>
+                                <span class="text-[8px] sm:text-[10px] font-bold text-white/90 tracking-wide truncate max-w-[180px] sm:max-w-none">West Africa's Trusted Marketplace</span>
                             </div>
                             <h1 class="text-xl sm:text-3xl lg:text-5xl font-black leading-[1.1] sm:leading-[1.04] tracking-[-0.03em] text-white text-balance">
-                                Buy and Sell in <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#00a859] to-[#4ade80]">Cameroon</span>
+                                Buy and Sell Across <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#00a859] to-[#4ade80]">West Africa</span>
                             </h1>
                             <p class="text-[10px] sm:text-sm text-white/80 max-w-xl leading-snug sm:leading-relaxed mt-1 sm:mt-2 line-clamp-1 sm:line-clamp-none">
-                                Browse the latest wholesale and retail products from verified sellers across Cameroon.
+                                Browse the latest wholesale and retail products from verified sellers across West Africa.
                             </p>
                             <div class="flex flex-wrap items-center gap-1.5 sm:gap-3 mt-2 sm:mt-4">
                                 <a href="{{ route('register') }}"
@@ -364,9 +364,9 @@
             </div>
 
             {{-- Mobile: horizontal scroll --}}
-            <div class="flex gap-3 overflow-x-auto no-scrollbar section-scroll pb-2 -mx-3 px-3 sm:-mx-6 sm:px-6 lg:hidden">
+            <div x-data="autoScroll()" class="flex gap-3 overflow-x-auto no-scrollbar section-scroll pb-2 -mx-3 px-3 sm:-mx-6 sm:px-6 lg:hidden">
                 @foreach($trendingProducts as $product)
-                    <div class="w-[140px] sm:w-[160px] shrink-0">
+                    <div class="w-[140px] sm:w-[160px] shrink-0 card-enter" style="animation-delay: {{ $loop->index * 0.06 }}s">
                         <a href="{{ route('products.show', $product->slug) }}" class="block product-card bg-white rounded-xl overflow-hidden border border-black/[0.04] shadow-sm group">
                             <div class="aspect-square relative overflow-hidden bg-surface-container-low">
                                 @if($product->images->first())
@@ -403,7 +403,7 @@
             {{-- Desktop: 2-column grid --}}
             <div class="hidden lg:grid lg:grid-cols-2 lg:gap-3">
                 @foreach($trendingProducts as $product)
-                    <div class="trending-grid-card bg-white rounded-xl overflow-hidden border border-black/[0.04] shadow-sm flex gap-3 p-2">
+                    <div class="trending-grid-card bg-white rounded-xl overflow-hidden border border-black/[0.04] shadow-sm flex gap-3 p-2 card-enter" style="animation-delay: {{ $loop->index * 0.06 }}s">
                         <a href="{{ route('products.show', $product->slug) }}" class="w-20 h-20 rounded-lg overflow-hidden shrink-0 bg-surface-container-low block">
                             @if($product->images->first())
                                 <img src="{{ $product->images->first()->url }}" alt="" class="w-full h-full object-cover">
@@ -777,7 +777,7 @@
             </div>
             <div class="grid grid-cols-2 gap-2.5">
                 @foreach($mostContactedProducts as $product)
-                    <div class="trending-grid-card bg-white rounded-xl overflow-hidden border border-black/[0.04] shadow-sm flex gap-2 p-2">
+                    <div class="trending-grid-card bg-white rounded-xl overflow-hidden border border-black/[0.04] shadow-sm flex gap-2 p-2 card-enter" style="animation-delay: {{ $loop->index * 0.06 }}s">
                         <a href="{{ route('products.show', $product->slug) }}" class="w-[52px] h-[52px] rounded-lg overflow-hidden shrink-0 bg-surface-container-low block">
                             @if($product->images->first())
                                 <img src="{{ $product->images->first()->url }}" alt="" class="w-full h-full object-cover">

@@ -101,9 +101,8 @@
                     <p class="text-sm text-on-surface-variant mt-1">Start building your business today. It's free and secure.</p>
                 </div>
 
-                <form method="POST" action="{{ route('register') }}" class="space-y-5" x-data="{ showPassword: false, agree: false }">
+                <form method="POST" action="{{ route('register') }}" class="space-y-5" x-data="{ showPassword: false, agree: false, countryCode: '237', countryFlag: '🇨🇲', countryOpen: false }">
                     @csrf
-                    <input type="hidden" name="role" value="seller">
 
                     <div>
                         <label class="block text-xs font-bold text-on-surface-variant mb-1.5">Full Name</label>
@@ -128,29 +127,43 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold text-on-surface-variant mb-1.5">Business Name</label>
-                        <div class="relative">
-                            <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px] pointer-events-none">storefront</span>
-                            <input type="text" name="store_name" value="{{ old('store_name') }}" required
-                                   class="w-full pl-11 pr-4 py-3 bg-surface-container-lowest border border-outline-variant/50 rounded-lg text-sm text-on-surface font-medium placeholder:text-on-surface-variant/40 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                                   placeholder="e.g. Grace Fashion Boutique">
-                        </div>
-                        @error('store_name') <p class="text-xs text-error font-semibold mt-1">{{ $message }}</p> @enderror
-                    </div>
-
-                    <div>
                         <label class="block text-xs font-bold text-on-surface-variant mb-1.5">
                             Phone Number
                             <span class="text-[10px] font-medium text-on-surface-variant/60 normal-case">(WhatsApp)</span>
                         </label>
                         <div class="flex">
-                            <div class="flex items-center gap-1.5 px-3.5 py-3 bg-surface-container border border-outline-variant/50 border-r-0 rounded-l-lg text-sm font-medium text-on-surface shrink-0">
-                                <span class="text-base leading-none">🇨🇲</span>
-                                <span>+237</span>
+                            <div class="relative shrink-0">
+                                <button type="button" @click="countryOpen = !countryOpen"
+                                        class="flex items-center gap-1.5 px-3.5 py-3 bg-surface-container border border-outline-variant/50 border-r-0 rounded-l-lg text-sm font-medium text-on-surface hover:bg-surface-container-higher transition-colors whitespace-nowrap">
+                                    <span class="text-base leading-none" x-text="countryFlag"></span>
+                                    <span x-text="'+' + countryCode"></span>
+                                    <svg class="w-3.5 h-3.5 text-on-surface-variant" :class="countryOpen && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                                </button>
+                                <div x-show="countryOpen" @click.away="countryOpen = false"
+                                     x-transition:enter="transition ease-out duration-100"
+                                     x-transition:enter-start="opacity-0 scale-95"
+                                     x-transition:enter-end="opacity-100 scale-100"
+                                     class="absolute top-full left-0 mt-1 w-44 bg-white rounded-lg shadow-lg border border-outline-variant/30 z-50 overflow-hidden">
+                                    <button type="button" @click="countryCode='237'; countryFlag='🇨🇲'; countryOpen=false"
+                                            class="flex items-center gap-2.5 w-full px-4 py-2.5 text-xs font-semibold text-slate-700 hover:bg-primary/5 hover:text-primary transition-colors"
+                                            :class="countryCode === '237' && 'bg-primary/10 text-primary'">
+                                        <span class="text-base">🇨🇲</span>
+                                        <span>Cameroon</span>
+                                        <span class="ml-auto text-slate-400">+237</span>
+                                    </button>
+                                    <button type="button" @click="countryCode='234'; countryFlag='🇳🇬'; countryOpen=false"
+                                            class="flex items-center gap-2.5 w-full px-4 py-2.5 text-xs font-semibold text-slate-700 hover:bg-primary/5 hover:text-primary transition-colors"
+                                            :class="countryCode === '234' && 'bg-primary/10 text-primary'">
+                                        <span class="text-base">🇳🇬</span>
+                                        <span>Nigeria</span>
+                                        <span class="ml-auto text-slate-400">+234</span>
+                                    </button>
+                                </div>
                             </div>
+                            <input type="hidden" name="country_code" x-model="countryCode">
                             <input type="text" name="phone" value="{{ old('phone') }}" required
                                    class="flex-1 min-w-0 pl-3 pr-4 py-3 bg-surface-container-lowest border border-outline-variant/50 rounded-r-lg text-sm text-on-surface font-medium placeholder:text-on-surface-variant/40 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                                   placeholder="6XX XXX XXX">
+                                   :placeholder="countryCode === '237' ? '6XX XXX XXX' : '8XX XXX XXXX'">
                         </div>
                         @error('phone') <p class="text-xs text-error font-semibold mt-1">{{ $message }}</p> @enderror
                     </div>
@@ -193,7 +206,7 @@
 
                     <button type="submit" :disabled="!agree"
                             class="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-primary text-on-primary rounded-lg text-sm font-bold shadow-lg hover:opacity-90 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed">
-                        Create My Catalog
+                        Create My Account
                         <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
                     </button>
                 </form>

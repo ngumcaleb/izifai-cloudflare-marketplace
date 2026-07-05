@@ -115,8 +115,8 @@ class StoreController extends Controller
         // Top products by favorites for bento grid
         $topProducts = $store->products()
             ->with('images')
-            ->withCount('favorites')
-            ->orderBy('favorites_count', 'desc')
+            ->withCount('savedUsers')
+            ->orderBy('saved_users_count', 'desc')
             ->take(5)
             ->get();
 
@@ -137,6 +137,44 @@ class StoreController extends Controller
                 ->toArray();
         }
 
+        // Services
+        $servicesQuery = $store->services()->active()->with(['images', 'mainImage', 'category']);
+
+        if ($request->filled('service_search')) {
+            $ss = $request->service_search;
+            $servicesQuery->where(function ($q) use ($ss) {
+                $q->where('name', 'like', '%' . $ss . '%')
+                  ->orWhere('description', 'like', '%' . $ss . '%');
+            });
+        }
+
+        $services = $servicesQuery->latest()->take(12)->get();
+        $totalServices = $store->services()->active()->count();
+
+        // Rentals
+        $rentalsQuery = $store->rentalItems()->where('status', 'published')->with(['category']);
+
+        if ($request->filled('rental_search')) {
+            $rs = $request->rental_search;
+            $rentalsQuery->where(function ($q) use ($rs) {
+                $q->where('name', 'like', '%' . $rs . '%')
+                  ->orWhere('description', 'like', '%' . $rs . '%');
+            });
+        }
+
+        $rentals = $rentalsQuery->latest()->take(12)->get();
+        $totalRentals = $store->rentalItems()->where('status', 'published')->count();
+
+        // Combined categories for all listing types
+        $serviceCategoryIds = \App\Models\Category::whereHas('services', fn($q) => $q->where('store_id', $store->id))->pluck('id');
+        $rentalCategoryIds = \App\Models\Category::whereHas('rentalItems', fn($q) => $q->where('store_id', $store->id))->pluck('id');
+        $allCategoryIds = $categories->pluck('id')->merge($serviceCategoryIds)->merge($rentalCategoryIds)->unique();
+        $allCategories = \App\Models\Category::whereIn('id', $allCategoryIds)->get();
+
+        $storeCategories = $store->storeCategories()->with('children')->whereNull('parent_id')->get();
+
+        $totalItems = $totalProducts + $totalServices + $totalRentals;
+
         // Store tenure
         $joinedDate = $store->created_at ? $store->created_at->format('M d, Y') : 'N/A';
 
@@ -144,7 +182,8 @@ class StoreController extends Controller
             'store', 'products', 'categories', 'reviews',
             'starDistribution', 'avgRating', 'totalReviews',
             'totalProducts', 'topProducts', 'joinedDate',
-            'savedProductIds'
+            'savedProductIds', 'services', 'totalServices',
+            'rentals', 'totalRentals', 'allCategories', 'storeCategories', 'totalItems'
         ));
     }
 

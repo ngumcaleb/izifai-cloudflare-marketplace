@@ -51,6 +51,12 @@
                     <i data-lucide="store" class="w-4 h-4"></i>
                     <span class="text-xs font-bold uppercase tracking-wider">Store Images</span>
                 </button>
+                <button @click="section = 'financial'" 
+                        :class="section === 'financial' ? 'bg-white border-gold-400 text-navy-800' : 'bg-transparent border-transparent text-slate-400 hover:text-slate-600'"
+                        class="flex-shrink-0 lg:w-full flex items-center gap-3 px-4 py-3 rounded-lg border-l-4 transition-all duration-200">
+                    <i data-lucide="banknote" class="w-4 h-4"></i>
+                    <span class="text-xs font-bold uppercase tracking-wider">Financial</span>
+                </button>
                 <button @click="section = 'security'" 
                         :class="section === 'security' ? 'bg-white border-gold-400 text-navy-800' : 'bg-transparent border-transparent text-slate-400 hover:text-slate-600'"
                         class="flex-shrink-0 lg:w-full flex items-center gap-3 px-4 py-3 rounded-lg border-l-4 transition-all duration-200">
@@ -164,12 +170,12 @@
                             <input type="number" name="ad_price_per_day" value="{{ $settings['ad_price_per_day'] ?? '200' }}" class="w-full bg-slate-50 border border-slate-100 rounded-lg px-4 py-3 text-xs font-semibold text-navy-800 focus:ring-1 focus:ring-gold-400 focus:border-gold-400 outline-none transition-all">
                         </div>
                         <div class="space-y-1.5">
-                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">MTN MoMo Number</label>
-                            <input type="text" name="mtn_momo_number" value="{{ $settings['mtn_momo_number'] ?? '' }}" placeholder="e.g. 677000000" class="w-full bg-slate-50 border border-slate-100 rounded-lg px-4 py-3 text-xs font-semibold text-navy-800 focus:ring-1 focus:ring-gold-400 focus:border-gold-400 outline-none transition-all">
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Promotion Daily Rate (XAF)</label>
+                            <input type="number" name="promo_daily_rate" value="{{ $settings['promo_daily_rate'] ?? '500' }}" class="w-full bg-slate-50 border border-slate-100 rounded-lg px-4 py-3 text-xs font-semibold text-navy-800 focus:ring-1 focus:ring-gold-400 focus:border-gold-400 outline-none transition-all">
                         </div>
-                        <div class="md:col-span-2 space-y-1.5">
-                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">MoMo Recipient Name</label>
-                            <input type="text" name="mtn_momo_name" value="{{ $settings['mtn_momo_name'] ?? '' }}" placeholder="Account Name" class="w-full bg-slate-50 border border-slate-100 rounded-lg px-4 py-3 text-xs font-semibold text-navy-800 focus:ring-1 focus:ring-gold-400 focus:border-gold-400 outline-none transition-all">
+                        <div class="space-y-1.5">
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Commission Rate (%)</label>
+                            <input type="number" name="commission_rate" value="{{ $settings['commission_rate'] ?? '10' }}" min="0" max="100" step="0.1" class="w-full bg-slate-50 border border-slate-100 rounded-lg px-4 py-3 text-xs font-semibold text-navy-800 focus:ring-1 focus:ring-gold-400 focus:border-gold-400 outline-none transition-all">
                         </div>
                     </div>
                 </div>
@@ -204,6 +210,40 @@
                                     <p class="text-[10px] text-slate-400 mt-1.5">1200x400px recommended. JPEG, PNG, or WebP.</p>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Financial Section -->
+                <div x-show="section === 'financial'" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0">
+                    <div class="mb-6">
+                        <h3 class="text-base font-bold text-navy-800">Financial Settings</h3>
+                        <p class="text-[10px] text-slate-400 font-medium mt-0.5">Platform fees, commissions, and withdrawal rules.</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="space-y-1.5">
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Platform Fee Rate (%)</label>
+                            <input type="number" name="platform_fee_percentage" value="{{ $settings['platform_fee_percentage'] ?? '5' }}" min="0" max="100" step="0.5"
+                                   class="w-full bg-slate-50 border border-slate-100 rounded-lg px-4 py-3 text-xs font-semibold text-navy-800 focus:ring-1 focus:ring-gold-400 focus:border-gold-400 outline-none transition-all">
+                            <p class="text-[9px] text-slate-400 mt-1">Percentage deducted from each sale as platform commission.</p>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Min Withdrawal Amount (XAF)</label>
+                            <input type="number" name="min_withdrawal" value="{{ $settings['min_withdrawal'] ?? '1000' }}" min="0" step="500"
+                                   class="w-full bg-slate-50 border border-slate-100 rounded-lg px-4 py-3 text-xs font-semibold text-navy-800 focus:ring-1 focus:ring-gold-400 focus:border-gold-400 outline-none transition-all">
+                            <p class="text-[9px] text-slate-400 mt-1">Minimum amount a seller can request for withdrawal.</p>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Platform Currency</label>
+                            <input type="text" name="platform_currency" value="{{ $settings['platform_currency'] ?? 'XAF' }}" maxlength="10"
+                                   class="w-full bg-slate-50 border border-slate-100 rounded-lg px-4 py-3 text-xs font-semibold text-navy-800 focus:ring-1 focus:ring-gold-400 focus:border-gold-400 outline-none transition-all">
+                            <p class="text-[9px] text-slate-400 mt-1">Currency code used across the platform.</p>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Platform Support Email</label>
+                            <input type="email" name="platform_support_email" value="{{ $settings['platform_support_email'] ?? 'support@izifai.com' }}"
+                                   class="w-full bg-slate-50 border border-slate-100 rounded-lg px-4 py-3 text-xs font-semibold text-navy-800 focus:ring-1 focus:ring-gold-400 focus:border-gold-400 outline-none transition-all">
+                            <p class="text-[9px] text-slate-400 mt-1">Displayed to users for withdrawal inquiries.</p>
                         </div>
                     </div>
                 </div>

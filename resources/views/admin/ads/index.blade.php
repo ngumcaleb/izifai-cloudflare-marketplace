@@ -40,6 +40,46 @@
             </a>
         </div>
 
+        <!-- Search & Filter Bar -->
+        <div class="admin-card p-4 md:p-6">
+            <form action="{{ route('admin.ads.index') }}" method="GET" class="flex flex-col gap-4">
+                <div class="flex flex-col md:flex-row gap-4">
+                    <div class="flex-1 relative">
+                        <input type="text" name="search" value="{{ request('search') }}"
+                               placeholder="Search by title or store..."
+                               class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border-none rounded-lg text-sm font-medium focus:ring-2 focus:ring-gold-400/20 transition-all">
+                        <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <select name="store_id" class="px-3 py-2.5 bg-slate-50 border-none rounded-lg text-xs font-bold text-slate-600 focus:ring-2 focus:ring-gold-400/20 appearance-none">
+                            <option value="">All Stores</option>
+                            @foreach($stores as $store)
+                                <option value="{{ $store->id }}" {{ request('store_id') == $store->id ? 'selected' : '' }}>{{ $store->name }}</option>
+                            @endforeach
+                        </select>
+                        <select name="promotable_type" class="px-3 py-2.5 bg-slate-50 border-none rounded-lg text-xs font-bold text-slate-600 focus:ring-2 focus:ring-gold-400/20 appearance-none">
+                            <option value="">All Types</option>
+                            <option value="App\Models\Product" {{ request('promotable_type') == "App\Models\Product" ? 'selected' : '' }}>Product</option>
+                            <option value="App\Models\Service" {{ request('promotable_type') == "App\Models\Service" ? 'selected' : '' }}>Service</option>
+                            <option value="App\Models\Store" {{ request('promotable_type') == "App\Models\Store" ? 'selected' : '' }}>Store</option>
+                        </select>
+                        <input type="date" name="date_from" value="{{ request('date_from') }}" class="px-3 py-2.5 bg-slate-50 border-none rounded-lg text-xs font-bold text-slate-600 focus:ring-2 focus:ring-gold-400/20">
+                        <input type="date" name="date_to" value="{{ request('date_to') }}" class="px-3 py-2.5 bg-slate-50 border-none rounded-lg text-xs font-bold text-slate-600 focus:ring-2 focus:ring-gold-400/20">
+                        <select name="per_page" class="px-3 py-2.5 bg-slate-50 border-none rounded-lg text-xs font-bold text-slate-600 focus:ring-2 focus:ring-gold-400/20 appearance-none">
+                            <option value="10" {{ request('per_page') == '10' ? 'selected' : '' }}>10</option>
+                            <option value="20" {{ request('per_page') == '20' ? 'selected' : '' }}>20</option>
+                            <option value="50" {{ request('per_page') == '50' ? 'selected' : '' }}>50</option>
+                            <option value="100" {{ request('per_page') == '100' ? 'selected' : '' }}>100</option>
+                        </select>
+                        <button type="submit" class="px-6 py-2.5 bg-navy-800 text-white rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-navy-900 transition-all shadow-sm">Filter</button>
+                        @if(request()->anyFilled(['search', 'store_id', 'promotable_type', 'date_from', 'date_to', 'per_page']))
+                            <a href="{{ route('admin.ads.index') }}" class="px-4 py-2.5 bg-slate-100 text-slate-500 rounded-lg text-xs font-bold hover:bg-slate-200 transition-all">Clear</a>
+                        @endif
+                    </div>
+                </div>
+            </form>
+        </div>
+
         <div class="admin-card overflow-hidden">
             <div class="hidden md:block">
                 <table class="w-full text-left">
@@ -57,24 +97,10 @@
                         <tr class="hover:bg-slate-50/20 transition-colors group">
                             <td class="px-6 py-4">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 bg-slate-100 rounded-lg overflow-hidden shrink-0 border border-slate-100">
-                                        @if($ad->product->mainImage)
-<img src="{{ $ad->product->mainImage->url }}" class="w-full h-full object-cover">
-                                         @elseif($ad->product->images->first())
-                                             <img src="{{ $ad->product->images->first()->url }}" class="w-full h-full object-cover">
-                                        @else
-                                            <div class="w-full h-full flex items-center justify-center text-slate-300">
-                                                <i data-lucide="image" class="w-4 h-4"></i>
-                                            </div>
-                                        @endif
-                                    </div>
                                     <div class="min-w-0">
-                                        <h4 class="text-[12px] font-bold text-navy-800 truncate group-hover:text-emerald-600 transition-colors">{{ $ad->product->name }}</h4>
+                                        <h4 class="text-[12px] font-bold text-navy-800 truncate group-hover:text-emerald-600 transition-colors">{{ $ad->title }}</h4>
                                         <div class="flex items-center gap-2 mt-0.5">
-                                            <span class="text-[9px] font-bold text-emerald-600">XAF {{ number_format($ad->product->price) }}</span>
-                                            @if($ad->payment_proof)
-                                                <i data-lucide="camera" class="w-3 h-3 text-emerald-500" title="Proof Provided"></i>
-                                            @endif
+                                            <span class="text-[9px] font-bold text-slate-400 uppercase">{{ class_basename($ad->promotable_type ?? 'custom') }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -82,12 +108,11 @@
                             <td class="px-6 py-4">
                                 <div class="flex flex-col">
                                     <span class="text-[11px] font-bold text-navy-800 leading-none">{{ $ad->store->name }}</span>
-                                    <span class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1">{{ $ad->store->user->name }}</span>
                                 </div>
                             </td>
                             <td class="px-6 py-4 text-center">
                                 <div class="inline-flex flex-col items-center px-3 py-1 bg-slate-50 rounded-lg border border-slate-100">
-                                    <span class="text-[10px] font-bold text-navy-800">{{ $ad->duration_days }} Days</span>
+                                    <span class="text-[10px] font-bold text-navy-800">{{ $ad->days }} Days</span>
                                     <span class="text-[9px] font-bold text-emerald-600">XAF {{ number_format($ad->total_amount ?? 0) }}</span>
                                 </div>
                             </td>
@@ -107,6 +132,12 @@
                                        title="View Details">
                                         <i data-lucide="more-horizontal" class="w-5 h-5"></i>
                                     </a>
+                                    <form action="{{ route('admin.ads.destroy', $ad) }}" method="POST" onsubmit="return confirm('Delete this ad request permanently?')">
+                                        @csrf @method('DELETE')
+                                        <button class="p-2 text-rose-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all" title="Delete">
+                                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                        </button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>
@@ -124,22 +155,11 @@
                 @forelse($requests as $ad)
                 <div class="p-4 flex items-center justify-between hover:bg-slate-50 transition-colors group">
                     <div class="flex items-center gap-3 min-w-0">
-                        <div class="w-10 h-10 bg-slate-100 rounded-lg overflow-hidden shrink-0 border border-slate-100">
-                            @if($ad->product->mainImage)
-                                <img src="{{ $ad->product->mainImage->url }}" class="w-full h-full object-cover">
-                            @elseif($ad->product->images->first())
-                                <img src="{{ $ad->product->images->first()->url }}" class="w-full h-full object-cover">
-                            @else
-                                <div class="w-full h-full flex items-center justify-center text-slate-300">
-                                    <i data-lucide="image" class="w-4 h-4"></i>
-                                </div>
-                            @endif
-                        </div>
                         <div class="min-w-0">
-                            <h4 class="text-xs font-bold text-navy-800 truncate">{{ $ad->product->name }}</h4>
+                            <h4 class="text-xs font-bold text-navy-800 truncate">{{ $ad->title }}</h4>
                             <div class="flex items-center gap-1.5 mt-0.5">
                                 <span class="text-[9px] font-bold text-emerald-600">XAF {{ number_format($ad->total_amount ?? 0) }}</span>
-                                <span class="text-[8px] text-slate-400 font-bold uppercase tracking-widest">• {{ $ad->duration_days }}d</span>
+                                <span class="text-[8px] text-slate-400 font-bold uppercase tracking-widest">• {{ $ad->days }}d</span>
                                 @if($ad->status === 'pending')
                                     <span class="w-1.5 h-1.5 bg-amber-500 rounded-full"></span>
                                 @elseif($ad->status === 'approved')

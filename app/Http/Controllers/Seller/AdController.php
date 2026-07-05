@@ -3,64 +3,176 @@
 namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\AdvertisementRequest;
 use App\Models\Product;
-use App\Models\PaymentMethod;
+use App\Models\Service;
+use App\Models\RentalItem;
+use App\Models\Setting;
+use App\Models\Wallet;
+use App\Models\WalletTransaction;
+use App\Services\FapshiService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class AdController extends Controller
 {
     public function index()
     {
         $store = auth()->user()->store;
-        $adRequests = AdvertisementRequest::with('product')
-            ->where('store_id', $store->id)
-            ->latest()
-            ->get();
 
-        $products = Product::where('store_id', $store->id)->get();
-        $paymentMethods = PaymentMethod::where('is_active', true)->get();
-        $adPricePerDay = (int) \App\Models\Setting::get('ad_price_per_day', 200);
+        if (!$store) {
+            return redirect()->route('seller.store.create')
+                ->with('error', 'Create a store first.');
+        }
 
-        return view('seller.ads.index', compact('adRequests', 'products', 'paymentMethods', 'adPricePerDay'));
+        $dailyRate = Setting::get('ad_price_per_day', 500);
+        $products = $store->products()->where('status', 'active')->latest()->get();
+        $services = $store->services()->where('status', 'active')->latest()->get();
+        $rentals = $store->rentalItems()->where('status', 'published')->latest()->get();
+        $adRequests = $store->advertisementRequests()->with('promotable')->latest()->get();
+
+        return view('seller.ads.index', compact(
+            'dailyRate', 'products', 'services', 'rentals', 'adRequests'
+        ));
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'product_id' => 'required|exists:products,id',
-            'duration_days' => 'required|integer|min:1|max:30',
-            'seller_notes' => 'nullable|string|max:500',
-            'payment_sender_number' => 'required|string|min:9|max:15',
-            'payment_proof' => 'nullable|image|max:5120', // Max 5MB
-        ]);
-
         $store = auth()->user()->store;
-        $adPricePerDay = (int) \App\Models\Setting::get('ad_price_per_day', 200);
-        $totalAmount = $adPricePerDay * $request->duration_days;
 
-        // Ensure the product belongs to the store
-        $product = Product::where('id', $request->product_id)
-            ->where('store_id', $store->id)
-            ->firstOrFail();
-
-        $proofPath = null;
-        if ($request->hasFile('payment_proof')) {
-            $proofPath = $request->file('payment_proof')->store('payment_proofs', 'r2');
+        if (!$store) {
+            return redirect()->route('seller.store.create')
+                ->with('error', 'Create a store first.');
         }
 
-        AdvertisementRequest::create([
-            'product_id' => $product->id,
-            'store_id' => $store->id,
-            'type' => 'featured',
-            'duration_days' => $request->duration_days,
-            'status' => 'pending',
-            'seller_notes' => $request->seller_notes,
-            'payment_sender_number' => $request->payment_sender_number,
-            'total_amount' => $totalAmount,
-            'payment_proof' => $proofPath,
+        $dailyRate = Setting::get('ad_price_per_day', 500);
+
+        $request->validate([
+            'promotable_type' => 'required|in:product,service,rental,custom',
+            'promotable_id' => 'required_if:promotable_type,product,service,rental|nullable|integer',
+            'title' => 'required_if:promotable_type,custom|nullable|string|max:255',
+            'description' => 'nullable|string',
+            'image' => 'nullable|image|max:5120',
+            'days' => 'required|integer|min:1|max:365',
+            'phone' => 'required|string|max:20',
         ]);
 
-        return back()->with('success', 'Promotion request submitted! Once we verify the payment of XAF ' . number_format($totalAmount) . ', your product will go live.');
+        $totalAmount = $dailyRate * $request->days;
+
+        $typeMap = [
+            'product' => Product::class,
+            'service' => Service::class,
+            'rental' => RentalItem::class,
+        ];
+
+        if ($request->promotable_type === 'custom') {
+            $imagePath = null;
+            if ($request->hasFile('image')) {
+                $imagePath = $request->file('image')->store('ads', 'r2');
+            }
+
+            $ad = $store->advertisementRequests()->create([
+                'promotable_type' => null,
+                'promotable_id' => null,
+                'title' => $request->title,
+                'image' => $imagePath,
+                'description' => $request->description,
+                'days' => $request->days,
+                'daily_rate' => $dailyRate,
+                'total_amount' => $totalAmount,
+                'payer_phone' => $request->phone,
+                'status' => 'pending',
+                'payment_status' => 'pending',
+            ]);
+        } else {
+            $modelClass = $typeMap[$request->promotable_type];
+            $item = $store->{$request->promotable_type . 's'}()
+                ->where('id', $request->promotable_id)
+                ->first();
+
+            if (!$item) {
+                return back()->with('error', 'Item not found.');
+            }
+
+            $ad = $store->advertisementRequests()->create([
+                'promotable_type' => $modelClass,
+                'promotable_id' => $item->id,
+                'title' => $item->name,
+                'days' => $request->days,
+                'daily_rate' => $dailyRate,
+                'total_amount' => $totalAmount,
+                'payer_phone' => $request->phone,
+                'status' => 'pending',
+                'payment_status' => 'pending',
+            ]);
+        }
+
+        $fapshi = new FapshiService;
+        $result = $fapshi->initiateDirectPay(
+            $totalAmount,
+            $request->phone,
+            "Ad: {$ad->title}",
+            ['ad_id' => $ad->id]
+        );
+
+        if (isset($result['transId'])) {
+            $ad->update([
+                'payment_reference' => $result['transId'],
+                'payment_status' => 'processing',
+            ]);
+
+            return redirect()->route('seller.ads.show', $ad->id)
+                ->with('success', 'Payment initiated. Complete the prompt on your phone.');
+        }
+
+        return redirect()->route('seller.ads.index')
+            ->with('error', $result['message'] ?? 'Payment failed. Try again.');
+    }
+
+    public function show($id)
+    {
+        $store = auth()->user()->store;
+        $ad = $store->advertisementRequests()->with('promotable')->findOrFail($id);
+
+        return view('seller.ads.show', compact('ad'));
+    }
+
+    public function checkPayment($id)
+    {
+        $store = auth()->user()->store;
+        $ad = $store->advertisementRequests()->findOrFail($id);
+
+        if (!$ad->payment_reference) {
+            return response()->json(['status' => 'no_reference']);
+        }
+
+        $fapshi = new FapshiService;
+        $result = $fapshi->verifyTransaction($ad->payment_reference);
+
+        if (($result['status'] ?? '') === 'success') {
+            $ad->update([
+                'payment_status' => 'paid',
+                'paid_at' => now(),
+            ]);
+
+            $wallet = Wallet::firstOrCreate(['user_id' => auth()->id()]);
+            WalletTransaction::create([
+                'wallet_id' => $wallet->id,
+                'type' => 'ad_payment',
+                'amount' => 0,
+                'balance_before' => $wallet->balance,
+                'balance_after' => $wallet->balance,
+                'description' => "Paid for ad: {$ad->title} ({$ad->days} days) — {$ad->total_amount} XAF via Fapshi",
+                'reference' => $ad->payment_reference,
+                'status' => 'completed',
+            ]);
+
+            return response()->json([
+                'status' => 'paid',
+                'redirect' => route('seller.ads.show', $ad->id),
+            ]);
+        }
+
+        return response()->json(['status' => $result['status'] ?? 'pending']);
     }
 }

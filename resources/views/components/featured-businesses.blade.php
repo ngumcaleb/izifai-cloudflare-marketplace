@@ -32,11 +32,11 @@
         </div>
 
         {{-- ── SMALL-SCALE HORIZONTAL FLOW ── --}}
-        <div class="flex overflow-x-auto no-scrollbar gap-3 snap-x">
+        <div x-data="autoScroll()" class="flex overflow-x-auto no-scrollbar gap-3 snap-x">
             
             @foreach($stores as $store)
             <a href="{{ route('stores.show', $store->slug) }}" 
-               class="snap-start flex-shrink-0 w-[160px] group border border-transparent hover:border-slate-100 p-2 rounded-xl transition-all">
+               class="snap-start flex-shrink-0 w-[160px] group border border-transparent hover:border-slate-100 p-2 rounded-xl transition-all card-enter" style="animation-delay: {{ $loop->index * 0.06 }}s">
                 
                 {{-- Square Preview --}}
                 <div class="relative aspect-square rounded-lg overflow-hidden bg-slate-50 mb-3">

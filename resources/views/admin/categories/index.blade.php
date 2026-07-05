@@ -41,9 +41,25 @@
                                class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border-none rounded-lg text-sm font-medium focus:ring-2 focus:ring-gold-400/20 transition-all">
                         <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
                     </div>
+                    <select name="parent_id" class="px-3 py-2.5 bg-slate-50 border-none rounded-lg text-xs font-bold text-slate-600 focus:ring-2 focus:ring-gold-400/20 appearance-none">
+                        <option value="">Parent: All</option>
+                        <option value="none" {{ request('parent_id') == 'none' ? 'selected' : '' }}>Top Level Only</option>
+                        @foreach($allCategories as $pc)
+                            <option value="{{ $pc->id }}" {{ request('parent_id') == $pc->id ? 'selected' : '' }}>{{ $pc->name }}</option>
+                        @endforeach
+                    </select>
+                    <select name="per_page" class="px-3 py-2.5 bg-slate-50 border-none rounded-lg text-xs font-bold text-slate-600 focus:ring-2 focus:ring-gold-400/20 appearance-none">
+                        <option value="10" {{ request('per_page') == '10' ? 'selected' : '' }}>10</option>
+                        <option value="20" {{ request('per_page') == '20' ? 'selected' : '' }}>20</option>
+                        <option value="50" {{ request('per_page') == '50' ? 'selected' : '' }}>50</option>
+                        <option value="100" {{ request('per_page') == '100' ? 'selected' : '' }}>100</option>
+                    </select>
                     <button type="submit" class="px-6 py-2.5 bg-navy-800 text-white rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-navy-900 transition-all shadow-sm">
                         Filter
                     </button>
+                    @if(request()->anyFilled(['search', 'parent_id', 'per_page']))
+                        <a href="{{ route('admin.categories.index') }}" class="px-4 py-2.5 bg-slate-100 text-slate-500 rounded-lg text-xs font-bold hover:bg-slate-200 transition-all">Clear</a>
+                    @endif
                 </form>
                 <a href="{{ route('admin.categories.create') }}" 
                     class="flex items-center gap-2 px-5 py-2.5 bg-gold-500 text-white rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-gold-400 transition-all shadow-sm shrink-0">

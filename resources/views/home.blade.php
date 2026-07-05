@@ -1,7 +1,7 @@
 @extends('layouts.guest')
 
-@section('title', 'Izifai — Buy and Sell in Cameroon')
-@section('description', 'Izifai connects you with trusted sellers across Cameroon. Browse, message, and buy — all from one link.')
+@section('title', 'Izifai — Buy and Sell Across West Africa')
+@section('description', 'Izifai connects you with trusted sellers across West Africa. Browse, message, and buy — all from one link.')
 
 @push('styles')
 <style>
@@ -92,14 +92,14 @@
                     <div class="max-w-2xl">
                         <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/15 mb-2 sm:mb-3">
                             <span class="w-1.5 h-1.5 rounded-full bg-[#00a859] animate-scale-pulse"></span>
-                            <span class="text-[8px] sm:text-[10px] font-bold text-white/90 tracking-wide">Cameroon's Trusted Marketplace</span>
+                            <span class="text-[8px] sm:text-[10px] font-bold text-white/90 tracking-wide">West Africa's Trusted Marketplace</span>
                         </div>
                         <h1 class="text-2xl sm:text-3xl lg:text-5xl font-black leading-[1.04] tracking-[-0.03em] text-white text-balance">
-                            Buy and Sell in<br>
-                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#00a859] to-[#4ade80]">Cameroon</span>
+                            Buy and Sell Across<br>
+                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#00a859] to-[#4ade80]">West Africa</span>
                         </h1>
                         <p class="text-xs sm:text-sm text-white/80 max-w-xl leading-relaxed mt-1 sm:mt-2">
-                            Izifai connects you with trusted sellers across Cameroon. Browse products, message directly, and buy — all from one link.
+                            Izifai connects you with trusted sellers across West Africa. Browse products, message directly, and buy — all from one link.
                         </p>
                         <div class="flex flex-wrap items-center gap-2 sm:gap-3 mt-3 sm:mt-4">
                             <a href="{{ route('register') }}"
@@ -244,7 +244,7 @@
                     <span class="material-symbols-outlined text-[20px] text-white">store</span>
                 </div>
                 <h4 class="text-[13px] font-bold text-white">Sell on Izifai</h4>
-                <p class="text-[10px] text-white/70 mt-1 leading-relaxed">Create your free catalog and reach customers across Cameroon.</p>
+                <p class="text-[10px] text-white/70 mt-1 leading-relaxed">Create your free catalog and reach customers across West Africa.</p>
                 <a href="{{ route('register') }}" class="inline-flex items-center gap-1 mt-3 px-4 py-2 bg-white text-[#00210d] rounded-full text-[10px] font-bold hover:bg-white/90 transition-all">
                     Start Free
                     <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
@@ -291,9 +291,9 @@
             <span class="text-[9px] sm:text-[10px] font-semibold text-on-surface-variant/50">Most viewed</span>
         </div>
 
-        <div class="flex gap-3 overflow-x-auto no-scrollbar section-scroll pb-2 -mx-3 px-3 sm:-mx-6 sm:px-6 lg:hidden">
+        <div x-data="autoScroll()" class="flex gap-3 overflow-x-auto no-scrollbar section-scroll pb-2 -mx-3 px-3 sm:-mx-6 sm:px-6 lg:hidden">
             @foreach($trendingProducts as $product)
-                <div class="w-[140px] sm:w-[160px] shrink-0">
+                <div class="w-[140px] sm:w-[160px] shrink-0 card-enter" style="animation-delay: {{ $loop->index * 0.06 }}s">
                     <a href="{{ route('products.show', $product->slug) }}" class="block product-card bg-white rounded-xl overflow-hidden border border-black/[0.04] shadow-sm group">
                         <div class="aspect-square relative overflow-hidden bg-surface-container-low">
                             @if($product->images->first())
@@ -332,7 +332,7 @@
 
         <div class="hidden lg:grid lg:grid-cols-2 lg:gap-3">
             @foreach($trendingProducts as $product)
-                <div class="trending-grid-card bg-white rounded-xl overflow-hidden border border-black/[0.04] shadow-sm flex gap-3 p-2">
+                <div class="trending-grid-card bg-white rounded-xl overflow-hidden border border-black/[0.04] shadow-sm flex gap-3 p-2 card-enter" style="animation-delay: {{ $loop->index * 0.06 }}s">
                     <a href="{{ route('products.show', $product->slug) }}" class="w-20 h-20 rounded-lg overflow-hidden shrink-0 bg-surface-container-low block">
                         @if($product->images->first())
                             <img src="{{ $product->images->first()->url }}" alt="" class="w-full h-full object-cover">
@@ -379,9 +379,9 @@
             <a href="{{ route('products.index') }}" class="text-[9px] sm:text-[10px] font-semibold text-primary hover:underline">View All</a>
         </div>
 
-        <div class="flex gap-3 overflow-x-auto no-scrollbar section-scroll pb-2 -mx-3 px-3 sm:-mx-6 sm:px-6 lg:hidden">
+        <div x-data="autoScroll()" class="flex gap-3 overflow-x-auto no-scrollbar section-scroll pb-2 -mx-3 px-3 sm:-mx-6 sm:px-6 lg:hidden">
             @foreach($products as $product)
-                <div class="w-[150px] sm:w-[170px] shrink-0">
+                <div class="w-[150px] sm:w-[170px] shrink-0 card-enter" style="animation-delay: {{ $loop->index * 0.06 }}s">
                     <div class="product-card bg-white rounded-xl overflow-hidden border border-black/[0.04] shadow-sm group relative">
                         <a href="{{ route('products.show', $product->slug) }}" class="block">
                             <div class="aspect-square relative overflow-hidden bg-surface-container-low">
@@ -583,9 +583,9 @@
             <a href="{{ route('products.index') }}" class="text-[9px] sm:text-[10px] font-semibold text-primary hover:underline">View All</a>
         </div>
 
-        <div class="flex gap-3 overflow-x-auto no-scrollbar section-scroll pb-2 -mx-3 px-3 sm:-mx-6 sm:px-6 lg:hidden">
+        <div x-data="autoScroll()" class="flex gap-3 overflow-x-auto no-scrollbar section-scroll pb-2 -mx-3 px-3 sm:-mx-6 sm:px-6 lg:hidden">
             @foreach($latestProducts as $product)
-                <div class="w-[140px] sm:w-[160px] shrink-0">
+                <div class="w-[140px] sm:w-[160px] shrink-0 card-enter" style="animation-delay: {{ $loop->index * 0.06 }}s">
                     <a href="{{ route('products.show', $product->slug) }}" class="block product-card bg-white rounded-xl overflow-hidden border border-black/[0.04] shadow-sm group">
                         <div class="aspect-square relative overflow-hidden bg-surface-container-low">
                             @if($product->images->first())
@@ -703,7 +703,7 @@
         </div>
         <div class="hidden lg:grid lg:grid-cols-2 lg:gap-3">
             @foreach($topStores as $store)
-                <a href="{{ route('stores.show', $store->slug) }}" class="trending-grid-card bg-white rounded-xl overflow-hidden border border-black/[0.04] shadow-sm flex items-center gap-3 p-2.5">
+                <a href="{{ route('stores.show', $store->slug) }}" class="trending-grid-card bg-white rounded-xl overflow-hidden border border-black/[0.04] shadow-sm flex items-center gap-3 p-2.5 card-enter" style="animation-delay: {{ $loop->index * 0.06 }}s">
                     <div class="w-12 h-12 rounded-xl overflow-hidden shrink-0 bg-white ring-2 ring-gray-100">
                         @if($store->logo)
                             <img src="{{ $store->logo_url }}" alt="" class="w-full h-full object-cover">
@@ -731,9 +731,9 @@
                 </a>
             @endforeach
         </div>
-        <div class="flex gap-3 overflow-x-auto no-scrollbar section-scroll pb-2 -mx-3 px-3 sm:-mx-6 sm:px-6 lg:hidden">
+        <div x-data="autoScroll()" class="flex gap-3 overflow-x-auto no-scrollbar section-scroll pb-2 -mx-3 px-3 sm:-mx-6 sm:px-6 lg:hidden">
             @foreach($topStores as $store)
-                <a href="{{ route('stores.show', $store->slug) }}" class="w-[200px] shrink-0 trending-grid-card bg-white rounded-xl overflow-hidden border border-black/[0.04] shadow-sm flex items-center gap-2.5 p-2.5">
+                <a href="{{ route('stores.show', $store->slug) }}" class="w-[200px] shrink-0 trending-grid-card bg-white rounded-xl overflow-hidden border border-black/[0.04] shadow-sm flex items-center gap-2.5 p-2.5 card-enter" style="animation-delay: {{ $loop->index * 0.06 }}s">
                     <div class="w-10 h-10 rounded-xl overflow-hidden shrink-0 bg-white ring-2 ring-gray-100">
                         @if($store->logo)
                             <img src="{{ $store->logo_url }}" alt="" class="w-full h-full object-cover">
@@ -819,7 +819,179 @@
     </section>
 @endif
 
-{{-- ===== 8. HOW IT WORKS ===== --}}
+{{-- ===== 8. SERVICES ===== --}}
+@if($services->count() > 0)
+    <section class="mt-4 sm:mt-6 lg:mt-8">
+        <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+                <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-primary/10 flex items-center justify-center shadow-sm">
+                    <span class="material-symbols-outlined text-[12px] sm:text-[14px] text-primary" style="font-variation-settings: 'FILL' 1;">handyman</span>
+                </span>
+                <h2 class="text-xs sm:text-sm font-extrabold text-on-surface">Professional Services</h2>
+            </div>
+            <a href="{{ route('services.index') }}" class="text-[9px] sm:text-[10px] font-semibold text-primary hover:underline">View All</a>
+        </div>
+        <div x-data="autoScroll()" class="flex gap-3 overflow-x-auto no-scrollbar section-scroll pb-2 -mx-3 px-3 sm:-mx-6 sm:px-6 lg:hidden">
+            @foreach($services as $service)
+                <div class="w-[150px] sm:w-[170px] shrink-0 card-enter" style="animation-delay: {{ $loop->index * 0.06 }}s">
+                    <a href="{{ route('services.show', $service->slug) }}" class="block product-card bg-white rounded-xl overflow-hidden border border-black/[0.04] shadow-sm group">
+                        <div class="aspect-[4/3] relative overflow-hidden bg-surface-container-low">
+                            @if($service->main_image_url)
+                                <img src="{{ $service->main_image_url }}" alt="{{ $service->name }}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            @else
+                                <div class="w-full h-full flex items-center justify-center text-on-surface-variant/20"><span class="material-symbols-outlined text-3xl">image</span></div>
+                            @endif
+                        </div>
+                        <div class="p-2">
+                            @if($service->category)
+                                <p class="text-[7px] font-semibold text-primary/70 uppercase tracking-wide truncate mb-0.5">{{ $service->category->name }}</p>
+                            @endif
+                            <h3 class="text-[10px] sm:text-[11px] font-bold text-on-surface leading-snug line-clamp-2">{{ $service->name }}</h3>
+                            @if($service->store)
+                                <p class="text-[8px] text-on-surface-variant/50 truncate mt-0.5">{{ $service->store->name }}</p>
+                            @endif
+                            <div class="flex items-baseline gap-1 mt-1">
+                                <p class="text-xs font-black price-current">From {{ number_format($service->starting_price) }} <span class="text-[6px] font-bold price-current-fcfa">FCFA</span></p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            @endforeach
+            <div class="w-3 sm:w-6 shrink-0"></div>
+        </div>
+        <div class="hidden lg:grid lg:grid-cols-4 gap-4">
+            @foreach($services as $service)
+                <div class="product-card card-enter bg-white rounded-2xl overflow-hidden border border-black/[0.04] shadow-[0_1px_4px_rgba(0,0,0,0.02)] group relative">
+                    <a href="{{ route('services.show', $service->slug) }}" class="block">
+                        <div class="aspect-[4/3] relative overflow-hidden bg-surface-container-low">
+                            @if($service->main_image_url)
+                                <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                                     src="{{ $service->main_image_url }}"
+                                     alt="{{ $service->name }}" loading="lazy">
+                            @else
+                                <div class="w-full h-full flex items-center justify-center text-on-surface-variant/20">
+                                    <span class="material-symbols-outlined text-4xl">image</span>
+                                </div>
+                            @endif
+                            @if($service->delivery_time)
+                                <span class="absolute top-2.5 left-2.5 bg-white/90 backdrop-blur-sm text-on-surface text-[8px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-sm">
+                                    <span class="material-symbols-outlined text-[10px]">schedule</span>
+                                    {{ $service->delivery_time }}
+                                </span>
+                            @endif
+                        </div>
+                        <div class="p-3">
+                            @if($service->category)
+                                <p class="text-[9px] font-semibold text-primary/70 uppercase tracking-wide truncate">{{ $service->category->name }}</p>
+                            @endif
+                            <h3 class="text-[12px] sm:text-sm font-bold text-on-surface leading-snug line-clamp-2">{{ $service->name }}</h3>
+                            @if($service->store)
+                                <p class="text-[10px] text-on-surface-variant/60 truncate mt-0.5 flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[11px]">store</span>
+                                    {{ $service->store->name }}
+                                </p>
+                            @endif
+                            <div class="flex items-baseline gap-2 mt-1.5">
+                                <p class="text-sm sm:text-base font-black price-current tracking-tight">From {{ number_format($service->starting_price) }}
+                                    <span class="text-[8px] font-bold price-current-fcfa">FCFA</span>
+                                </p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            @endforeach
+        </div>
+    </section>
+@endif
+
+{{-- ===== 9. RENTALS ===== --}}
+@if($rentals->count() > 0)
+    <section class="mt-4 sm:mt-6 lg:mt-8">
+        <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+                <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-amber-50 flex items-center justify-center shadow-sm">
+                    <span class="material-symbols-outlined text-[12px] sm:text-[14px] text-amber-600" style="font-variation-settings: 'FILL' 1;">shelves</span>
+                </span>
+                <h2 class="text-xs sm:text-sm font-extrabold text-on-surface">Rentals</h2>
+            </div>
+            <a href="{{ route('rentals.index') }}" class="text-[9px] sm:text-[10px] font-semibold text-primary hover:underline">View All</a>
+        </div>
+        <div x-data="autoScroll()" class="flex gap-3 overflow-x-auto no-scrollbar section-scroll pb-2 -mx-3 px-3 sm:-mx-6 sm:px-6 lg:hidden">
+            @foreach($rentals as $item)
+                <div class="w-[150px] sm:w-[170px] shrink-0 card-enter" style="animation-delay: {{ $loop->index * 0.06 }}s">
+                    <a href="{{ route('rentals.show', $item->slug) }}" class="block product-card bg-white rounded-xl overflow-hidden border border-black/[0.04] shadow-sm group">
+                        <div class="aspect-[4/3] relative overflow-hidden bg-surface-container-low">
+                            @if($item->main_image_url)
+                                <img src="{{ $item->main_image_url }}" alt="{{ $item->name }}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            @else
+                                <div class="w-full h-full flex items-center justify-center text-on-surface-variant/20"><span class="material-symbols-outlined text-3xl">image</span></div>
+                            @endif
+                        </div>
+                        <div class="p-2">
+                            @if($item->category)
+                                <p class="text-[7px] font-semibold text-primary/70 uppercase tracking-wide truncate mb-0.5">{{ $item->category->name }}</p>
+                            @endif
+                            <h3 class="text-[10px] sm:text-[11px] font-bold text-on-surface leading-snug line-clamp-2">{{ $item->name }}</h3>
+                            @if($item->store)
+                                <p class="text-[8px] text-on-surface-variant/50 truncate mt-0.5">{{ $item->store->name }}</p>
+                            @endif
+                            <div class="flex items-baseline gap-1 mt-1">
+                                <p class="text-xs font-black price-current">{{ number_format($item->rate) }} <span class="text-[6px] font-bold price-current-fcfa">FCFA</span></p>
+                                <span class="text-[7px] text-on-surface-variant/50">/{{ $item->billing_unit }}</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            @endforeach
+            <div class="w-3 sm:w-6 shrink-0"></div>
+        </div>
+        <div class="hidden lg:grid lg:grid-cols-4 gap-4">
+            @foreach($rentals as $item)
+                <div class="product-card card-enter bg-white rounded-2xl overflow-hidden border border-black/[0.04] shadow-[0_1px_4px_rgba(0,0,0,0.02)] group relative">
+                    <a href="{{ route('rentals.show', $item->slug) }}" class="block">
+                        <div class="aspect-[4/3] relative overflow-hidden bg-surface-container-low">
+                            @if($item->main_image_url)
+                                <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                                     src="{{ $item->main_image_url }}"
+                                     alt="{{ $item->name }}" loading="lazy">
+                            @else
+                                <div class="w-full h-full flex items-center justify-center text-on-surface-variant/20">
+                                    <span class="material-symbols-outlined text-4xl">image</span>
+                                </div>
+                            @endif
+                            @if($item->location)
+                                <span class="absolute top-2.5 left-2.5 bg-white/90 backdrop-blur-sm text-on-surface text-[8px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-sm">
+                                    <span class="material-symbols-outlined text-[10px]">location_on</span>
+                                    {{ $item->location }}
+                                </span>
+                            @endif
+                        </div>
+                        <div class="p-3">
+                            @if($item->category)
+                                <p class="text-[9px] font-semibold text-primary/70 uppercase tracking-wide truncate">{{ $item->category->name }}</p>
+                            @endif
+                            <h3 class="text-[12px] sm:text-sm font-bold text-on-surface leading-snug line-clamp-2">{{ $item->name }}</h3>
+                            @if($item->store)
+                                <p class="text-[10px] text-on-surface-variant/60 truncate mt-0.5 flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[11px]">store</span>
+                                    {{ $item->store->name }}
+                                </p>
+                            @endif
+                            <div class="flex items-baseline gap-2 mt-1.5">
+                                <p class="text-sm sm:text-base font-black price-current tracking-tight">{{ number_format($item->rate) }}
+                                    <span class="text-[8px] font-bold price-current-fcfa">FCFA</span>
+                                </p>
+                                <span class="text-[10px] text-on-surface-variant/50">/{{ $item->billing_unit }}</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            @endforeach
+        </div>
+    </section>
+@endif
+
+{{-- ===== 10. HOW IT WORKS ===== --}}
 <section class="mt-6 sm:mt-10 lg:mt-12">
     <div class="max-w-2xl mx-auto text-center mb-6 sm:mb-8">
         <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-[0.15em]">Simple Process</span>
@@ -889,7 +1061,7 @@
     </div>
 </section>
 
-{{-- ===== 9. STATS BANNER ===== --}}
+{{-- ===== 11. STATS BANNER ===== --}}
 <section class="mt-6 sm:mt-10 lg:mt-12">
     <div class="relative overflow-hidden rounded-2xl">
         <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1556761175-b413da4baf72?w=1400&q=80');"></div>
@@ -899,7 +1071,7 @@
         <div class="px-6 sm:px-10 lg:px-14 py-8 sm:py-10 lg:py-12 relative">
             <div class="max-w-5xl mx-auto">
                 <div class="text-center mb-6 sm:mb-8">
-                    <h2 class="text-base sm:text-xl lg:text-2xl font-black text-white tracking-tight">Cameroon's Growing Marketplace</h2>
+                    <h2 class="text-base sm:text-xl lg:text-2xl font-black text-white tracking-tight">West Africa's Growing Marketplace</h2>
                     <p class="text-[10px] sm:text-xs text-white/70 mt-1">Real numbers from real sellers</p>
                 </div>
                 <div class="grid grid-cols-3 gap-4 sm:gap-8 lg:gap-12 max-w-2xl mx-auto">
@@ -921,7 +1093,7 @@
     </div>
 </section>
 
-{{-- ===== 10. FINAL CTA ===== --}}
+{{-- ===== 12. FINAL CTA ===== --}}
 <section class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 mt-6 sm:mt-10 lg:mt-12 mb-8 sm:mb-14 lg:mb-16">
     <div class="relative overflow-hidden rounded-2xl bg-white border border-black/5 shadow-sm">
         <div class="absolute top-0 right-0 w-48 h-48 bg-primary/[0.02] rounded-full -translate-y-1/2 translate-x-1/4"></div>

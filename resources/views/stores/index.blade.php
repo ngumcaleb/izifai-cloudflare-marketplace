@@ -205,10 +205,10 @@
             </div>
 
             {{-- Mobile: horizontal scroll --}}
-            <div class="flex gap-3 overflow-x-auto no-scrollbar section-scroll pb-2 -mx-3 px-3 sm:-mx-6 sm:px-6 lg:hidden">
+            <div x-data="autoScroll()" class="flex gap-3 overflow-x-auto no-scrollbar section-scroll pb-2 -mx-3 px-3 sm:-mx-6 sm:px-6 lg:hidden">
                 @php $popularStores = $stores->take(8); @endphp
                 @foreach($popularStores as $store)
-                    <div class="w-[140px] sm:w-[160px] shrink-0">
+                    <div class="w-[140px] sm:w-[160px] shrink-0 card-enter" style="animation-delay: {{ $loop->index * 0.06 }}s">
                         <a href="{{ route('stores.show', $store->slug) }}" class="block store-card bg-white rounded-xl overflow-hidden border border-black/[0.04] shadow-sm group">
                             <div class="aspect-square relative overflow-hidden bg-surface-container-low">
                                 @if($store->banner)
@@ -242,7 +242,7 @@
             <div class="hidden lg:grid lg:grid-cols-2 lg:gap-3">
                 @php $popularStoresDesktop = $stores->take(6); @endphp
                 @foreach($popularStoresDesktop as $store)
-                    <div class="trending-grid-card bg-white rounded-xl overflow-hidden border border-black/[0.04] shadow-sm flex gap-3 p-2">
+                    <div class="trending-grid-card bg-white rounded-xl overflow-hidden border border-black/[0.04] shadow-sm flex gap-3 p-2 card-enter" style="animation-delay: {{ $loop->index * 0.06 }}s">
                         <a href="{{ route('stores.show', $store->slug) }}" class="w-16 h-16 rounded-lg overflow-hidden shrink-0 bg-surface-container-low block">
                             @if($store->logo)
                                 <img src="{{ $store->logo_url }}" alt="" class="w-full h-full object-cover">

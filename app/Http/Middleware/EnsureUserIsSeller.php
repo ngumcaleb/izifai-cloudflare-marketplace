@@ -15,7 +15,7 @@ class EnsureUserIsSeller
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!$request->user() || $request->user()->role !== 'seller') {
+        if (!$request->user() || $request->user()->isAdmin()) {
             return redirect('/')->with('error', 'Unauthorized access.');
         }
 

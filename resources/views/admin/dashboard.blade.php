@@ -20,53 +20,101 @@
         </div>
     </div>
 
+    @if($pendingWithdrawalsCount > 0)
+    <a href="{{ route('admin.withdrawals.index', ['status' => 'pending']) }}"
+       class="block bg-rose-50 border-2 border-rose-200 rounded-xl p-4 mb-6 hover:bg-rose-100 transition-colors group">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-rose-100 rounded-xl flex items-center justify-center text-rose-600 shrink-0">
+                <i data-lucide="banknote" class="w-5 h-5"></i>
+            </div>
+            <div class="flex-1">
+                <p class="text-sm font-bold text-rose-700">{{ $pendingWithdrawalsCount }} withdrawal{{ $pendingWithdrawalsCount > 1 ? 's' : '' }} pending approval</p>
+                <p class="text-xs text-rose-600/80 font-medium">Total: XAF {{ number_format($pendingWithdrawalsAmount) }} — Click to review</p>
+            </div>
+            <div class="text-rose-400 group-hover:text-rose-600 transition-colors">
+                <i data-lucide="arrow-right" class="w-5 h-5"></i>
+            </div>
+        </div>
+    </a>
+    @endif
+
     <!-- 2. Stats Grid -->
-    <div class="flex overflow-x-auto no-scrollbar gap-4 pb-2 -mx-1 sm:mx-0 lg:grid lg:grid-cols-4 lg:pb-0 mb-6">
-        <!-- Total Products -->
-        <div class="admin-card p-5 flex items-center justify-between group hover:border-gold-400 transition-all shrink-0 w-[240px] sm:w-auto">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div class="admin-card p-5 flex items-center justify-between group hover:border-gold-400 transition-all">
             <div class="min-w-0">
-                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Products</p>
-                <h3 class="text-xl font-bold text-navy-800 tracking-tight">{{ number_format($metrics['total_products']) }}</h3>
-                <p class="text-[9px] text-emerald-500 font-bold mt-1">+15% <span class="text-slate-400">new this wk</span></p>
-            </div>
-            <div class="w-10 h-10 bg-amber-50 rounded-lg flex items-center justify-center text-amber-500 shrink-0">
-                <i data-lucide="package" class="w-5 h-5"></i>
-            </div>
-        </div>
-
-        <!-- Active Sellers -->
-        <div class="admin-card p-5 flex items-center justify-between group hover:border-gold-400 transition-all shrink-0 w-[240px] sm:w-auto">
-            <div class="min-w-0">
-                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Merchants</p>
-                <h3 class="text-xl font-bold text-navy-800 tracking-tight">{{ number_format($metrics['total_stores']) }}</h3>
-                <p class="text-[9px] text-emerald-500 font-bold mt-1">+7% <span class="text-slate-400">conversion</span></p>
-            </div>
-            <div class="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-blue-500 shrink-0">
-                <i data-lucide="store" class="w-5 h-5"></i>
-            </div>
-        </div>
-
-        <!-- Total Customers -->
-        <div class="admin-card p-5 flex items-center justify-between group hover:border-gold-400 transition-all shrink-0 w-[240px] sm:w-auto">
-            <div class="min-w-0">
-                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Customers</p>
+                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Users</p>
                 <h3 class="text-xl font-bold text-navy-800 tracking-tight">{{ number_format($metrics['total_users']) }}</h3>
-                <p class="text-[9px] text-emerald-500 font-bold mt-1">+5% <span class="text-slate-400">active now</span></p>
             </div>
             <div class="w-10 h-10 bg-emerald-50 rounded-lg flex items-center justify-center text-emerald-500 shrink-0">
                 <i data-lucide="users" class="w-5 h-5"></i>
             </div>
         </div>
-
-        <!-- Pending Ads -->
-        <div class="admin-card p-5 flex items-center justify-between group hover:border-gold-400 transition-all shrink-0 w-[240px] sm:w-auto">
+        <div class="admin-card p-5 flex items-center justify-between group hover:border-gold-400 transition-all">
             <div class="min-w-0">
-                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Ad Requests</p>
-                <h3 class="text-xl font-bold text-navy-800 tracking-tight">{{ $metrics['pending_ads'] }}</h3>
-                <p class="text-[9px] text-rose-500 font-bold mt-1">Action Required</p>
+                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Stores</p>
+                <h3 class="text-xl font-bold text-navy-800 tracking-tight">{{ number_format($metrics['total_stores']) }}</h3>
+                <p class="text-[9px] text-amber-500 font-bold mt-1">{{ $metrics['pending_verifications'] }} pending</p>
+            </div>
+            <div class="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-blue-500 shrink-0">
+                <i data-lucide="store" class="w-5 h-5"></i>
+            </div>
+        </div>
+        <div class="admin-card p-5 flex items-center justify-between group hover:border-gold-400 transition-all">
+            <div class="min-w-0">
+                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Products</p>
+                <h3 class="text-xl font-bold text-navy-800 tracking-tight">{{ number_format($metrics['total_products']) }}</h3>
+                <p class="text-[9px] text-amber-500 font-bold mt-1">{{ $metrics['pending_products'] }} pending</p>
+            </div>
+            <div class="w-10 h-10 bg-amber-50 rounded-lg flex items-center justify-center text-amber-500 shrink-0">
+                <i data-lucide="package" class="w-5 h-5"></i>
+            </div>
+        </div>
+        <div class="admin-card p-5 flex items-center justify-between group hover:border-gold-400 transition-all">
+            <div class="min-w-0">
+                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Services</p>
+                <h3 class="text-xl font-bold text-navy-800 tracking-tight">{{ number_format($metrics['total_services']) }}</h3>
+                <p class="text-[9px] text-amber-500 font-bold mt-1">{{ $metrics['pending_services'] }} pending</p>
+            </div>
+            <div class="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center text-purple-500 shrink-0">
+                <i data-lucide="handyman" class="w-5 h-5"></i>
+            </div>
+        </div>
+        <div class="admin-card p-5 flex items-center justify-between group hover:border-gold-400 transition-all">
+            <div class="min-w-0">
+                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Rentals</p>
+                <h3 class="text-xl font-bold text-navy-800 tracking-tight">{{ number_format($metrics['total_rentals']) }}</h3>
+            </div>
+            <div class="w-10 h-10 bg-teal-50 rounded-lg flex items-center justify-center text-teal-500 shrink-0">
+                <i data-lucide="shelves" class="w-5 h-5"></i>
+            </div>
+        </div>
+        <div class="admin-card p-5 flex items-center justify-between group hover:border-gold-400 transition-all">
+            <div class="min-w-0">
+                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Orders</p>
+                <h3 class="text-xl font-bold text-navy-800 tracking-tight">{{ number_format($metrics['total_orders']) }}</h3>
+                <p class="text-[9px] font-bold text-navy-800 mt-1">XAF {{ number_format($metrics['total_revenue']) }}</p>
+            </div>
+            <div class="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center text-indigo-500 shrink-0">
+                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+            </div>
+        </div>
+        <div class="admin-card p-5 flex items-center justify-between group hover:border-gold-400 transition-all">
+            <div class="min-w-0">
+                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Bookings</p>
+                <h3 class="text-xl font-bold text-navy-800 tracking-tight">{{ number_format($metrics['total_bookings']) }}</h3>
+            </div>
+            <div class="w-10 h-10 bg-pink-50 rounded-lg flex items-center justify-center text-pink-500 shrink-0">
+                <i data-lucide="calendar" class="w-5 h-5"></i>
+            </div>
+        </div>
+        <div class="admin-card p-5 flex items-center justify-between group hover:border-gold-400 transition-all">
+            <div class="min-w-0">
+                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Withdrawals</p>
+                <h3 class="text-xl font-bold text-navy-800 tracking-tight">{{ $metrics['pending_withdrawals'] }}</h3>
+                <p class="text-[9px] text-rose-500 font-bold mt-1">Pending Approval</p>
             </div>
             <div class="w-10 h-10 bg-rose-50 rounded-lg flex items-center justify-center text-rose-500 shrink-0">
-                <i data-lucide="megaphone" class="w-5 h-5"></i>
+                <i data-lucide="banknote" class="w-5 h-5"></i>
             </div>
         </div>
     </div>
@@ -97,12 +145,76 @@
                     <div class="flex-1 flex flex-col justify-end gap-1 h-full">
                         <div class="w-full bg-navy-800/20 rounded-t h-[{{ ($data['users'] / $maxVal) * 100 }}%]" title="{{ $data['users'] }} users"></div>
                         <div class="w-full bg-gold-400 rounded-t h-[{{ ($data['stores'] / $maxVal) * 100 }}%]" title="{{ $data['stores'] }} stores"></div>
+                        <div class="w-full bg-blue-400/40 rounded-t h-[{{ ($data['orders'] / $maxVal) * 100 }}%]" title="{{ $data['orders'] }} orders"></div>
                     </div>
                     @endforeach
                 </div>
-                <div class="flex justify-between mt-4 px-2 text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                <div class="flex mt-2 gap-3 text-[9px]">
+                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded bg-navy-800/20"></span> Users</span>
+                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded bg-gold-400"></span> Stores</span>
+                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded bg-blue-400/40"></span> Orders</span>
+                </div>
+                <div class="flex justify-between mt-2 px-2 text-[9px] font-bold text-slate-400 uppercase tracking-widest">
                     @foreach($chartData as $data)
                         <span>{{ $data['label'] }}</span>
+                    @endforeach
+                </div>
+            </div>
+
+            <!-- Recent Orders -->
+            <div class="admin-card overflow-hidden">
+                <div class="p-6 border-b border-slate-50 flex items-center justify-between">
+                    <h3 class="text-base font-bold text-navy-800">Recent Orders</h3>
+                    <a href="{{ route('admin.orders.index') }}" class="text-[10px] font-bold text-gold-500 uppercase">View All</a>
+                </div>
+                <div class="hidden md:block overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead class="bg-slate-50/50">
+                            <tr>
+                                <th class="px-6 py-4 text-[9px] font-bold text-slate-400 uppercase tracking-widest">Order</th>
+                                <th class="px-6 py-4 text-[9px] font-bold text-slate-400 uppercase tracking-widest">Customer</th>
+                                <th class="px-6 py-4 text-[9px] font-bold text-slate-400 uppercase tracking-widest">Amount</th>
+                                <th class="px-6 py-4 text-[9px] font-bold text-slate-400 uppercase tracking-widest text-right">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-50">
+                            @foreach($recentOrders as $order)
+                            <tr class="hover:bg-slate-50/30 transition-colors">
+                                <td class="px-6 py-4 text-xs font-bold text-navy-800">#{{ $order->order_number }}</td>
+                                <td class="px-6 py-4 text-[11px] text-slate-600">{{ $order->user->name }}</td>
+                                <td class="px-6 py-4 text-xs font-bold text-navy-800">XAF {{ number_format($order->total_amount) }}</td>
+                                <td class="px-6 py-4 text-right">
+                                    <span class="px-2 py-0.5 text-[8px] font-bold rounded
+                                        {{ $order->status === 'delivered' ? 'bg-emerald-50 text-emerald-600' : '' }}
+                                        {{ $order->status === 'shipped' ? 'bg-blue-50 text-blue-600' : '' }}
+                                        {{ $order->status === 'cancelled' ? 'bg-rose-50 text-rose-600' : '' }}
+                                        {{ in_array($order->status, ['pending', 'confirmed']) ? 'bg-amber-50 text-amber-600' : '' }}">
+                                        {{ $order->status }}
+                                    </span>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                <div class="md:hidden divide-y divide-slate-50">
+                    @foreach($recentOrders as $order)
+                    <div class="p-4 flex items-center justify-between">
+                        <div>
+                            <h4 class="text-xs font-bold text-navy-800">#{{ $order->order_number }}</h4>
+                            <p class="text-[10px] text-slate-500">{{ $order->user->name }}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-xs font-bold text-navy-800">XAF {{ number_format($order->total_amount) }}</p>
+                            <span class="px-1.5 py-0.5 text-[7px] font-bold rounded
+                                {{ $order->status === 'delivered' ? 'bg-emerald-50 text-emerald-600' : '' }}
+                                {{ $order->status === 'shipped' ? 'bg-blue-50 text-blue-600' : '' }}
+                                {{ $order->status === 'cancelled' ? 'bg-rose-50 text-rose-600' : '' }}
+                                {{ in_array($order->status, ['pending', 'confirmed']) ? 'bg-amber-50 text-amber-600' : '' }}">
+                                {{ $order->status }}
+                            </span>
+                        </div>
+                    </div>
                     @endforeach
                 </div>
             </div>
@@ -208,10 +320,10 @@
                         @foreach($recentAds as $ad)
                         <div class="p-3 rounded-lg bg-white/5 border border-white/5 flex items-center justify-between">
                             <div class="min-w-0">
-                                <h4 class="text-[10px] font-bold text-white truncate">{{ $ad->product->name }}</h4>
+                                <h4 class="text-[10px] font-bold text-white truncate">{{ $ad->title }}</h4>
                                 <p class="text-[8px] text-slate-400">{{ $ad->store->name }}</p>
                             </div>
-                            <span class="text-[8px] font-bold text-gold-400 uppercase">{{ $ad->duration_days }}d</span>
+                            <span class="text-[8px] font-bold text-gold-400 uppercase">{{ $ad->days }}d</span>
                         </div>
                         @endforeach
                     </div>

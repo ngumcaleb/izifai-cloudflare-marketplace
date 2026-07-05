@@ -225,7 +225,6 @@ class ProductController extends Controller
     {
         $product = \App\Models\Product::active()->where('slug', $slug)->with(['images', 'store', 'specifications', 'category'])->firstOrFail();
         $product->increment('views');
-        $product->logEvent('view');
 
         $store = $product->store;
 
@@ -249,8 +248,8 @@ class ProductController extends Controller
         $topProducts = $store->products()
             ->where('id', '!=', $product->id)
             ->with('images')
-            ->withCount('favorites')
-            ->orderBy('favorites_count', 'desc')
+            ->withCount('savedUsers')
+            ->orderBy('saved_users_count', 'desc')
             ->take(8)
             ->get();
 
@@ -384,7 +383,6 @@ class ProductController extends Controller
     {
         $type = $request->input('type');
         if (in_array($type, ['whatsapp', 'call'])) {
-            $product->logEvent($type . '_click');
             return response()->json(['success' => true]);
         }
         return response()->json(['success' => false], 400);

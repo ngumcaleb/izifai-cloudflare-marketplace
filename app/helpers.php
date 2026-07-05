@@ -13,7 +13,7 @@ if (!function_exists('wa_url')) {
     {
         if (!$number) return '';
         $cleaned = preg_replace('/[^0-9]/', '', $number);
-        if (!str_starts_with($cleaned, '237')) {
+        if (!str_starts_with($cleaned, '237') && !str_starts_with($cleaned, '234')) {
             $cleaned = '237' . $cleaned;
         }
         return $cleaned;

@@ -107,13 +107,13 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
 <div class="px-4 py-4 border-t border-gray-100 space-y-2">
     @if($store->whatsapp_number)
         <a href="https://wa.me/{{ wa_url($store->whatsapp_number) }}?text={{ urlencode('Hi, I am interested in ' . $product->name . ' on Izifai.') }}" target="_blank"
-           class="w-full bg-[#25D366] text-white py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#128C7E] transition-all text-xs shadow-sm">
+           class="w-full py-2 rounded-xl font-semibold flex items-center justify-center gap-2 text-xs text-on-surface-variant border border-gray-200 hover:bg-gray-50 transition-all">
             {!! $whatsappIcon !!}
-            Message Seller
+            Contact Seller
         </a>
     @endif
     <a href="https://chat.whatsapp.com/J3of97nRhL5IdTSXpScYLl" target="_blank"
-       class="w-full py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 text-xs text-on-surface-variant border border-gray-200 hover:bg-gray-50 transition-all">
+       class="w-full py-2 rounded-xl font-semibold flex items-center justify-center gap-2 text-xs text-on-surface-variant border border-gray-200 hover:bg-gray-50 transition-all">
         <span class="material-symbols-outlined text-[16px]">groups</span>
         Join WhatsApp Group
     </a>
@@ -285,14 +285,74 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
 
                 {{-- Action Buttons --}}
                 <div class="space-y-2.5 sm:space-y-3 pt-1 sm:pt-2">
-                    @if($store->whatsapp_number)
-                    <a href="https://wa.me/{{ wa_url($store->whatsapp_number) }}?text={{ urlencode('Hi, I am interested in ' . $product->name . ' on Izifai.') }}"
-                       target="_blank" onclick="logContact('whatsapp')"
-                       class="flex items-center justify-center gap-2 sm:gap-3 w-full py-3 sm:py-3.5 bg-[#25D366] text-white rounded-xl text-xs sm:text-sm font-bold hover:bg-[#128C7E] transition-all shadow-lg shadow-[#25D366]/20">
-                        {!! $whatsappIcon !!}
-                        Enquire on WhatsApp
-                    </a>
-                    @endif
+                    @auth
+                        @if(auth()->id() === $store->user_id)
+                            <div class="flex items-center gap-2 w-full py-3 sm:py-3.5 px-4 bg-surface-container-high text-on-surface-variant rounded-xl text-xs sm:text-sm font-medium">
+                                <span class="material-symbols-outlined text-[18px] sm:text-[20px]">info</span>
+                                This is your listing
+                            </div>
+                        @else
+                        <form action="{{ route('cart.add') }}" method="POST" class="space-y-2.5">
+                            @csrf
+                            <input type="hidden" name="item_type" value="product">
+                            <input type="hidden" name="item_id" value="{{ $product->id }}">
+                            <div class="flex items-center gap-2">
+                                <button type="button" @click="qty = Math.max(1, qty - 1)"
+                                        class="w-9 h-9 rounded-lg border border-outline-variant/30 flex items-center justify-center text-on-surface-variant hover:bg-surface-container transition-all text-sm font-bold">−</button>
+                                <input type="number" name="quantity" x-model="qty" min="1" max="99"
+                                       class="w-14 h-9 text-center rounded-lg border border-outline-variant/30 text-xs font-bold text-on-surface bg-transparent focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
+                                <button type="button" @click="qty = Math.min(99, qty + 1)"
+                                        class="w-9 h-9 rounded-lg border border-outline-variant/30 flex items-center justify-center text-on-surface-variant hover:bg-surface-container transition-all text-sm font-bold">+</button>
+                                <span class="text-[10px] text-on-surface-variant ml-1">{{ $product->inventory > 0 ? max(0, $product->inventory) . ' available' : 'In stock' }}</span>
+                            </div>
+                            <button type="submit"
+                                    class="flex items-center justify-center gap-2 w-full py-3 sm:py-3.5 bg-primary text-on-primary rounded-xl text-xs sm:text-sm font-bold hover:opacity-90 transition-all shadow-lg shadow-primary/20">
+                                <span class="material-symbols-outlined text-[18px] sm:text-[20px]">shopping_cart</span>
+                                Add to Cart
+                            </button>
+                        </form>
+
+                        {{-- Message + WhatsApp row --}}
+                        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-1.5 sm:gap-2">
+                            <form action="{{ route('conversations.store') }}" method="POST" class="flex-1 min-w-0">
+                                @csrf
+                                <input type="hidden" name="seller_id" value="{{ $store->user_id }}">
+                                <input type="hidden" name="target_type" value="product">
+                                <input type="hidden" name="target_id" value="{{ $product->id }}">
+                                <input type="hidden" name="message" value="Hi, I am interested in {{ $product->name }}. Is it still available?">
+                                <button type="submit"
+                                        class="flex items-center justify-center gap-1.5 w-full py-3 sm:py-3 border border-outline-variant/30 text-on-surface-variant rounded-xl text-[11px] sm:text-xs font-bold hover:bg-surface-container transition-all">
+                                    <span class="material-symbols-outlined text-[16px] sm:text-[18px]">chat_bubble_outline</span>
+                                    Message
+                                </button>
+                            </form>
+                            @if($store->whatsapp_number)
+                            <a href="#"
+                               onclick="logContact('whatsapp'); return false;"
+                               class="flex items-center justify-center gap-1.5 w-full py-3 sm:py-3 border border-outline-variant/30 text-[#25D366] rounded-xl text-[11px] sm:text-xs font-bold hover:bg-[#25D366] hover:text-white transition-all group">
+                                {!! $whatsappIcon !!}
+                                WhatsApp
+                            </a>
+                            @endif
+                        </div>
+                        @endif
+                    @else
+                    <div class="space-y-2">
+                        <a href="{{ route('login') }}"
+                           class="flex items-center justify-center gap-2 w-full py-3 sm:py-3.5 bg-primary text-on-primary rounded-xl text-xs sm:text-sm font-bold hover:opacity-90 transition-all shadow-lg shadow-primary/20">
+                            <span class="material-symbols-outlined text-[18px] sm:text-[20px]">shopping_cart</span>
+                            Login to Buy
+                        </a>
+                        @if($store->whatsapp_number)
+                        <a href="https://wa.me/{{ wa_url($store->whatsapp_number) }}?text={{ urlencode('Hi, I am interested in ' . $product->name . ' on Izifai.') }}"
+                           target="_blank"
+                           class="flex items-center justify-center gap-1.5 w-full py-2.5 sm:py-3 border border-outline-variant/30 text-[#25D366] rounded-xl text-xs sm:text-sm font-bold hover:bg-[#25D366] hover:text-white transition-all group">
+                            {!! $whatsappIcon !!}
+                            Contact via WhatsApp
+                        </a>
+                        @endif
+                    </div>
+                    @endauth
                     <a href="{{ route('stores.show', $store->slug) }}"
                        class="flex items-center justify-center gap-2 w-full py-2.5 sm:py-3 bg-surface-container-high text-on-surface rounded-xl text-xs sm:text-sm font-bold hover:bg-surface-container-highest transition-all">
                         <span class="material-symbols-outlined text-[16px] sm:text-[18px]">store</span>
@@ -688,6 +748,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
             selectedImage: @js($product->images->first()?->url ?? ''),
             selectedColor: null,
             selectedSize: null,
+            qty: 1,
             reportOpen: false,
             reportReason: '',
             reportDetails: '',

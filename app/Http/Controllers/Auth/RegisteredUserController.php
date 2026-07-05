@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\Role;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
@@ -12,8 +13,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
-use App\Models\Store;
-use Illuminate\Support\Str;
 
 class RegisteredUserController extends Controller
 {
@@ -36,35 +35,23 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'role' => ['required', 'string', 'in:buyer,seller'],
+            'country_code' => ['required', 'string', 'in:237,234'],
             'phone' => ['required', 'string', 'max:20'],
-            'store_name' => ['required_if:role,seller', 'nullable', 'string', 'max:255'],
         ]);
+
+        $fullPhone = $request->country_code.$request->phone;
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => $request->role,
-            'phone' => $request->phone,
+            'role' => Role::User,
+            'phone' => $fullPhone,
         ]);
-
-        if ($user->role === 'seller') {
-            Store::create([
-                'user_id' => $user->id,
-                'name' => $request->store_name,
-                'slug' => Str::slug($request->store_name) . '-' . Str::random(5),
-                'whatsapp_number' => $request->phone,
-            ]);
-        }
 
         event(new Registered($user));
 
         Auth::login($user);
-
-        if ($user->role === 'seller') {
-            return redirect()->route('seller.dashboard');
-        }
 
         return redirect('/');
     }

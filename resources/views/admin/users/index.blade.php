@@ -19,23 +19,46 @@
     <div class="space-y-6">
         <!-- Search & Filters -->
         <div class="admin-card p-4 md:p-6">
-            <form action="{{ route('admin.users.index') }}" method="GET" class="flex flex-col md:flex-row gap-4">
-                <div class="flex-1 relative">
-                    <input type="text" name="search" value="{{ request('search') }}" 
-                           placeholder="Search by name, email..." 
-                           class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border-none rounded-lg text-sm font-medium focus:ring-2 focus:ring-gold-400/20 transition-all">
-                    <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
-                </div>
-                <div class="flex gap-2">
-                    <select name="role" class="px-4 py-2.5 bg-slate-50 border-none rounded-lg text-xs font-bold text-slate-600 focus:ring-2 focus:ring-gold-400/20 appearance-none">
-                        <option value="">All Roles</option>
-                        <option value="user" {{ request('role') == 'user' ? 'selected' : '' }}>Public Users</option>
-                        <option value="seller" {{ request('role') == 'seller' ? 'selected' : '' }}>Sellers</option>
-                        <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admins</option>
-                    </select>
-                    <button type="submit" class="px-6 py-2.5 bg-navy-800 text-white rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-navy-900 transition-all shadow-sm grow md:grow-0">
-                        Filter
-                    </button>
+            <form action="{{ route('admin.users.index') }}" method="GET" class="flex flex-col gap-4">
+                <div class="flex flex-col md:flex-row gap-4">
+                    <div class="flex-1 relative">
+                        <input type="text" name="search" value="{{ request('search') }}" 
+                               placeholder="Search by name, email..." 
+                               class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border-none rounded-lg text-sm font-medium focus:ring-2 focus:ring-gold-400/20 transition-all">
+                        <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <select name="role" class="px-3 py-2.5 bg-slate-50 border-none rounded-lg text-xs font-bold text-slate-600 focus:ring-2 focus:ring-gold-400/20 appearance-none">
+                            <option value="">All Roles</option>
+                            <option value="User" {{ request('role') == 'User' ? 'selected' : '' }}>Users</option>
+                            <option value="seller" {{ request('role') == 'seller' ? 'selected' : '' }}>With Store</option>
+                            <option value="buyer" {{ request('role') == 'buyer' ? 'selected' : '' }}>Without Store</option>
+                            <option value="Superadmin" {{ request('role') == 'Superadmin' ? 'selected' : '' }}>Super Admins</option>
+                        </select>
+                        <select name="status" class="px-3 py-2.5 bg-slate-50 border-none rounded-lg text-xs font-bold text-slate-600 focus:ring-2 focus:ring-gold-400/20 appearance-none">
+                            <option value="">All Status</option>
+                            <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
+                            <option value="suspended" {{ request('status') == 'suspended' ? 'selected' : '' }}>Suspended</option>
+                            <option value="banned" {{ request('status') == 'banned' ? 'selected' : '' }}>Banned</option>
+                        </select>
+                        <select name="has_store" class="px-3 py-2.5 bg-slate-50 border-none rounded-lg text-xs font-bold text-slate-600 focus:ring-2 focus:ring-gold-400/20 appearance-none">
+                            <option value="">Store: All</option>
+                            <option value="yes" {{ request('has_store') == 'yes' ? 'selected' : '' }}>Has Store</option>
+                            <option value="no" {{ request('has_store') == 'no' ? 'selected' : '' }}>No Store</option>
+                        </select>
+                        <select name="per_page" class="px-3 py-2.5 bg-slate-50 border-none rounded-lg text-xs font-bold text-slate-600 focus:ring-2 focus:ring-gold-400/20 appearance-none">
+                            <option value="10" {{ request('per_page') == '10' ? 'selected' : '' }}>10</option>
+                            <option value="20" {{ request('per_page') == '20' ? 'selected' : '' }}>20</option>
+                            <option value="50" {{ request('per_page') == '50' ? 'selected' : '' }}>50</option>
+                            <option value="100" {{ request('per_page') == '100' ? 'selected' : '' }}>100</option>
+                        </select>
+                        <button type="submit" class="px-6 py-2.5 bg-navy-800 text-white rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-navy-900 transition-all shadow-sm">
+                            Filter
+                        </button>
+                        @if(request()->anyFilled(['search', 'role', 'status', 'has_store', 'per_page']))
+                            <a href="{{ route('admin.users.index') }}" class="px-4 py-2.5 bg-slate-100 text-slate-500 rounded-lg text-xs font-bold hover:bg-slate-200 transition-all">Clear</a>
+                        @endif
+                    </div>
                 </div>
             </form>
         </div>
@@ -87,12 +110,12 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4">
-                                @if($user->role === 'admin')
-                                    <span class="px-2 py-0.5 bg-rose-50 text-rose-600 text-[8px] font-bold uppercase rounded border border-rose-100">Admin</span>
-                                @elseif($user->role === 'seller')
+                                @if($user->isAdmin())
+                                    <span class="px-2 py-0.5 bg-rose-50 text-rose-600 text-[8px] font-bold uppercase rounded border border-rose-100">Superadmin</span>
+                                @elseif($user->store)
                                     <span class="px-2 py-0.5 bg-gold-50 text-gold-600 text-[8px] font-bold uppercase rounded border border-gold-100">Seller</span>
                                 @else
-                                    <span class="px-2 py-0.5 bg-blue-50 text-blue-600 text-[8px] font-bold uppercase rounded border border-blue-100">Public</span>
+                                    <span class="px-2 py-0.5 bg-blue-50 text-blue-600 text-[8px] font-bold uppercase rounded border border-blue-100">User</span>
                                 @endif
                             </td>
                             <td class="px-6 py-4">
@@ -113,7 +136,7 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4 text-right">
-                                @if($user->role !== 'admin')
+                                @if(!$user->isAdmin())
                                 <div class="flex items-center justify-end gap-2">
                                     <a href="{{ route('admin.users.edit', $user) }}" class="p-2 bg-slate-50 text-slate-400 hover:text-navy-800 hover:bg-slate-100 rounded-lg transition-all" title="Edit user">
                                         <i data-lucide="edit-3" class="w-4 h-4"></i>

@@ -32,7 +32,7 @@
 
         <form action="{{ route('admin.users.update', $user) }}" method="POST" enctype="multipart/form-data" class="space-y-6"
               x-data="{
-                  role: '{{ $user->role }}',
+                  role: '{{ $user->role->value }}',
                   status: '{{ $user->status }}',
                   photoPreview: null,
                   previewPhoto(event) {
@@ -99,13 +99,28 @@
                         <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest ml-1">Account Role</label>
                         <select name="role" x-model="role"
                                 class="w-full h-11 bg-slate-50 border-none rounded-xl px-4 text-sm font-medium text-navy-800 focus:ring-2 focus:ring-gold-400/20 transition-all appearance-none">
-                            <option value="buyer" {{ $user->role === 'buyer' ? 'selected' : '' }}>Buyer</option>
-                            <option value="seller" {{ $user->role === 'seller' ? 'selected' : '' }}>Seller</option>
-                            <option value="admin" {{ $user->role === 'admin' ? 'selected' : '' }}>Admin</option>
+                            <option value="User" {{ $user->role === \App\Enums\Role::User ? 'selected' : '' }}>User</option>
+                            <option value="Superadmin" {{ $user->role === \App\Enums\Role::Superadmin ? 'selected' : '' }}>Superadmin</option>
                         </select>
                         @error('role') <p class="text-[10px] text-rose-500 mt-1">{{ $message }}</p> @enderror
                     </div>
                 </div>
+            </div>
+
+            <!-- Store Ownership -->
+            <div class="admin-card p-6 md:p-8">
+                <h3 class="text-xs font-bold text-navy-800 uppercase tracking-widest mb-6">Store Ownership</h3>
+                <label class="flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-all"
+                       :class="role === 'Superadmin' ? 'opacity-50 pointer-events-none border-slate-200' : 'hover:bg-slate-50 border-slate-200'">
+                    <input type="checkbox" name="has_store" value="1"
+                           {{ $user->store ? 'checked' : '' }}
+                           {{ $user->role === \App\Enums\Role::Superadmin ? 'disabled' : '' }}
+                           class="w-4 h-4 text-gold-500 focus:ring-0 rounded">
+                    <div>
+                        <span class="text-[13px] font-bold text-navy-800">Has Store</span>
+                        <p class="text-[9px] text-slate-400 font-medium">User owns a store on the platform</p>
+                    </div>
+                </label>
             </div>
 
             <!-- Account Status -->

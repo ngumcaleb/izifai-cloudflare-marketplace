@@ -11,6 +11,8 @@ class HomeController extends Controller
             $q->where('status', 'active');
         })->count();
         $verifiedStores = \App\Models\Store::where('status', 'active')->where('is_verified', true)->count();
+        $totalServices = \App\Models\Service::active()->count();
+        $totalRentals = \App\Models\RentalItem::where('status', 'published')->count();
 
         $categories = \App\Models\Category::whereHas('products', function ($q) {
             $q->whereHas('store', fn($sq) => $sq->where('status', 'active'));
@@ -34,6 +36,18 @@ class HomeController extends Controller
             ->with(['images', 'store', 'category'])
             ->inRandomOrder()
             ->take(12)
+            ->get();
+
+        $services = \App\Models\Service::active()
+            ->with(['store', 'category', 'images'])
+            ->inRandomOrder()
+            ->take(8)
+            ->get();
+
+        $rentals = \App\Models\RentalItem::where('status', 'published')
+            ->with(['store', 'category'])
+            ->inRandomOrder()
+            ->take(8)
             ->get();
 
         $stores = \App\Models\Store::where('status', 'active')
@@ -65,8 +79,9 @@ class HomeController extends Controller
             : [];
 
         return view('home', compact(
-            'totalStores', 'totalProducts', 'verifiedStores',
+            'totalStores', 'totalProducts', 'verifiedStores', 'totalServices', 'totalRentals',
             'categories', 'products', 'trendingProducts', 'latestProducts',
+            'services', 'rentals',
             'stores', 'topStores',
             'featuredStore', 'savedProductIds'
         ));

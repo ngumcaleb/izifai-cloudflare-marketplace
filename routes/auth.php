@@ -56,4 +56,18 @@ Route::middleware('auth')->group(function () {
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
+
+    Route::get('cart', [\App\Http\Controllers\CartController::class, 'index'])->name('cart.index');
+    Route::post('cart/add', [\App\Http\Controllers\CartController::class, 'add'])->name('cart.add');
+    Route::patch('cart/{cartItem}', [\App\Http\Controllers\CartController::class, 'update'])->name('cart.update');
+    Route::delete('cart/{cartItem}', [\App\Http\Controllers\CartController::class, 'remove'])->name('cart.remove');
+    Route::delete('cart', [\App\Http\Controllers\CartController::class, 'clear'])->name('cart.clear');
+
+    Route::get('checkout', [\App\Http\Controllers\CheckoutController::class, 'preview'])->name('checkout.preview');
+    Route::post('checkout/place-order', [\App\Http\Controllers\CheckoutController::class, 'placeOrder'])->name('checkout.place-order');
+
+    Route::get('orders', [\App\Http\Controllers\OrderController::class, 'index'])->name('orders.index');
+    Route::get('orders/{id}', [\App\Http\Controllers\OrderController::class, 'show'])->name('orders.show');
+    Route::post('orders/{id}/confirm-received', [\App\Http\Controllers\OrderController::class, 'confirmReceived'])->name('orders.confirm-received');
+    Route::post('orders/{id}/cancel', [\App\Http\Controllers\OrderController::class, 'cancel'])->name('orders.cancel');
 });

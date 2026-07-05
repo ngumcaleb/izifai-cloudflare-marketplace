@@ -113,12 +113,14 @@
         @keyframes shimmer { 0% { transform: translateX(-100%) skewX(-15deg); } 100% { transform: translateX(200%) skewX(-15deg); } }
         @keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.8; } }
         @keyframes drawLine { 0% { width: 0; } 100% { width: 100%; } }
+        @keyframes cardFadeIn { 0% { opacity: 0; transform: translateY(16px) scale(0.96); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
 
         .animate-reveal { animation: reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         .animate-fade-in { animation: fadeIn 0.6s ease forwards; }
         .animate-slide-down { animation: slideDown 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         .animate-scale-in { animation: scaleIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         .animate-shimmer { animation: shimmer 3s infinite; }
+        .card-enter { opacity: 0; animation: cardFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 
         .header-scrolled { background: rgba(255, 255, 255, 0.78); backdrop-filter: blur(24px) saturate(1.2); -webkit-backdrop-filter: blur(24px) saturate(1.2); border-bottom: 1px solid rgba(0, 0, 0, 0.04); }
         .header-top { background: transparent; border-bottom: 1px solid transparent; }
@@ -136,6 +138,7 @@
         .back-to-top-btn:hover { background: #006d38; border-color: #006d38; box-shadow: 0 8px 32px rgba(0, 109, 56, 0.25); }
 
         ::selection { background: rgba(0, 109, 56, 0.15); color: #003317; }
+        .safe-area-bottom { padding-bottom: env(safe-area-inset-bottom, 0px); }
     </style>
     @stack('styles')
 </head>
@@ -191,6 +194,8 @@
                 <a href="{{ route('home') }}" class="nav-link text-[13px] font-semibold text-on-surface transition-colors">Home</a>
                 <a href="{{ route('stores.index') }}" class="nav-link text-[13px] font-semibold text-on-surface-variant/80 hover:text-on-surface transition-colors">Stores</a>
                 <a href="{{ route('products.index') }}" class="nav-link text-[13px] font-semibold text-on-surface-variant/80 hover:text-on-surface transition-colors">Products</a>
+                <a href="{{ route('services.index') }}" class="nav-link text-[13px] font-semibold text-on-surface-variant/80 hover:text-on-surface transition-colors">Services</a>
+                <a href="{{ route('rentals.index') }}" class="nav-link text-[13px] font-semibold text-on-surface-variant/80 hover:text-on-surface transition-colors">Rentals</a>
             </nav>
 
             {{-- Right --}}
@@ -210,12 +215,29 @@
                 @endif
 
                 {{-- Auth --}}
-                @auth
-                    @php $userStore = auth()->user()->store; $dashboard = auth()->user()->role === 'seller' ? route('seller.dashboard') : route('stores.index'); @endphp
-                    @if(!$userStore)
-                        <a href="{{ route('seller.dashboard') }}"
-                           class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 text-[13px] font-semibold text-primary bg-primary/5 hover:bg-primary/10 rounded-xl transition-all">Open Your Store</a>
-                    @endif
+                    @auth
+                        @php
+                            $userStore = auth()->user()->store; $dashboard = auth()->user()->store ? route('seller.dashboard') : route('stores.index');
+                            $cartCount = \App\Models\Cart::where('user_id', auth()->id())->withCount('items')->first()?->items_count ?? 0;
+                        @endphp
+                        @if(!$userStore)
+                            <a href="{{ route('seller.dashboard') }}"
+                               class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 text-[13px] font-semibold text-primary bg-primary/5 hover:bg-primary/10 rounded-xl transition-all">Open Your Store</a>
+                        @endif
+                        <a href="{{ route('cart.index') }}"
+                           class="relative hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 text-[13px] font-semibold text-on-surface-variant/80 hover:text-on-surface hover:bg-black/5 rounded-xl transition-all">
+                            <span class="material-symbols-outlined text-[18px]">shopping_cart</span>
+                            @if($cartCount > 0)
+                                <span class="absolute -top-0.5 -right-0.5 w-4 h-4 bg-error text-on-primary text-[8px] font-bold rounded-full flex items-center justify-center">{{ min($cartCount, 99) }}</span>
+                            @endif
+                        </a>
+                        <a href="{{ route('orders.index') }}"
+                           class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 text-[13px] font-semibold text-on-surface-variant/80 hover:text-on-surface hover:bg-black/5 rounded-xl transition-all">My Orders</a>
+                        <a href="{{ route('conversations.index') }}"
+                           class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 text-[13px] font-semibold text-on-surface-variant/80 hover:text-on-surface hover:bg-black/5 rounded-xl transition-all relative">
+                            Inbox
+                            <span class="unread-badge hidden ml-1 w-4 h-4 bg-error text-on-error text-[9px] font-bold rounded-full flex items-center justify-center leading-none">0</span>
+                        </a>
                     <a href="{{ $dashboard }}"
                        class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 text-[13px] font-semibold text-on-surface-variant/80 hover:text-on-surface hover:bg-black/5 rounded-xl transition-all">Dashboard</a>
                     <form method="POST" action="{{ route('logout') }}" class="hidden sm:inline">
@@ -294,7 +316,7 @@
                     @php
                         $user = auth()->user();
                         $userStore = $user->store;
-                        $isSeller = $user->role === 'seller';
+                        $isSeller = $user->store !== null;
                     @endphp
                     <div class="px-5 py-4 border-b border-gray-100 shrink-0">
                         <div class="flex items-center gap-3.5">
@@ -348,6 +370,16 @@
                             <span class="material-symbols-outlined text-[20px] text-gray-400 group-hover:text-primary">shopping_bag</span>
                             Products
                         </a>
+                        <a href="{{ route('services.index') }}" @click="mobileMenu = false"
+                           class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-gray-700 rounded-xl hover:bg-gray-50 hover:text-gray-900 transition-all group">
+                            <span class="material-symbols-outlined text-[20px] text-gray-400 group-hover:text-primary">handyman</span>
+                            Services
+                        </a>
+                        <a href="{{ route('rentals.index') }}" @click="mobileMenu = false"
+                           class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-gray-700 rounded-xl hover:bg-gray-50 hover:text-gray-900 transition-all group">
+                            <span class="material-symbols-outlined text-[20px] text-gray-400 group-hover:text-primary">shelves</span>
+                            Rentals
+                        </a>
                         <a href="{{ route('stores.index') }}" @click="mobileMenu = false"
                            class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-gray-700 rounded-xl hover:bg-gray-50 hover:text-gray-900 transition-all group">
                             <span class="material-symbols-outlined text-[20px] text-gray-400 group-hover:text-primary">store</span>
@@ -356,6 +388,20 @@
                     </div>
 
                     @auth
+                        <div class="mt-4 pt-4 border-t border-gray-100">
+                            <p class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider px-3 mb-2">My Account</p>
+                            <a href="{{ route('orders.index') }}" @click="mobileMenu = false"
+                               class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-gray-700 rounded-xl hover:bg-gray-50 hover:text-gray-900 transition-all group">
+                                <span class="material-symbols-outlined text-[20px] text-gray-400 group-hover:text-primary">shopping_cart</span>
+                                My Orders
+                            </a>
+                            <a href="{{ route('conversations.index') }}" @click="mobileMenu = false"
+                               class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-gray-700 rounded-xl hover:bg-gray-50 hover:text-gray-900 transition-all group relative">
+                                <span class="material-symbols-outlined text-[20px] text-gray-400 group-hover:text-primary">chat_bubble</span>
+                                Inbox
+                                <span class="unread-badge hidden ml-auto w-4 h-4 bg-error text-on-error text-[9px] font-bold rounded-full flex items-center justify-center leading-none">0</span>
+                            </a>
+                        </div>
                         @if($isSeller)
                             <div class="mt-4 pt-4 border-t border-gray-100">
                                 <p class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider px-3 mb-2">Selling</p>
@@ -438,22 +484,34 @@
                     <div class="flex-1 relative">
                         <span class="material-symbols-outlined text-[20px] text-primary/40 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">search</span>
                         <input x-ref="searchInput" x-model="query" @input.debounce.150ms="search()"
-                               type="text" placeholder="Search products, stores, categories..."
+                               type="text" x-bind:placeholder="placeholderText"
                                class="w-full h-10 sm:h-11 pl-11 pr-4 text-sm sm:text-[15px] focus:outline-none placeholder:text-gray-300 font-medium text-gray-800"
                                style="border-radius:9999px;background:#f4fcf1;border:1.5px solid #e8f0e6;transition:all 0.2s"
                                @focus=" $el.style.borderColor='#00a859'; $el.style.background='#fafff8' "
                                @blur=" $el.style.borderColor='#e8f0e6'; $el.style.background='#f4fcf1' ">
                     </div>
                     <button x-show="query.length > 0"
-                            @click="query = ''; results = { products: [], stores: [], categories: [], locations: [], users: [] }"
+                            @click="query = ''; results = { products: [], services: [], rentals: [], stores: [], categories: [], locations: [], users: [] }"
                             x-cloak
                             class="p-1.5 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-all">
                         <span class="material-symbols-outlined text-[18px]">close</span>
                     </button>
-                    <button @click="searchOpen = false; results = { products: [], stores: [], categories: [], locations: [], users: [] }; query = ''"
+                    <button @click="searchOpen = false; results = { products: [], services: [], rentals: [], stores: [], categories: [], locations: [], users: [] }; query = ''"
                             class="hidden sm:inline-flex text-sm font-semibold text-gray-500 hover:text-gray-700 px-4 py-1.5 rounded-full hover:bg-gray-100 transition-all shrink-0">
                         Cancel
                     </button>
+                </div>
+            </div>
+
+            {{-- Scope Tabs --}}
+            <div class="shrink-0 px-4 sm:px-6 py-2.5 border-b border-gray-100 bg-white/80 backdrop-blur-sm">
+                <div class="flex items-center gap-1">
+                    <template x-for="tab in ['products', 'services', 'rentals']" :key="tab">
+                        <button @click="switchScope(tab)"
+                                class="px-4 py-1.5 rounded-full text-[11px] font-bold transition-all capitalize"
+                                :class="scope === tab ? 'bg-primary text-on-primary shadow-sm' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'"
+                                x-text="tab"></button>
+                    </template>
                 </div>
             </div>
 
@@ -464,7 +522,7 @@
                     <div class="max-w-3xl mx-auto">
                         {{-- Brand intro --}}
                         <div class="text-center sm:text-left mb-8 sm:mb-10">
-                            <p class="text-sm text-gray-400 max-w-md">Discover products from stores across Cameroon.</p>
+                            <p class="text-sm text-gray-400 max-w-md" x-text="'Discover ' + scope + ' from stores across Cameroon.'"></p>
                         </div>
 
                         <div class="flex flex-col sm:flex-row sm:items-start gap-8 sm:gap-12">
@@ -481,16 +539,16 @@
                             </div>
                             <div class="flex-1 sm:max-w-xs">
                                 <p class="text-[11px] font-bold text-gray-400 uppercase tracking-[0.1em] mb-4">Browse Categories</p>
-                                <div class="space-y-1">
-                                    <a href="{{ route('products.index') }}" @click="searchOpen = false" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-primary/5 transition-all text-sm font-medium text-gray-700 hover:text-primary">
-                                        <span class="material-symbols-outlined text-[18px] text-primary/40">category</span>
-                                        All Products
-                                    </a>
-                                    <a href="{{ route('stores.index') }}" @click="searchOpen = false" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-primary/5 transition-all text-sm font-medium text-gray-700 hover:text-primary">
-                                        <span class="material-symbols-outlined text-[18px] text-primary/40">store</span>
-                                        All Stores
-                                    </a>
-                                </div>
+                            <div class="space-y-1">
+                                <a :href="scopeRoute" @click="searchOpen = false" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-primary/5 transition-all text-sm font-medium text-gray-700 hover:text-primary">
+                                    <span class="material-symbols-outlined text-[18px] text-primary/40">category</span>
+                                    <span x-text="'All ' + scope.charAt(0).toUpperCase() + scope.slice(1)"></span>
+                                </a>
+                                <a href="{{ route('stores.index') }}" @click="searchOpen = false" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-primary/5 transition-all text-sm font-medium text-gray-700 hover:text-primary">
+                                    <span class="material-symbols-outlined text-[18px] text-primary/40">store</span>
+                                    All Stores
+                                </a>
+                            </div>
                             </div>
                         </div>
                     </div>
@@ -506,9 +564,10 @@
                 <div x-show="!loading && query.length >= 2" class="pb-4">
                     <template x-if="hasResults">
                         <div class="sm:grid sm:grid-cols-5 sm:gap-0">
-                            {{-- Left column: Products (primary) --}}
+                            {{-- Left column: Primary results (Products / Services / Rentals) --}}
                             <div class="sm:col-span-3 sm:border-r sm:border-gray-50">
-                                <template x-if="results.products.length">
+                                {{-- Products --}}
+                                <template x-if="scope === 'products' && results.products.length">
                                     <div class="px-4 sm:px-6 pt-4 pb-2">
                                         <div class="flex items-center justify-between mb-3">
                                             <p class="text-[11px] font-bold text-gray-400 uppercase tracking-[0.08em]">Products</p>
@@ -529,6 +588,62 @@
                                                         <p class="text-[11px] text-gray-400" x-text="product.category"></p>
                                                     </div>
                                                     <p class="text-xs font-bold text-primary shrink-0 whitespace-nowrap" x-text="Number(product.price).toLocaleString() + ' FCFA'"></p>
+                                                </a>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+
+                                {{-- Services --}}
+                                <template x-if="scope === 'services' && results.services.length">
+                                    <div class="px-4 sm:px-6 pt-4 pb-2">
+                                        <div class="flex items-center justify-between mb-3">
+                                            <p class="text-[11px] font-bold text-gray-400 uppercase tracking-[0.08em]">Services</p>
+                                            <a :href="'/services?search=' + encodeURIComponent(query)" @click="searchOpen = false" class="text-[11px] font-semibold text-primary hover:text-primary/80 transition-colors">View All</a>
+                                        </div>
+                                        <div class="space-y-1">
+                                            <template x-for="service in results.services" :key="service.id">
+                                                <a :href="service.url" @click="searchOpen = false"
+                                                   class="flex items-center gap-3.5 px-3 py-3 rounded-xl hover:bg-gray-50 active:bg-gray-100 transition-all -mx-3 group">
+                                                    <div class="w-12 h-12 sm:w-10 sm:h-10 rounded-xl bg-gray-100 overflow-hidden shrink-0 ring-1 ring-black/5">
+                                                        <img x-show="service.image" :src="service.image" class="w-full h-full object-cover group-hover:scale-105 transition-transform" alt="">
+                                                        <div x-show="!service.image" class="w-full h-full flex items-center justify-center text-gray-300">
+                                                            <span class="material-symbols-outlined text-[18px]">image</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="min-w-0 flex-1">
+                                                        <p class="text-sm font-semibold text-gray-800 truncate group-hover:text-primary transition-colors" x-text="service.name"></p>
+                                                        <p class="text-[11px] text-gray-400" x-text="service.category"></p>
+                                                    </div>
+                                                    <p class="text-xs font-bold text-primary shrink-0 whitespace-nowrap" x-text="'From ' + Number(service.price).toLocaleString() + ' FCFA'"></p>
+                                                </a>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+
+                                {{-- Rentals --}}
+                                <template x-if="scope === 'rentals' && results.rentals.length">
+                                    <div class="px-4 sm:px-6 pt-4 pb-2">
+                                        <div class="flex items-center justify-between mb-3">
+                                            <p class="text-[11px] font-bold text-gray-400 uppercase tracking-[0.08em]">Rentals</p>
+                                            <a :href="'/rentals?search=' + encodeURIComponent(query)" @click="searchOpen = false" class="text-[11px] font-semibold text-primary hover:text-primary/80 transition-colors">View All</a>
+                                        </div>
+                                        <div class="space-y-1">
+                                            <template x-for="item in results.rentals" :key="item.id">
+                                                <a :href="item.url" @click="searchOpen = false"
+                                                   class="flex items-center gap-3.5 px-3 py-3 rounded-xl hover:bg-gray-50 active:bg-gray-100 transition-all -mx-3 group">
+                                                    <div class="w-12 h-12 sm:w-10 sm:h-10 rounded-xl bg-gray-100 overflow-hidden shrink-0 ring-1 ring-black/5">
+                                                        <img x-show="item.image" :src="item.image" class="w-full h-full object-cover group-hover:scale-105 transition-transform" alt="">
+                                                        <div x-show="!item.image" class="w-full h-full flex items-center justify-center text-gray-300">
+                                                            <span class="material-symbols-outlined text-[18px]">image</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="min-w-0 flex-1">
+                                                        <p class="text-sm font-semibold text-gray-800 truncate group-hover:text-primary transition-colors" x-text="item.name"></p>
+                                                        <p class="text-[11px] text-gray-400" x-text="item.category"></p>
+                                                    </div>
+                                                    <p class="text-xs font-bold text-primary shrink-0 whitespace-nowrap" x-text="Number(item.rate).toLocaleString() + ' FCFA/' + item.billing_unit"></p>
                                                 </a>
                                             </template>
                                         </div>
@@ -632,7 +747,7 @@
     </div>
 
     {{-- ============ MAIN CONTENT ============ --}}
-    <main class="min-h-screen bg-[#fafcfa] pt-[112px] sm:pt-[124px]">
+    <main class="min-h-screen bg-[#fafcfa] pt-[112px] sm:pt-[124px] pb-[72px] sm:pb-0">
         {{-- Left sidebar (store show page) --}}
         @hasSection('store-sidebar')
             <aside class="fixed left-0 top-[100px] sm:top-[108px] h-[calc(100vh-100px)] sm:h-[calc(100vh-108px)] w-[260px] bg-white border-r border-gray-100 shadow-sm z-30 hidden lg:block overflow-y-auto no-scrollbar">
@@ -650,6 +765,24 @@
             </div>
         @endif
 
+        @if(session('success'))
+            <div class="max-w-7xl mx-auto px-5 sm:px-8 mb-4 pt-4">
+                <div class="bg-green-50 border border-green-200 rounded-xl p-4 flex items-center gap-3 animate-slide-down">
+                    <span class="material-symbols-outlined text-green-600">check_circle</span>
+                    <p class="text-sm font-semibold text-green-800">{{ session('success') }}</p>
+                </div>
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="max-w-7xl mx-auto px-5 sm:px-8 mb-4 pt-4">
+                <div class="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center gap-3 animate-slide-down">
+                    <span class="material-symbols-outlined text-red-600">error</span>
+                    <p class="text-sm font-semibold text-red-800">{{ session('error') }}</p>
+                </div>
+            </div>
+        @endif
+
         @yield('content')
 
         @hasSection('store-sidebar')
@@ -661,7 +794,7 @@
     @hasSection('footer')
         @yield('footer')
     @else
-    <footer class="bg-[#fafcfa] border-t border-black/5">
+    <footer class="bg-[#fafcfa] border-t border-black/5 pb-[72px] sm:pb-0">
         <div class="max-w-7xl mx-auto px-5 sm:px-8 py-10 sm:py-14">
             <div class="flex flex-col sm:flex-row items-center justify-between gap-6">
                 <div class="flex flex-col items-center sm:items-start gap-3">
@@ -716,7 +849,7 @@
             x-transition:leave="transition ease-in duration-200"
             x-transition:leave-start="opacity-100 translate-y-0 scale-100"
             x-transition:leave-end="opacity-0 translate-y-3 scale-90"
-            class="back-to-top-btn fixed bottom-6 right-6 z-40 w-11 h-11 rounded-2xl flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 group">
+             class="back-to-top-btn fixed bottom-[76px] sm:bottom-6 right-6 z-40 w-11 h-11 rounded-2xl flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 group">
         <svg class="w-5 h-5 text-on-surface-variant/60 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5"/></svg>
     </button>
 
@@ -724,28 +857,48 @@
         function globalSearch() {
             return {
                 query: '',
-                results: { products: [], stores: [], categories: [], locations: [], users: [] },
+                scope: 'products',
+                results: { products: [], services: [], rentals: [], stores: [], categories: [], locations: [], users: [] },
                 searchOpen: false,
                 loading: false,
                 trending: [],
+                get placeholderText() {
+                    const map = { products: 'Search products, stores...', services: 'Search services, professionals...', rentals: 'Search rental items...' };
+                    return map[this.scope] || 'Search products, stores...';
+                },
                 get hasResults() {
-                    return this.results.products.length > 0 || this.results.stores.length > 0 || this.results.categories.length > 0 || this.results.locations.length > 0 || this.results.users.length > 0;
+                    return Object.values(this.results).some(arr => arr.length > 0);
+                },
+                get primaryResults() {
+                    return this.results[this.scope] || [];
+                },
+                get scopeRoute() {
+                    const map = { products: '/products', services: '/services', rentals: '/rentals' };
+                    return map[this.scope] || '/products';
+                },
+                switchScope(newScope) {
+                    if (newScope === this.scope) return;
+                    this.scope = newScope;
+                    this.results = { products: [], services: [], rentals: [], stores: [], categories: [], locations: [], users: [] };
+                    fetch('/search/trending?scope=' + newScope).then(r => r.json()).then(data => { this.trending = data; }).catch(() => {});
+                    if (this.query.trim().length >= 2) this.search();
                 },
                 init() {
                     this.$watch('searchOpen', val => {
                         document.body.classList.toggle('overflow-hidden', val);
                         if (!val) {
                             this.query = '';
-                            this.results = { products: [], stores: [], categories: [], locations: [], users: [] };
+                            this.scope = 'products';
+                            this.results = { products: [], services: [], rentals: [], stores: [], categories: [], locations: [], users: [] };
                         }
                     });
-                    fetch('/search/trending').then(r => r.json()).then(data => { this.trending = data; }).catch(() => {});
+                    fetch('/search/trending?scope=products').then(r => r.json()).then(data => { this.trending = data; }).catch(() => {});
                 },
                 search() {
                     const q = this.query.trim();
-                    if (q.length < 1) { this.results = { products: [], stores: [], categories: [], locations: [], users: [] }; this.loading = false; return; }
+                    if (q.length < 1) { this.results = { products: [], services: [], rentals: [], stores: [], categories: [], locations: [], users: [] }; this.loading = false; return; }
                     this.loading = true;
-                    fetch('/search/autocomplete?q=' + encodeURIComponent(q))
+                    fetch('/search/autocomplete?q=' + encodeURIComponent(q) + '&scope=' + this.scope)
                         .then(r => r.json())
                         .then(data => { this.results = data; this.loading = false; })
                         .catch(() => { this.loading = false; });
@@ -798,448 +951,136 @@
         }
     </script>
 
-    {{-- ============ FLOATING "HOW IT WORKS" DRAGGABLE BUTTON ============ --}}
-    <div x-data="{
-        isDragging: false,
-        startX: 0,
-        startY: 0,
-        offsetX: 0,
-        offsetY: 0,
-        currentX: 0,
-        currentY: 0,
-        draggingIntent: false,
-        btnSize: 56,
-        savedX: localStorage.getItem('fabX'),
-        savedY: localStorage.getItem('fabY'),
-        maxX() { return window.innerWidth - 80 },
-        maxY() { return window.innerHeight - 80 },
-        init() {
-            if (this.savedX) this.currentX = Math.min(0, Math.max(parseFloat(this.savedX), -this.maxX()));
-            if (this.savedY) this.currentY = Math.min(0, Math.max(parseFloat(this.savedY), -this.maxY()));
-            this.$watch('currentX', val => localStorage.setItem('fabX', val));
-            this.$watch('currentY', val => localStorage.setItem('fabY', val));
-        },
-        startDrag(e) {
-            const ev = e.touches ? e.touches[0] : e;
-            this.isDragging = true;
-            this.draggingIntent = false;
-            this.startX = ev.clientX - this.offsetX;
-            this.startY = ev.clientY - this.offsetY;
-        },
-        moveDrag(e) {
-            if (!this.isDragging) return;
-            if (e.touches) e.preventDefault();
-            const ev = e.touches ? e.touches[0] : e;
-            let rawX = ev.clientX - this.startX;
-            let rawY = ev.clientY - this.startY;
-            this.offsetX = Math.min(0, Math.max(rawX, -this.maxX()));
-            this.offsetY = Math.min(0, Math.max(rawY, -this.maxY()));
-            this.currentX = this.offsetX;
-            this.currentY = this.offsetY;
-            if (Math.abs(rawX) > 5 || Math.abs(rawY) > 5) {
-                this.draggingIntent = true;
-            }
-        },
-        endDrag(e) {
-            if (!this.isDragging) return;
-            this.isDragging = false;
-            if (!this.draggingIntent) {
-                window.dispatchEvent(new CustomEvent('open-about-modal'));
-            }
-        }
-    }"
-    x-init="init()"
-    :style="`transform: translate(${currentX}px, ${currentY}px)`"
-    @mousedown="startDrag"
-    @mousemove="moveDrag"
-    @mouseup="endDrag"
-    @mouseleave="isDragging = false"
-    @touchstart="startDrag"
-    @touchmove="moveDrag"
-    @touchend="endDrag"
-    class="fixed bottom-6 right-6 z-[500] cursor-grab select-none active:cursor-grabbing touch-none"
-    x-cloak>
-        <div class="w-14 h-14 rounded-full bg-gradient-to-br from-primary to-emerald-600 shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 hover:scale-105 active:scale-95 transition-all duration-200 flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"/>
-                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
-                <path d="M12 17h.01"/>
-            </svg>
-        </div>
-        <span class="absolute -top-1 -right-1 w-4 h-4 bg-amber-400 rounded-full animate-ping ring-2 ring-white"></span>
-    </div>
+    <script>
+        window.autoScroll = function() {
+            return {
+                interval: null,
+                init() {
+                    const el = this.$el;
+                    this.$nextTick(() => {
+                        this.start(el);
+                        el.addEventListener('mouseenter', () => this.stop());
+                        el.addEventListener('mouseleave', () => this.start(el));
+                    });
+                },
+                start(el) {
+                    this.stop();
+                    this.interval = setInterval(() => {
+                        if (!el || el.matches(':hover')) return;
+                        const maxScroll = el.scrollWidth - el.clientWidth;
+                        if (maxScroll <= 5) return;
+                        const card = el.querySelector('.shrink-0');
+                        const cardWidth = card ? card.offsetWidth : 160;
+                        const gap = parseInt(getComputedStyle(el).gap) || 12;
+                        const step = cardWidth + gap;
+                        let target = el.scrollLeft + step;
+                        if (target >= maxScroll - 5) target = 0;
+                        el.scrollTo({ left: target, behavior: 'smooth' });
+                    }, 4000);
+                },
+                stop() {
+                    if (this.interval) { clearInterval(this.interval); this.interval = null; }
+                }
+            };
+        };
+    </script>
 
-    {{-- ============ "HOW IT WORKS" MODAL (standalone, no transform ancestor) ============ --}}
-    <div x-data="{ open: false }"
-         @open-about-modal.window="open = true"
-         @keydown.escape.window="open = false"
-         x-show="open"
-         x-cloak
-         x-transition:enter="transition ease-out duration-200"
-         x-transition:enter-start="opacity-0"
-         x-transition:enter-end="opacity-100"
-         x-transition:leave="transition ease-in duration-150"
-         x-transition:leave-start="opacity-100"
-         x-transition:leave-end="opacity-0"
-         class="fixed inset-0 z-[600] flex items-end sm:items-center justify-center"
-         @click="open = false">
-        <div class="fixed inset-0 bg-black/40 backdrop-blur-sm" aria-hidden="true"></div>
-        <div @click.stop
-             x-transition:enter="sm:transition sm:ease-out sm:duration-200"
-             x-transition:enter-start="sm:opacity-0 sm:scale-95 sm:translate-y-4"
-             x-transition:enter-end="sm:opacity-100 sm:scale-100 sm:translate-y-0"
-             x-transition:leave="sm:transition sm:ease-in sm:duration-150"
-             x-transition:leave-start="sm:opacity-100 sm:scale-100 sm:translate-y-0"
-             x-transition:leave-end="sm:opacity-0 sm:scale-95 sm:translate-y-4"
-             class="relative w-full sm:max-w-lg bg-white sm:rounded-2xl rounded-t-2xl sm:shadow-2xl max-h-[90vh] sm:max-h-[85vh] flex flex-col overflow-hidden">
-            {{-- Header --}}
-            <div class="shrink-0 px-5 sm:px-7 py-4 sm:py-5 border-b border-gray-200 flex items-center justify-between bg-white">
-                <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center shrink-0">
-                        <span class="material-symbols-outlined text-[20px] text-gray-600">info</span>
-                    </div>
-                    <div>
-                        <h2 class="text-[15px] sm:text-lg font-bold text-gray-900 leading-tight">How Izifai Works</h2>
-                        <p class="text-[11px] sm:text-xs text-gray-500 mt-0.5">Your catalog in one link. No more WhatsApp spam.</p>
-                    </div>
-                </div>
-                <button @click="open = false" class="p-1.5 -mr-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-xl transition-all">
-                    <span class="material-symbols-outlined text-[20px]">close</span>
-                </button>
-            </div>
-
-            {{-- Body --}}
+    {{-- ============ MOBILE BOTTOM TAB BAR ============ --}}
+    <nav class="fixed bottom-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-t border-outline-variant/20 shadow-[0_-2px_16px_rgba(0,0,0,0.04)] sm:hidden safe-area-bottom">
+        <div class="flex items-center justify-around h-[64px] px-2 pb-1">
             @php
-                $chatStore = \App\Models\Store::where('status', 'active')->has('products')->inRandomOrder()->first();
-                $chatProducts = $chatStore?->products()->with('images')->inRandomOrder()->take(3)->get() ?? collect();
-                $chatProd1 = $chatProducts->get(0);
-                $chatProd2 = $chatProducts->get(1);
-                $chatProd3 = $chatProducts->get(2);
-                $chatStoreName = $chatStore?->name ?? 'a local shop';
-                $chatStoreInitial = substr($chatStoreName, 0, 1);
+                $currentRoute = request()->route()?->getName() ?? '';
+                $isActive = fn($prefix) => str_starts_with($currentRoute, $prefix);
             @endphp
-            <div class="flex-1 overflow-y-auto overflow-x-hidden px-4 sm:px-6 py-4 sm:py-6 space-y-5 sm:space-y-6">
 
-                {{-- ===== BEFORE: WhatsApp chaos ===== --}}
-                <div>
-                    <div class="flex items-center gap-2 mb-3">
-                        <div class="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-bold text-red-500 uppercase tracking-wider">
-                            <span class="material-symbols-outlined text-[14px]">warning</span>
-                            Before Izifai
-                        </div>
-                        <div class="flex-1 h-px bg-red-200"></div>
-                    </div>
+            {{-- Home --}}
+            <a href="{{ route('home') }}"
+               class="flex flex-col items-center justify-center gap-0.5 py-1 px-3 rounded-xl transition-all relative {{ $isActive('home') && !$isActive('home.') ? 'text-primary' : 'text-on-surface-variant/50 hover:text-on-surface-variant' }}">
+                @if($isActive('home') && !$isActive('home.'))
+                    <span class="absolute -top-0.5 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-primary rounded-full"></span>
+                @endif
+                <span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' {{ $isActive('home') && !$isActive('home.') ? 1 : 0 }};">home</span>
+                <span class="text-[9px] font-bold {{ $isActive('home') && !$isActive('home.') ? 'text-primary' : 'text-on-surface-variant/50' }}">Home</span>
+            </a>
 
-                    <div class="bg-[#e5ddd6] rounded-xl p-3 sm:p-4 space-y-2.5 shadow-inner" style="background-image: repeating-linear-gradient(45deg, rgba(255,255,255,.03) 0px, rgba(255,255,255,.03) 2px, transparent 2px, transparent 4px)">
-                        {{-- Group header --}}
-                        <div class="flex items-center gap-2 pb-2 border-b border-black/10">
-                            <div class="w-7 h-7 rounded-full bg-emerald-600 flex items-center justify-center text-white text-[10px] font-bold">M</div>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-[11px] sm:text-[12px] font-bold text-gray-800 truncate">Marketplace Cameroon 🇨🇲</p>
-                                <p class="text-[9px] text-gray-500">1,284 members</p>
-                            </div>
-                            <span class="material-symbols-outlined text-[16px] text-gray-400">more_vert</span>
-                        </div>
+            {{-- Products --}}
+            <a href="{{ route('products.index') }}"
+               class="flex flex-col items-center justify-center gap-0.5 py-1 px-3 rounded-xl transition-all relative {{ $isActive('products.') ? 'text-primary' : 'text-on-surface-variant/50 hover:text-on-surface-variant' }}">
+                @if($isActive('products.'))
+                    <span class="absolute -top-0.5 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-primary rounded-full"></span>
+                @endif
+                <span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' {{ $isActive('products.') ? 1 : 0 }};">shopping_bag</span>
+                <span class="text-[9px] font-bold {{ $isActive('products.') ? 'text-primary' : 'text-on-surface-variant/50' }}">Products</span>
+            </a>
 
-                        {{-- Owner sends product images --}}
-                        <div class="flex items-start gap-2 max-w-[85%] min-w-0">
-                            <div class="w-6 h-6 rounded-full bg-emerald-600 flex items-center justify-center text-white text-[8px] font-bold shrink-0 mt-0.5">{{ $chatStoreInitial }}</div>
-                            <div class="min-w-0">
-                                <p class="text-[9px] font-bold text-emerald-800">{{ $chatStoreName }}</p>
-                                <div class="bg-white rounded-lg rounded-tl-none p-2 mt-0.5 shadow-sm">
-                                    <div class="flex gap-1">
-                                        @if($chatProd1 && $chatProd1->images->first())
-                                            <div class="w-10 h-10 rounded overflow-hidden bg-gray-100"><img src="{{ $chatProd1->images->first()->url }}" alt="" class="w-full h-full object-cover"></div>
-                                        @else
-                                            <div class="w-10 h-10 rounded bg-gray-200 flex items-center justify-center text-[16px]">📱</div>
-                                        @endif
-                                        @if($chatProd2 && $chatProd2->images->first())
-                                            <div class="w-10 h-10 rounded overflow-hidden bg-gray-100"><img src="{{ $chatProd2->images->first()->url }}" alt="" class="w-full h-full object-cover"></div>
-                                        @else
-                                            <div class="w-10 h-10 rounded bg-gray-200 flex items-center justify-center text-[16px]">👕</div>
-                                        @endif
-                                        @if($chatProd3 && $chatProd3->images->first())
-                                            <div class="w-10 h-10 rounded overflow-hidden bg-gray-100"><img src="{{ $chatProd3->images->first()->url }}" alt="" class="w-full h-full object-cover"></div>
-                                        @else
-                                            <div class="w-10 h-10 rounded bg-gray-200 flex items-center justify-center text-[16px]">👟</div>
-                                        @endif
-                                    </div>
-                                    <p class="text-[11px] text-gray-500 mt-1">Fresh stock don land o! Check am make you see 🫡🔥</p>
-                                </div>
-                                <p class="text-[8px] text-gray-400 mt-0.5">08:32</p>
-                            </div>
-                        </div>
+            {{-- Services --}}
+            <a href="{{ route('services.index') }}"
+               class="flex flex-col items-center justify-center gap-0.5 py-1 px-3 rounded-xl transition-all relative {{ $isActive('services.') ? 'text-primary' : 'text-on-surface-variant/50 hover:text-on-surface-variant' }}">
+                @if($isActive('services.'))
+                    <span class="absolute -top-0.5 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-primary rounded-full"></span>
+                @endif
+                <span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' {{ $isActive('services.') ? 1 : 0 }};">handyman</span>
+                <span class="text-[9px] font-bold {{ $isActive('services.') ? 'text-primary' : 'text-on-surface-variant/50' }}">Services</span>
+            </a>
 
-                        {{-- Owner sends more --}}
-                        <div class="flex items-start gap-2 max-w-[85%] min-w-0">
-                            <div class="w-6 h-6 rounded-full bg-emerald-600 flex items-center justify-center text-white text-[8px] font-bold shrink-0 mt-0.5">{{ $chatStoreInitial }}</div>
-                            <div class="min-w-0">
-                                <p class="text-[9px] font-bold text-emerald-800">{{ $chatStoreName }}</p>
-                                <div class="bg-white rounded-lg rounded-tl-none p-2 mt-0.5 shadow-sm">
-                                    <div class="flex gap-1">
-                                        @if($chatProd1 && $chatProd1->images->first())
-                                            <div class="w-10 h-10 rounded overflow-hidden bg-gray-100"><img src="{{ $chatProd1->images->first()->url }}" alt="" class="w-full h-full object-cover"></div>
-                                        @else
-                                            <div class="w-10 h-10 rounded bg-gray-200 flex items-center justify-center text-[16px]">📱</div>
-                                        @endif
-                                        @if($chatProd2 && $chatProd2->images->first())
-                                            <div class="w-10 h-10 rounded overflow-hidden bg-gray-100"><img src="{{ $chatProd2->images->first()->url }}" alt="" class="w-full h-full object-cover"></div>
-                                        @else
-                                            <div class="w-10 h-10 rounded bg-gray-200 flex items-center justify-center text-[16px]">📱</div>
-                                        @endif
-                                    </div>
-                                    <p class="text-[11px] text-gray-500 mt-1">Price don drop! Special offer na today o 🏃💨</p>
-                                </div>
-                                <p class="text-[8px] text-gray-400 mt-0.5">09:15</p>
-                            </div>
-                        </div>
+            {{-- Rentals --}}
+            <a href="{{ route('rentals.index') }}"
+               class="flex flex-col items-center justify-center gap-0.5 py-1 px-3 rounded-xl transition-all relative {{ $isActive('rentals.') ? 'text-primary' : 'text-on-surface-variant/50 hover:text-on-surface-variant' }}">
+                @if($isActive('rentals.'))
+                    <span class="absolute -top-0.5 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-primary rounded-full"></span>
+                @endif
+                <span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' {{ $isActive('rentals.') ? 1 : 0 }};">shelves</span>
+                <span class="text-[9px] font-bold {{ $isActive('rentals.') ? 'text-primary' : 'text-on-surface-variant/50' }}">Rentals</span>
+            </a>
 
-                        {{-- Complaints --}}
-                        <div class="flex items-start gap-2 max-w-[85%] min-w-0 ml-auto flex-row-reverse">
-                            <div class="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-white text-[8px] font-bold shrink-0 mt-0.5">K</div>
-                            <div class="min-w-0">
-                                <p class="text-[9px] font-bold text-blue-700 text-right">Kofi</p>
-                                <div class="bg-[#dcf8c6] rounded-lg rounded-tr-none p-2 mt-0.5 shadow-sm">
-                                    <p class="text-[11px] sm:text-[12px] text-gray-800 break-words">Na di same pictures evri day? Abeg make una stop 😤</p>
-                                </div>
-                                <p class="text-[8px] text-gray-400 mt-0.5 text-right">09:16</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start gap-2 max-w-[85%] min-w-0 ml-auto flex-row-reverse">
-                            <div class="w-6 h-6 rounded-full bg-purple-500 flex items-center justify-center text-white text-[8px] font-bold shrink-0 mt-0.5">A</div>
-                            <div class="min-w-0">
-                                <p class="text-[9px] font-bold text-purple-700 text-right">Caleb</p>
-                                <div class="bg-[#dcf8c6] rounded-lg rounded-tr-none p-2 mt-0.5 shadow-sm">
-                                    <p class="text-[11px] sm:text-[12px] text-gray-800 break-words">Ah my data don finish abeg! 🥲 Every day picture, picture. Who get data for that?</p>
-                                </div>
-                                <p class="text-[8px] text-gray-400 mt-0.5 text-right">09:18</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start gap-2 max-w-[85%] min-w-0 ml-auto flex-row-reverse">
-                            <div class="w-6 h-6 rounded-full bg-gray-400 flex items-center justify-center text-white text-[8px] font-bold shrink-0 mt-0.5">C</div>
-                            <div class="min-w-0">
-                                <p class="text-[9px] font-bold text-gray-600 text-right">Chris</p>
-                                <div class="bg-[#dcf8c6] rounded-lg rounded-tr-none p-2 mt-0.5 shadow-sm">
-                                    <p class="text-[11px] sm:text-[12px] text-gray-800 break-words">I don commot for di group o. Too many notifications dey worry me 📴</p>
-                                </div>
-                                <p class="text-[8px] text-gray-400 mt-0.5 text-right">09:20</p>
-                            </div>
-                        </div>
-
-                        {{-- System message --}}
-                        <div class="text-center py-1">
-                            <span class="inline-block bg-red-100 text-red-600 text-[9px] font-semibold px-3 py-1 rounded-full">⚠️ Chris reported &amp; archived this group</span>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- ===== Arrow transition ===== --}}
-                <div class="flex items-center gap-3 py-1">
-                    <div class="flex-1 h-px bg-emerald-200"></div>
-                    <div class="w-7 h-7 rounded-full bg-emerald-100 flex items-center justify-center">
-                        <span class="material-symbols-outlined text-[16px] text-emerald-600">arrow_downward</span>
-                    </div>
-                    <div class="flex-1 h-px bg-emerald-200"></div>
-                </div>
-
-                {{-- ===== AFTER: Izifai happiness ===== --}}
-                <div>
-                    <div class="flex items-center gap-2 mb-3">
-                        <div class="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-bold text-emerald-600 uppercase tracking-wider">
-                            <span class="material-symbols-outlined text-[14px]">check_circle</span>
-                            After Izifai
-                        </div>
-                        <div class="flex-1 h-px bg-emerald-200"></div>
-                    </div>
-
-                    <div class="bg-[#e5ddd6] rounded-xl p-3 sm:p-4 space-y-2.5 shadow-inner" style="background-image: repeating-linear-gradient(45deg, rgba(255,255,255,.03) 0px, rgba(255,255,255,.03) 2px, transparent 2px, transparent 4px)">
-                        {{-- Group header --}}
-                        <div class="flex items-center gap-2 pb-2 border-b border-black/10">
-                            <div class="w-7 h-7 rounded-full bg-emerald-600 flex items-center justify-center text-white text-[10px] font-bold">M</div>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-[11px] sm:text-[12px] font-bold text-gray-800 truncate">Marketplace Cameroon 🇨🇲</p>
-                                <p class="text-[9px] text-gray-500">1,512 members <span class="text-emerald-600 font-semibold">+228 this week</span></p>
-                            </div>
-                            <span class="material-symbols-outlined text-[16px] text-gray-400">more_vert</span>
-                        </div>
-
-                        {{-- Merchant shares Izifai catalog link --}}
-                        <div class="flex items-start gap-2 max-w-[85%] min-w-0">
-                            <div class="w-6 h-6 rounded-full bg-emerald-600 flex items-center justify-center text-white text-[8px] font-bold shrink-0 mt-0.5">{{ $chatStoreInitial }}</div>
-                            <div class="min-w-0">
-                                <p class="text-[9px] font-bold text-emerald-800">{{ $chatStoreName }}</p>
-                                <div class="bg-white rounded-lg rounded-tl-none p-2 mt-0.5 shadow-sm">
-                                    <div class="flex items-center gap-2 mb-1.5">
-                                        <div class="w-7 h-7 rounded bg-emerald-100 flex items-center justify-center shrink-0">
-                                            <span class="material-symbols-outlined text-[14px] text-emerald-600">store</span>
-                                        </div>
-                                        <div class="flex-1 min-w-0">
-                                            <p class="text-[10px] font-bold text-gray-800 truncate">{{ $chatStoreName }}</p>
-                                            <p class="text-[7px] text-gray-400 truncate">izifai.com/shop/{{ strtolower(str_replace(' ', '', $chatStoreName)) }}</p>
-                                        </div>
-                                    </div>
-                                    {{-- Link preview card with actual product image --}}
-                                    <div class="border border-gray-200 rounded-lg overflow-hidden">
-                                        @if($chatProd1 && $chatProd1->images->first())
-                                            <div class="w-full h-24 bg-gray-100"><img src="{{ $chatProd1->images->first()->url }}" alt="" class="w-full h-full object-cover"></div>
-                                        @else
-                                            <div class="w-full h-24 bg-gradient-to-br from-emerald-100 to-emerald-50 flex items-center justify-center">
-                                                <span class="material-symbols-outlined text-[28px] text-emerald-400">storefront</span>
-                                            </div>
-                                        @endif
-                                        <div class="px-2.5 py-2 bg-white">
-                                            <p class="text-[9px] font-bold text-gray-800 truncate">View {{ $chatStoreName }} Catalog</p>
-                                            <p class="text-[7px] text-gray-400 truncate">izifai.com/shop/{{ strtolower(str_replace(' ', '', $chatStoreName)) }}</p>
-                                        </div>
-                                    </div>
-                                    <p class="text-[10px] text-gray-600 mt-1.5 break-words">My people, I don create my shop for Izifai. Instead of posting images every day, I just share one link — my whole business dey there. Prices, photos, descriptions, everything. Anybody wey get the link fit share am too. No more flooding groups! 🥳🙌</p>
-                                    <div class="text-[9px] text-gray-400 mt-1 flex items-center gap-2">
-                                        <span>😊 4</span>
-                                        <span>💬 12</span>
-                                    </div>
-                                </div>
-                                <p class="text-[8px] text-gray-400 mt-0.5">10:02</p>
-                            </div>
-                        </div>
-
-                        {{-- Also shares a product link --}}
-                        <div class="flex items-start gap-2 max-w-[80%] min-w-0">
-                            <div class="w-6 h-6 rounded-full bg-emerald-600 flex items-center justify-center text-white text-[8px] font-bold shrink-0 mt-0.5">{{ $chatStoreInitial }}</div>
-                            <div class="min-w-0">
-                                <p class="text-[9px] font-bold text-emerald-800">{{ $chatStoreName }}</p>
-                                <div class="bg-white rounded-lg rounded-tl-none p-2 mt-0.5 shadow-sm">
-                                    <div class="border border-gray-200 rounded-lg overflow-hidden flex">
-                                        @if($chatProd1 && $chatProd1->images->first())
-                                            <div class="w-12 h-12 shrink-0 bg-gray-100"><img src="{{ $chatProd1->images->first()->url }}" alt="" class="w-full h-full object-cover"></div>
-                                        @else
-                                            <div class="w-12 h-12 shrink-0 bg-gray-200 flex items-center justify-center text-[20px]">📦</div>
-                                        @endif
-                                        <div class="flex-1 min-w-0 px-2 py-1.5">
-                                            <p class="text-[9px] font-bold text-gray-800 truncate">{{ $chatProd1?->name ?? 'Product' }}</p>
-                                            <p class="text-[8px] text-gray-500 truncate">izifai.com/product/{{ $chatProd1?->id ?? '#' }}</p>
-                                            <p class="text-[8px] font-bold text-emerald-600 mt-0.5">Click to view &rarr;</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <p class="text-[8px] text-gray-400 mt-0.5">10:03</p>
-                            </div>
-                        </div>
-
-                        {{-- Happy replies --}}
-                        <div class="flex items-start gap-2 max-w-[85%] min-w-0 ml-auto flex-row-reverse">
-                            <div class="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-white text-[8px] font-bold shrink-0 mt-0.5">K</div>
-                            <div class="min-w-0">
-                                <p class="text-[9px] font-bold text-blue-700 text-right">Kofi</p>
-                                <div class="bg-[#dcf8c6] rounded-lg rounded-tr-none p-2 mt-0.5 shadow-sm">
-                                    <p class="text-[11px] sm:text-[12px] text-gray-800 break-words">Na real talk! Now instead of your pictures dey worry our data, I just share your one link for any group. Your entire business dey inside one link. E easy to spread! 🔥🙌</p>
-                                </div>
-                                <p class="text-[8px] text-gray-400 mt-0.5 text-right">10:05</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start gap-2 max-w-[85%] min-w-0 ml-auto flex-row-reverse">
-                            <div class="w-6 h-6 rounded-full bg-purple-500 flex items-center justify-center text-white text-[8px] font-bold shrink-0 mt-0.5">A</div>
-                            <div class="min-w-0">
-                                <p class="text-[9px] font-bold text-purple-700 text-right">Caleb</p>
-                                <div class="bg-[#dcf8c6] rounded-lg rounded-tr-none p-2 mt-0.5 shadow-sm">
-                                    <p class="text-[11px] sm:text-[12px] text-gray-800 break-words">Waah my data don rest small! 😂 I just check your shop, e clean well well. No more wasting mb 🤩</p>
-                                </div>
-                                <p class="text-[8px] text-gray-400 mt-0.5 text-right">10:07</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start gap-2 max-w-[85%] min-w-0 ml-auto flex-row-reverse">
-                            <div class="w-6 h-6 rounded-full bg-gray-400 flex items-center justify-center text-white text-[8px] font-bold shrink-0 mt-0.5">C</div>
-                            <div class="min-w-0">
-                                <p class="text-[9px] font-bold text-gray-600 text-right">Chris</p>
-                                <div class="bg-[#dcf8c6] rounded-lg rounded-tr-none p-2 mt-0.5 shadow-sm">
-                                    <p class="text-[11px] sm:text-[12px] text-gray-800 break-words">I come back o 😂 I don cancel my own report. Your shop profile proper! You organize well well 👏</p>
-                                </div>
-                                <p class="text-[8px] text-gray-400 mt-0.5 text-right">10:10</p>
-                            </div>
-                        </div>
-
-                        {{-- System message --}}
-                        <div class="text-center py-1">
-                            <span class="inline-block bg-emerald-100 text-emerald-700 text-[9px] font-semibold px-3 py-1 rounded-full">✅ Chris unarchived group &amp; rejoined</span>
-                        </div>
-
-                        <div class="flex items-start gap-2 max-w-[80%] min-w-0">
-                            <div class="w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center text-white text-[8px] font-bold shrink-0 mt-0.5">T</div>
-                            <div class="min-w-0">
-                                <p class="text-[9px] font-bold text-orange-700">Tata</p>
-                                <div class="bg-white rounded-lg rounded-tl-none p-2 mt-0.5 shadow-sm">
-                                    <p class="text-[11px] sm:text-[12px] text-gray-800 break-words">I don see di {{ $chatProd1?->name ?? 'product' }}, I like am. How I take order?</p>
-                                </div>
-                                <p class="text-[8px] text-gray-400 mt-0.5">10:15</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start gap-2 max-w-[80%] min-w-0">
-                            <div class="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-white text-[8px] font-bold shrink-0 mt-0.5">K</div>
-                            <div class="min-w-0">
-                                <p class="text-[9px] font-bold text-blue-700">Kofi</p>
-                                <div class="bg-white rounded-lg rounded-tl-none p-2 mt-0.5 shadow-sm">
-                                    <p class="text-[11px] sm:text-[12px] text-gray-800 break-words">Even me self, I don share your link with my friends for another group. Dem want order too</p>
-                                </div>
-                                <p class="text-[8px] text-gray-400 mt-0.5">10:17</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start gap-2 max-w-[85%] min-w-0">
-                            <div class="w-6 h-6 rounded-full bg-emerald-600 flex items-center justify-center text-white text-[8px] font-bold shrink-0 mt-0.5">{{ $chatStoreInitial }}</div>
-                            <div class="min-w-0">
-                                <p class="text-[9px] font-bold text-emerald-800">{{ $chatStoreName }}</p>
-                                <div class="bg-white rounded-lg rounded-tl-none p-2 mt-0.5 shadow-sm">
-                                    <p class="text-[11px] sm:text-[12px] text-gray-800 break-words">Simple! Just click di WhatsApp button on di product you want, my number go show with di product description already dey there. I go know wetin you want ✨</p>
-                                </div>
-                                <p class="text-[8px] text-gray-400 mt-0.5">10:18</p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-start gap-2 max-w-[80%] min-w-0 ml-auto flex-row-reverse">
-                            <div class="w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center text-white text-[8px] font-bold shrink-0 mt-0.5">T</div>
-                            <div class="min-w-0">
-                                <p class="text-[9px] font-bold text-orange-700 text-right">Tata</p>
-                                <div class="bg-[#dcf8c6] rounded-lg rounded-tr-none p-2 mt-0.5 shadow-sm">
-                                    <p class="text-[11px] sm:text-[12px] text-gray-800 break-words">Ahh okay! I don see di WhatsApp button. I tap am now 👌</p>
-                                </div>
-                                <p class="text-[8px] text-gray-400 mt-0.5 text-right">10:20</p>
-                            </div>
-                        </div>
-
-                        {{-- System: new member joined via Izifai --}}
-                        <div class="text-center py-1">
-                            <span class="inline-flex items-center gap-1 bg-emerald-100 text-emerald-700 text-[9px] font-semibold px-3 py-1 rounded-full">👤 +237 6 23 456 789 joined via Izifai</span>
-                        </div>
-
-                        {{-- New customer found the store on Izifai --}}
-                        <div class="flex items-start gap-2 max-w-[85%] min-w-0">
-                            <div class="w-6 h-6 rounded-full bg-pink-500 flex items-center justify-center text-white text-[8px] font-bold shrink-0 mt-0.5">F</div>
-                            <div class="min-w-0">
-                                <p class="text-[9px] font-bold text-pink-700">Faith</p>
-                                <div class="bg-white rounded-lg rounded-tl-none p-2 mt-0.5 shadow-sm">
-                                    <p class="text-[11px] sm:text-[12px] text-gray-800 break-words">Your business dey public now! I just find di {{ $chatProd1?->name ?? 'product' }} wey I dey find for months 😭 I don join plenty WhatsApp groups for am but nobody get am like that. But I see am for your Izifai shop just now. I happy! Your whole shop dey online, I dey share am for my status. God bless Izifai! 🙌🎉</p>
-                                </div>
-                                <p class="text-[8px] text-gray-400 mt-0.5">10:25</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {{-- Footer --}}
-            <div class="shrink-0 px-5 sm:px-7 py-3 sm:py-3.5 border-t border-gray-100 bg-gray-50/70 flex items-center justify-between gap-3">
-                <p class="text-[11px] sm:text-xs text-gray-400">No more spam. Just shopping.</p>
-                <a href="{{ route('register') }}" class="inline-flex items-center gap-1 px-4 py-2 bg-gray-900 hover:bg-gray-800 text-white text-xs sm:text-sm font-semibold rounded-xl transition-all whitespace-nowrap">
-                    Join Izifai
-                    <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+            {{-- Inbox / Account --}}
+            @auth
+                <a href="{{ route('conversations.index') }}"
+                   class="flex flex-col items-center justify-center gap-0.5 py-1 px-3 rounded-xl transition-all relative {{ $isActive('conversations.') ? 'text-primary' : 'text-on-surface-variant/50 hover:text-on-surface-variant' }}">
+                    @if($isActive('conversations.'))
+                        <span class="absolute -top-0.5 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-primary rounded-full"></span>
+                    @endif
+                    <span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' {{ $isActive('conversations.') ? 1 : 0 }};">chat_bubble</span>
+                    <span class="unread-badge hidden absolute -top-0.5 right-1/2 translate-x-[14px] min-w-[16px] h-4 bg-error text-on-error text-[9px] font-bold rounded-full flex items-center justify-center px-1 leading-none shadow-sm border border-white">0</span>
+                    <span class="text-[9px] font-bold {{ $isActive('conversations.') ? 'text-primary' : 'text-on-surface-variant/50' }}">Inbox</span>
                 </a>
-            </div>
+            @else
+                <a href="{{ route('login') }}"
+                   class="flex flex-col items-center justify-center gap-0.5 py-1 px-3 rounded-xl transition-all relative {{ $isActive('login') || $isActive('register') ? 'text-primary' : 'text-on-surface-variant/50 hover:text-on-surface-variant' }}">
+                    @if($isActive('login') || $isActive('register'))
+                        <span class="absolute -top-0.5 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-primary rounded-full"></span>
+                    @endif
+                    <span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' {{ $isActive('login') || $isActive('register') ? 1 : 0 }};">person</span>
+                    <span class="text-[9px] font-bold {{ $isActive('login') || $isActive('register') ? 'text-primary' : 'text-on-surface-variant/50' }}">Account</span>
+                </a>
+            @endauth
         </div>
-    </div>
+    </nav>
+
+    @auth
+    <script>
+    (function() {
+        var badges = document.querySelectorAll('.unread-badge');
+        if (!badges.length) return;
+
+        function updateCount() {
+            fetch('{{ route('conversations.unread') }}')
+                .then(function(r) { return r.json(); })
+                .then(function(d) {
+                    var c = d.count || 0;
+                    badges.forEach(function(b) {
+                        b.textContent = c > 99 ? '99+' : c;
+                        b.classList.toggle('hidden', c === 0);
+                    });
+                })
+                .catch(function() {});
+        }
+
+        updateCount();
+        setInterval(updateCount, 30000);
+    })();
+    </script>
+    @endauth
 
     @stack('scripts')
 </body>

@@ -3,173 +3,255 @@
 namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
+use App\Models\Product;
+use App\Models\ProductImage;
+use App\Models\ProductSpecification;
+use App\Models\StoreCategory;
 use Illuminate\Http\Request;
-use App\Models\Store;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
-    private function getOrCreateStore()
+    public function index(Request $request)
     {
-        $user = auth()->user();
-        $store = $user->store;
+        $store = auth()->user()->store;
 
         if (!$store) {
-            $store = Store::create([
-                'user_id' => $user->id,
-                'name' => $user->name . "'s Store",
-                'slug' => Str::slug($user->name . ' store') . '-' . Str::random(5),
-                'whatsapp_number' => $user->phone,
-            ]);
+            return redirect()->route('stores.index')->with('error', 'You do not have a store yet.');
         }
 
-        return $store;
+        $query = $store->products()->with('images', 'category');
+
+        if ($request->filled('collection')) {
+            $query->where('store_category_id', $request->collection);
+        }
+
+        $products = $query->latest()->get();
+        $storeCategories = $store->storeCategories()->where('type', 'product')->withCount('products')->whereNull('parent_id')->orderBy('name')->get();
+
+        $currentCollection = null;
+        if ($request->filled('collection')) {
+            $currentCollection = $storeCategories->firstWhere('id', $request->collection)
+                ?? $store->storeCategories()->find($request->collection);
+        }
+
+        return view('seller.products.index', compact('products', 'storeCategories', 'store', 'currentCollection'));
     }
 
-    public function index()
+    public function create(Request $request)
     {
-        $products = $this->getOrCreateStore()->products()->with(['images', 'category'])->latest()->get();
-        return view('seller.products.index', compact('products'));
+        $store = auth()->user()->store;
+
+        if (!$store) {
+            return redirect()->route('stores.index')->with('error', 'You do not have a store yet.');
+        }
+
+        $categories = Category::orderBy('name')->get();
+        $storeCategories = $store->storeCategories()->where('type', 'product')->with('children')->whereNull('parent_id')->orderBy('name')->get();
+
+        $selectedCategory = null;
+        if ($request->filled('collection')) {
+            $selectedCategory = $store->storeCategories()->where('type', 'product')->find($request->collection);
+        }
+
+        return view('seller.products.create', compact('categories', 'storeCategories', 'selectedCategory'));
     }
 
-    public function create()
-    {
-        $categories = \App\Models\Category::all(); // Simplified for now
-        return view('seller.products.create', compact('categories'));
-    }
     public function store(Request $request)
     {
+        $store = auth()->user()->store;
+
+        if (!$store) {
+            return redirect()->route('stores.index')->with('error', 'You do not have a store yet.');
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
-            'category_id' => 'required|exists:categories,id',
+            'description' => 'nullable|string',
+            'category_id' => 'nullable|exists:categories,id',
+            'store_category_id' => 'nullable|exists:store_categories,id',
+            'store_category_name' => 'nullable|string|max:255',
             'price' => 'required|numeric|min:0',
             'old_price' => 'nullable|numeric|min:0',
-            'stock_status' => 'nullable|string|in:in_stock,out_of_stock,on_request',
-            'description' => 'required|string',
-            'images.*' => 'nullable|image|max:2048',
-            'spec_names.*' => 'nullable|string',
-            'spec_values.*' => 'nullable|string',
+            'stock_status' => 'required|in:in_stock,out_of_stock,on_request',
+            'colors' => 'nullable|array',
+            'sizes' => 'nullable|array',
+            'brand' => 'nullable|string|max:255',
+            'sku' => 'nullable|string|max:100',
+            'inventory' => 'nullable|integer|min:0',
+            'images' => 'nullable|array',
+            'images.*' => 'image|mimes:jpg,jpeg,png,webp|max:5120',
+            'specs' => 'nullable|array',
+            'specs.*.name' => 'nullable|string|max:255',
+            'specs.*.value' => 'nullable|string|max:1000',
         ]);
 
-        $store = $this->getOrCreateStore();
+        $storeCategoryId = $this->resolveStoreCategory($store, $request->store_category_id, $request->store_category_name);
 
         $product = $store->products()->create([
-            'category_id' => $request->category_id,
             'name' => $request->name,
-            'slug' => \Illuminate\Support\Str::slug($request->name) . '-' . time(),
+            'slug' => Str::slug($request->name) . '-' . Str::random(6),
+            'description' => $request->description,
+            'category_id' => $request->category_id,
+            'store_category_id' => $storeCategoryId,
             'price' => $request->price,
             'old_price' => $request->old_price,
-            'stock_status' => $request->stock_status ?? 'in_stock',
-            'description' => $request->description,
+            'stock_status' => $request->stock_status,
             'colors' => $request->colors ?? [],
             'sizes' => $request->sizes ?? [],
+            'brand' => $request->brand,
+            'sku' => $request->sku,
+            'inventory' => $request->inventory ?? 0,
+            'status' => 'active',
+            'approval_status' => 'approved',
+            'views' => 0,
         ]);
 
-        // Handle Images
         if ($request->hasFile('images')) {
-            $mainIndex = $request->input('main_image_index', 0);
-            foreach ($request->file('images') as $index => $image) {
-                $path = $image->store('products', 'r2');
+            foreach ($request->file('images') as $i => $image) {
+                $path = $image->store('product-images', 'r2');
                 $product->images()->create([
                     'path' => $path,
-                    'is_main' => (int)$index === (int)$mainIndex,
+                    'is_main' => $i === 0,
                 ]);
             }
         }
 
-        if ($request->has('spec_names')) {
-            foreach ($request->spec_names as $index => $name) {
-                if (!empty($name) && !empty($request->spec_values[$index])) {
+        if ($request->filled('specs')) {
+            foreach ($request->specs as $spec) {
+                if (!empty($spec['name']) || !empty($spec['value'])) {
                     $product->specifications()->create([
-                        'key' => $name,
-                        'value' => $request->spec_values[$index],
+                        'key' => $spec['name'] ?? '',
+                        'value' => $spec['value'] ?? '',
                     ]);
                 }
             }
         }
 
-        return redirect()->route('seller.products.index')->with('success', 'Product posted successfully!');
+        return redirect()->route('seller.products.index')->with('success', 'Product created successfully.');
     }
 
     public function edit($id)
     {
-        $store = $this->getOrCreateStore();
-        $product = $store->products()->with(['specifications', 'images'])->findOrFail($id);
-        $categories = \App\Models\Category::all();
-        return view('seller.products.edit', compact('product', 'categories'));
+        $store = auth()->user()->store;
+
+        if (!$store) {
+            return redirect()->route('stores.index')->with('error', 'You do not have a store yet.');
+        }
+
+        $product = $store->products()->with('images', 'specifications')->findOrFail($id);
+        $categories = Category::orderBy('name')->get();
+        $storeCategories = $store->storeCategories()->where('type', 'product')->with('children')->whereNull('parent_id')->orderBy('name')->get();
+
+        return view('seller.products.edit', compact('product', 'categories', 'storeCategories'));
     }
 
     public function update(Request $request, $id)
     {
-        $store = $this->getOrCreateStore();
+        $store = auth()->user()->store;
+
+        if (!$store) {
+            return redirect()->route('stores.index')->with('error', 'You do not have a store yet.');
+        }
+
         $product = $store->products()->findOrFail($id);
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'category_id' => 'required|exists:categories,id',
+            'description' => 'nullable|string',
+            'category_id' => 'nullable|exists:categories,id',
+            'store_category_id' => 'nullable|exists:store_categories,id',
+            'store_category_name' => 'nullable|string|max:255',
             'price' => 'required|numeric|min:0',
             'old_price' => 'nullable|numeric|min:0',
-            'stock_status' => 'nullable|string|in:in_stock,out_of_stock,on_request',
-            'description' => 'required|string',
-            'images.*' => 'nullable|image|max:2048',
-            'spec_names.*' => 'nullable|string',
-            'spec_values.*' => 'nullable|string',
+            'stock_status' => 'required|in:in_stock,out_of_stock,on_request',
+            'colors' => 'nullable|array',
+            'sizes' => 'nullable|array',
+            'brand' => 'nullable|string|max:255',
+            'sku' => 'nullable|string|max:100',
+            'inventory' => 'nullable|integer|min:0',
+            'images' => 'nullable|array',
+            'images.*' => 'image|mimes:jpg,jpeg,png,webp|max:5120',
+            'specs' => 'nullable|array',
+            'specs.*.name' => 'nullable|string|max:255',
+            'specs.*.value' => 'nullable|string|max:1000',
         ]);
+
+        $storeCategoryId = $this->resolveStoreCategory($store, $request->store_category_id, $request->store_category_name);
 
         $product->update([
-            'category_id' => $request->category_id,
             'name' => $request->name,
-            'price' => $request->price,
-            'old_price' => $request->old_price,
-            'stock_status' => $request->stock_status ?? 'in_stock',
             'description' => $request->description,
+            'category_id' => $request->category_id,
+            'store_category_id' => $storeCategoryId,
+            'price' => $request->price,
+            'old_price' => $request->old_price ?: null,
+            'stock_status' => $request->stock_status,
             'colors' => $request->colors ?? [],
             'sizes' => $request->sizes ?? [],
+            'brand' => $request->brand,
+            'sku' => $request->sku,
+            'inventory' => $request->inventory ?? 0,
         ]);
 
-        // Handle Images
         if ($request->hasFile('images')) {
-            foreach ($product->images as $img) {
-                \Illuminate\Support\Facades\Storage::disk('r2')->delete($img->path);
-                $img->delete();
-            }
-
-            $mainIndex = $request->input('main_image_index', 0);
-            foreach ($request->file('images') as $index => $image) {
-                $path = $image->store('products', 'r2');
+            foreach ($request->file('images') as $image) {
+                $path = $image->store('product-images', 'r2');
                 $product->images()->create([
                     'path' => $path,
-                    'is_main' => (int)$index === (int)$mainIndex,
+                    'is_main' => !$product->images()->where('is_main', true)->exists(),
                 ]);
             }
         }
 
-        if ($request->has('spec_names')) {
+        if ($request->has('specs')) {
             $product->specifications()->delete();
-            foreach ($request->spec_names as $index => $name) {
-                if (!empty($name) && !empty($request->spec_values[$index])) {
+            foreach ($request->specs as $spec) {
+                if (!empty($spec['name']) || !empty($spec['value'])) {
                     $product->specifications()->create([
-                        'key' => $name,
-                        'value' => $request->spec_values[$index],
+                        'key' => $spec['name'] ?? '',
+                        'value' => $spec['value'] ?? '',
                     ]);
                 }
             }
         }
 
-        return redirect()->route('seller.products.index')->with('success', 'Product updated successfully!');
+        return redirect()->route('seller.products.index')->with('success', 'Product updated successfully.');
     }
 
     public function destroy($id)
     {
-        $store = $this->getOrCreateStore();
+        $store = auth()->user()->store;
+
+        if (!$store) {
+            return redirect()->route('stores.index')->with('error', 'You do not have a store yet.');
+        }
+
         $product = $store->products()->findOrFail($id);
 
-        foreach ($product->images as $img) {
-            \Illuminate\Support\Facades\Storage::disk('r2')->delete($img->path);
+        foreach ($product->images as $image) {
+            if ($image->path) {
+                Storage::disk('r2')->delete($image->path);
+            }
+            $image->delete();
         }
 
         $product->delete();
 
-        return redirect()->route('seller.products.index')->with('success', 'Product deleted successfully!');
+        return redirect()->route('seller.products.index')->with('success', 'Product deleted.');
+    }
+
+    private function resolveStoreCategory($store, $storeCategoryId, $storeCategoryName): ?int
+    {
+        if ($storeCategoryName && !is_numeric($storeCategoryName)) {
+            $category = $store->storeCategories()->firstOrCreate(
+                ['name' => $storeCategoryName],
+                ['slug' => Str::slug($storeCategoryName) . '-' . Str::random(4)]
+            );
+            return $category->id;
+        }
+        return $storeCategoryId ?: null;
     }
 }

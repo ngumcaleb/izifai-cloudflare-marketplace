@@ -37,9 +37,9 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
 
 {{-- ==================== STORE NAV (MOBILE) ==================== --}}
 @section('store-nav')
-<div class="flex items-center gap-3 py-2.5 overflow-x-auto no-scrollbar">
-    <div class="flex items-center gap-2.5 shrink-0">
-        <div class="w-8 h-8 rounded-lg overflow-hidden ring-2 ring-primary/10 bg-white shrink-0">
+<div class="flex items-center gap-3 py-2 overflow-x-auto no-scrollbar">
+    <div class="flex items-center gap-2 shrink-0">
+        <div class="w-7 h-7 rounded-lg overflow-hidden ring-2 ring-primary/10 bg-white shrink-0">
             @if($store->logo)
                 <img src="{{ $store->logo_url }}" class="w-full h-full object-cover">
             @else
@@ -47,15 +47,21 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
             @endif
         </div>
         <div class="min-w-0">
-            <p class="text-sm font-bold text-on-surface truncate max-w-[120px] lg:max-w-none">{{ $store->name }}</p>
+            <p class="text-xs font-bold text-on-surface truncate max-w-[100px] lg:max-w-none">{{ $store->name }}</p>
         </div>
     </div>
-    <span class="w-px h-5 bg-gray-200 shrink-0"></span>
+    <span class="w-px h-4 bg-gray-200 shrink-0"></span>
     <nav class="flex items-center gap-1 shrink-0">
-        <a href="#showroom" class="scroll-link px-3 py-1.5 rounded-lg text-xs font-semibold bg-primary text-on-primary whitespace-nowrap">Showroom</a>
-        <a href="#catalog" class="scroll-link px-3 py-1.5 rounded-lg text-xs font-semibold text-on-surface-variant hover:bg-gray-100 whitespace-nowrap transition-colors">Collections</a>
-        <a href="#reviews" class="scroll-link px-3 py-1.5 rounded-lg text-xs font-semibold text-on-surface-variant hover:bg-gray-100 whitespace-nowrap transition-colors">Reviews</a>
-        <a href="#store-info" class="scroll-link px-3 py-1.5 rounded-lg text-xs font-semibold text-on-surface-variant hover:bg-gray-100 whitespace-nowrap transition-colors">Store Info</a>
+        <a href="#showroom" class="scroll-link px-2.5 py-1.5 rounded-lg text-[10px] font-semibold bg-primary text-on-primary whitespace-nowrap">Showroom</a>
+        <a href="#catalog" class="scroll-link px-2.5 py-1.5 rounded-lg text-[10px] font-semibold text-on-surface-variant hover:bg-gray-100 whitespace-nowrap transition-colors">Products</a>
+        @if($services->count() > 0)
+            <a href="#services" class="scroll-link px-2.5 py-1.5 rounded-lg text-[10px] font-semibold text-on-surface-variant hover:bg-gray-100 whitespace-nowrap transition-colors">Services</a>
+        @endif
+        @if($rentals->count() > 0)
+            <a href="#rentals" class="scroll-link px-2.5 py-1.5 rounded-lg text-[10px] font-semibold text-on-surface-variant hover:bg-gray-100 whitespace-nowrap transition-colors">Rentals</a>
+        @endif
+        <a href="#reviews" class="scroll-link px-2.5 py-1.5 rounded-lg text-[10px] font-semibold text-on-surface-variant hover:bg-gray-100 whitespace-nowrap transition-colors">Reviews</a>
+        <a href="#store-info" class="scroll-link px-2.5 py-1.5 rounded-lg text-[10px] font-semibold text-on-surface-variant hover:bg-gray-100 whitespace-nowrap transition-colors">Store Info</a>
     </nav>
 </div>
 @endsection
@@ -89,7 +95,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
             <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
             {{ number_format($avgRating, 1) }}
         </span>
-        <span class="text-[11px] text-on-surface-variant">{{ $totalProducts }} products</span>
+        <span class="text-[11px] text-on-surface-variant">{{ $totalItems }} items</span>
     </div>
 </div>
 <nav class="flex-1 py-4 px-3 space-y-0.5 overflow-y-auto">
@@ -98,9 +104,26 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
         Showroom
     </a>
     <a href="#catalog" class="scroll-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-gray-50 transition-all text-sm font-medium">
-        <span class="material-symbols-outlined text-[20px]">grid_view</span>
-        Collections
+        <span class="material-symbols-outlined text-[20px]">inventory_2</span>
+        Products
+        @if($totalProducts > 0)
+            <span class="ml-auto text-[10px] font-bold bg-gray-100 px-1.5 py-0.5 rounded-full">{{ $totalProducts }}</span>
+        @endif
     </a>
+    @if($services->count() > 0)
+    <a href="#services" class="scroll-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-gray-50 transition-all text-sm font-medium">
+        <span class="material-symbols-outlined text-[20px]">concierge</span>
+        Services
+        <span class="ml-auto text-[10px] font-bold bg-gray-100 px-1.5 py-0.5 rounded-full">{{ $totalServices }}</span>
+    </a>
+    @endif
+    @if($rentals->count() > 0)
+    <a href="#rentals" class="scroll-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-gray-50 transition-all text-sm font-medium">
+        <span class="material-symbols-outlined text-[20px]">handshake</span>
+        Rentals
+        <span class="ml-auto text-[10px] font-bold bg-gray-100 px-1.5 py-0.5 rounded-full">{{ $totalRentals }}</span>
+    </a>
+    @endif
     <a href="#reviews" class="scroll-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-gray-50 transition-all text-sm font-medium">
         <span class="material-symbols-outlined text-[20px]">star</span>
         Reviews
@@ -120,11 +143,27 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
     @endif
 </nav>
 <div class="px-4 py-4 border-t border-gray-100 space-y-2">
+    @auth
+        @if(auth()->id() !== $store->user_id)
+        <form action="{{ route('conversations.store') }}" method="POST" class="w-full">
+            @csrf
+            <input type="hidden" name="seller_id" value="{{ $store->user_id }}">
+            <input type="hidden" name="target_type" value="store">
+            <input type="hidden" name="target_id" value="{{ $store->id }}">
+            <input type="hidden" name="message" value="Hi, I am interested in {{ $store->name }} on Izifai.">
+            <button type="submit"
+                    class="w-full py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 text-xs text-primary border border-primary/20 hover:bg-primary/5 transition-all">
+                <span class="material-symbols-outlined text-[16px]">chat_bubble_outline</span>
+                Message
+            </button>
+        </form>
+        @endif
+    @endauth
     @if($store->whatsapp_number)
         <a href="https://wa.me/{{ wa_url($store->whatsapp_number) }}?text={{ urlencode('Hi ' . $store->name . ', I saw your store on Izifai and would like to know more.') }}" target="_blank"
            class="w-full bg-[#25D366] text-white py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#128C7E] transition-all text-xs shadow-sm">
             {!! $whatsappIcon !!}
-            Message Seller
+            WhatsApp
         </a>
     @endif
     <a href="https://chat.whatsapp.com/J3of97nRhL5IdTSXpScYLl" target="_blank"
@@ -222,12 +261,28 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                             </div>
                             @endif
                             <span class="text-white text-[10px] sm:text-sm font-bold">
-                                <span class="text-sm sm:text-lg font-black">{{ $totalProducts }}</span> Products
+                                <span class="text-sm sm:text-lg font-black">{{ $totalItems }}</span> Items
                             </span>
                             <span class="text-white/60 text-[8px] sm:text-[10px]">Shop on Izifai</span>
                         </div>
                     </div>
                     <div class="flex gap-1.5 sm:gap-2 shrink-0">
+                        @auth
+                            @if(auth()->id() !== $store->user_id)
+                            <form action="{{ route('conversations.store') }}" method="POST" class="inline">
+                                @csrf
+                                <input type="hidden" name="seller_id" value="{{ $store->user_id }}">
+                                <input type="hidden" name="target_type" value="store">
+                                <input type="hidden" name="target_id" value="{{ $store->id }}">
+                                <input type="hidden" name="message" value="Hi, I am interested in {{ $store->name }} on Izifai.">
+                                <button type="submit"
+                                        class="inline-flex items-center justify-center gap-1 px-3 sm:px-5 py-2 sm:py-3 bg-white/10 backdrop-blur-sm text-white rounded-full text-[10px] sm:text-[13px] font-bold border border-white/20 hover:bg-white/20 active:scale-[0.97] transition-all duration-200">
+                                    <span class="material-symbols-outlined text-[14px] sm:text-[16px]">chat_bubble_outline</span>
+                                    <span class="hidden sm:inline">Message</span>
+                                </button>
+                            </form>
+                            @endif
+                        @endauth
                         @if($store->whatsapp_number)
                         <a href="https://wa.me/{{ wa_url($store->whatsapp_number) }}?text={{ urlencode('Hi ' . $store->name . ', I saw your store on Izifai!') }}" target="_blank"
                            class="inline-flex items-center justify-center gap-1 px-3 sm:px-5 py-2 sm:py-3 bg-[#25D366] text-white rounded-full text-[10px] sm:text-[13px] font-bold hover:bg-[#128C7E] active:scale-[0.97] transition-all duration-200 shadow-sm">
@@ -248,66 +303,103 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
 </section>
 
 {{-- CATEGORY PILLS (horizontal scroll) --}}
-@if($categories->count() > 0)
-<section class="-mx-4 sm:-mx-0 px-4 sm:px-0 overflow-x-auto no-scrollbar">
+@if($allCategories->count() > 0 || $storeCategories->count() > 0)
+<section class="-mx-4 sm:-mx-0 px-4 sm:px-0 overflow-x-auto no-scrollbar space-y-2">
+    @if($allCategories->count() > 0)
     <div class="flex gap-2 pb-1">
         <a href="{{ route('stores.show', $store->slug) }}#catalog"
            class="shrink-0 px-4 py-2 rounded-full bg-primary text-on-primary text-xs font-bold shadow-sm transition-all">
             All
         </a>
-        @foreach($categories as $cat)
+        @foreach($allCategories as $cat)
             <a href="{{ route('stores.show', $store->slug) }}?category={{ $cat->slug }}#catalog"
                class="shrink-0 px-4 py-2 rounded-full bg-surface-container-low text-on-surface-variant hover:bg-surface-container hover:text-on-surface text-xs font-bold transition-all border border-outline-variant/20">
                 {{ $cat->name }}
             </a>
         @endforeach
     </div>
+    @endif
+    @if($storeCategories->count() > 0)
+    <div class="flex items-center gap-2 text-[10px] text-on-surface-variant">
+        <span class="font-semibold shrink-0">Store:</span>
+        <div class="flex gap-1.5 overflow-x-auto no-scrollbar">
+            @foreach($storeCategories as $sc)
+                <span class="shrink-0 px-2.5 py-1 rounded-full bg-primary/5 text-primary text-[10px] font-semibold border border-primary/10">{{ $sc->name }}</span>
+                @foreach($sc->children as $child)
+                    <span class="shrink-0 px-2.5 py-1 rounded-full bg-primary/5 text-primary/70 text-[10px] font-medium">{{ $child->name }}</span>
+                @endforeach
+            @endforeach
+        </div>
+    </div>
+    @endif
 </section>
 @endif
 
 {{-- QUICK STATS --}}
-<section class="grid grid-cols-4 gap-1.5 sm:gap-3">
-    <div class="bg-surface-container-lowest rounded-lg sm:rounded-xl p-2 sm:p-4 shadow-sm border border-outline-variant/10">
-        <div class="flex flex-col sm:flex-row items-center sm:items-center gap-1 sm:gap-2 text-center sm:text-left">
-            <div class="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                <span class="material-symbols-outlined text-[12px] sm:text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<section class="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-6 gap-1 sm:gap-3">
+    <div class="bg-surface-container-lowest rounded-lg sm:rounded-xl p-1.5 sm:p-4 shadow-sm border border-outline-variant/10">
+        <div class="flex flex-col items-center gap-0.5 sm:gap-2 text-center sm:text-left">
+            <div class="w-5 h-5 sm:w-8 sm:h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                <span class="material-symbols-outlined text-[10px] sm:text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
             </div>
             <div class="min-w-0">
-                <p class="text-[7px] sm:text-[9px] font-semibold text-on-surface-variant uppercase tracking-wider leading-tight">Rating</p>
-                <p class="text-[11px] sm:text-base font-bold text-on-surface truncate leading-tight">{{ number_format($avgRating, 1) }}</p>
+                <p class="text-[6px] sm:text-[9px] font-semibold text-on-surface-variant uppercase tracking-wider leading-tight">Rating</p>
+                <p class="text-[9px] sm:text-base font-bold text-on-surface truncate leading-tight">{{ number_format($avgRating, 1) }}</p>
             </div>
         </div>
     </div>
-    <div class="bg-surface-container-lowest rounded-lg sm:rounded-xl p-2 sm:p-4 shadow-sm border border-outline-variant/10">
-        <div class="flex flex-col sm:flex-row items-center sm:items-center gap-1 sm:gap-2 text-center sm:text-left">
-            <div class="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                <span class="material-symbols-outlined text-[12px] sm:text-[16px]" style="font-variation-settings: 'FILL' 1;">reviews</span>
+    <div class="bg-surface-container-lowest rounded-lg sm:rounded-xl p-1.5 sm:p-4 shadow-sm border border-outline-variant/10">
+        <div class="flex flex-col items-center gap-0.5 sm:gap-2 text-center sm:text-left">
+            <div class="w-5 h-5 sm:w-8 sm:h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                <span class="material-symbols-outlined text-[10px] sm:text-[16px]" style="font-variation-settings: 'FILL' 1;">reviews</span>
             </div>
             <div class="min-w-0">
-                <p class="text-[7px] sm:text-[9px] font-semibold text-on-surface-variant uppercase tracking-wider leading-tight">Reviews</p>
-                <p class="text-[11px] sm:text-base font-bold text-on-surface truncate leading-tight">{{ $totalReviews }}</p>
+                <p class="text-[6px] sm:text-[9px] font-semibold text-on-surface-variant uppercase tracking-wider leading-tight">Reviews</p>
+                <p class="text-[9px] sm:text-base font-bold text-on-surface truncate leading-tight">{{ $totalReviews }}</p>
             </div>
         </div>
     </div>
-    <div class="bg-surface-container-lowest rounded-lg sm:rounded-xl p-2 sm:p-4 shadow-sm border border-outline-variant/10">
-        <div class="flex flex-col sm:flex-row items-center sm:items-center gap-1 sm:gap-2 text-center sm:text-left">
-            <div class="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600 shrink-0">
-                <span class="material-symbols-outlined text-[12px] sm:text-[16px]" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
+    <div class="bg-surface-container-lowest rounded-lg sm:rounded-xl p-1.5 sm:p-4 shadow-sm border border-outline-variant/10">
+        <div class="flex flex-col items-center gap-0.5 sm:gap-2 text-center sm:text-left">
+            <div class="w-5 h-5 sm:w-8 sm:h-8 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600 shrink-0">
+                <span class="material-symbols-outlined text-[10px] sm:text-[16px]" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
             </div>
             <div class="min-w-0">
-                <p class="text-[7px] sm:text-[9px] font-semibold text-on-surface-variant uppercase tracking-wider leading-tight">Products</p>
-                <p class="text-[11px] sm:text-base font-bold text-on-surface truncate leading-tight">{{ $totalProducts }}</p>
+                <p class="text-[6px] sm:text-[9px] font-semibold text-on-surface-variant uppercase tracking-wider leading-tight">Products</p>
+                <p class="text-[9px] sm:text-base font-bold text-on-surface truncate leading-tight">{{ $totalProducts }}</p>
             </div>
         </div>
     </div>
-    <div class="bg-surface-container-lowest rounded-lg sm:rounded-xl p-2 sm:p-4 shadow-sm border border-outline-variant/10">
-        <div class="flex flex-col sm:flex-row items-center sm:items-center gap-1 sm:gap-2 text-center sm:text-left">
-            <div class="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                <span class="material-symbols-outlined text-[12px] sm:text-[16px]" style="font-variation-settings: 'FILL' 1;">calendar_month</span>
+    <div class="bg-surface-container-lowest rounded-lg sm:rounded-xl p-1.5 sm:p-4 shadow-sm border border-outline-variant/10">
+        <div class="flex flex-col items-center gap-0.5 sm:gap-2 text-center sm:text-left">
+            <div class="w-5 h-5 sm:w-8 sm:h-8 rounded-lg bg-purple-50 flex items-center justify-center text-purple-600 shrink-0">
+                <span class="material-symbols-outlined text-[10px] sm:text-[16px]">concierge</span>
             </div>
             <div class="min-w-0">
-                <p class="text-[7px] sm:text-[9px] font-semibold text-on-surface-variant uppercase tracking-wider leading-tight">Since</p>
-                <p class="text-[11px] sm:text-base font-bold text-on-surface truncate leading-tight">{{ $joinedDate ? date('Y', strtotime($joinedDate)) : 'N/A' }}</p>
+                <p class="text-[6px] sm:text-[9px] font-semibold text-on-surface-variant uppercase tracking-wider leading-tight">Services</p>
+                <p class="text-[9px] sm:text-base font-bold text-on-surface truncate leading-tight">{{ $totalServices }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="bg-surface-container-lowest rounded-lg sm:rounded-xl p-1.5 sm:p-4 shadow-sm border border-outline-variant/10">
+        <div class="flex flex-col items-center gap-0.5 sm:gap-2 text-center sm:text-left">
+            <div class="w-5 h-5 sm:w-8 sm:h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
+                <span class="material-symbols-outlined text-[10px] sm:text-[16px]">handshake</span>
+            </div>
+            <div class="min-w-0">
+                <p class="text-[6px] sm:text-[9px] font-semibold text-on-surface-variant uppercase tracking-wider leading-tight">Rentals</p>
+                <p class="text-[9px] sm:text-base font-bold text-on-surface truncate leading-tight">{{ $totalRentals }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="bg-surface-container-lowest rounded-lg sm:rounded-xl p-1.5 sm:p-4 shadow-sm border border-outline-variant/10">
+        <div class="flex flex-col items-center gap-0.5 sm:gap-2 text-center sm:text-left">
+            <div class="w-5 h-5 sm:w-8 sm:h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                <span class="material-symbols-outlined text-[10px] sm:text-[16px]" style="font-variation-settings: 'FILL' 1;">calendar_month</span>
+            </div>
+            <div class="min-w-0">
+                <p class="text-[6px] sm:text-[9px] font-semibold text-on-surface-variant uppercase tracking-wider leading-tight">Since</p>
+                <p class="text-[9px] sm:text-base font-bold text-on-surface truncate leading-tight">{{ $joinedDate ? date('Y', strtotime($joinedDate)) : 'N/A' }}</p>
             </div>
         </div>
     </div>
@@ -325,10 +417,10 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
             View All &rarr;
         </a>
     </div>
-    <div class="flex gap-3 overflow-x-auto no-scrollbar pb-1">
+    <div x-data="autoScroll()" class="flex gap-3 overflow-x-auto no-scrollbar pb-1">
         @foreach($topProducts as $product)
             <a href="{{ route('products.show', $product->slug) }}"
-               class="w-[150px] sm:w-[170px] lg:w-[180px] shrink-0 bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm border border-outline-variant/20 hover:shadow-md transition-all group">
+               class="w-[150px] sm:w-[170px] lg:w-[180px] shrink-0 bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm border border-outline-variant/20 hover:shadow-md transition-all group card-enter" style="animation-delay: {{ $loop->index * 0.06 }}s">
                 <div class="h-24 sm:h-28 lg:h-28 overflow-hidden relative bg-surface-container-high">
                     @if($product->images->first())
                         <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -453,6 +545,24 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                                 @endif
                             </div>
                         </a>
+                        @auth
+                            @if(auth()->id() !== $store->user_id)
+                            <form action="{{ route('conversations.store') }}" method="POST"
+                                  onclick="event.stopPropagation()"
+                                  class="absolute top-1.5 left-1.5 sm:top-2 sm:left-2 z-10">
+                                @csrf
+                                <input type="hidden" name="seller_id" value="{{ $store->user_id }}">
+                                <input type="hidden" name="target_type" value="product">
+                                <input type="hidden" name="target_id" value="{{ $product->id }}">
+                                <input type="hidden" name="message" value="Hi, I am interested in {{ $product->name }}. Is it still available?">
+                                <button type="submit"
+                                        class="w-5 h-5 sm:w-7 sm:h-7 bg-white/80 backdrop-blur rounded-full flex items-center justify-center hover:bg-primary hover:text-on-primary transition-all"
+                                        title="Message seller about this product">
+                                    <span class="material-symbols-outlined text-[10px] sm:text-[14px]">chat_bubble_outline</span>
+                                </button>
+                            </form>
+                            @endif
+                        @endauth
                         <button class="favorite-btn absolute top-1.5 right-1.5 sm:top-2 sm:right-2 w-5 h-5 sm:w-7 sm:h-7 bg-white/80 backdrop-blur rounded-full flex items-center justify-center hover:bg-white transition-colors z-10"
                                 data-product="{{ $product->id }}"
                                 data-favorited="{{ in_array($product->id, $savedProductIds) ? 'true' : 'false' }}">
@@ -481,6 +591,154 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
         @endif
     </div>
 </section>
+
+{{-- SERVICES SECTION --}}
+@if($services->count() > 0)
+<section id="services" class="scroll-mt-[64px] lg:scroll-mt-[72px] space-y-3 sm:space-y-4">
+    <div class="flex items-center justify-between">
+        <h2 class="text-base sm:text-lg font-bold text-on-surface flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary text-[18px]">concierge</span>
+            Services
+        </h2>
+        <a href="{{ route('services.index', ['store' => $store->slug]) }}"
+           class="text-primary text-xs sm:text-sm font-semibold hover:underline shrink-0">
+            View All &rarr;
+        </a>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
+        @foreach($services as $service)
+            <div class="bg-surface-container-lowest rounded-lg sm:rounded-xl overflow-hidden shadow-sm border border-outline-variant/10 hover:shadow-md transition-all group relative">
+                <a href="{{ route('services.show', $service->slug) }}" class="block">
+                    <div class="aspect-[4/3] relative overflow-hidden bg-surface-container-low">
+                        @php $svcImg = $service->images->first()?->url; @endphp
+                        @if($svcImg)
+                            <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                                 src="{{ $svcImg }}"
+                                 alt="{{ $service->name }}" loading="lazy"
+                                 onerror="this.parentElement.innerHTML = '<div class=\'w-full h-full flex items-center justify-center text-on-surface-variant/20\'><span class=\'material-symbols-outlined text-4xl\'>image</span></div>'">
+                        @else
+                            <div class="w-full h-full flex items-center justify-center text-on-surface-variant/20">
+                                <span class="material-symbols-outlined text-4xl">image</span>
+                            </div>
+                        @endif
+                        @if($service->delivery_time)
+                            <span class="absolute top-2.5 left-2.5 bg-white/90 backdrop-blur-sm text-on-surface text-[8px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-sm">
+                                <span class="material-symbols-outlined text-[10px]">schedule</span>
+                                {{ $service->delivery_time }}
+                            </span>
+                        @endif
+                        @auth
+                            @if(auth()->id() !== $store->user_id)
+                            <form action="{{ route('conversations.store') }}" method="POST"
+                                  onclick="event.stopPropagation()"
+                                  class="absolute top-2.5 right-2.5 z-10">
+                                @csrf
+                                <input type="hidden" name="seller_id" value="{{ $store->user_id }}">
+                                <input type="hidden" name="target_type" value="service">
+                                <input type="hidden" name="target_id" value="{{ $service->id }}">
+                                <input type="hidden" name="message" value="Hi, I am interested in {{ $service->name }}. Is it available?">
+                                <button type="submit"
+                                        class="w-6 h-6 sm:w-7 sm:h-7 bg-white/80 backdrop-blur rounded-full flex items-center justify-center hover:bg-primary hover:text-on-primary transition-all shadow-sm"
+                                        title="Message seller about this service">
+                                    <span class="material-symbols-outlined text-[11px] sm:text-[14px]">chat_bubble_outline</span>
+                                </button>
+                            </form>
+                            @endif
+                        @endauth
+                    </div>
+                    <div class="p-3">
+                        @if($service->category)
+                            <p class="text-[9px] font-semibold text-purple-600 uppercase tracking-wide truncate">{{ $service->category->name }}</p>
+                        @endif
+                        <h3 class="text-sm font-bold text-on-surface leading-snug line-clamp-2">{{ $service->name }}</h3>
+                        @if($service->starting_price)
+                            <p class="text-sm font-black text-primary tracking-tight mt-1">From {{ number_format($service->starting_price) }}
+                                <span class="text-[8px] font-bold text-primary/70">FCFA</span>
+                            </p>
+                        @endif
+                    </div>
+                </a>
+            </div>
+        @endforeach
+    </div>
+</section>
+@endif
+
+{{-- RENTALS SECTION --}}
+@if($rentals->count() > 0)
+<section id="rentals" class="scroll-mt-[64px] lg:scroll-mt-[72px] space-y-3 sm:space-y-4">
+    <div class="flex items-center justify-between">
+        <h2 class="text-base sm:text-lg font-bold text-on-surface flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary text-[18px]">handshake</span>
+            Rentals
+        </h2>
+        <a href="{{ route('rentals.index', ['store' => $store->slug]) }}"
+           class="text-primary text-xs sm:text-sm font-semibold hover:underline shrink-0">
+            View All &rarr;
+        </a>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
+        @foreach($rentals as $item)
+            <div class="bg-surface-container-lowest rounded-lg sm:rounded-xl overflow-hidden shadow-sm border border-outline-variant/10 hover:shadow-md transition-all group relative">
+                <a href="{{ route('rentals.show', $item->slug) }}" class="block">
+                    <div class="aspect-[4/3] relative overflow-hidden bg-surface-container-low">
+                        @php $rtlImg = $item->images_url[0] ?? null; @endphp
+                        @if($rtlImg)
+                            <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                                 src="{{ $rtlImg }}"
+                                 alt="{{ $item->name }}" loading="lazy"
+                                 onerror="this.parentElement.innerHTML = '<div class=\'w-full h-full flex items-center justify-center text-on-surface-variant/20\'><span class=\'material-symbols-outlined text-4xl\'>image</span></div>'">
+                        @else
+                            <div class="w-full h-full flex items-center justify-center text-on-surface-variant/20">
+                                <span class="material-symbols-outlined text-4xl">image</span>
+                            </div>
+                        @endif
+                        <span class="rate-pill absolute top-2.5 right-2.5 text-white text-[8px] font-bold px-2 py-0.5 rounded-full shadow-sm z-[1]">
+                            {{ number_format($item->rate) }}/{{ $item->billing_unit }}
+                        </span>
+                        @if($item->location)
+                            <span class="absolute top-2.5 left-2.5 bg-white/90 backdrop-blur-sm text-on-surface text-[8px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-sm">
+                                <span class="material-symbols-outlined text-[10px]">location_on</span>
+                                {{ $item->location }}
+                            </span>
+                        @endif
+                        @auth
+                            @if(auth()->id() !== $store->user_id)
+                            <form action="{{ route('conversations.store') }}" method="POST"
+                                  onclick="event.stopPropagation()"
+                                  class="absolute top-2.5 right-10 z-10">
+                                @csrf
+                                <input type="hidden" name="seller_id" value="{{ $store->user_id }}">
+                                <input type="hidden" name="target_type" value="rental">
+                                <input type="hidden" name="target_id" value="{{ $item->id }}">
+                                <input type="hidden" name="message" value="Hi, I am interested in renting {{ $item->name }}. Is it available?">
+                                <button type="submit"
+                                        class="w-6 h-6 sm:w-7 sm:h-7 bg-white/80 backdrop-blur rounded-full flex items-center justify-center hover:bg-primary hover:text-on-primary transition-all shadow-sm"
+                                        title="Message seller about this rental">
+                                    <span class="material-symbols-outlined text-[11px] sm:text-[14px]">chat_bubble_outline</span>
+                                </button>
+                            </form>
+                            @endif
+                        @endauth
+                    </div>
+                    <div class="p-3">
+                        @if($item->category)
+                            <p class="text-[9px] font-semibold text-blue-600 uppercase tracking-wide truncate">{{ $item->category->name }}</p>
+                        @endif
+                        <h3 class="text-sm font-bold text-on-surface leading-snug line-clamp-2">{{ $item->name }}</h3>
+                        <div class="flex items-baseline gap-2 mt-1.5">
+                            <p class="text-sm font-black price-current tracking-tight">{{ number_format($item->rate) }}
+                                <span class="text-[8px] font-bold price-current-fcfa">FCFA</span>
+                            </p>
+                            <span class="text-[10px] text-on-surface-variant/50">/{{ $item->billing_unit }}</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        @endforeach
+    </div>
+</section>
+@endif
 
 {{-- CUSTOMER REVIEWS --}}
 <section id="reviews" x-data="{ reviewForm: false, reviewRating: 0 }">

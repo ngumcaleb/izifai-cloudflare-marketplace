@@ -15,21 +15,42 @@
 
         <form action="{{ route('seller.products.update', $product->id) }}" method="POST" enctype="multipart/form-data" class="space-y-4 md:space-y-6"
               x-data="{
-                specs: ({{ Js::from($product->specifications->map(fn($s) => ['name' => $s->key, 'value' => $s->value])) }}).length ? {{ Js::from($product->specifications->map(fn($s) => ['name' => $s->key, 'value' => $s->value])) }} : [{ name: '', value: '' }],
+                scActive: {{ $product->store_category_id ? 'true' : 'false' }},
+                scCustom: false,
+                scVal: '{{ $product->store_category_id ?? '' }}',
+                specs: {{ Js::from($product->specifications->map(fn($s) => ['name' => $s->key, 'value' => $s->value])) }},
+                specInput: '',
                 colors: {{ Js::from($product->colors ?? []) }},
                 sizes: {{ Js::from($product->sizes ?? []) }},
                 newColor: '',
                 newSize: '',
                 addColor() {
-                    const c = this.newColor.trim();
-                    if (c && !this.colors.includes(c)) { this.colors.push(c); this.newColor = ''; }
+                    const items = this.newColor.split(',').map(s => s.trim()).filter(s => s);
+                    items.forEach(c => { if (!this.colors.includes(c)) this.colors.push(c); });
+                    this.newColor = '';
                 },
                 removeColor(i) { this.colors.splice(i, 1); },
                 addSize() {
-                    const s = this.newSize.trim();
-                    if (s && !this.sizes.includes(s)) { this.sizes.push(s); this.newSize = ''; }
+                    const items = this.newSize.split(',').map(s => s.trim()).filter(s => s);
+                    items.forEach(s => { if (!this.sizes.includes(s)) this.sizes.push(s); });
+                    this.newSize = '';
                 },
                 removeSize(i) { this.sizes.splice(i, 1); },
+                addSpecs() {
+                    const sep = this.specInput.indexOf(':');
+                    if (sep > 0) {
+                        const name = this.specInput.slice(0, sep).trim();
+                        const value = this.specInput.slice(sep + 1).trim();
+                        if (name) this.specs.push({ name, value });
+                    }
+                    this.specInput = '';
+                },
+                removeSpec(i) { this.specs.splice(i, 1); },
+                onScChange(val) {
+                    this.scVal = val;
+                    this.scActive = !!val && val !== '__new__' && val !== '';
+                    if (val === '__new__') { this.scCustom = true; this.scVal = ''; }
+                },
                 imagePreviews: {{ Js::from($product->images->map(fn($i) => $i->url)) }},
                 mainImageIndex: {{ $product->images->search(fn($i) => $i->is_main) ?: 0 }},
                 handleImageUpload(event) {
@@ -51,7 +72,10 @@
                     <div class="w-8 h-8 rounded-xl bg-primary/5 text-primary flex items-center justify-center shrink-0">
                         <span class="material-symbols-outlined">info</span>
                     </div>
-                    <h2 class="text-base md:text-lg font-bold text-gray-900">Essential Information</h2>
+                    <div>
+                        <h2 class="text-base md:text-lg font-bold text-gray-900">Essential Information</h2>
+                        <p class="text-[11px] text-gray-500 mt-0.5">Update your product's title, category, and pricing details.</p>
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
@@ -62,12 +86,47 @@
                     </div>
                     <div class="space-y-1.5">
                         <label class="text-xs font-semibold text-gray-500 ml-1">Category</label>
-                        <select name="category_id" required
+                        <select name="category_id" :disabled="scActive"
                                 class="w-full h-11 md:h-12 bg-gray-50 border border-gray-200 rounded-xl px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50">
                             @foreach($categories as $cat)
                                 <option value="{{ $cat->id }}" {{ $product->category_id == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
                             @endforeach
                         </select>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-semibold text-gray-500 ml-1">Collection</label>
+                        @if($product->store_category)
+                            <div class="h-11 md:h-12 flex items-center gap-2 px-4 bg-primary/5 border border-primary/20 rounded-xl text-sm font-bold text-primary">
+                                <span class="material-symbols-outlined text-[18px]">folder</span>
+                                {{ $product->store_category->name }}
+                            </div>
+                            <input type="hidden" name="store_category_id" value="{{ $product->store_category_id }}">
+                        @else
+                            <template x-if="!scCustom">
+                                <select name="store_category_id" x-model="scVal"
+                                        @change="onScChange(scVal)"
+                                        class="w-full h-11 md:h-12 bg-gray-50 border border-gray-200 rounded-xl px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50">
+                                    <option value="">None</option>
+                                    @foreach($storeCategories as $sc)
+                                        <option value="{{ $sc->id }}" {{ $product->store_category_id == $sc->id ? 'selected' : '' }}>{{ $sc->name }}</option>
+                                        @foreach($sc->children as $child)
+                                            <option value="{{ $child->id }}" {{ $product->store_category_id == $child->id ? 'selected' : '' }}>&nbsp;&nbsp;&nbsp;{{ $child->name }}</option>
+                                        @endforeach
+                                    @endforeach
+                                    <option value="__new__">+ Add custom category...</option>
+                                </select>
+                            </template>
+                            <template x-if="scCustom">
+                                <div class="flex gap-2">
+                                    <input type="text" name="store_category_name" placeholder="Type your category name"
+                                           class="flex-1 h-11 md:h-12 bg-gray-50 border border-gray-200 rounded-xl px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50">
+                                    <button type="button" @click="scCustom = false; scVal = ''; onScChange('')"
+                                            class="shrink-0 px-3 text-xs font-semibold text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-xl transition-colors">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </template>
+                        @endif
                     </div>
                     <div class="space-y-1.5">
                         <label class="text-xs font-semibold text-gray-500 ml-1">Stock Status</label>
@@ -97,7 +156,10 @@
                     <div class="w-8 h-8 rounded-xl bg-primary/5 text-primary flex items-center justify-center shrink-0">
                         <span class="material-symbols-outlined">palette</span>
                     </div>
-                    <h2 class="text-base md:text-lg font-bold text-gray-900">Colors & Sizes</h2>
+                    <div>
+                        <h2 class="text-base md:text-lg font-bold text-gray-900">Colors & Sizes</h2>
+                        <p class="text-[11px] text-gray-500 mt-0.5">Update the color and size variants available for this product.</p>
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
@@ -105,7 +167,7 @@
                         <label class="text-xs font-semibold text-gray-500 ml-1">Available Colors</label>
                         <div class="flex gap-2">
                             <input type="text" x-model="newColor" @keydown.enter.prevent="addColor"
-                                   placeholder="e.g. Metallic Red"
+                                    placeholder="e.g. Red, Blue, Green"
                                    class="flex-1 h-10 bg-gray-50 border border-gray-200 rounded-xl px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30">
                             <button type="button" @click="addColor"
                                     class="px-3.5 bg-primary text-white rounded-xl text-xs font-bold hover:opacity-90 transition-opacity shrink-0">
@@ -198,34 +260,40 @@
                 </div>
 
                 <div class="pt-4 md:pt-5 border-t border-gray-100">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-xl bg-primary/5 text-primary flex items-center justify-center shrink-0">
-                                <span class="material-symbols-outlined">list_alt</span>
-                            </div>
-                            <h2 class="text-base md:text-lg font-bold text-gray-900">Specifications</h2>
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-8 h-8 rounded-xl bg-primary/5 text-primary flex items-center justify-center shrink-0">
+                            <span class="material-symbols-outlined">list_alt</span>
                         </div>
-                        <button type="button" @click="specs.push({ name: '', value: '' })"
-                                class="text-xs font-bold text-primary hover:underline flex items-center gap-1">
-                            <span class="material-symbols-outlined text-[16px]">add</span>
-                            Add Attribute
+                        <h2 class="text-base md:text-lg font-bold text-gray-900">Specifications</h2>
+                    </div>
+
+                    <div class="flex gap-2 mb-3">
+                        <input type="text" x-model="specInput" @keydown.enter.prevent="addSpecs"
+                               placeholder="e.g. Material: Cotton"
+                               class="flex-1 h-10 bg-gray-50 border border-gray-200 rounded-xl px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30">
+                        <button type="button" @click="addSpecs"
+                                class="px-3.5 bg-primary text-white rounded-xl text-xs font-bold hover:opacity-90 transition-opacity shrink-0">
+                            Add
                         </button>
                     </div>
 
-                    <div class="space-y-2.5">
-                        <template x-for="(spec, index) in specs" :key="index">
-                            <div class="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
-                                <input type="text" name="spec_names[]" x-model="spec.name" placeholder="e.g. Color"
-                                       class="w-full sm:flex-1 h-10 bg-gray-50 border border-gray-200 rounded-xl px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30">
-                                <input type="text" name="spec_values[]" x-model="spec.value" placeholder="e.g. Metallic Red"
-                                       class="w-full sm:flex-1 h-10 bg-gray-50 border border-gray-200 rounded-xl px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30">
-                                <button type="button" @click="specs.splice(index, 1)" x-show="specs.length > 1"
-                                        class="self-end sm:self-auto p-2 text-red-600 hover:bg-red-50 rounded-xl transition-all shrink-0">
-                                    <span class="material-symbols-outlined text-[18px]">close</span>
+                    <div class="flex flex-wrap gap-2">
+                        <template x-for="(spec, i) in specs" :key="i">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 text-gray-700 rounded-full text-xs font-medium border border-gray-200">
+                                <span class="font-bold" x-text="spec.name + ':'"></span>
+                                <span x-text="spec.value"></span>
+                                <button type="button" @click="removeSpec(i)" class="hover:text-red-600 transition-colors ml-0.5">
+                                    <span class="material-symbols-outlined text-[14px]">close</span>
                                 </button>
-                            </div>
+                            </span>
                         </template>
                     </div>
+                    <template x-for="(spec, i) in specs" :key="i">
+                        <input type="hidden" name="specs[][name]" :value="spec.name">
+                    </template>
+                    <template x-for="(spec, i) in specs" :key="i">
+                        <input type="hidden" name="specs[][value]" :value="spec.value">
+                    </template>
                 </div>
             </div>
 

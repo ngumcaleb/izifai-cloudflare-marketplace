@@ -19,21 +19,54 @@
     <div class="space-y-6">
         <!-- Search & Filter Area -->
         <div class="admin-card p-4 md:p-6">
-            <form action="{{ route('admin.products.index') }}" method="GET" class="flex flex-col md:flex-row gap-4">
-                <div class="flex-1 relative">
-                    <input type="text" name="search" value="{{ request('search') }}" 
-                           placeholder="Search products, brands, or sellers..." 
-                           class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border-none rounded-lg text-sm font-medium focus:ring-2 focus:ring-gold-400/20 transition-all">
-                    <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
-                </div>
-                <div class="flex gap-2">
-                    <select name="featured" class="px-4 py-2.5 bg-slate-50 border-none rounded-lg text-xs font-bold text-slate-600 focus:ring-2 focus:ring-gold-400/20 appearance-none">
-                        <option value="">Status</option>
-                        <option value="1" {{ request('featured') == '1' ? 'selected' : '' }}>Featured</option>
-                    </select>
-                    <button type="submit" class="px-6 py-2.5 bg-navy-800 text-white rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-navy-900 transition-all shadow-sm grow md:grow-0">
-                        Filter
-                    </button>
+            <form action="{{ route('admin.products.index') }}" method="GET" class="flex flex-col gap-4">
+                <div class="flex flex-col md:flex-row gap-4">
+                    <div class="flex-1 relative">
+                        <input type="text" name="search" value="{{ request('search') }}" 
+                               placeholder="Search products, brands, or sellers..." 
+                               class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border-none rounded-lg text-sm font-medium focus:ring-2 focus:ring-gold-400/20 transition-all">
+                        <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <select name="category_id" class="px-3 py-2.5 bg-slate-50 border-none rounded-lg text-xs font-bold text-slate-600 focus:ring-2 focus:ring-gold-400/20 appearance-none">
+                            <option value="">All Categories</option>
+                            @foreach($categories as $cat)
+                                <option value="{{ $cat->id }}" {{ request('category_id') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
+                            @endforeach
+                        </select>
+                        <select name="store_id" class="px-3 py-2.5 bg-slate-50 border-none rounded-lg text-xs font-bold text-slate-600 focus:ring-2 focus:ring-gold-400/20 appearance-none">
+                            <option value="">All Stores</option>
+                            @foreach($stores as $store)
+                                <option value="{{ $store->id }}" {{ request('store_id') == $store->id ? 'selected' : '' }}>{{ $store->name }}</option>
+                            @endforeach
+                        </select>
+                        <select name="stock_status" class="px-3 py-2.5 bg-slate-50 border-none rounded-lg text-xs font-bold text-slate-600 focus:ring-2 focus:ring-gold-400/20 appearance-none">
+                            <option value="">Stock: All</option>
+                            <option value="instock" {{ request('stock_status') == 'instock' ? 'selected' : '' }}>In Stock</option>
+                            <option value="outofstock" {{ request('stock_status') == 'outofstock' ? 'selected' : '' }}>Out of Stock</option>
+                        </select>
+                        <select name="approval_status" class="px-3 py-2.5 bg-slate-50 border-none rounded-lg text-xs font-bold text-slate-600 focus:ring-2 focus:ring-gold-400/20 appearance-none">
+                            <option value="">Approval: All</option>
+                            <option value="pending" {{ request('approval_status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                            <option value="approved" {{ request('approval_status') == 'approved' ? 'selected' : '' }}>Approved</option>
+                        </select>
+                        <select name="featured" class="px-3 py-2.5 bg-slate-50 border-none rounded-lg text-xs font-bold text-slate-600 focus:ring-2 focus:ring-gold-400/20 appearance-none">
+                            <option value="">Featured: All</option>
+                            <option value="1" {{ request('featured') == '1' ? 'selected' : '' }}>Featured Only</option>
+                        </select>
+                        <select name="per_page" class="px-3 py-2.5 bg-slate-50 border-none rounded-lg text-xs font-bold text-slate-600 focus:ring-2 focus:ring-gold-400/20 appearance-none">
+                            <option value="10" {{ request('per_page') == '10' ? 'selected' : '' }}>10</option>
+                            <option value="20" {{ request('per_page') == '20' ? 'selected' : '' }}>20</option>
+                            <option value="50" {{ request('per_page') == '50' ? 'selected' : '' }}>50</option>
+                            <option value="100" {{ request('per_page') == '100' ? 'selected' : '' }}>100</option>
+                        </select>
+                        <button type="submit" class="px-6 py-2.5 bg-navy-800 text-white rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-navy-900 transition-all shadow-sm">
+                            Filter
+                        </button>
+                        @if(request()->anyFilled(['search', 'category_id', 'store_id', 'stock_status', 'approval_status', 'featured', 'per_page']))
+                            <a href="{{ route('admin.products.index') }}" class="px-4 py-2.5 bg-slate-100 text-slate-500 rounded-lg text-xs font-bold hover:bg-slate-200 transition-all">Clear</a>
+                        @endif
+                    </div>
                 </div>
             </form>
         </div>

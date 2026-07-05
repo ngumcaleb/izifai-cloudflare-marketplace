@@ -1,192 +1,171 @@
 <x-seller-layout>
-    <x-slot name="title">All My Items</x-slot>
+    <x-slot name="title">My Products</x-slot>
 
-    <div class="space-y-4 md:space-y-6 animate-fade-in">
+    <div class="space-y-4 md:space-y-6 animate-fade-in"
+         x-data="{ showCreateCollection: false, newName: '' }">
         <!-- Header -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-                <h1 class="text-xl md:text-2xl font-bold text-gray-900">All My Items</h1>
-                <p class="text-sm text-gray-500 mt-0.5">Manage your product inventory</p>
+                @if($currentCollection)
+                    <div class="flex items-center gap-3">
+                        <a href="{{ route('seller.products.index') }}"
+                           class="p-1.5 -ml-1.5 text-gray-400 hover:text-primary hover:bg-gray-50 rounded-lg transition-all">
+                            <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+                        </a>
+                        <div>
+                            <h1 class="text-xl md:text-2xl font-bold text-gray-900">{{ $currentCollection->name }}</h1>
+                            <p class="text-sm text-gray-500 mt-0.5">{{ $products->count() }} product(s)</p>
+                        </div>
+                    </div>
+                @else
+                    <div>
+                        <h1 class="text-xl md:text-2xl font-bold text-gray-900">My Products</h1>
+                        <p class="text-sm text-gray-500 mt-0.5">Organized by collections</p>
+                    </div>
+                @endif
             </div>
             <div class="flex items-center gap-2">
-                <div class="relative flex-1 sm:flex-none">
-                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
-                    </span>
-                    <input type="text" placeholder="Search inventory..."
-                           class="w-full sm:w-56 pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50">
-                </div>
-                <a href="{{ route('seller.products.create') }}"
+                <a href="{{ route('seller.products.create', $currentCollection ? ['collection' => $currentCollection->id] : []) }}"
                    class="whitespace-nowrap flex items-center justify-center gap-1.5 bg-primary text-white px-4 py-2 rounded-xl text-sm font-bold hover:opacity-90 active:scale-[0.97] transition-all shadow-sm">
                     <span class="material-symbols-outlined text-[18px]">add</span>
-                    <span>New Item</span>
+                    <span>Add Product</span>
                 </a>
+                @unless($currentCollection)
+                    <button @click="showCreateCollection = !showCreateCollection"
+                            class="whitespace-nowrap flex items-center justify-center gap-1.5 border border-dashed border-gray-300 text-gray-500 px-4 py-2 rounded-xl text-sm font-bold hover:border-primary hover:text-primary hover:bg-primary/5 active:scale-[0.97] transition-all">
+                        <span class="material-symbols-outlined text-[18px]">create_new_folder</span>
+                        <span class="hidden sm:inline">Create Collection</span>
+                        <span class="sm:hidden">Collection</span>
+                    </button>
+                @endunless
             </div>
         </div>
 
-        <!-- Desktop List (responsive card rows, no horizontal scroll) -->
-        <div class="hidden md:block bg-white rounded-2xl shadow-sm border border-gray-100/80 divide-y divide-gray-50">
-            <div class="px-5 py-3.5 flex items-center gap-4 bg-gray-50/80 border-b border-gray-100">
-                <div class="flex-1 min-w-0 text-[11px] font-bold text-gray-500 uppercase tracking-wider">Product</div>
-                <div class="w-20 text-center text-[11px] font-bold text-gray-500 uppercase tracking-wider">Status</div>
-                <div class="w-24 text-center text-[11px] font-bold text-gray-500 uppercase tracking-wider">Views</div>
-                <div class="w-10"></div>
-            </div>
-            @forelse($products as $product)
-                <div class="px-5 py-3.5 flex items-center gap-4 hover:bg-gray-50/50 transition-all relative" x-data="{ open: false }">
-                    <div class="flex-1 min-w-0 flex items-center gap-3">
-                        <div class="w-10 h-10 bg-gray-100 rounded-lg overflow-hidden shrink-0">
-                            @if($product->images->first())
-                                <img src="{{ $product->images->first()->url }}" class="w-full h-full object-cover">
-                            @else
-                                <div class="w-full h-full flex items-center justify-center text-gray-300">
-                                    <span class="material-symbols-outlined text-[18px]">image</span>
-                                </div>
-                            @endif
-                        </div>
-                        <div class="min-w-0">
-                            <h4 class="text-sm font-bold text-gray-900 truncate leading-tight mb-0.5" title="{{ $product->name }}">{{ $product->name }}</h4>
-                            <div class="flex items-center gap-2">
-                                <span class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">{{ $product->category->name ?? 'General' }}</span>
-                                <span class="text-[11px] text-gray-300">•</span>
-                                <span class="text-[11px] font-bold text-gray-800">{{ number_format($product->price) }} XAF</span>
-                                @if($product->old_price)
-                                    <span class="text-[10px] text-gray-400 line-through">{{ number_format($product->old_price) }} XAF</span>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                    <div class="w-20 text-center shrink-0">
-                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider {{ $product->stock_status === 'in_stock' ? 'bg-primary/5 text-primary' : 'bg-red-50 text-red-600' }}">
-                            <span class="material-symbols-outlined text-[10px]">{{ $product->stock_status === 'in_stock' ? 'check_circle' : 'cancel' }}</span>
-                            {{ $product->stock_status === 'in_stock' ? 'Active' : ($product->stock_status === 'out_of_stock' ? 'Sold' : 'Request') }}
-                        </span>
-                    </div>
-                    <div class="w-24 text-center shrink-0">
-                        <div class="flex items-center justify-center gap-1 text-gray-400">
-                            <span class="material-symbols-outlined text-[14px]">visibility</span>
-                            <span class="text-xs font-bold">{{ $product->views }}</span>
-                        </div>
-                    </div>
-                    <div class="w-10 text-center shrink-0 relative">
-                        <button @click="open = !open" @click.outside="open = false"
-                                class="p-1.5 text-gray-400 hover:text-primary hover:bg-gray-50 rounded-lg transition-all">
-                            <span class="material-symbols-outlined text-[18px]">more_vert</span>
-                        </button>
-                        <div x-show="open" x-cloak
-                             @click.outside="open = false"
-                             class="absolute right-0 top-9 w-44 bg-white rounded-xl shadow-lg border border-gray-100 z-50 overflow-hidden"
-                             x-transition:enter="transition ease-out duration-100"
-                             x-transition:enter-start="opacity-0 scale-95"
-                             x-transition:enter-end="opacity-100 scale-100"
-                             x-transition:leave="transition ease-in duration-75"
-                             x-transition:leave-start="opacity-100 scale-100"
-                             x-transition:leave-end="opacity-0 scale-95">
-                            <a href="{{ route('products.show', $product->slug) }}" target="_blank"
-                               class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors">
-                                <span class="material-symbols-outlined text-[18px]">open_in_new</span>
-                                View Public Page
-                            </a>
-                            <a href="{{ route('seller.products.edit', $product->id) }}"
-                               class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors">
-                                <span class="material-symbols-outlined text-[18px]">edit</span>
-                                Edit Listing
-                            </a>
-                            <form action="{{ route('seller.products.destroy', $product->id) }}" method="POST" onsubmit="return confirm('Delete this listing?')">
-                                @csrf @method('DELETE')
-                                <button class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors">
-                                    <span class="material-symbols-outlined text-[18px]">delete</span>
-                                    Delete Listing
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            @empty
-                <div class="px-5 py-16 text-center">
-                    <div class="w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center mx-auto mb-3">
-                        <span class="material-symbols-outlined text-3xl text-gray-300">inventory_2</span>
-                    </div>
-                    <p class="text-base font-bold text-gray-900">No items found</p>
-                    <p class="text-sm text-gray-500 mt-1">Start by adding your first product to the marketplace.</p>
-                    <a href="{{ route('seller.products.create') }}" class="inline-flex items-center gap-1.5 mt-4 px-5 py-2.5 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 active:scale-[0.97] transition-all shadow-sm">
-                        <span class="material-symbols-outlined text-[18px]">add</span>
-                        Start Listing
-                    </a>
-                </div>
-            @endforelse
+        <!-- Create Collection Inline -->
+        <div x-show="showCreateCollection" x-cloak
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 -translate-y-2"
+             x-transition:enter-end="opacity-100 translate-y-0"
+             class="bg-primary/5 border border-primary/20 rounded-2xl p-4">
+            <form action="{{ route('seller.store-categories.store') }}" method="POST" class="flex items-center gap-3">
+                @csrf
+                <input type="hidden" name="type" value="product">
+                <input type="text" name="name" x-model="newName" required placeholder="Collection name..."
+                       class="flex-1 h-10 bg-white border border-gray-200 rounded-xl px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50">
+                <button type="submit"
+                        class="h-10 px-5 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 active:scale-[0.97] transition-all flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[18px]">check</span>
+                    Create
+                </button>
+                <button type="button" @click="showCreateCollection = false; newName = ''"
+                        class="h-10 px-4 bg-white border border-gray-200 text-gray-500 rounded-xl text-sm font-bold hover:bg-gray-50 transition-all">
+                    Cancel
+                </button>
+            </form>
         </div>
 
-        <!-- Mobile Cards (shown on small screens) -->
-        <div class="md:hidden space-y-3">
-            @forelse($products as $product)
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100/80 p-4 space-y-3">
-                    <div class="flex items-center gap-3">
-                        <div class="w-14 h-14 bg-gray-100 rounded-xl overflow-hidden shrink-0">
-                            @if($product->images->first())
-                                <img src="{{ $product->images->first()->url }}" class="w-full h-full object-cover">
-                            @else
-                                <div class="w-full h-full flex items-center justify-center text-gray-300">
-                                    <span class="material-symbols-outlined">image</span>
+        @if($currentCollection)
+            <!-- Products in Collection -->
+            @include('seller.products._list', ['products' => $products])
+        @else
+            <!-- Collections View -->
+            <div class="space-y-6">
+                @if($storeCategories->isNotEmpty())
+                    <div>
+                        <h2 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 px-1">Collections</h2>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
+                            @foreach($storeCategories as $cat)
+                                <div class="relative" x-data="{ open: false, rename: false, newName: '{{ $cat->name }}' }">
+                                    <template x-if="!rename">
+                                        <div>
+                                            <a href="{{ route('seller.products.index', ['collection' => $cat->id]) }}"
+                                               class="group bg-white rounded-2xl border border-gray-100/80 shadow-sm p-5 text-center hover:border-primary/30 hover:shadow-md active:scale-[0.97] transition-all block">
+                                                <div class="w-14 h-14 rounded-2xl bg-primary/5 text-primary flex items-center justify-center mx-auto mb-3 group-hover:bg-primary group-hover:text-white transition-all">
+                                                    <span class="material-symbols-outlined text-2xl">folder</span>
+                                                </div>
+                                                <h3 class="text-sm font-bold text-gray-900 truncate group-hover:text-primary transition-colors">{{ $cat->name }}</h3>
+                                                <p class="text-xs text-gray-400 mt-0.5">{{ $cat->products_count }} product(s)</p>
+                                            </a>
+                                            <button @click.stop="open = !open"
+                                                    class="absolute top-2 right-2 p-1.5 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all opacity-0 group-hover:opacity-100">
+                                                <span class="material-symbols-outlined text-[16px]">more_vert</span>
+                                            </button>
+                                            <div x-show="open" x-cloak @click.outside="open = false"
+                                                 class="absolute right-0 top-10 w-40 bg-white rounded-xl shadow-lg border border-gray-100 z-50 overflow-hidden"
+                                                 x-transition:enter="transition ease-out duration-100"
+                                                 x-transition:enter-start="opacity-0 scale-95"
+                                                 x-transition:enter-end="opacity-100 scale-100"
+                                                 x-transition:leave="transition ease-in duration-75"
+                                                 x-transition:leave-start="opacity-100 scale-100"
+                                                 x-transition:leave-end="opacity-0 scale-95">
+                                                <button @click="rename = true; open = false"
+                                                        class="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors">
+                                                    <span class="material-symbols-outlined text-[16px]">edit</span>
+                                                    Rename
+                                                </button>
+                                                <form action="{{ route('seller.store-categories.destroy', $cat->id) }}" method="POST" onsubmit="return confirm('Delete this collection? Products inside will become uncollected.')">
+                                                    @csrf @method('DELETE')
+                                                    <button class="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors">
+                                                        <span class="material-symbols-outlined text-[16px]">delete</span>
+                                                        Delete
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template x-if="rename">
+                                        <form action="{{ route('seller.store-categories.update', $cat->id) }}" method="POST"
+                                              class="bg-white rounded-2xl border border-primary/40 shadow-md p-5 text-center">
+                                            @csrf @method('PUT')
+                                            <div class="w-14 h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mx-auto mb-3">
+                                                <span class="material-symbols-outlined text-2xl">edit</span>
+                                            </div>
+                                            <input type="text" name="name" x-model="newName" required
+                                                   class="w-full h-10 bg-gray-50 border border-gray-200 rounded-xl px-3 text-sm text-center font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 mb-2">
+                                            <div class="flex gap-2">
+                                                <button type="submit"
+                                                        class="flex-1 py-2 bg-primary text-white rounded-xl text-xs font-bold hover:opacity-90 transition-all">
+                                                    Save
+                                                </button>
+                                                <button type="button" @click="rename = false; newName = '{{ $cat->name }}'"
+                                                        class="flex-1 py-2 bg-white border border-gray-200 text-gray-500 rounded-xl text-xs font-bold hover:bg-gray-50 transition-all">
+                                                    Cancel
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </template>
                                 </div>
-                            @endif
-                        </div>
-                        <div class="min-w-0 flex-1">
-                            <h4 class="text-sm font-bold text-gray-900 truncate leading-tight mb-0.5">{{ $product->name }}</h4>
-                            <p class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">{{ $product->category->name ?? 'General' }}</p>
+                            @endforeach
                         </div>
                     </div>
-                    <div class="flex items-center justify-between">
-                        <div class="flex flex-col">
-                            <span class="text-sm font-bold text-gray-900 leading-none">{{ number_format($product->price) }} XAF</span>
-                            @if($product->old_price)
-                                <span class="text-[11px] text-gray-400 line-through mt-0.5">{{ number_format($product->old_price) }} XAF</span>
-                            @endif
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider {{ $product->stock_status === 'in_stock' ? 'bg-primary/5 text-primary' : 'bg-red-50 text-red-600' }}">
-                                <span class="material-symbols-outlined text-[10px]">{{ $product->stock_status === 'in_stock' ? 'check_circle' : 'cancel' }}</span>
-                                {{ str_replace('_', ' ', $product->stock_status) }}
-                            </span>
-                            <div class="flex items-center gap-1 text-gray-400">
-                                <span class="material-symbols-outlined text-[14px]">visibility</span>
-                                <span class="text-xs font-bold">{{ $product->views }}</span>
-                            </div>
-                        </div>
+                @endif
+
+                @php $uncollected = $products->whereNull('store_category_id'); @endphp
+                @if($uncollected->isNotEmpty())
+                    <div>
+                        <h2 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 px-1">
+                            Uncollected
+                            <span class="font-normal normal-case text-gray-300">({{ $uncollected->count() }})</span>
+                        </h2>
+                        @include('seller.products._list', ['products' => $uncollected])
                     </div>
-                    <div class="flex items-center gap-2 pt-2 border-t border-gray-100">
-                        <a href="{{ route('products.show', $product->slug) }}" target="_blank"
-                           class="flex-1 flex items-center justify-center gap-1.5 py-2 text-gray-500 hover:text-primary hover:bg-gray-50 rounded-xl transition-all text-xs font-semibold">
-                            <span class="material-symbols-outlined text-[16px]">open_in_new</span>
-                            View
+                @endif
+
+                @if($storeCategories->isEmpty() && $products->isEmpty())
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100/80 p-12 text-center">
+                        <div class="w-14 h-14 rounded-2xl bg-gray-50 flex items-center justify-center mx-auto mb-4">
+                            <span class="material-symbols-outlined text-3xl text-gray-300">inventory_2</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-900">No products yet</h3>
+                        <p class="text-sm text-gray-500 mt-1 max-w-sm mx-auto">Add your first product to start selling on the marketplace.</p>
+                        <a href="{{ route('seller.products.create') }}"
+                           class="inline-flex items-center gap-1.5 mt-5 px-6 py-2.5 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 active:scale-[0.97] transition-all shadow-sm">
+                            <span class="material-symbols-outlined text-[18px]">add</span>
+                            Add Product
                         </a>
-                        <a href="{{ route('seller.products.edit', $product->id) }}"
-                           class="flex-1 flex items-center justify-center gap-1.5 py-2 text-gray-500 hover:text-primary hover:bg-gray-50 rounded-xl transition-all text-xs font-semibold">
-                            <span class="material-symbols-outlined text-[16px]">edit</span>
-                            Edit
-                        </a>
-                        <form action="{{ route('seller.products.destroy', $product->id) }}" method="POST" onsubmit="return confirm('Delete this listing?')" class="flex-1">
-                            @csrf @method('DELETE')
-                            <button class="w-full flex items-center justify-center gap-1.5 py-2 text-red-600 hover:bg-red-50 rounded-xl transition-all text-xs font-semibold">
-                                <span class="material-symbols-outlined text-[16px]">delete</span>
-                                Delete
-                            </button>
-                        </form>
                     </div>
-                </div>
-            @empty
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100/80 p-8 text-center">
-                    <div class="w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center mx-auto mb-3">
-                        <span class="material-symbols-outlined text-3xl text-gray-300">inventory_2</span>
-                    </div>
-                    <p class="text-base font-bold text-gray-900">No items found</p>
-                    <p class="text-sm text-gray-500 mt-1">Start adding products to your inventory.</p>
-                    <a href="{{ route('seller.products.create') }}" class="inline-flex items-center gap-1.5 mt-4 px-5 py-2.5 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 active:scale-[0.97] transition-all shadow-sm">
-                        <span class="material-symbols-outlined text-[18px]">add</span>
-                        Start Listing
-                    </a>
-                </div>
-            @endforelse
-        </div>
+                @endif
+            </div>
+        @endif
     </div>
 </x-seller-layout>

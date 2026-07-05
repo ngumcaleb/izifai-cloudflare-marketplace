@@ -103,10 +103,84 @@
                     <span class="text-[12px] font-semibold">Merchant Hub</span>
                 </a>
 
+                <div class="pt-4 pb-1 px-4 text-[9px] font-bold text-slate-400 uppercase tracking-widest">Listings</div>
+
                 <a href="{{ route('admin.products.index') }}" 
                    class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.products.*') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
                     <span class="material-symbols-outlined text-[18px]">inventory_2</span>
-                    <span class="text-[12px] font-semibold">Inventory</span>
+                    <span class="text-[12px] font-semibold">Products</span>
+                </a>
+
+                <a href="{{ route('admin.services.index') }}" 
+                   class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.services.*') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
+                    <span class="material-symbols-outlined text-[18px]">handyman</span>
+                    <span class="text-[12px] font-semibold">Services</span>
+                </a>
+
+                <a href="{{ route('admin.rentals.index') }}" 
+                   class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.rentals.*') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
+                    <span class="material-symbols-outlined text-[18px]">shelves</span>
+                    <span class="text-[12px] font-semibold">Rentals</span>
+                </a>
+
+                <div class="pt-4 pb-1 px-4 text-[9px] font-bold text-slate-400 uppercase tracking-widest">Commerce</div>
+
+                <a href="{{ route('admin.orders.index') }}" 
+                   class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.orders.*') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
+                    <span class="material-symbols-outlined text-[18px]">shopping_cart</span>
+                    <span class="text-[12px] font-semibold">Orders</span>
+                </a>
+
+                <a href="{{ route('admin.bookings.index') }}" 
+                   class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.bookings.*') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
+                    <span class="material-symbols-outlined text-[18px]">calendar_month</span>
+                    <span class="text-[12px] font-semibold">Bookings</span>
+                </a>
+
+                <a href="{{ route('admin.rental-transactions.index') }}" 
+                   class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.rental-transactions.*') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
+                    <span class="material-symbols-outlined text-[18px]">assignment</span>
+                    <span class="text-[12px] font-semibold">Rental Txns</span>
+                </a>
+
+                <div class="pt-4 pb-1 px-4 text-[9px] font-bold text-slate-400 uppercase tracking-widest">Financial</div>
+
+                <a href="{{ route('admin.financials') }}" 
+                   class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.financials') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
+                    <span class="material-symbols-outlined text-[18px]">account_balance</span>
+                    <span class="text-[12px] font-semibold">Financials</span>
+                </a>
+
+                <a href="{{ route('admin.withdrawals.index') }}" 
+                   class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.withdrawals.*') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
+                    <span class="material-symbols-outlined text-[18px]">money_off</span>
+                    <span class="text-[12px] font-semibold">Withdrawals</span>
+                </a>
+
+                <a href="{{ route('admin.payment-methods.index') }}" 
+                   class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.payment-methods.*') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
+                    <span class="material-symbols-outlined text-[18px]">payments</span>
+                    <span class="text-[12px] font-semibold">Payment Info</span>
+                </a>
+
+                <div class="pt-4 pb-1 px-4 text-[9px] font-bold text-slate-400 uppercase tracking-widest">Community</div>
+
+                <a href="{{ route('admin.users.index') }}" 
+                   class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.users.*') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
+                    <span class="material-symbols-outlined text-[18px]">group</span>
+                    <span class="text-[12px] font-semibold">User Base</span>
+                </a>
+
+                <a href="{{ route('admin.reviews.index') }}" 
+                   class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.reviews.*') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
+                    <span class="material-symbols-outlined text-[18px]">reviews</span>
+                    <span class="text-[12px] font-semibold">Reviews</span>
+                </a>
+
+                <a href="{{ route('admin.reports.index') }}" 
+                   class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.reports.*') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
+                    <span class="material-symbols-outlined text-[18px]">flag</span>
+                    <span class="text-[12px] font-semibold">Reports</span>
                 </a>
 
                 <a href="{{ route('admin.categories.index') }}" 
@@ -117,26 +191,8 @@
 
                 <a href="{{ route('admin.ads.index') }}" 
                    class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.ads.*') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
-                    <span class="material-symbols-outlined text-[18px]">campaign</span>
-                    <span class="text-[12px] font-semibold">Promotions</span>
-                </a>
-
-                <a href="{{ route('admin.payment-methods.index') }}" 
-                   class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.payment-methods.*') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
-                    <span class="material-symbols-outlined text-[18px]">payments</span>
-                    <span class="text-[12px] font-semibold">Payment Info</span>
-                </a>
-
-                <a href="{{ route('admin.users.index') }}" 
-                   class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.users.*') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
-                    <span class="material-symbols-outlined text-[18px]">group</span>
-                    <span class="text-[12px] font-semibold">User Base</span>
-                </a>
-
-                <a href="{{ route('admin.reports.index') }}" 
-                   class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.reports.*') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
-                    <span class="material-symbols-outlined text-[18px]">flag</span>
-                    <span class="text-[12px] font-semibold">Reports</span>
+                    <span class="material-symbols-outlined text-[18px]">ads_click</span>
+                    <span class="text-[12px] font-semibold">Ad Requests</span>
                 </a>
                 
                 <div class="pt-5 pb-2 px-4 text-[9px] font-bold text-slate-400 uppercase tracking-widest">System</div>
@@ -145,6 +201,24 @@
                    class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.analytics') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
                     <span class="material-symbols-outlined text-[18px]">bar_chart</span>
                     <span class="text-[12px] font-semibold">Analytics</span>
+                </a>
+
+                <a href="{{ route('admin.notifications.index') }}" 
+                   class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.notifications.*') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
+                    <span class="material-symbols-outlined text-[18px]">notifications</span>
+                    <span class="text-[12px] font-semibold">Notifications</span>
+                </a>
+
+                <a href="{{ route('admin.admin-management.index') }}" 
+                   class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.admin-management.*') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
+                    <span class="material-symbols-outlined text-[18px]">manage_accounts</span>
+                    <span class="text-[12px] font-semibold">Admin Management</span>
+                </a>
+
+                <a href="{{ route('admin.audit-logs.index') }}" 
+                   class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.audit-logs.*') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
+                    <span class="material-symbols-outlined text-[18px]">history</span>
+                    <span class="text-[12px] font-semibold">Audit Log</span>
                 </a>
 
                 <a href="{{ route('admin.settings') }}" 
@@ -181,14 +255,47 @@
                     <h1 class="hidden lg:block text-xl font-bold text-slate-800 tracking-tight">{{ $header ?? 'Dashboard' }}</h1>
                 </div>
 
-                <div class="flex items-center gap-3 md:gap-6">
-                    <button class="p-2 text-slate-400 hover:text-slate-700 relative">
-                        <span class="material-symbols-outlined text-[20px]">notifications</span>
-                        <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full border-2 border-white"></span>
-                    </button>
-                    <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center border border-slate-200">
-                        <span class="material-symbols-outlined text-[16px] text-slate-400">person</span>
+                <div class="flex items-center gap-3 md:gap-6" x-data="{ notifOpen: false, unreadCount: 0, notifications: [] }"
+                     x-init="fetch('{{ route('admin.notifications.unread-count') }}').then(r=>r.json()).then(d=>unreadCount=d.unread_count)">
+                    <div class="relative">
+                        <button @click="notifOpen = !notifOpen; if(notifOpen){fetch('{{ route('admin.notifications.unread-count') }}').then(r=>r.json()).then(d=>unreadCount=d.unread_count);fetch('{{ route('admin.notifications.dropdown') }}').then(r=>r.json()).then(d=>notifications=d.notifications)}" class="p-2 text-slate-400 hover:text-slate-700 relative">
+                            <span class="material-symbols-outlined text-[20px]">notifications</span>
+                            <span x-show="unreadCount > 0" x-text="unreadCount" class="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] bg-rose-500 text-white text-[8px] font-bold rounded-full flex items-center justify-center px-1 border-2 border-white"></span>
+                        </button>
+                        <div x-show="notifOpen" @click.outside="notifOpen = false" x-cloak class="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-slate-100 overflow-hidden z-50">
+                            <div class="p-4 border-b border-slate-100 flex items-center justify-between">
+                                <span class="text-xs font-bold text-navy-800">Notifications</span>
+                                <button @click="fetch('{{ route('admin.notifications.read-all') }}',{method:'POST',headers:{'X-CSRF-TOKEN':'{{ csrf_token() }}'}}).then(r=>r.json()).then(d=>{unreadCount=0;notifications=[]})" class="text-[9px] font-bold text-gold-500 uppercase tracking-widest">Mark All Read</button>
+                            </div>
+                            <div class="max-h-72 overflow-y-auto">
+                                <template x-for="n in notifications" :key="n.id">
+                                    <form :action="n.url" method="POST" class="contents">
+                                        @csrf
+                                        <button type="submit" class="w-full text-left p-3 border-b border-slate-50 hover:bg-slate-50 transition-colors flex items-start gap-3">
+                                            <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+                                                 :class="{'bg-amber-50 text-amber-500': n.type === 'withdrawal', 'bg-rose-50 text-rose-500': n.type === 'report', 'bg-blue-50 text-blue-500': n.type === 'system'}">
+                                                <span class="material-symbols-outlined text-[16px]" x-text="n.type === 'withdrawal' ? 'account_balance' : (n.type === 'report' ? 'flag' : 'notifications')"></span>
+                                            </div>
+                                            <div class="min-w-0 flex-1">
+                                                <p class="text-[11px] font-bold text-navy-800 truncate" x-text="n.title"></p>
+                                                <p class="text-[9px] text-slate-500 truncate" x-text="n.message"></p>
+                                                <p class="text-[8px] text-slate-400 mt-0.5" x-text="n.time"></p>
+                                            </div>
+                                        </button>
+                                    </form>
+                                </template>
+                                <div x-show="notifications.length === 0" class="p-6 text-center">
+                                    <p class="text-[10px] text-slate-400 font-medium">No new notifications</p>
+                                </div>
+                            </div>
+                            <div class="p-2 border-t border-slate-100 text-center">
+                                <a href="{{ route('admin.notifications.index') }}" class="text-[10px] font-bold text-navy-800 hover:text-gold-500 transition-colors">View All Notifications</a>
+                            </div>
+                        </div>
                     </div>
+                    <a href="{{ route('admin.profile') }}" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center border border-slate-200 hover:bg-slate-200 transition-colors">
+                        <span class="material-symbols-outlined text-[16px] text-slate-400">person</span>
+                    </a>
                 </div>
             </header>
 
@@ -202,6 +309,16 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
+        });
+
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('notifDropdown', () => ({
+                open: false,
+                unread: 0,
+                init() {
+                    fetch('/admin/notifications/unread-count').then(r=>r.json()).then(d=>this.unread=d.unread_count);
+                }
+            }));
         });
     </script>
     @stack('scripts')

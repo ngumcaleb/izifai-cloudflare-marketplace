@@ -160,11 +160,47 @@
                 <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isProducts ? '1' : '0' }};">inventory_2</span>
                 All My Items
             </a>
+            @php $isServices = request()->routeIs('seller.services.*'); @endphp
+            <a href="{{ route('seller.services.index') }}"
+               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isServices ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
+                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isServices ? '1' : '0' }};">handyman</span>
+                My Services
+            </a>
+            @php $isCategories = request()->routeIs('seller.store-categories.*'); @endphp
+            <a href="{{ route('seller.store-categories.index') }}"
+               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isCategories ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
+                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isCategories ? '1' : '0' }};">category</span>
+                Store Categories
+            </a>
+
+            @php $isRentals = request()->routeIs('seller.rentals.*'); @endphp
+            <a href="{{ route('seller.rentals.index') }}"
+               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isRentals ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
+                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isRentals ? '1' : '0' }};">shelves</span>
+                My Rentals
+            </a>
+            @php $isOrders = request()->routeIs('seller.orders.*'); @endphp
+            <a href="{{ route('seller.orders.index') }}"
+               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isOrders ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
+                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isOrders ? '1' : '0' }};">shopping_cart</span>
+                Incoming Orders
+            </a>
+            <a href="{{ route('orders.index') }}"
+               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium">
+                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 0;">receipt_long</span>
+                My Purchases
+            </a>
+            @php $isWallet = request()->routeIs('seller.wallet.*'); @endphp
+            <a href="{{ route('seller.wallet.index') }}"
+               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isWallet ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
+                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isWallet ? '1' : '0' }};">account_balance_wallet</span>
+                My Wallet
+            </a>
             @php $isAds = request()->routeIs('seller.ads.*'); @endphp
             <a href="{{ route('seller.ads.index') }}"
                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isAds ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
                 <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isAds ? '1' : '0' }};">campaign</span>
-                Promote Items
+                Promotions
             </a>
             @php $isReviews = request()->routeIs('seller.reviews'); @endphp
             <a href="{{ route('seller.reviews') }}"
@@ -251,11 +287,47 @@
                 <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isProducts ? '1' : '0' }};">inventory_2</span>
                 All My Items
             </a>
+            @php $isServices = request()->routeIs('seller.services.*'); @endphp
+            <a href="{{ route('seller.services.index') }}"
+               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isServices ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
+                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isServices ? '1' : '0' }};">handyman</span>
+                My Services
+            </a>
+            @php $isCategories = request()->routeIs('seller.store-categories.*'); @endphp
+            <a href="{{ route('seller.store-categories.index') }}"
+               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isCategories ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
+                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isCategories ? '1' : '0' }};">category</span>
+                Store Categories
+            </a>
+
+            @php $isRentals = request()->routeIs('seller.rentals.*'); @endphp
+            <a href="{{ route('seller.rentals.index') }}"
+               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isRentals ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
+                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isRentals ? '1' : '0' }};">shelves</span>
+                My Rentals
+            </a>
+            @php $isOrders = request()->routeIs('seller.orders.*'); @endphp
+            <a href="{{ route('seller.orders.index') }}"
+               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isOrders ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
+                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isOrders ? '1' : '0' }};">shopping_cart</span>
+                Incoming Orders
+            </a>
+            <a href="{{ route('orders.index') }}"
+               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium">
+                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 0;">receipt_long</span>
+                My Purchases
+            </a>
+            @php $isWallet = request()->routeIs('seller.wallet.*'); @endphp
+            <a href="{{ route('seller.wallet.index') }}"
+               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isWallet ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
+                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isWallet ? '1' : '0' }};">account_balance_wallet</span>
+                My Wallet
+            </a>
             @php $isAds = request()->routeIs('seller.ads.*'); @endphp
             <a href="{{ route('seller.ads.index') }}"
                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isAds ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
                 <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isAds ? '1' : '0' }};">campaign</span>
-                Promote Items
+                Promotions
             </a>
             @php $isReviews = request()->routeIs('seller.reviews'); @endphp
             <a href="{{ route('seller.reviews') }}"
@@ -324,6 +396,31 @@
         </header>
 
         <div class="px-4 md:px-6 py-4 md:py-6 max-w-7xl mx-auto space-y-4 md:space-y-6">
+            @if(session('success'))
+                <div class="bg-green-50 border border-green-200 rounded-xl p-4 flex items-center gap-3 animate-slide-down">
+                    <span class="material-symbols-outlined text-green-600">check_circle</span>
+                    <p class="text-sm font-semibold text-green-800">{{ session('success') }}</p>
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center gap-3 animate-slide-down">
+                    <span class="material-symbols-outlined text-red-600">error</span>
+                    <p class="text-sm font-semibold text-red-800">{{ session('error') }}</p>
+                </div>
+            @endif
+
+            @if($errors->any())
+                <div class="bg-red-50 border border-red-200 rounded-xl p-4 flex items-start gap-3 animate-slide-down">
+                    <span class="material-symbols-outlined text-red-600 mt-0.5">warning</span>
+                    <div>
+                        @foreach($errors->all() as $error)
+                            <p class="text-sm font-semibold text-red-800">{{ $error }}</p>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
             @yield('content')
         </div>
 
