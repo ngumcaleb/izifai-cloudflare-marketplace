@@ -231,10 +231,19 @@ class ProductController extends Controller
         // Store total products count
         $totalProducts = $store->products()->count();
 
-        // Reviews
-        $reviews = $store->reviews()->with('user')->latest()->get();
+        // Product reviews
+        $reviews = $product->reviews()->with('user')->latest()->get();
         $avgRating = $reviews->count() > 0 ? round($reviews->avg('rating'), 1) : 0;
         $totalReviews = $reviews->count();
+
+        $starDistribution = [];
+        for ($i = 5; $i >= 1; $i--) {
+            $count = $reviews->where('rating', $i)->count();
+            $starDistribution[$i] = [
+                'count' => $count,
+                'percentage' => $reviews->count() > 0 ? ($count / $reviews->count()) * 100 : 0,
+            ];
+        }
 
         // Other products from same store
         $storeProducts = $store->products()
@@ -273,7 +282,7 @@ class ProductController extends Controller
 
         return view('products.show', compact(
             'product', 'store', 'reviews', 'avgRating', 'totalReviews', 'totalProducts',
-            'storeProducts', 'topProducts', 'savedProductIds'
+            'storeProducts', 'topProducts', 'savedProductIds', 'starDistribution'
         ));
     }
 
@@ -386,5 +395,36 @@ class ProductController extends Controller
             return response()->json(['success' => true]);
         }
         return response()->json(['success' => false], 400);
+    }
+
+    public function review(Request $request, \App\Models\Product $product)
+    {
+        if ($product->store->user_id === auth()->id()) {
+            return back()->with('error', 'You cannot review your own product.');
+        }
+
+        $existing = \App\Models\ProductReview::where('product_id', $product->id)
+            ->where('user_id', auth()->id())->first();
+        if ($existing) {
+            return back()->with('error', 'You have already reviewed this product.');
+        }
+
+        $validated = $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+            'comment' => 'nullable|string|max:500',
+        ]);
+
+        \App\Models\ProductReview::create([
+            'product_id' => $product->id,
+            'user_id' => auth()->id(),
+            'rating' => $validated['rating'],
+            'comment' => $validated['comment'] ?? null,
+        ]);
+
+        $product->rating = \App\Models\ProductReview::where('product_id', $product->id)->avg('rating');
+        $product->review_count = \App\Models\ProductReview::where('product_id', $product->id)->count();
+        $product->save();
+
+        return back()->with('success', 'Your review has been submitted.');
     }
 }

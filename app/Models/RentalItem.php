@@ -56,6 +56,11 @@ class RentalItem extends Model
         return $this->hasMany(RentalTransaction::class, 'rental_item_id');
     }
 
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(RentalReview::class, 'rental_item_id');
+    }
+
     public function getImagesUrlAttribute(): array
     {
         $images = $this->images;

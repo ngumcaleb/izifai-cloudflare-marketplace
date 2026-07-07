@@ -52,6 +52,58 @@ class SellerController extends Controller
         ))->with('mostContacted', collect());
     }
 
+    public function createStore()
+    {
+        if (auth()->user()->store) {
+            return redirect()->route('seller.store.settings')
+                ->with('info', 'You already have a store. Edit it here.');
+        }
+
+        return view('seller.store-create');
+    }
+
+    public function storeStore(Request $request)
+    {
+        if (auth()->user()->store) {
+            return redirect()->route('seller.store.settings')
+                ->with('error', 'You already have a store.');
+        }
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'location' => 'required|string|max:255',
+            'whatsapp_number' => 'required|string|max:20',
+            'business_email' => 'nullable|email|max:255',
+            'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'banner' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+        ]);
+
+        $data = $request->only(['name', 'description', 'location', 'whatsapp_number', 'business_email']);
+
+        $slug = Str::slug($request->name);
+        $original = $slug;
+        $counter = 1;
+        while (Store::where('slug', $slug)->exists()) {
+            $slug = $original . '-' . $counter++;
+        }
+        $data['slug'] = $slug;
+        $data['user_id'] = auth()->id();
+
+        if ($request->hasFile('logo')) {
+            $data['logo'] = $request->file('logo')->store('store-logos', 'r2');
+        }
+
+        if ($request->hasFile('banner')) {
+            $data['banner'] = $request->file('banner')->store('store-banners', 'r2');
+        }
+
+        $store = Store::create($data);
+
+        return redirect()->route('seller.dashboard')
+            ->with('success', 'Your store has been created! Start adding products.');
+    }
+
     public function storeSettings()
     {
         $store = auth()->user()->store;

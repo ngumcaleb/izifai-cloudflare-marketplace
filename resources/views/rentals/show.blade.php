@@ -149,10 +149,11 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                 Dashboard
             </a>
         @else
-            <a href="{{ route('seller.dashboard') }}"
+            @php $sidebarStore = auth()->user()->store; @endphp
+            <a href="{{ $sidebarStore ? route('seller.dashboard') : route('seller.store.create') }}"
                class="w-full py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 text-xs text-primary border border-primary/20 hover:bg-primary/5 transition-all">
                 <span class="material-symbols-outlined text-[16px]">store</span>
-                Start Selling
+                {{ $sidebarStore ? 'Seller Dashboard' : 'Start Selling' }}
             </a>
         @endif
     @endauth
@@ -642,6 +643,127 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
         </section>
         @endif
 
+        {{-- RENTAL REVIEWS --}}
+        @if($reviews->count() > 0)
+        <section id="reviews" class="scroll-mt-[80px] lg:scroll-mt-[100px] space-y-4">
+            <div class="flex items-center justify-between">
+                <h4 class="text-base sm:text-lg lg:text-[24px] leading-8 font-bold flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary text-[18px] sm:text-[20px]">reviews</span>
+                    Customer Reviews
+                </h4>
+                <div class="flex items-center gap-1.5 sm:gap-2">
+                    <span class="text-xs sm:text-sm font-bold">{{ number_format($avgRating, 1) }}</span>
+                    <div class="flex text-orange-500">
+                        @for($i = 1; $i <= 5; $i++)
+                        <span class="material-symbols-outlined text-[14px] sm:text-[16px]"
+                              style="font-variation-settings: 'FILL' {{ $i <= round($avgRating) ? 1 : 0 }};">star</span>
+                        @endfor
+                    </div>
+                </div>
+            </div>
+
+            {{-- Star Distribution --}}
+            @if(isset($starDistribution))
+            <div class="bg-surface-container-lowest rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-sm border border-outline-variant/10">
+                @foreach($starDistribution as $star => $data)
+                <div class="flex items-center gap-2 sm:gap-3 py-1 sm:py-1.5">
+                    <span class="text-[11px] sm:text-xs font-bold text-on-surface w-3 sm:w-4 text-right">{{ $star }}</span>
+                    <span class="material-symbols-outlined text-[14px] sm:text-[16px] text-amber-500" style="font-variation-settings: 'FILL' 1;">star</span>
+                    <div class="flex-1 h-2 sm:h-2.5 rounded-full bg-surface-container overflow-hidden">
+                        <div class="h-full rounded-full bg-amber-500" style="width: {{ $data['percentage'] }}%"></div>
+                    </div>
+                    <span class="text-[10px] sm:text-xs text-on-surface-variant w-8 text-right">{{ $data['count'] }}</span>
+                </div>
+                @endforeach
+            </div>
+            @endif
+
+            @php $firstReview = $reviews->shift(); @endphp
+            @if($firstReview)
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4">
+                <div class="bg-surface-container-lowest rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-sm border border-outline-variant/10">
+                    <div class="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-secondary-container flex items-center justify-center font-bold text-primary text-[10px] sm:text-sm shrink-0">
+                            {{ substr($firstReview->user->name ?? 'A', 0, 1) }}
+                        </div>
+                        <div class="min-w-0">
+                            <p class="text-xs sm:text-sm font-bold truncate">{{ $firstReview->user->name ?? 'Anonymous' }}</p>
+                            <p class="text-[9px] sm:text-[10px] text-on-surface-variant">Verified Renter</p>
+                        </div>
+                    </div>
+                    <div class="flex text-amber-500 mb-1.5 sm:mb-2">
+                        @for($i = 1; $i <= 5; $i++)
+                        <span class="material-symbols-outlined text-[14px] sm:text-[16px]"
+                              style="font-variation-settings: 'FILL' {{ $i <= $firstReview->rating ? 1 : 0 }};">star</span>
+                        @endfor
+                    </div>
+                    @if($firstReview->comment)
+                    <p class="text-xs sm:text-sm text-on-surface-variant italic leading-relaxed">"{{ $firstReview->comment }}"</p>
+                    @endif
+                </div>
+
+                @php $secondReview = $reviews->shift(); @endphp
+                @if($secondReview)
+                <div class="lg:col-span-2 bg-surface-container-lowest rounded-xl sm:rounded-2xl shadow-sm border border-outline-variant/10 overflow-hidden">
+                    <div class="flex flex-col sm:flex-row">
+                        <div class="flex-1 p-4 sm:p-5">
+                            <div class="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                                <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-secondary-container flex items-center justify-center font-bold text-primary text-[10px] sm:text-sm shrink-0">
+                                    {{ substr($secondReview->user->name ?? 'A', 0, 1) }}
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="text-xs sm:text-sm font-bold truncate">{{ $secondReview->user->name ?? 'Anonymous' }}</p>
+                                    <p class="text-[9px] sm:text-[10px] text-on-surface-variant">Verified Renter</p>
+                                </div>
+                            </div>
+                            <div class="flex text-amber-500 mb-1.5 sm:mb-2">
+                                @for($i = 1; $i <= 5; $i++)
+                                <span class="material-symbols-outlined text-[14px] sm:text-[16px]"
+                                      style="font-variation-settings: 'FILL' {{ $i <= $secondReview->rating ? 1 : 0 }};">star</span>
+                                @endfor
+                            </div>
+                            @if($secondReview->comment)
+                            <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed">"{{ $secondReview->comment }}"</p>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                @endif
+            </div>
+            @endif
+        </section>
+        @endif
+
+        {{-- RENTAL REVIEW FORM --}}
+        @auth
+        <section class="bg-surface-container-lowest rounded-2xl p-5 shadow-sm border border-outline-variant/10">
+            <h4 class="text-base font-bold flex items-center gap-2 mb-4">
+                <span class="material-symbols-outlined text-primary text-[18px]">rate_review</span>
+                Write a Review
+            </h4>
+            <form action="{{ route('rentals.review', $rental) }}" method="POST">
+                @csrf
+                <div class="flex items-center gap-1 mb-3" x-data="{ rating: 0 }">
+                    <p class="text-xs font-bold text-on-surface-variant mr-2">Your Rating:</p>
+                    <template x-for="i in 5" :key="i">
+                        <button type="button" @click="rating = i"
+                                class="material-symbols-outlined text-[24px] transition-colors"
+                                :class="i <= rating ? 'text-orange-500' : 'text-on-surface-variant/30'"
+                                :style="'font-variation-settings: \'FILL\' ' + (i <= rating ? 1 : 0)"
+                                x-text="'star'"></button>
+                    </template>
+                    <input type="hidden" name="rating" x-model="rating">
+                </div>
+                <textarea name="comment" rows="2" class="w-full bg-surface-container border-none rounded-xl p-3 text-sm text-on-surface focus:ring-2 focus:ring-primary/20 mb-3" placeholder="Share your experience with this rental..." maxlength="500"></textarea>
+                <div class="flex justify-end">
+                    <button type="submit" class="px-5 py-2 bg-primary text-on-primary rounded-xl text-xs font-bold hover:opacity-90 transition-all">
+                        Submit Review
+                    </button>
+                </div>
+            </form>
+        </section>
+        @endauth
+
     </div>
 </div>
 @endsection
@@ -667,14 +789,21 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
     @endif
     <div class="font-bold text-xs lg:text-sm text-on-surface text-center">{{ $store->name }} — IZIFAI Rentals</div>
     @auth
+        @php $footerTargetStore = auth()->user()->store; @endphp
         @if(auth()->id() === $store->user_id)
             <a href="{{ route('seller.dashboard') }}"
                class="inline-flex items-center gap-1.5 text-primary font-semibold text-xs lg:text-sm hover:underline">
                 <span class="material-symbols-outlined text-[14px]">dashboard</span>
                 Go to Dashboard
             </a>
-        @else
+        @elseif($footerTargetStore)
             <a href="{{ route('seller.dashboard') }}"
+               class="inline-flex items-center gap-1.5 text-primary font-semibold text-xs lg:text-sm hover:underline">
+                <span class="material-symbols-outlined text-[14px]">dashboard</span>
+                Seller Dashboard
+            </a>
+        @else
+            <a href="{{ route('seller.store.create') }}"
                class="text-primary font-semibold text-xs lg:text-sm hover:underline">
                 Start Selling on Izifai &rarr;
             </a>

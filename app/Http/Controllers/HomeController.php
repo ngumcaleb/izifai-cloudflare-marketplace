@@ -66,6 +66,45 @@ class HomeController extends Controller
             ->take(4)
             ->get();
 
+        $topRatedStores = \App\Models\Store::where('status', 'active')
+            ->has('products')
+            ->withCount('products')
+            ->orderBy('rating', 'desc')
+            ->take(4)
+            ->get();
+
+        $topRatedProducts = \App\Models\Product::active()
+            ->with(['images', 'store'])
+            ->where('rating', '>', 0)
+            ->orderBy('rating', 'desc')
+            ->take(8)
+            ->get();
+
+        $topRatedServices = \App\Models\Service::active()
+            ->with(['store'])
+            ->where('rating', '>', 0)
+            ->orderBy('rating', 'desc')
+            ->take(4)
+            ->get();
+
+        $trendingRentals = \App\Models\RentalItem::where('status', 'published')
+            ->with(['store', 'category'])
+            ->orderBy('views', 'desc')
+            ->take(4)
+            ->get();
+
+        $allProductCategories = \App\Models\Category::whereHas('products', fn($q) => $q->whereHas('store', fn($s) => $s->where('status', 'active')))
+            ->withCount(['products' => fn($q) => $q->whereHas('store', fn($s) => $s->where('status', 'active'))])
+            ->orderBy('name')->get();
+
+        $allServiceCategories = \App\Models\Category::whereHas('services', fn($q) => $q->whereHas('store', fn($s) => $s->where('status', 'active')))
+            ->withCount(['services' => fn($q) => $q->whereHas('store', fn($s) => $s->where('status', 'active'))])
+            ->orderBy('name')->get();
+
+        $allRentalCategories = \App\Models\Category::whereHas('rentalItems', fn($q) => $q->where('status', 'published'))
+            ->withCount(['rentalItems' => fn($q) => $q->where('status', 'published')])
+            ->orderBy('name')->get();
+
         $featuredStore = \App\Models\Store::where('status', 'active')
             ->has('products')
             ->with(['products' => function ($q) {
@@ -83,7 +122,9 @@ class HomeController extends Controller
             'categories', 'products', 'trendingProducts', 'latestProducts',
             'services', 'rentals',
             'stores', 'topStores',
-            'featuredStore', 'savedProductIds'
+            'topRatedStores', 'topRatedProducts', 'topRatedServices', 'trendingRentals',
+            'featuredStore', 'savedProductIds',
+            'allProductCategories', 'allServiceCategories', 'allRentalCategories'
         ));
     }
 }

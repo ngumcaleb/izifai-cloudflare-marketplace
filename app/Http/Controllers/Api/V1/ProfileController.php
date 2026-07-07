@@ -26,7 +26,6 @@ class ProfileController extends Controller
                 'phone' => $user->phone,
                 'role' => $user->role,
                 'status' => $user->status,
-                'account_type' => $user->account_type,
                 'location' => $user->location,
                 'profile_photo_url' => $user->profile_photo_url,
                 'cover_photo_url' => $user->cover_photo_url,

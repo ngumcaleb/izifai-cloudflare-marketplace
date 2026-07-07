@@ -162,7 +162,7 @@
                 <span class="inline-flex items-center gap-2 relative">
                     <span class="w-1.5 h-1.5 rounded-full bg-primary-fixed-dim animate-pulse"></span>
                     Welcome back! Ready to start selling?
-                    <a href="{{ route('seller.dashboard') }}" class="ml-0.5 underline underline-offset-2 font-semibold text-primary-fixed-dim hover:opacity-80 transition-opacity">Create Your Store</a>
+                    <a href="{{ route('seller.store.create') }}" class="ml-0.5 underline underline-offset-2 font-semibold text-primary-fixed-dim hover:opacity-80 transition-opacity">Create Your Store</a>
                 </span>
             @endif
         @else
@@ -175,108 +175,167 @@
     </div>
 
     {{-- ============ HEADER ============ --}}
-    <header class="header-scrolled shadow-[0_1px_0_rgba(0,0,0,0.04)]">
-        <div class="max-w-7xl mx-auto px-5 sm:px-8 h-16 sm:h-[72px] flex items-center justify-between gap-4">
+    <header class="header-scrolled shadow-[0_1px_0_rgba(0,0,0,0.04)] bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            {{-- Main header row --}}
+            <div class="h-14 sm:h-16 flex items-center justify-between gap-3">
 
-            {{-- Hamburger + Logo (mobile) --}}
-            <div class="flex items-center gap-2 sm:gap-0">
-                <button @click="mobileMenu = !mobileMenu" class="sm:hidden relative w-9 h-9 flex items-center justify-center rounded-xl text-on-surface-variant hover:text-primary hover:bg-black/5 transition-all active:scale-90" aria-label="Menu">
-                    <svg x-show="!mobileMenu" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
-                    <svg x-show="mobileMenu" class="w-5 h-5" x-cloak fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-                </button>
-                <a href="/" class="shrink-0 transition-opacity hover:opacity-80">
-                    <x-application-logo class="h-7 sm:h-[30px]" />
-                </a>
-            </div>
+                {{-- Hamburger + Logo --}}
+                <div class="flex items-center gap-2 shrink-0">
+                    <button @click="mobileMenu = !mobileMenu" class="sm:hidden relative w-9 h-9 flex items-center justify-center rounded-xl text-on-surface-variant hover:text-primary hover:bg-black/5 transition-all active:scale-90" aria-label="Menu">
+                        <svg x-show="!mobileMenu" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
+                        <svg x-show="mobileMenu" class="w-5 h-5" x-cloak fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                    <a href="/" class="shrink-0 transition-opacity hover:opacity-80">
+                        <x-application-logo class="h-7 sm:h-8" />
+                    </a>
+                </div>
 
-            {{-- Desktop Nav --}}
-            <nav class="hidden md:flex items-center gap-8">
-                <a href="{{ route('home') }}" class="nav-link text-[13px] font-semibold text-on-surface transition-colors">Home</a>
-                <a href="{{ route('stores.index') }}" class="nav-link text-[13px] font-semibold text-on-surface-variant/80 hover:text-on-surface transition-colors">Stores</a>
-                <a href="{{ route('products.index') }}" class="nav-link text-[13px] font-semibold text-on-surface-variant/80 hover:text-on-surface transition-colors">Products</a>
-                <a href="{{ route('services.index') }}" class="nav-link text-[13px] font-semibold text-on-surface-variant/80 hover:text-on-surface transition-colors">Services</a>
-                <a href="{{ route('rentals.index') }}" class="nav-link text-[13px] font-semibold text-on-surface-variant/80 hover:text-on-surface transition-colors">Rentals</a>
-            </nav>
-
-            {{-- Right --}}
-            <div class="flex items-center gap-2 sm:gap-3">
+                {{-- Search bar (desktop, prominent) --}}
                 @hasSection('header-search')
                     @yield('header-search')
                 @else
-                {{-- Search trigger (desktop) --}}
-                <div class="hidden sm:block flex-1 max-w-xs lg:max-w-sm">
-                    <button @click="$dispatch('open-search')"
-                            class="w-full flex items-center gap-2.5 px-4 py-2.5 bg-gray-100/80 hover:bg-gray-100 border border-gray-200/60 rounded-xl text-left transition-all group">
-                        <svg class="w-4 h-4 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
-                        <span class="text-[13px] text-gray-400 flex-1">Search products, stores...</span>
-                        <kbd class="text-[9px] text-gray-400 bg-white px-1.5 py-0.5 rounded-md border border-gray-200/80 font-medium shrink-0">/</kbd>
-                    </button>
+                <div class="hidden sm:flex flex-1 max-w-xl lg:max-w-2xl mx-4">
+                    <div class="w-full flex rounded-xl overflow-hidden border-2 border-primary/30 focus-within:border-primary transition-colors shadow-sm">
+                        <input type="text" placeholder="What are you looking for?"
+                               @click="$dispatch('open-search')"
+                               class="w-full h-10 px-4 text-[13px] outline-none bg-white text-on-surface placeholder-gray-400" readonly>
+                        <button class="h-10 px-5 bg-primary text-on-primary text-sm font-bold flex items-center gap-1.5 hover:bg-primary/90 transition-colors">
+                            <span class="material-symbols-outlined text-[18px]">search</span>
+                            <span class="hidden lg:inline">Search</span>
+                        </button>
+                    </div>
                 </div>
                 @endif
 
-                {{-- Auth --}}
+                {{-- Right icons --}}
+                <div class="flex items-center gap-1.5 sm:gap-2">
                     @auth
                         @php
-                            $userStore = auth()->user()->store; $dashboard = auth()->user()->store ? route('seller.dashboard') : route('stores.index');
+                            $userStore = auth()->user()->store;
                             $cartCount = \App\Models\Cart::where('user_id', auth()->id())->withCount('items')->first()?->items_count ?? 0;
                         @endphp
-                        @if(!$userStore)
-                            <a href="{{ route('seller.dashboard') }}"
-                               class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 text-[13px] font-semibold text-primary bg-primary/5 hover:bg-primary/10 rounded-xl transition-all">Open Your Store</a>
-                        @endif
                         <a href="{{ route('cart.index') }}"
-                           class="relative hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 text-[13px] font-semibold text-on-surface-variant/80 hover:text-on-surface hover:bg-black/5 rounded-xl transition-all">
-                            <span class="material-symbols-outlined text-[18px]">shopping_cart</span>
+                           class="relative w-9 h-9 flex items-center justify-center rounded-xl text-on-surface-variant/70 hover:text-on-surface hover:bg-black/5 transition-all">
+                            <span class="material-symbols-outlined text-[20px]">shopping_cart</span>
                             @if($cartCount > 0)
                                 <span class="absolute -top-0.5 -right-0.5 w-4 h-4 bg-error text-on-primary text-[8px] font-bold rounded-full flex items-center justify-center">{{ min($cartCount, 99) }}</span>
                             @endif
                         </a>
-                        <a href="{{ route('orders.index') }}"
-                           class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 text-[13px] font-semibold text-on-surface-variant/80 hover:text-on-surface hover:bg-black/5 rounded-xl transition-all">My Orders</a>
-                        <a href="{{ route('conversations.index') }}"
-                           class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 text-[13px] font-semibold text-on-surface-variant/80 hover:text-on-surface hover:bg-black/5 rounded-xl transition-all relative">
-                            Inbox
-                            <span class="unread-badge hidden ml-1 w-4 h-4 bg-error text-on-error text-[9px] font-bold rounded-full flex items-center justify-center leading-none">0</span>
+                        <a href="{{ route('notifications.index') }}"
+                           class="relative w-9 h-9 flex items-center justify-center rounded-xl text-on-surface-variant/70 hover:text-on-surface hover:bg-black/5 transition-all">
+                            <span class="material-symbols-outlined text-[20px]">notifications</span>
+                            <span class="notif-badge hidden absolute -top-0.5 -right-0.5 w-4 h-4 bg-error text-on-primary text-[8px] font-bold rounded-full flex items-center justify-center">0</span>
                         </a>
-                    <a href="{{ $dashboard }}"
-                       class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 text-[13px] font-semibold text-on-surface-variant/80 hover:text-on-surface hover:bg-black/5 rounded-xl transition-all">Dashboard</a>
-                    <form method="POST" action="{{ route('logout') }}" class="hidden sm:inline">
-                        @csrf
-                        <button type="submit" class="text-[13px] font-semibold text-on-surface-variant/60 hover:text-error transition-colors px-2.5 py-2 rounded-xl hover:bg-error/5">Log Out</button>
-                    </form>
-                    <a href="{{ $dashboard }}"
-                       class="w-8 h-8 rounded-full overflow-hidden bg-black/5 flex items-center justify-center text-on-surface/60 text-xs font-bold hover:bg-primary hover:text-on-primary hover:scale-105 active:scale-95 transition-all ring-1 ring-black/5">
-                        @if($userStore && $userStore->logo)
-                            <img src="{{ $userStore->logo_url }}" alt="{{ $userStore->name }}" class="w-full h-full object-cover">
-                        @else
-                            {{ substr(auth()->user()->name ?? auth()->user()->email, 0, 1) }}
-                        @endif
-                    </a>
-                @else
-                    <a href="{{ route('login') }}"
-                       class="hidden sm:inline-flex text-[13px] font-semibold text-on-surface-variant/80 hover:text-on-surface transition-colors px-3 py-2 rounded-xl hover:bg-black/5">Log In</a>
-                    <a href="{{ route('register') }}"
-                       class="relative px-5 py-2 bg-on-surface text-on-primary rounded-full text-[12px] font-bold hover:bg-on-surface/90 active:scale-[0.97] transition-all duration-200 shadow-sm overflow-hidden group">
-                        Create Catalog
-                        <span class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></span>
-                    </a>
-                @endauth
+                        <a href="{{ route('conversations.index') }}"
+                           class="relative w-9 h-9 flex items-center justify-center rounded-xl text-on-surface-variant/70 hover:text-on-surface hover:bg-black/5 transition-all">
+                            <span class="material-symbols-outlined text-[20px]">chat_bubble</span>
+                            <span class="unread-badge hidden absolute -top-0.5 -right-0.5 w-4 h-4 bg-error text-on-primary text-[8px] font-bold rounded-full flex items-center justify-center">0</span>
+                        </a>
+                        <div class="w-px h-6 bg-gray-200 mx-1 hidden sm:block"></div>
+                        <div class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
+                            <button class="w-8 h-8 rounded-full overflow-hidden bg-black/5 flex items-center justify-center text-on-surface/60 text-xs font-bold hover:ring-2 hover:ring-primary/30 transition-all ring-1 ring-black/10">
+                                @if($userStore && $userStore->logo)
+                                    <img src="{{ $userStore->logo_url }}" alt="" class="w-full h-full object-cover">
+                                @else
+                                    {{ substr(auth()->user()->name ?? auth()->user()->email, 0, 1) }}
+                                @endif
+                            </button>
+                            <div x-show="open" x-cloak @click="open = false"
+                                 class="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-50">
+                                <a href="{{ route('orders.index') }}" class="flex items-center gap-2.5 px-4 py-2 text-[12px] font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+                                    <span class="material-symbols-outlined text-[16px] text-gray-400">shopping_cart</span> My Orders
+                                </a>
+                                <a href="{{ $userStore ? route('seller.dashboard') : route('seller.store.create') }}" class="flex items-center gap-2.5 px-4 py-2 text-[12px] font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+                                    <span class="material-symbols-outlined text-[16px] text-gray-400">store</span> {{ $userStore ? 'Dashboard' : 'Open a Store' }}
+                                </a>
+                                @if(!$userStore)
+                                    <a href="{{ route('seller.store.create') }}" class="flex items-center gap-2.5 px-4 py-2 text-[12px] font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+                                        <span class="material-symbols-outlined text-[16px] text-gray-400">add_business</span> Create Your Store
+                                    </a>
+                                @endif
+                                <hr class="my-1 border-gray-100">
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit" class="w-full flex items-center gap-2.5 px-4 py-2 text-[12px] font-medium text-error hover:bg-error/5 transition-colors">
+                                        <span class="material-symbols-outlined text-[16px]">logout</span> Log Out
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    @endauth
+                    @guest
+                        <a href="{{ route('register') }}" class="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-[12px] font-bold text-primary bg-primary/5 hover:bg-primary/10 rounded-xl transition-all">
+                            Join Free
+                        </a>
+                        <a href="{{ route('login') }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 text-[12px] font-semibold text-on-surface-variant/80 hover:text-on-surface hover:bg-black/5 rounded-xl transition-all">
+                            Sign In
+                        </a>
+                    @endguest
+                </div>
+            </div>
 
-                {{-- Search trigger (mobile) --}}
-                @hasSection('header-search-mobile')
-                    @yield('header-search-mobile')
-                @else
-                <button @click="$dispatch('open-search')"
-                        class="sm:hidden p-2 text-on-surface-variant hover:text-on-surface hover:bg-black/5 rounded-xl transition-all">
-                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
-                </button>
-                @endif
+            {{-- Navigation row (desktop) --}}
+            <div class="hidden sm:flex items-center h-11 border-t border-gray-100">
+                {{-- Categories mega menu --}}
+                <div class="relative h-full" x-data="{ catOpen: false }" @mouseenter="catOpen = true" @mouseleave="catOpen = false">
+                    <button class="h-full flex items-center gap-2 px-4 text-[12px] font-bold text-on-surface bg-gray-50/80 hover:bg-gray-100 rounded-t-lg transition-colors">
+                        <span class="material-symbols-outlined text-[18px] text-primary">category</span>
+                        All Categories
+                        <span class="material-symbols-outlined text-[14px] text-gray-400" :class="catOpen ? 'rotate-180' : ''" style="transition: transform 0.2s">expand_more</span>
+                    </button>
+                    <div x-show="catOpen" x-cloak @click="catOpen = false"
+                         class="absolute left-0 top-full mt-0 bg-white rounded-b-xl rounded-r-xl shadow-xl border border-gray-100 z-50 flex"
+                         style="min-width: 600px; max-width: 800px;">
+                        <div class="grid grid-cols-3 gap-0 p-3 flex-1">
+                            @foreach($headerCategories->whereNull('parent_id')->take(18) as $cat)
+                                <a href="{{ route('products.index', ['category' => $cat->slug]) }}"
+                                   class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary/5 hover:text-primary transition-all text-[12px] font-medium text-gray-700">
+                                    @if($cat->icon && str_starts_with($cat->icon, '<'))
+                                        <span class="w-4 h-4 flex items-center justify-center shrink-0 text-gray-400">{!! $cat->icon !!}</span>
+                                    @else
+                                        <span class="material-symbols-outlined text-[16px] text-gray-400">circle</span>
+                                    @endif
+                                    <span class="truncate">{{ $cat->name }}</span>
+                                    @if($cat->products_count > 0)
+                                        <span class="ml-auto text-[9px] text-gray-400 font-medium">{{ $cat->products_count }}</span>
+                                    @endif
+                                </a>
+                            @endforeach
+                        </div>
+                        <div class="w-40 bg-gray-50/80 p-3 rounded-r-xl flex flex-col gap-1">
+                            <span class="text-[9px] font-bold text-gray-400 uppercase tracking-wider mb-1">Quick Links</span>
+                            <a href="{{ route('stores.index') }}" class="text-[11px] font-medium text-gray-600 hover:text-primary transition-colors px-2 py-1 rounded hover:bg-white">Top Stores</a>
+                            <a href="{{ route('products.index') }}" class="text-[11px] font-medium text-gray-600 hover:text-primary transition-colors px-2 py-1 rounded hover:bg-white">New Arrivals</a>
+                            <a href="{{ route('services.index') }}" class="text-[11px] font-medium text-gray-600 hover:text-primary transition-colors px-2 py-1 rounded hover:bg-white">Services</a>
+                            <a href="{{ route('rentals.index') }}" class="text-[11px] font-medium text-gray-600 hover:text-primary transition-colors px-2 py-1 rounded hover:bg-white">Rentals</a>
+                            <a href="{{ route('products.index') }}" class="text-[11px] font-medium text-primary hover:text-primary/80 transition-colors px-2 py-1 rounded hover:bg-white mt-auto font-semibold">All Categories →</a>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Nav links --}}
+                <nav class="flex items-center h-full gap-1 ml-2">
+                    <a href="{{ route('home') }}" class="h-full flex items-center px-3.5 text-[12px] font-semibold text-on-surface border-b-2 border-primary transition-colors">Home</a>
+                    <a href="{{ route('products.index') }}" class="h-full flex items-center px-3.5 text-[12px] font-medium text-gray-600 hover:text-on-surface hover:bg-gray-50 transition-all">Products</a>
+                    <a href="{{ route('stores.index') }}" class="h-full flex items-center px-3.5 text-[12px] font-medium text-gray-600 hover:text-on-surface hover:bg-gray-50 transition-all">Stores</a>
+                    <a href="{{ route('services.index') }}" class="h-full flex items-center px-3.5 text-[12px] font-medium text-gray-600 hover:text-on-surface hover:bg-gray-50 transition-all">Services</a>
+                    <a href="{{ route('rentals.index') }}" class="h-full flex items-center px-3.5 text-[12px] font-medium text-gray-600 hover:text-on-surface hover:bg-gray-50 transition-all">Rentals</a>
+                </nav>
+
+                <div class="ml-auto flex items-center gap-2 text-[11px] text-gray-500">
+                    @auth
+                        @if(!($userStore ?? null))
+                            <a href="{{ route('seller.store.create') }}" class="font-semibold text-primary hover:underline">Open Your Store</a>
+                        @else
+                            <a href="{{ route('seller.dashboard') }}" class="font-semibold text-primary hover:underline">Seller Dashboard</a>
+                        @endif
+                    @else
+                        <a href="{{ route('register') }}" class="font-semibold text-primary hover:underline">Start Selling</a>
+                    @endauth
+                </div>
             </div>
         </div>
-
-        @hasSection('header-search-mobile-drawer')
-            @yield('header-search-mobile-drawer')
-        @endif
     </header>
     </div>
 
@@ -395,6 +454,12 @@
                                 <span class="material-symbols-outlined text-[20px] text-gray-400 group-hover:text-primary">shopping_cart</span>
                                 My Orders
                             </a>
+                            <a href="{{ route('notifications.index') }}" @click="mobileMenu = false"
+                               class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-gray-700 rounded-xl hover:bg-gray-50 hover:text-gray-900 transition-all group relative">
+                                <span class="material-symbols-outlined text-[20px] text-gray-400 group-hover:text-primary">notifications</span>
+                                Notifications
+                                <span class="notif-badge hidden ml-auto w-4 h-4 bg-error text-on-error text-[9px] font-bold rounded-full flex items-center justify-center leading-none">0</span>
+                            </a>
                             <a href="{{ route('conversations.index') }}" @click="mobileMenu = false"
                                class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-gray-700 rounded-xl hover:bg-gray-50 hover:text-gray-900 transition-all group relative">
                                 <span class="material-symbols-outlined text-[20px] text-gray-400 group-hover:text-primary">chat_bubble</span>
@@ -402,23 +467,27 @@
                                 <span class="unread-badge hidden ml-auto w-4 h-4 bg-error text-on-error text-[9px] font-bold rounded-full flex items-center justify-center leading-none">0</span>
                             </a>
                         </div>
-                        @if($isSeller)
-                            <div class="mt-4 pt-4 border-t border-gray-100">
-                                <p class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider px-3 mb-2">Selling</p>
+                        <div class="mt-4 pt-4 border-t border-gray-100">
+                            <p class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider px-3 mb-2">Sell{{ $isSeller ? 'ing' : '' }}</p>
+                            @if($isSeller)
                                 <a href="{{ route('seller.dashboard') }}" @click="mobileMenu = false"
                                    class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-gray-700 rounded-xl hover:bg-amber-50 hover:text-amber-800 transition-all group">
                                     <span class="material-symbols-outlined text-[20px] text-gray-400 group-hover:text-amber-500">dashboard</span>
                                     Dashboard
                                 </a>
-                                @if($userStore)
-                                    <a href="{{ route('seller.products.index') }}" @click="mobileMenu = false"
-                                       class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-gray-700 rounded-xl hover:bg-amber-50 hover:text-amber-800 transition-all group">
-                                        <span class="material-symbols-outlined text-[20px] text-gray-400 group-hover:text-amber-500">inventory_2</span>
-                                        Manage Products
-                                    </a>
-                                @endif
-                            </div>
-                        @endif
+                                <a href="{{ route('seller.products.index') }}" @click="mobileMenu = false"
+                                   class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-gray-700 rounded-xl hover:bg-amber-50 hover:text-amber-800 transition-all group">
+                                    <span class="material-symbols-outlined text-[20px] text-gray-400 group-hover:text-amber-500">inventory_2</span>
+                                    Manage Products
+                                </a>
+                            @else
+                                <a href="{{ route('seller.store.create') }}" @click="mobileMenu = false"
+                                   class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-amber-700 rounded-xl hover:bg-amber-50 transition-all group">
+                                    <span class="material-symbols-outlined text-[20px] text-amber-500">storefront</span>
+                                    Open Your Store
+                                </a>
+                            @endif
+                        </div>
                     @else
                         <div class="mt-4 pt-4 border-t border-gray-100">
                             <p class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider px-3 mb-2">Sell</p>
@@ -571,7 +640,7 @@
                                     <div class="px-4 sm:px-6 pt-4 pb-2">
                                         <div class="flex items-center justify-between mb-3">
                                             <p class="text-[11px] font-bold text-gray-400 uppercase tracking-[0.08em]">Products</p>
-                                            <a :href="'/products?search=' + encodeURIComponent(query)" @click="searchOpen = false" class="text-[11px] font-semibold text-primary hover:text-primary/80 transition-colors">View All</a>
+                                            <a :href="'/search?q=' + encodeURIComponent(query) + '&scope=products'" @click="searchOpen = false" class="text-[11px] font-semibold text-primary hover:text-primary/80 transition-colors">View All</a>
                                         </div>
                                         <div class="space-y-1">
                                             <template x-for="product in results.products" :key="product.id">
@@ -599,7 +668,7 @@
                                     <div class="px-4 sm:px-6 pt-4 pb-2">
                                         <div class="flex items-center justify-between mb-3">
                                             <p class="text-[11px] font-bold text-gray-400 uppercase tracking-[0.08em]">Services</p>
-                                            <a :href="'/services?search=' + encodeURIComponent(query)" @click="searchOpen = false" class="text-[11px] font-semibold text-primary hover:text-primary/80 transition-colors">View All</a>
+                                            <a :href="'/search?q=' + encodeURIComponent(query) + '&scope=services'" @click="searchOpen = false" class="text-[11px] font-semibold text-primary hover:text-primary/80 transition-colors">View All</a>
                                         </div>
                                         <div class="space-y-1">
                                             <template x-for="service in results.services" :key="service.id">
@@ -747,7 +816,7 @@
     </div>
 
     {{-- ============ MAIN CONTENT ============ --}}
-    <main class="min-h-screen bg-[#fafcfa] pt-[112px] sm:pt-[124px] pb-[72px] sm:pb-0">
+    <main class="min-h-screen bg-[#fafcfa] pt-[108px] sm:pt-[160px] pb-[72px] sm:pb-0">
         {{-- Left sidebar (store show page) --}}
         @hasSection('store-sidebar')
             <aside class="fixed left-0 top-[100px] sm:top-[108px] h-[calc(100vh-100px)] sm:h-[calc(100vh-108px)] w-[260px] bg-white border-r border-gray-100 shadow-sm z-30 hidden lg:block overflow-y-auto no-scrollbar">
@@ -812,8 +881,8 @@
                             <a href="{{ route('stores.show', $userStore->slug) }}" class="text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors">My Store</a>
                             <a href="{{ route('seller.dashboard') }}" class="text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors">Dashboard</a>
                         @else
-                            <a href="{{ route('seller.dashboard') }}" class="text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors">Open Your Store</a>
-                            <a href="{{ route('seller.dashboard') }}" class="text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors">Dashboard</a>
+                            <a href="{{ route('seller.store.create') }}" class="text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors">Open Your Store</a>
+                            <a href="{{ route('seller.store.create') }}" class="text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors">Dashboard</a>
                         @endif
                     @else
                         <a href="{{ route('register') }}" class="text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors">Create Store</a>
@@ -1074,6 +1143,24 @@
                     });
                 })
                 .catch(function() {});
+        }
+
+        var notifBadges = document.querySelectorAll('.notif-badge');
+        if (notifBadges.length) {
+            function updateNotifCount() {
+                fetch('{{ route('notifications.unread-count') }}')
+                    .then(function(r) { return r.json(); })
+                    .then(function(d) {
+                        var c = d.unread_count || 0;
+                        notifBadges.forEach(function(b) {
+                            b.textContent = c > 99 ? '99+' : c;
+                            b.classList.toggle('hidden', c === 0);
+                        });
+                    })
+                    .catch(function() {});
+            }
+            updateNotifCount();
+            setInterval(updateNotifCount, 30000);
         }
 
         updateCount();

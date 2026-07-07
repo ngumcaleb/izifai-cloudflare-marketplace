@@ -13,6 +13,68 @@ use App\Models\User;
 
 class SearchController extends Controller
 {
+    public function search(Request $request)
+    {
+        $q = $request->query('q');
+        $scope = $request->query('scope', 'products');
+
+        $products = collect();
+        $services = collect();
+        $rentals = collect();
+        $stores = collect();
+
+        if ($q && strlen($q) >= 2) {
+            $keywords = array_filter(explode(' ', $q));
+
+            $products = Product::active()->with(['images', 'store', 'category'])
+                ->where(function($sub) use ($keywords) {
+                    foreach ($keywords as $word) {
+                        $sub->orWhere('name', 'LIKE', "%{$word}%")
+                            ->orWhere('description', 'LIKE', "%{$word}%")
+                            ->orWhereHas('category', fn($cat) => $cat->where('name', 'LIKE', "%{$word}%"))
+                            ->orWhereHas('store', fn($s) => $s->where('name', 'LIKE', "%{$word}%"));
+                    }
+                })->orderByDesc('views')->take(20)->get();
+
+            if ($scope === 'services' || $scope === 'all') {
+                $services = Service::active()->with(['images', 'store', 'category'])
+                    ->where(function($sub) use ($keywords) {
+                        foreach ($keywords as $word) {
+                            $sub->orWhere('name', 'LIKE', "%{$word}%")
+                                ->orWhere('description', 'LIKE', "%{$word}%")
+                                ->orWhereHas('category', fn($cat) => $cat->where('name', 'LIKE', "%{$word}%"))
+                                ->orWhereHas('store', fn($s) => $s->where('name', 'LIKE', "%{$word}%"));
+                        }
+                    })->orderByDesc('views')->take(20)->get();
+            }
+
+            if ($scope === 'rentals' || $scope === 'all') {
+                $rentals = RentalItem::with(['store', 'category'])->where('status', 'published')
+                    ->where(function($sub) use ($keywords) {
+                        foreach ($keywords as $word) {
+                            $sub->orWhere('name', 'LIKE', "%{$word}%")
+                                ->orWhere('description', 'LIKE', "%{$word}%")
+                                ->orWhereHas('category', fn($cat) => $cat->where('name', 'LIKE', "%{$word}%"))
+                                ->orWhereHas('store', fn($s) => $s->where('name', 'LIKE', "%{$word}%"));
+                        }
+                    })->orderByDesc('views')->take(20)->get();
+            }
+
+            if ($scope === 'stores' || $scope === 'all') {
+                $stores = Store::query()
+                    ->where(function($sub) use ($keywords) {
+                        foreach ($keywords as $word) {
+                            $sub->orWhere('name', 'LIKE', "%{$word}%")
+                                ->orWhere('description', 'LIKE', "%{$word}%")
+                                ->orWhere('location', 'LIKE', "%{$word}%");
+                        }
+                    })->take(20)->get();
+            }
+        }
+
+        return view('search.results', compact('q', 'scope', 'products', 'services', 'rentals', 'stores'));
+    }
+
     public function trending(Request $request)
     {
         $scope = $request->query('scope', 'products');

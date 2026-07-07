@@ -20,7 +20,7 @@ class User extends Authenticatable
         'profile_photo_path', 'cover_photo_path', 'status', 'default_page',
         'email_verified', 'phone_verified', 'verification_level',
         'trust_score', 'fcm_token',
-        'account_type', 'location', 'joined_at',
+        'location', 'joined_at',
     ];
 
     protected $appends = ['profile_photo_url', 'cover_photo_url'];

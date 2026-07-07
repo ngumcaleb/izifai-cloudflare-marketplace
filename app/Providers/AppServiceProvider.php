@@ -29,5 +29,13 @@ class AppServiceProvider extends ServiceProvider
                 ->pluck('location')
                 ->sort());
         });
+
+        // Share header categories with all views (for mega menu)
+        view()->composer('*', function ($view) {
+            $view->with('headerCategories', \App\Models\Category::has('products')
+                ->withCount('products')
+                ->orderBy('name')
+                ->get());
+        });
     }
 }

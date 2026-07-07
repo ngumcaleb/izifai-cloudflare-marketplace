@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Service;
 use App\Models\Category;
+use App\Models\ServiceReview;
 use Illuminate\Http\Request;
 
 class ServiceController extends Controller
@@ -116,5 +117,36 @@ class ServiceController extends Controller
             'service', 'store', 'reviews', 'avgRating', 'totalReviews',
             'totalServices', 'storeServices', 'starDistribution'
         ));
+    }
+
+    public function review(Request $request, \App\Models\Service $service)
+    {
+        if ($service->store->user_id === auth()->id()) {
+            return back()->with('error', 'You cannot review your own service.');
+        }
+
+        $existing = ServiceReview::where('service_id', $service->id)
+            ->where('user_id', auth()->id())->first();
+        if ($existing) {
+            return back()->with('error', 'You have already reviewed this service.');
+        }
+
+        $validated = $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+            'comment' => 'nullable|string|max:500',
+        ]);
+
+        ServiceReview::create([
+            'service_id' => $service->id,
+            'user_id' => auth()->id(),
+            'rating' => $validated['rating'],
+            'comment' => $validated['comment'] ?? null,
+        ]);
+
+        $service->rating = ServiceReview::where('service_id', $service->id)->avg('rating');
+        $service->review_count = ServiceReview::where('service_id', $service->id)->count();
+        $service->save();
+
+        return back()->with('success', 'Your review has been submitted.');
     }
 }

@@ -609,9 +609,9 @@
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     @foreach($rentals as $item)
-                        <div class="rental-card card-enter bg-white rounded-xl overflow-hidden border border-black/[0.04] shadow-sm group">
-                            <a href="{{ route('rentals.show', $item->slug) }}" class="block">
-                                <div class="aspect-[4/3] bg-surface-container-low relative overflow-hidden">
+                        <div class="rental-card card-enter bg-white rounded-xl overflow-hidden border border-black/[0.04] shadow-sm flex flex-col group">
+                            <a href="{{ route('rentals.show', $item->slug) }}" class="flex flex-col h-full">
+                                <div class="aspect-[4/3] bg-surface-container-low relative overflow-hidden shrink-0">
                                     @if($item->main_image_url)
                                         <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                              src="{{ $item->main_image_url }}"
@@ -628,24 +628,30 @@
                                         </span>
                                     @endif
                                 </div>
-                                <div class="p-2">
-                                    <div class="flex items-start justify-between gap-1">
-                                        <div class="min-w-0 flex-1">
-                                            @if($item->category)
-                                                <p class="text-[7px] font-semibold text-primary/70 uppercase tracking-wide truncate">{{ $item->category->name }}</p>
-                                            @endif
-                                            <h3 class="text-[10px] font-bold text-on-surface leading-snug line-clamp-1">{{ $item->name }}</h3>
+                                <div class="p-2 flex flex-col flex-1 justify-between gap-1">
+                                    <div class="min-w-0">
+                                        <div class="flex items-start justify-between gap-1">
+                                            <div class="min-w-0 flex-1">
+                                                @if($item->category)
+                                                    <p class="text-[7px] font-semibold text-primary/70 uppercase tracking-wide truncate">{{ $item->category->name }}</p>
+                                                @endif
+                                                <h3 class="text-[10px] font-bold text-on-surface leading-snug line-clamp-1">{{ $item->name }}</h3>
+                                            </div>
+                                            <span class="text-[10px] font-black text-orange-600 shrink-0 leading-none mt-0.5">{{ number_format($item->rate) }}<span class="text-[6px] text-orange-400">/<span class="lowercase">{{ substr($item->billing_unit,0,1) }}</span></span></span>
                                         </div>
-                                        <span class="text-[10px] font-black text-orange-600 shrink-0 leading-none mt-0.5">{{ number_format($item->rate) }}<span class="text-[6px] text-orange-400">/<span class="lowercase">{{ substr($item->billing_unit,0,1) }}</span></span></span>
+                                        @if($item->store)
+                                            <p class="text-[7px] text-on-surface-variant/50 truncate mt-0.5">{{ $item->store->name }}</p>
+                                        @endif
                                     </div>
-                                    @if($item->store)
-                                        <p class="text-[7px] text-on-surface-variant/50 truncate mt-0.5">{{ $item->store->name }}</p>
-                                    @endif
-                                    <div class="flex items-center gap-1.5 mt-1 flex-wrap">
+                                    <div class="flex items-center gap-1.5 flex-wrap">
                                         @if($item->deposit)
                                             <span class="deposit-badge text-[6px] font-bold px-1 py-0.5 rounded">Dep {{ number_format($item->deposit/1000,1) }}k</span>
                                         @endif
                                         <span class="billing-unit-tag text-[6px] font-semibold px-1 py-0.5 rounded capitalize">{{ $item->billing_unit }}</span>
+                                        <span class="ml-auto text-[7px] text-on-surface-variant/40 flex items-center gap-0.5">
+                                            <span class="material-symbols-outlined text-[7px]">visibility</span>
+                                            {{ $item->views }}
+                                        </span>
                                     </div>
                                 </div>
                             </a>

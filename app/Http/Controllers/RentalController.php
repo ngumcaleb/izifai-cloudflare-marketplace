@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\RentalItem;
 use App\Models\Category;
+use App\Models\RentalItem;
+use App\Models\RentalReview;
 use Illuminate\Http\Request;
 
 class RentalController extends Controller
@@ -111,8 +112,53 @@ class RentalController extends Controller
 
         $totalRentals = $store->rentalItems()->where('status', 'published')->count();
 
+        $reviews = $rental->reviews()->with('user')->latest()->get();
+        $avgRating = $reviews->count() > 0 ? round($reviews->avg('rating'), 1) : 0;
+        $totalReviews = $reviews->count();
+
+        $starDistribution = [];
+        for ($i = 5; $i >= 1; $i--) {
+            $count = $reviews->where('rating', $i)->count();
+            $starDistribution[$i] = [
+                'count' => $count,
+                'percentage' => $reviews->count() > 0 ? ($count / $reviews->count()) * 100 : 0,
+            ];
+        }
+
         return view('rentals.show', compact(
-            'rental', 'store', 'storeRentals', 'totalRentals'
+            'rental', 'store', 'storeRentals', 'totalRentals',
+            'reviews', 'avgRating', 'totalReviews', 'starDistribution'
         ));
+    }
+
+    public function review(Request $request, RentalItem $rental)
+    {
+        if ($rental->store->user_id === auth()->id()) {
+            return back()->with('error', 'You cannot review your own rental.');
+        }
+
+        $existing = RentalReview::where('rental_item_id', $rental->id)
+            ->where('user_id', auth()->id())->first();
+        if ($existing) {
+            return back()->with('error', 'You have already reviewed this rental.');
+        }
+
+        $validated = $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+            'comment' => 'nullable|string|max:500',
+        ]);
+
+        RentalReview::create([
+            'rental_item_id' => $rental->id,
+            'user_id' => auth()->id(),
+            'rating' => $validated['rating'],
+            'comment' => $validated['comment'] ?? null,
+        ]);
+
+        $rental->rating = RentalReview::where('rental_item_id', $rental->id)->avg('rating');
+        $rental->review_count = RentalReview::where('rental_item_id', $rental->id)->count();
+        $rental->save();
+
+        return back()->with('success', 'Your review has been submitted.');
     }
 }

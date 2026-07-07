@@ -7,6 +7,8 @@ use App\Models\Order;
 use App\Models\Setting;
 use App\Models\Wallet;
 use App\Models\WalletTransaction;
+use App\Models\Transaction;
+use App\Services\FapshiService;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -28,6 +30,43 @@ class OrderController extends Controller
             ->findOrFail($id);
 
         return view('orders.show', compact('order'));
+    }
+
+    public function pay(Request $request, $id)
+    {
+        $order = Order::with('transaction')
+            ->where('user_id', auth()->id())
+            ->findOrFail($id);
+
+        if ($order->status !== 'pending') {
+            return back()->with('error', 'This order cannot be paid.');
+        }
+
+        $validated = $request->validate([
+            'phone' => 'required|string|regex:/^[0-9]{9}$/',
+        ]);
+
+        $phone = '237' . $validated['phone'];
+        $transaction = $order->transaction;
+
+        $fapshi = app(FapshiService::class);
+        $result = $fapshi->initiateDirectPay(
+            $order->total_amount,
+            $phone,
+            "Payment for Order #{$order->order_number}",
+            ['order_id' => $order->id, 'user_id' => auth()->id()]
+        );
+
+        if (($result['success'] ?? false) || isset($result['transId'])) {
+            $transId = $result['transId'] ?? null;
+            if ($transaction) {
+                $transaction->update(['reference' => $transId, 'phone' => $phone]);
+            }
+
+            return back()->with('success', 'A payment request has been sent to your phone. Please approve it on your MoMo app.');
+        }
+
+        return back()->with('error', 'Payment request failed. Please check the phone number and try again.');
     }
 
     public function confirmReceived($id)

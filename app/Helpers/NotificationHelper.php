@@ -39,6 +39,7 @@ class NotificationHelper
             'data' => [
                 'amount' => $amount,
                 'type' => 'withdrawal_approved',
+                'url' => route('seller.wallet.transactions'),
             ],
         ]);
     }
@@ -56,6 +57,7 @@ class NotificationHelper
                 'amount' => $amount,
                 'reason' => $reason,
                 'type' => 'withdrawal_rejected',
+                'url' => route('seller.wallet.transactions'),
             ],
         ]);
     }

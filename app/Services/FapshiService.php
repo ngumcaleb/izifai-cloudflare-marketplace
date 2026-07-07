@@ -27,6 +27,18 @@ class FapshiService
         ];
     }
 
+    protected function client(): \Illuminate\Http\Client\PendingRequest
+    {
+        $client = Http::timeout(config('fapshi.timeout', 30))
+            ->withHeaders($this->headers());
+
+        if (config('fapshi.environment') !== 'production') {
+            $client->withoutVerifying();
+        }
+
+        return $client;
+    }
+
     public function initiateDirectPay(float $amount, string $phone, string $reason = '', array $metadata = []): array
     {
         $payload = [
@@ -40,9 +52,7 @@ class FapshiService
             $payload['metadata'] = $metadata;
         }
 
-        $response = Http::timeout(config('fapshi.timeout', 30))
-            ->withHeaders($this->headers())
-            ->post($this->baseUrl . '/initiate-pay', $payload);
+        $response = $this->client()->post($this->baseUrl . '/initiate-pay', $payload);
 
         if ($response->successful()) {
             return $response->json();
@@ -63,9 +73,7 @@ class FapshiService
 
     public function verifyTransaction(string $transactionId): array
     {
-        $response = Http::timeout(config('fapshi.timeout', 30))
-            ->withHeaders($this->headers())
-            ->get($this->baseUrl . '/transaction-status', [
+        $response = $this->client()->get($this->baseUrl . '/transaction-status', [
                 'transId' => $transactionId,
             ]);
 

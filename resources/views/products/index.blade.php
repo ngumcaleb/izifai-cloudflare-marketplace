@@ -31,7 +31,7 @@
     .active-filter-chips { animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
     @keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
 
-    .color-swatch { width: 14px; height: 14px; border-radius: 9999px; border: 2px solid white; box-shadow: 0 0 0 1px rgba(0,0,0,0.08); }
+    .color-swatch { width: 14px; height: 14px; border-radius: 9999px; border: 2px solid rgba(0,0,0,0.15); box-shadow: 0 0 0 1px rgba(0,0,0,0.06); }
     .h-scroll { scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scroll-padding-left: 12px; scroll-padding-right: 12px; }
     .h-scroll > * { scroll-snap-align: start; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -539,7 +539,7 @@
                                         @endif
 
                                         @if($product->is_featured)
-                                            <span class="absolute top-2.5 left-2.5 bg-primary/90 backdrop-blur-sm text-on-primary text-[8px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-sm">
+                                            <span class="absolute top-2.5 right-2.5 bg-primary/90 backdrop-blur-sm text-on-primary text-[8px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-sm">
                                                 <span class="material-symbols-outlined text-[10px]" style="font-variation-settings: 'FILL' 1;">stars</span>
                                                 Featured
                                             </span>
@@ -552,7 +552,18 @@
                                             </span>
                                         @endif
 
-                                        <button class="favorite-btn absolute top-2.5 right-2.5 w-8 h-8 bg-white/85 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-all shadow-sm z-10"
+                                        @if($product->images->count() > 1)
+                                            <div class="absolute bottom-2.5 right-2.5 flex items-center z-10">
+                                                @foreach($product->images->take(3)->skip(1) as $img)
+                                                    <div class="-ml-1.5 first:ml-0 w-5 h-5 rounded-full ring-2 ring-white overflow-hidden shadow-sm bg-white">
+                                                        <img src="{{ $img->url }}" alt="" class="w-full h-full object-cover" loading="lazy" onerror="this.style.display='none'">
+                                                    </div>
+                                                @endforeach
+                                                <span class="ml-1 text-[8px] font-bold text-on-surface-variant/70">+{{ $product->images->count() - 1 }}</span>
+                                            </div>
+                                        @endif
+
+                                        <button class="favorite-btn absolute top-9 right-2.5 w-8 h-8 bg-white/85 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-all shadow-sm z-10"
                                                 data-product="{{ $product->id }}"
                                                 data-favorited="{{ in_array($product->id, $savedProductIds ?? []) ? 'true' : 'false' }}">
                                             <span class="material-symbols-outlined text-[15px] {{ in_array($product->id, $savedProductIds ?? []) ? 'text-error' : 'text-on-surface-variant/60' }}"
@@ -647,10 +658,19 @@
                                                 @endif
                                             @endif
                                             @if($product->is_featured)
-                                                <span class="absolute top-1.5 left-1.5 bg-primary/90 backdrop-blur-sm text-white text-[7px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5 shadow-sm">
+                                                <span class="absolute top-1.5 right-7 bg-primary/90 backdrop-blur-sm text-white text-[7px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5 shadow-sm">
                                                     <span class="material-symbols-outlined text-[8px]" style="font-variation-settings: 'FILL' 1;">stars</span>
                                                     Featured
                                                 </span>
+                                            @endif
+                                            @if($product->images->count() > 1)
+                                                <div class="absolute bottom-1.5 right-1.5 flex items-center z-10">
+                                                    @foreach($product->images->take(3)->skip(1) as $img)
+                                                        <div class="-ml-1 first:ml-0 w-3.5 h-3.5 rounded-full ring-[1.5px] ring-white overflow-hidden shadow-sm bg-white">
+                                                            <img src="{{ $img->url }}" alt="" class="w-full h-full object-cover" loading="lazy" onerror="this.style.display='none'">
+                                                        </div>
+                                                    @endforeach
+                                                </div>
                                             @endif
                                             <button class="favorite-btn absolute top-1.5 right-1.5 w-6 h-6 bg-white/85 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-all shadow-sm z-10"
                                                     data-product="{{ $product->id }}"

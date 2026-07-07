@@ -179,10 +179,11 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                 Dashboard
             </a>
         @else
-            <a href="{{ route('seller.dashboard') }}"
+            @php $hasStoreForLink = auth()->user()->store; @endphp
+            <a href="{{ $hasStoreForLink ? route('seller.dashboard') : route('seller.store.create') }}"
                class="w-full py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 text-xs text-primary border border-primary/20 hover:bg-primary/5 transition-all">
                 <span class="material-symbols-outlined text-[16px]">store</span>
-                Start Selling
+                {{ $hasStoreForLink ? 'Seller Dashboard' : 'Start Selling' }}
             </a>
         @endif
     @endauth
@@ -761,6 +762,22 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
         </div>
     </div>
 
+    {{-- Star Distribution --}}
+    @if(isset($starDistribution) && $totalReviews > 0)
+    <div class="bg-surface-container-low rounded-xl p-3 sm:p-4 border border-outline-variant/10 mt-3">
+        @foreach($starDistribution as $star => $data)
+        <div class="flex items-center gap-2 sm:gap-3 py-1">
+            <span class="text-[11px] sm:text-xs font-bold text-on-surface w-3 sm:w-4 text-right">{{ $star }}</span>
+            <span class="material-symbols-outlined text-[14px] sm:text-[16px] text-amber-500" style="font-variation-settings: 'FILL' 1;">star</span>
+            <div class="flex-1 h-2 sm:h-2.5 rounded-full bg-surface-container-high overflow-hidden">
+                <div class="h-full rounded-full bg-amber-500" style="width: {{ $data['percentage'] }}%"></div>
+            </div>
+            <span class="text-[10px] sm:text-xs text-on-surface-variant w-8 text-right">{{ $data['count'] }}</span>
+        </div>
+        @endforeach
+    </div>
+    @endif
+
     @auth
         @if(auth()->id() !== $store->user_id)
             <button @click="reviewForm = !reviewForm"
@@ -975,9 +992,10 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                 Go to Dashboard
             </a>
         @else
-            <a href="{{ route('seller.dashboard') }}"
+            @php $storeFooterStore = auth()->user()->store; @endphp
+            <a href="{{ $storeFooterStore ? route('seller.dashboard') : route('seller.store.create') }}"
                class="text-primary font-semibold text-xs lg:text-sm hover:underline">
-                Start Selling on Izifai &rarr;
+                {{ $storeFooterStore ? 'Seller Dashboard' : 'Start Selling on Izifai' }} &rarr;
             </a>
         @endif
     @endauth

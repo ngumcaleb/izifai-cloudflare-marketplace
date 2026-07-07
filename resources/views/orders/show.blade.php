@@ -113,7 +113,90 @@
 
         {{-- Right: Actions & Status Info --}}
         <div class="space-y-4">
-            @if($order->status === 'shipped')
+            @if($order->status === 'pending')
+                @php $txn = $order->transaction; @endphp
+                @if($txn && $txn->reference)
+                    <div class="bg-white rounded-2xl p-4 md:p-5 shadow-sm border border-gray-100/80 space-y-3">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600">
+                                <span class="material-symbols-outlined text-[18px]">hourglass_top</span>
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-gray-900">Payment Pending</p>
+                                <p class="text-[11px] text-gray-500">A payment request was sent to <strong>{{ $txn->phone }}</strong>. Approve it on your MoMo app to complete the order.</p>
+                            </div>
+                        </div>
+                        <form action="{{ route('orders.pay', $order->id) }}" method="POST">
+                            @csrf
+                            <div class="relative mb-3">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold text-gray-400">+237</span>
+                                <input type="tel" name="phone" inputmode="numeric" pattern="[0-9]{9}" required maxlength="9"
+                                       placeholder="6XXXXXXXX" value="{{ substr($txn->phone ?? '', 3) }}"
+                                       class="w-full bg-gray-50 border border-gray-200 rounded-xl pl-14 pr-4 py-2.5 text-sm text-gray-900 focus:ring-2 focus:ring-primary/20">
+                            </div>
+                            <button type="submit"
+                                    class="w-full bg-primary text-white py-2.5 rounded-xl text-xs font-bold hover:opacity-90 active:scale-[0.97] transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2">
+                                <span class="material-symbols-outlined text-[16px]">refresh</span>
+                                Retry Payment
+                            </button>
+                        </form>
+                    </div>
+                @else
+                    <div class="bg-white rounded-2xl p-4 md:p-5 shadow-sm border border-gray-100/80 space-y-3">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600">
+                                <span class="material-symbols-outlined text-[18px]">payments</span>
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-gray-900">Pay Now</p>
+                                <p class="text-[11px] text-gray-500">Enter your MoMo phone number to receive a payment request.</p>
+                            </div>
+                        </div>
+                        <form action="{{ route('orders.pay', $order->id) }}" method="POST">
+                            @csrf
+                            <div class="relative mb-3">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold text-gray-400">+237</span>
+                                <input type="tel" name="phone" inputmode="numeric" pattern="[0-9]{9}" required maxlength="9"
+                                       placeholder="6XXXXXXXX"
+                                       class="w-full bg-gray-50 border border-gray-200 rounded-xl pl-14 pr-4 py-2.5 text-sm text-gray-900 focus:ring-2 focus:ring-primary/20">
+                            </div>
+                            <button type="submit"
+                                    class="w-full bg-primary text-white py-2.5 rounded-xl text-xs font-bold hover:opacity-90 active:scale-[0.97] transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2">
+                                <span class="material-symbols-outlined text-[16px]">bolt</span>
+                                Pay Now
+                            </button>
+                        </form>
+                    </div>
+                @endif
+                <form action="{{ route('orders.cancel', $order->id) }}" method="POST">
+                    @csrf
+                    <button type="submit" onclick="return confirm('Are you sure you want to cancel this order?')"
+                            class="w-full bg-red-50 text-red-600 border border-red-200 py-3 rounded-xl text-xs font-bold hover:bg-red-100 active:scale-[0.97] transition-all flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-[16px]">cancel</span>
+                        Cancel Order
+                    </button>
+                </form>
+            @elseif($order->status === 'confirmed')
+                <div class="bg-white rounded-2xl p-4 md:p-5 shadow-sm border border-gray-100/80 space-y-3">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600">
+                            <span class="material-symbols-outlined text-[18px]">schedule</span>
+                        </div>
+                        <div>
+                            <p class="text-sm font-bold text-gray-900">Awaiting Processing</p>
+                            <p class="text-[11px] text-gray-500">Payment received! Your order is being processed by the seller.</p>
+                        </div>
+                    </div>
+                    <form action="{{ route('orders.cancel', $order->id) }}" method="POST">
+                        @csrf
+                        <button type="submit" onclick="return confirm('Are you sure you want to cancel this order?')"
+                                class="w-full bg-red-50 text-red-600 border border-red-200 py-3 rounded-xl text-xs font-bold hover:bg-red-100 active:scale-[0.97] transition-all flex items-center justify-center gap-2">
+                            <span class="material-symbols-outlined text-[16px]">cancel</span>
+                            Cancel Order
+                        </button>
+                    </form>
+                </div>
+            @elseif($order->status === 'shipped')
                 <div class="bg-white rounded-2xl p-4 md:p-5 shadow-sm border border-gray-100/80 space-y-3">
                     <div class="flex items-center gap-2">
                         <div class="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center text-green-600">
@@ -144,26 +227,6 @@
                             <p class="text-[11px] text-gray-500 mt-1">Thank you! Your confirmation has been received. Payment has been released to the seller.</p>
                         </div>
                     </div>
-                </div>
-            @elseif(in_array($order->status, ['pending', 'confirmed']))
-                <div class="bg-white rounded-2xl p-4 md:p-5 shadow-sm border border-gray-100/80 space-y-3">
-                    <div class="flex items-center gap-2">
-                        <div class="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600">
-                            <span class="material-symbols-outlined text-[18px]">schedule</span>
-                        </div>
-                        <div>
-                            <p class="text-sm font-bold text-gray-900">Awaiting Processing</p>
-                            <p class="text-[11px] text-gray-500">Your order is being processed by the seller. You can cancel if needed.</p>
-                        </div>
-                    </div>
-                    <form action="{{ route('orders.cancel', $order->id) }}" method="POST">
-                        @csrf
-                        <button type="submit" onclick="return confirm('Are you sure you want to cancel this order?')"
-                                class="w-full bg-red-50 text-red-600 border border-red-200 py-3 rounded-xl text-xs font-bold hover:bg-red-100 active:scale-[0.97] transition-all flex items-center justify-center gap-2">
-                            <span class="material-symbols-outlined text-[16px]">cancel</span>
-                            Cancel Order
-                        </button>
-                    </form>
                 </div>
             @elseif($order->status === 'cancelled')
                 <div class="bg-white rounded-2xl p-4 md:p-5 shadow-sm border border-gray-100/80">

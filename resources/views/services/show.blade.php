@@ -140,10 +140,11 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                 Dashboard
             </a>
         @else
-            <a href="{{ route('seller.dashboard') }}"
+            @php $svSidebarStore = auth()->user()->store; @endphp
+            <a href="{{ $svSidebarStore ? route('seller.dashboard') : route('seller.store.create') }}"
                class="w-full py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 text-xs text-primary border border-primary/20 hover:bg-primary/5 transition-all">
                 <span class="material-symbols-outlined text-[16px]">store</span>
-                Start Selling
+                {{ $svSidebarStore ? 'Seller Dashboard' : 'Start Selling' }}
             </a>
         @endif
     @endauth
@@ -470,6 +471,36 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
     </section>
     @endif
 
+    {{-- SERVICE REVIEW FORM --}}
+    @auth
+    <section class="bg-surface-container-lowest rounded-2xl p-5 shadow-sm border border-outline-variant/10">
+        <h4 class="text-base font-bold flex items-center gap-2 mb-4">
+            <span class="material-symbols-outlined text-primary text-[18px]">rate_review</span>
+            Write a Review
+        </h4>
+        <form action="{{ route('services.review', $service) }}" method="POST">
+            @csrf
+            <div class="flex items-center gap-1 mb-3" x-data="{ rating: 0 }">
+                <p class="text-xs font-bold text-on-surface-variant mr-2">Your Rating:</p>
+                <template x-for="i in 5" :key="i">
+                    <button type="button" @click="rating = i"
+                            class="material-symbols-outlined text-[24px] transition-colors"
+                            :class="i <= rating ? 'text-orange-500' : 'text-on-surface-variant/30'"
+                            :style="'font-variation-settings: \'FILL\' ' + (i <= rating ? 1 : 0)"
+                            x-text="'star'"></button>
+                </template>
+                <input type="hidden" name="rating" x-model="rating">
+            </div>
+            <textarea name="comment" rows="2" class="w-full bg-surface-container border-none rounded-xl p-3 text-sm text-on-surface focus:ring-2 focus:ring-primary/20 mb-3" placeholder="Share your thoughts about this service..." maxlength="500"></textarea>
+            <div class="flex justify-end">
+                <button type="submit" class="px-5 py-2 bg-primary text-on-primary rounded-xl text-xs font-bold hover:opacity-90 transition-all">
+                    Submit Review
+                </button>
+            </div>
+        </form>
+    </section>
+    @endauth
+
     {{-- OTHER SERVICES IN STORE --}}
     @if($storeServices->count() > 0)
     <section class="space-y-3 sm:space-y-4">
@@ -531,9 +562,10 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                 Go to Dashboard
             </a>
         @else
-            <a href="{{ route('seller.dashboard') }}"
+            @php $svFooterStore = auth()->user()->store; @endphp
+            <a href="{{ $svFooterStore ? route('seller.dashboard') : route('seller.store.create') }}"
                class="text-primary font-semibold text-xs lg:text-sm hover:underline">
-                Start Selling on Izifai &rarr;
+                {{ $svFooterStore ? 'Seller Dashboard' : 'Start Selling on Izifai' }} &rarr;
             </a>
         @endif
     @endauth

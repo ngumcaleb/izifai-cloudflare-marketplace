@@ -20,7 +20,6 @@ class AuthController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'account_type' => ['required', 'string', 'in:buyer,seller,provider,hybrid'],
             'phone' => ['required', 'string', 'max:20'],
             'country_code' => ['nullable', 'string', 'in:237,234'],
             'store_name' => ['nullable', 'string', 'max:255'],
@@ -34,13 +33,11 @@ class AuthController extends Controller
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'role' => Role::User,
-            'account_type' => $validated['account_type'],
             'phone' => $fullPhone,
             'status' => 'active',
         ]);
 
-        $canHaveStore = in_array($validated['account_type'], ['seller', 'provider', 'hybrid']);
-        if ($canHaveStore && ! empty($validated['store_name'])) {
+        if (! empty($validated['store_name'])) {
             Store::create([
                 'user_id' => $user->id,
                 'name' => $validated['store_name'],
@@ -114,7 +111,6 @@ class AuthController extends Controller
             'email' => $user->email,
             'phone' => $user->phone,
             'role' => $user->role,
-            'account_type' => $user->account_type,
             'status' => $user->status,
             'profile_photo_url' => $user->profile_photo_url,
             'default_page' => $user->default_page,

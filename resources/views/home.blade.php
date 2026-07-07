@@ -55,7 +55,7 @@
     .price-current { color: #ea580c; }
     .price-current-fcfa { color: #ea580c; opacity: 0.7; }
     .price-old-line { color: #dc2626; text-decoration: line-through; opacity: 0.6; }
-    .color-swatch { width: 14px; height: 14px; border-radius: 9999px; border: 2px solid white; box-shadow: 0 0 0 1px rgba(0,0,0,0.08); }
+    .color-swatch { width: 14px; height: 14px; border-radius: 9999px; border: 2px solid rgba(0,0,0,0.15); box-shadow: 0 0 0 1px rgba(0,0,0,0.06); }
     .animate-dot-pulse { animation: dotPulse 1.5s ease-in-out infinite; }
     .animate-dot-pulse-delayed { animation: dotPulse 1.5s ease-in-out 0.5s infinite; }
     .animate-dot-pulse-slower { animation: dotPulse 1.5s ease-in-out 1s infinite; }
@@ -70,154 +70,432 @@
 
 @section('content')
 
-{{-- ===== 1. HERO ===== --}}
-<section class="mx-3 sm:mx-6 lg:mx-8 mt-3 sm:mt-4">
-    <div class="relative min-h-[300px] sm:min-h-[340px] lg:min-h-[400px] rounded-2xl shadow-sm">
-        @php $heroImage = \App\Models\Setting::get('hero_image'); @endphp
-        <div class="absolute inset-0 bg-cover bg-center rounded-2xl" style="background-image: url('{{ $heroImage ? r2_url($heroImage) : 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1400&q=80' }}');"></div>
-        <div class="absolute inset-0 rounded-2xl bg-gradient-to-t from-black/70 via-black/30 to-black/10"></div>
-        <div class="absolute inset-0 rounded-2xl hero-pattern"></div>
-        <div class="absolute top-[-120px] right-[-80px] w-[400px] h-[400px] rounded-full bg-white/5 blur-[80px]"></div>
-        <div class="absolute bottom-[-100px] left-[-60px] w-[300px] h-[300px] rounded-full bg-white/5 blur-[80px]"></div>
-        <div class="absolute inset-0 pointer-events-none opacity-[0.04]">
-            <div class="absolute top-20 left-[15%] w-1 h-1 rounded-full bg-white animate-dot-pulse"></div>
-            <div class="absolute top-40 left-[35%] w-1.5 h-1.5 rounded-full bg-white animate-dot-pulse-delayed"></div>
-            <div class="absolute top-10 right-[25%] w-1 h-1 rounded-full bg-white animate-dot-pulse-slower"></div>
-            <div class="absolute bottom-40 right-[20%] w-1.5 h-1.5 rounded-full bg-white animate-dot-pulse-delayed"></div>
-            <div class="absolute bottom-20 left-[40%] w-1 h-1 rounded-full bg-white animate-dot-pulse"></div>
-        </div>
-        <div class="absolute bottom-0 left-0 right-0 px-4 sm:px-6 lg:px-10 py-4 sm:py-6 lg:py-8">
-            <div class="max-w-7xl mx-auto">
-                <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
-                    <div class="max-w-2xl">
-                        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/15 mb-2 sm:mb-3">
-                            <span class="w-1.5 h-1.5 rounded-full bg-[#00a859] animate-scale-pulse"></span>
-                            <span class="text-[8px] sm:text-[10px] font-bold text-white/90 tracking-wide">West Africa's Trusted Marketplace</span>
+{{-- ===== 1. HERO — Alibaba 3-Column Layout ===== --}}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 mt-4">
+    <div class="lg:grid lg:grid-cols-[180px_1fr_210px] lg:gap-4 lg:items-start">
+
+        {{-- Left: Categories sidebar (desktop) --}}
+        <aside class="hidden lg:block bg-white rounded-xl border border-black/5 shadow-sm overflow-hidden" x-data="{ showAllCategories: false }">
+            <div class="px-3 py-2.5 border-b border-gray-50 flex items-center gap-2">
+                <span class="material-symbols-outlined text-[16px] text-primary">category</span>
+                <span class="text-[10px] font-bold text-on-surface uppercase tracking-wider">Categories</span>
+            </div>
+            <div class="py-1">
+                @if($categories->count() > 0)
+                    @foreach($categories->take(14) as $cat)
+                        <a href="{{ route('products.index', ['category' => $cat->slug]) }}"
+                           class="flex items-center gap-2.5 px-3 py-2 hover:bg-primary/5 hover:text-primary transition-all text-[12px] font-medium text-gray-600 group">
+                            @if($cat->icon && str_starts_with($cat->icon, '<'))
+                                <span class="w-4 h-4 flex items-center justify-center shrink-0 text-gray-400 group-hover:text-primary">{!! $cat->icon !!}</span>
+                            @else
+                                <span class="material-symbols-outlined text-[15px] text-gray-400 group-hover:text-primary">circle</span>
+                            @endif
+                            <span class="truncate flex-1">{{ $cat->name }}</span>
+                            <span class="text-[9px] text-gray-300 group-hover:text-primary/40">{{ $cat->products_count }}</span>
+                        </a>
+                    @endforeach
+                @else
+                    @foreach($headerCategories->take(14) as $cat)
+                        <a href="{{ route('products.index', ['category' => $cat->slug]) }}"
+                           class="flex items-center gap-2.5 px-3 py-2 hover:bg-primary/5 hover:text-primary transition-all text-[12px] font-medium text-gray-600 group">
+                            @if($cat->icon && str_starts_with($cat->icon, '<'))
+                                <span class="w-4 h-4 flex items-center justify-center shrink-0 text-gray-400 group-hover:text-primary">{!! $cat->icon !!}</span>
+                            @else
+                                <span class="material-symbols-outlined text-[15px] text-gray-400 group-hover:text-primary">circle</span>
+                            @endif
+                            <span class="truncate flex-1">{{ $cat->name }}</span>
+                            <span class="text-[9px] text-gray-300 group-hover:text-primary/40">{{ $cat->products_count }}</span>
+                        </a>
+                    @endforeach
+                @endif
+                <button @click="showAllCategories = true" class="w-full flex items-center gap-2 px-3 py-2 mt-1 text-[11px] font-semibold text-primary border-t border-gray-50 hover:bg-primary/5 transition-all">
+                    <span class="material-symbols-outlined text-[15px]">arrow_forward</span>
+                    All Categories
+                </button>
+            </div>
+
+            {{-- All Categories Modal --}}
+            <div x-show="showAllCategories" x-cloak
+                 class="fixed inset-0 z-[70] flex items-start justify-center pt-12 sm:pt-20"
+                 @keydown.escape.window="showAllCategories = false">
+                <div class="fixed inset-0 bg-black/40 backdrop-blur-sm" @click="showAllCategories = false"></div>
+                <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl mx-4 max-h-[80vh] overflow-y-auto"
+                     @click.away="showAllCategories = false">
+                    {{-- Header --}}
+                    <div class="sticky top-0 bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between z-10">
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-[20px] text-primary">category</span>
+                            <h2 class="text-[13px] font-bold text-on-surface">All Categories</h2>
                         </div>
-                        <h1 class="text-2xl sm:text-3xl lg:text-5xl font-black leading-[1.04] tracking-[-0.03em] text-white text-balance">
-                            Buy and Sell Across<br>
-                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#00a859] to-[#4ade80]">West Africa</span>
-                        </h1>
-                        <p class="text-xs sm:text-sm text-white/80 max-w-xl leading-relaxed mt-1 sm:mt-2">
-                            Izifai connects you with trusted sellers across West Africa. Browse products, message directly, and buy — all from one link.
-                        </p>
-                        <div class="flex flex-wrap items-center gap-2 sm:gap-3 mt-3 sm:mt-4">
-                            <a href="{{ route('register') }}"
-                               class="inline-flex items-center justify-center gap-1.5 px-5 sm:px-6 py-2.5 sm:py-3 bg-white text-[#00210d] rounded-full text-[11px] sm:text-[13px] font-bold hover:bg-white/90 active:scale-[0.97] transition-all duration-200 shadow-sm group">
-                                Start Selling Free
-                                <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:translate-x-0.5 transition-transform shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
-                            </a>
-                            <a href="{{ route('products.index') }}"
-                               class="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 bg-white/10 backdrop-blur-sm text-white rounded-full text-[11px] sm:text-[13px] font-bold border border-white/20 hover:bg-white/20 active:scale-[0.97] transition-all duration-200">
-                                Browse Products
-                            </a>
-                        </div>
-                        <div class="flex flex-wrap items-center gap-3 sm:gap-5 mt-3 sm:mt-4">
-                            <div class="flex -space-x-2">
-                                @php $heroStoreAvatars = $stores->take(3); @endphp
-                                @foreach($heroStoreAvatars as $s)
-                                    <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full border-2 border-white/80 bg-white/20">
-                                        @if($s->logo)
-                                            <img src="{{ $s->logo_url }}" class="w-full h-full object-cover rounded-full" alt="">
-                                        @else
-                                            <x-store-default-logo :store="$s" size="xs" class="rounded-full border-0" />
-                                        @endif
-                                    </div>
-                                @endforeach
+                        <button @click="showAllCategories = false"
+                                class="w-8 h-8 flex items-center justify-center rounded-xl text-gray-400 hover:text-on-surface hover:bg-gray-100 transition-all">
+                            <span class="material-symbols-outlined text-[18px]">close</span>
+                        </button>
+                    </div>
+                    {{-- Body --}}
+                    <div class="p-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {{-- Product Categories --}}
+                            <div>
+                                <div class="flex items-center gap-2 mb-3 pb-2 border-b border-gray-100">
+                                    <span class="material-symbols-outlined text-[16px] text-primary">inventory_2</span>
+                                    <h3 class="text-[11px] font-bold text-on-surface uppercase tracking-wider">Products</h3>
+                                    <span class="text-[9px] text-gray-400 ml-auto">{{ $allProductCategories->count() }}</span>
+                                </div>
+                                <div class="space-y-0.5">
+                                    @forelse($allProductCategories as $cat)
+                                        <a href="{{ route('products.index', ['category' => $cat->slug]) }}"
+                                           class="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-primary/5 hover:text-primary transition-all text-[12px] font-medium text-gray-600 group"
+                                           @click="showAllCategories = false">
+                                            @if($cat->icon && str_starts_with($cat->icon, '<'))
+                                                <span class="w-4 h-4 flex items-center justify-center shrink-0 text-gray-400 group-hover:text-primary">{!! $cat->icon !!}</span>
+                                            @else
+                                                <span class="material-symbols-outlined text-[14px] text-gray-400 group-hover:text-primary">circle</span>
+                                            @endif
+                                            <span class="truncate flex-1">{{ $cat->name }}</span>
+                                            <span class="text-[9px] text-gray-300 group-hover:text-primary/40">{{ $cat->products_count }}</span>
+                                        </a>
+                                    @empty
+                                        <p class="text-[11px] text-gray-400 px-2 py-1">No product categories yet</p>
+                                    @endforelse
+                                </div>
                             </div>
-                            <div class="text-white">
-                                <p class="text-[11px] sm:text-sm font-bold">
-                                    <span class="text-base sm:text-lg font-black">{{ $verifiedStores }}+</span> Verified Sellers
-                                </p>
-                                <p class="text-[9px] sm:text-[10px] text-white/60">Join {{ $totalStores }}+ active stores</p>
+                            {{-- Service Categories --}}
+                            <div>
+                                <div class="flex items-center gap-2 mb-3 pb-2 border-b border-gray-100">
+                                    <span class="material-symbols-outlined text-[16px] text-secondary">handyman</span>
+                                    <h3 class="text-[11px] font-bold text-on-surface uppercase tracking-wider">Services</h3>
+                                    <span class="text-[9px] text-gray-400 ml-auto">{{ $allServiceCategories->count() }}</span>
+                                </div>
+                                <div class="space-y-0.5">
+                                    @forelse($allServiceCategories as $cat)
+                                        <a href="{{ route('services.index', ['category' => $cat->slug]) }}"
+                                           class="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-secondary/5 hover:text-secondary transition-all text-[12px] font-medium text-gray-600 group"
+                                           @click="showAllCategories = false">
+                                            @if($cat->icon && str_starts_with($cat->icon, '<'))
+                                                <span class="w-4 h-4 flex items-center justify-center shrink-0 text-gray-400 group-hover:text-secondary">{!! $cat->icon !!}</span>
+                                            @else
+                                                <span class="material-symbols-outlined text-[14px] text-gray-400 group-hover:text-secondary">circle</span>
+                                            @endif
+                                            <span class="truncate flex-1">{{ $cat->name }}</span>
+                                            <span class="text-[9px] text-gray-300 group-hover:text-secondary/40">{{ $cat->services_count }}</span>
+                                        </a>
+                                    @empty
+                                        <p class="text-[11px] text-gray-400 px-2 py-1">No service categories yet</p>
+                                    @endforelse
+                                </div>
+                            </div>
+                            {{-- Rental Categories --}}
+                            <div>
+                                <div class="flex items-center gap-2 mb-3 pb-2 border-b border-gray-100">
+                                    <span class="material-symbols-outlined text-[16px] text-tertiary">calendar_month</span>
+                                    <h3 class="text-[11px] font-bold text-on-surface uppercase tracking-wider">Rentals</h3>
+                                    <span class="text-[9px] text-gray-400 ml-auto">{{ $allRentalCategories->count() }}</span>
+                                </div>
+                                <div class="space-y-0.5">
+                                    @forelse($allRentalCategories as $cat)
+                                        <a href="{{ route('rentals.index', ['category' => $cat->slug]) }}"
+                                           class="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-tertiary/5 hover:text-tertiary transition-all text-[12px] font-medium text-gray-600 group"
+                                           @click="showAllCategories = false">
+                                            @if($cat->icon && str_starts_with($cat->icon, '<'))
+                                                <span class="w-4 h-4 flex items-center justify-center shrink-0 text-gray-400 group-hover:text-tertiary">{!! $cat->icon !!}</span>
+                                            @else
+                                                <span class="material-symbols-outlined text-[14px] text-gray-400 group-hover:text-tertiary">circle</span>
+                                            @endif
+                                            <span class="truncate flex-1">{{ $cat->name }}</span>
+                                            <span class="text-[9px] text-gray-300 group-hover:text-tertiary/40">{{ $cat->rental_items_count }}</span>
+                                        </a>
+                                    @empty
+                                        <p class="text-[11px] text-gray-400 px-2 py-1">No rental categories yet</p>
+                                    @endforelse
+                                </div>
                             </div>
                         </div>
                     </div>
-                    @if($featuredStore)
-                        <div class="hidden lg:block shrink-0 lg:w-[300px] xl:w-[340px]">
-                            <div class="bg-white/10 backdrop-blur-sm rounded-xl border border-white/15 p-3 sm:p-4">
-                                <div class="flex items-center gap-2.5 mb-2.5">
-                                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden bg-white/20 ring-2 ring-white/30 shrink-0">
-                                        @if($featuredStore->logo)
-                                            <img src="{{ $featuredStore->logo_url }}" class="w-full h-full object-cover" alt="">
-                                        @else
-                                            <x-store-default-logo :store="$featuredStore" size="sm" class="rounded-full" />
-                                        @endif
-                                    </div>
-                                    <div class="min-w-0">
-                                        <p class="text-xs sm:text-sm font-bold text-white truncate">{{ $featuredStore->name }}</p>
-                                        <p class="text-[9px] text-white/60 truncate">{{ $featuredStore->products->count() }} products{{ $featuredStore->is_verified ? ' • Verified' : '' }}</p>
-                                    </div>
-                                </div>
-                                @if($featuredStore->products->count() > 0)
-                                    <div class="grid grid-cols-4 gap-1.5">
-                                        @foreach($featuredStore->products->take(4) as $p)
-                                            <a href="{{ route('products.show', $p->slug) }}" class="aspect-square rounded-lg overflow-hidden bg-white/10 ring-1 ring-white/10 group/card">
-                                                @if($p->images->first())
-                                                    <img src="{{ $p->images->first()->url }}" class="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-500">
-                                                @else
-                                                    <div class="w-full h-full flex items-center justify-center text-white/20">
-                                                        <span class="material-symbols-outlined text-lg">image</span>
-                                                    </div>
-                                                @endif
-                                            </a>
-                                        @endforeach
-                                    </div>
-                                @endif
-                                <a href="{{ route('stores.show', $featuredStore->slug) }}" class="flex items-center justify-between mt-2 pt-2 border-t border-white/10 text-[10px] sm:text-[11px] font-semibold text-white/80 hover:text-white transition-colors">
-                                    <span>View store</span>
-                                    <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
-                                </a>
-                            </div>
-                        </div>
-                    @endif
+                    {{-- Footer --}}
+                    <div class="border-t border-gray-100 px-6 py-3 flex items-center justify-between">
+                        <span class="text-[10px] text-gray-400">{{ $allProductCategories->count() + $allServiceCategories->count() + $allRentalCategories->count() }} categories total</span>
+                        <a href="{{ route('products.index') }}"
+                           class="text-[11px] font-semibold text-primary hover:underline"
+                           @click="showAllCategories = false">Browse All →</a>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-</section>
+        </aside>
 
-{{-- ===== 2-10. SIDEBAR + MAIN CONTENT ===== --}}
-<div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 mt-4 sm:mt-6 lg:mt-8">
-    <div class="lg:grid lg:grid-cols-[280px_1fr] xl:grid-cols-[300px_1fr] lg:gap-8">
-
-        {{-- ===== SIDEBAR (desktop only) ===== --}}
-        <aside class="hidden lg:block space-y-6">
-
-            {{-- Categories --}}
-            @if($categories->count() > 0)
-                <div class="bg-white rounded-xl border border-black/5 shadow-sm p-4">
-                    <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-3">Categories</h3>
-                    <div class="space-y-0.5">
-                        <a href="{{ route('products.index') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[12px] font-semibold text-gray-700 hover:bg-primary/5 hover:text-primary transition-all">
-                            <span class="material-symbols-outlined text-[16px] text-primary/40">grid_view</span>
-                            All Products
-                        </a>
-                        @foreach($categories as $cat)
-                            <a href="{{ route('products.index', ['category' => $cat->slug]) }}"
-                               class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[12px] font-medium text-gray-600 hover:bg-primary/5 hover:text-primary transition-all">
-                                @if($cat->icon && str_starts_with($cat->icon, '<'))
-                                    <span class="w-4 h-4 flex items-center justify-center shrink-0 text-gray-400">{!! $cat->icon !!}</span>
+        {{-- Center: 3 stacked cards --}}
+        <div class="flex flex-col gap-2.5">
+            {{-- Card 1: Main Hero Banner --}}
+            <div class="relative min-h-[260px] sm:min-h-[220px] rounded-xl overflow-hidden shadow-sm group">
+                @php $heroImage = \App\Models\Setting::get('hero_image'); @endphp
+                <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" style="background-image: url('{{ $heroImage ? r2_url($heroImage) : 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1400&q=80' }}');"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/10"></div>
+                <div class="absolute inset-0 hero-pattern"></div>
+                <div class="absolute bottom-0 left-0 right-0 px-5 sm:px-7 py-4 sm:py-5">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/15 mb-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#00a859] animate-scale-pulse"></span>
+                        <span class="text-[8px] font-bold text-white/90 tracking-wide">West Africa's Trusted Marketplace</span>
+                    </div>
+                    <h1 class="text-xl sm:text-2xl lg:text-2xl xl:text-3xl font-black leading-[1.08] tracking-[-0.02em] text-white text-balance">
+                        Buy and Sell Across<br>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#00a859] to-[#4ade80]">West Africa</span>
+                    </h1>
+                    <p class="text-[10px] sm:text-xs text-white/80 max-w-lg leading-relaxed mt-1">
+                        Browse products, message directly, and buy — all from one link.
+                    </p>
+                    <div class="flex flex-wrap items-center gap-2 mt-2.5">
+                        @auth
+                            <a href="{{ auth()->user()->store ? route('seller.dashboard') : route('seller.store.create') }}"
+                               class="inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 bg-white text-[#00210d] rounded-full text-[10px] sm:text-[11px] font-bold hover:bg-white/90 active:scale-[0.97] transition-all shadow-sm group">
+                                @if(auth()->user()->store)
+                                    Manage Your Store
                                 @else
-                                    <span class="material-symbols-outlined text-[16px] text-gray-400">circle</span>
+                                    Open Your Store
                                 @endif
-                                <span class="truncate">{{ $cat->name }}</span>
-                                <span class="ml-auto text-[10px] text-gray-400 font-semibold">{{ $cat->products_count }}</span>
+                                <svg class="w-3 h-3 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+                            </a>
+                        @else
+                            <a href="{{ route('register') }}"
+                               class="inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 bg-white text-[#00210d] rounded-full text-[10px] sm:text-[11px] font-bold hover:bg-white/90 active:scale-[0.97] transition-all shadow-sm group">
+                                Start Selling Free
+                                <svg class="w-3 h-3 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+                            </a>
+                        @endauth
+                        <a href="{{ route('products.index') }}"
+                           class="inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 bg-white/10 backdrop-blur-sm text-white rounded-full text-[10px] sm:text-[11px] font-bold border border-white/20 hover:bg-white/20 transition-all">
+                            Browse Products
+                        </a>
+                    </div>
+                    <div class="flex items-center gap-3 mt-2">
+                        <div class="flex -space-x-1.5">
+                            @php $heroStoreAvatars = $stores->take(3); @endphp
+                            @foreach($heroStoreAvatars as $s)
+                                <div class="w-6 h-6 rounded-full border-2 border-white/80 bg-white/20">
+                                    @if($s->logo)
+                                        <img src="{{ $s->logo_url }}" class="w-full h-full object-cover rounded-full" alt="">
+                                    @else
+                                        <x-store-default-logo :store="$s" size="xs" class="rounded-full border-0" />
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
+                        <span class="text-[10px] text-white/80">
+                            <span class="font-black">{{ $verifiedStores }}+</span> Verified Sellers
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Card 2: Hot Deals + Trending Products --}}
+            <div class="bg-white rounded-xl border border-black/5 shadow-sm overflow-hidden">
+                <div class="flex items-center justify-between px-3.5 py-2.5 border-b border-gray-50">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[14px] text-orange-500" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+                        <h3 class="text-[10px] font-bold text-on-surface uppercase tracking-wider">Hot Deals</h3>
+                    </div>
+                    <a href="{{ route('products.index') }}" class="text-[9px] font-semibold text-primary hover:underline">View All →</a>
+                </div>
+                @if($trendingProducts->count() >= 3)
+                    <div class="grid grid-cols-3 gap-px bg-gray-50/80">
+                        @foreach($trendingProducts->take(3) as $tp)
+                            <a href="{{ route('products.show', $tp->slug) }}"
+                               class="bg-white p-2 hover:bg-gray-50/50 transition-all group/card">
+                                <div class="aspect-[4/3] rounded-lg overflow-hidden bg-surface-container-low mb-1.5">
+                                    @if($tp->images->first())
+                                        <img src="{{ $tp->images->first()->url }}" alt="" class="w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-500">
+                                    @else
+                                        <div class="w-full h-full flex items-center justify-center text-on-surface-variant/20">
+                                            <span class="material-symbols-outlined text-xl">image</span>
+                                        </div>
+                                    @endif
+                                </div>
+                                <p class="text-[9px] font-bold text-on-surface leading-tight line-clamp-1 group-hover/card:text-primary transition-colors">{{ $tp->name }}</p>
+                                <div class="flex items-center justify-between mt-0.5">
+                                    <span class="text-[9px] font-black text-orange-600">{{ number_format($tp->price) }} <span class="text-[5px]">FCFA</span></span>
+                                    @if($tp->views > 0)
+                                        <span class="text-[7px] text-gray-400 flex items-center gap-0.5">
+                                            <span class="material-symbols-outlined text-[7px]">visibility</span>
+                                            {{ $tp->views }}
+                                        </span>
+                                    @endif
+                                </div>
                             </a>
                         @endforeach
                     </div>
-                </div>
-            @endif
+                @else
+                    <div class="px-3.5 py-4 text-center">
+                        <p class="text-[10px] text-gray-400">No deals available right now</p>
+                    </div>
+                @endif
+            </div>
 
-            {{-- Top Stores mini --}}
-            @if($topStores->count() > 0)
-                <div class="bg-white rounded-xl border border-black/5 shadow-sm p-4">
-                    <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-3">Top Stores</h3>
-                    <div class="space-y-2">
-                        @foreach($topStores as $i => $ts)
-                            <a href="{{ route('stores.show', $ts->slug) }}" class="flex items-center gap-2.5 px-2 py-1.5 rounded-lg hover:bg-gray-50 transition-all group">
-                                <span class="w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center text-[9px] font-bold text-gray-400 shrink-0">{{ $i + 1 }}</span>
-                                <div class="w-7 h-7 rounded-full overflow-hidden bg-gray-100 ring-1 ring-gray-200 shrink-0">
+            {{-- Card 3: Sell on Izifai / Trust --}}
+            <div class="bg-gradient-to-r from-[#00210d] to-[#004d1f] rounded-xl p-3.5 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined text-[18px] text-white">store</span>
+                    </div>
+                    <div>
+                        <h4 class="text-[11px] font-bold text-white">Sell on Izifai</h4>
+                        <p class="text-[8px] text-white/70">{{ auth()->check() ? 'Manage your catalog and reach more customers.' : 'Create your free catalog and reach customers across West Africa.' }}</p>
+                    </div>
+                </div>
+                @auth
+                    <a href="{{ auth()->user()->store ? route('seller.dashboard') : route('seller.store.create') }}"
+                       class="shrink-0 inline-flex items-center gap-1 px-3.5 py-1.5 bg-white text-[#00210d] rounded-full text-[9px] font-bold hover:bg-white/90 transition-all">
+                        {{ auth()->user()->store ? 'Manage' : 'Open' }}
+                        <span class="material-symbols-outlined text-[12px]">arrow_forward</span>
+                    </a>
+                @else
+                    <a href="{{ route('register') }}"
+                       class="shrink-0 inline-flex items-center gap-1 px-3.5 py-1.5 bg-white text-[#00210d] rounded-full text-[9px] font-bold hover:bg-white/90 transition-all">
+                        Start Free
+                        <span class="material-symbols-outlined text-[12px]">arrow_forward</span>
+                    </a>
+                @endauth
+            </div>
+        </div>
+
+        {{-- Right: Creative Marketplace Pulse Card --}}
+        <div class="hidden lg:flex flex-col gap-3">
+            {{-- Creative stat card --}}
+            <div class="bg-white rounded-xl border border-black/5 shadow-sm overflow-hidden">
+                <div class="bg-gradient-to-br from-[#00210d] via-[#003d17] to-[#006b28] px-4 py-4 text-center relative overflow-hidden">
+                    <div class="absolute inset-0 opacity-[0.06]">
+                        <div class="absolute top-4 left-[20%] w-8 h-8 rounded-full bg-white animate-dot-pulse"></div>
+                        <div class="absolute bottom-6 right-[15%] w-5 h-5 rounded-full bg-white animate-dot-pulse-delayed"></div>
+                        <div class="absolute top-12 right-[30%] w-3 h-3 rounded-full bg-white animate-dot-pulse-slower"></div>
+                    </div>
+                    <div class="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center mx-auto mb-2 rotate-[-6deg] relative">
+                        <span class="material-symbols-outlined text-[20px] text-white">monitoring</span>
+                    </div>
+                    <h3 class="text-[11px] font-bold text-white relative">Marketplace Pulse</h3>
+                    <p class="text-[8px] text-white/60 mt-0.5 relative">Live marketplace snapshot</p>
+                </div>
+                <div class="p-3 space-y-2.5">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-7 h-7 rounded-lg bg-primary/5 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-[13px] text-primary">inventory_2</span>
+                            </span>
+                            <span class="text-[10px] text-gray-500 font-medium">Products</span>
+                        </div>
+                        <span class="text-[11px] font-black text-on-surface">{{ number_format($totalProducts) }}+</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-7 h-7 rounded-lg bg-secondary/5 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-[13px] text-secondary">store</span>
+                            </span>
+                            <span class="text-[10px] text-gray-500 font-medium">Stores</span>
+                        </div>
+                        <span class="text-[11px] font-black text-on-surface">{{ $totalStores }}</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-7 h-7 rounded-lg bg-emerald-50 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-[13px] text-emerald-600" style="font-variation-settings: 'FILL' 1;">verified</span>
+                            </span>
+                            <span class="text-[10px] text-gray-500 font-medium">Verified</span>
+                        </div>
+                        <span class="text-[11px] font-black text-on-surface">{{ $verifiedStores }}</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-7 h-7 rounded-lg bg-amber-50 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-[13px] text-amber-600" style="font-variation-settings: 'FILL' 1;">handyman</span>
+                            </span>
+                            <span class="text-[10px] text-gray-500 font-medium">Services</span>
+                        </div>
+                        <span class="text-[11px] font-black text-on-surface">{{ $totalServices }}</span>
+                    </div>
+                </div>
+                <div class="border-t border-gray-50 px-3 py-2.5">
+                    <a href="{{ route('products.index') }}"
+                       class="flex items-center justify-between text-[9px] font-semibold text-primary hover:text-primary/80 transition-colors">
+                        <span>Explore Marketplace</span>
+                        <span class="material-symbols-outlined text-[12px]">arrow_forward</span>
+                    </a>
+                </div>
+            </div>
+
+            {{-- Featured store (compact) --}}
+            @if($featuredStore)
+                <a href="{{ route('stores.show', $featuredStore->slug) }}"
+                   class="bg-white rounded-xl border border-black/5 shadow-sm p-3 flex items-center gap-2.5 hover:shadow-md transition-all group">
+                    <div class="w-9 h-9 rounded-full overflow-hidden bg-gray-100 ring-2 ring-gray-50 shrink-0">
+                        @if($featuredStore->logo)
+                            <img src="{{ $featuredStore->logo_url }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="">
+                        @else
+                            <x-store-default-logo :store="$featuredStore" size="sm" class="rounded-full" />
+                        @endif
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <p class="text-[10px] font-bold text-on-surface truncate group-hover:text-primary transition-colors">{{ $featuredStore->name }}</p>
+                        <p class="text-[8px] text-gray-400 truncate">{{ $featuredStore->products->count() }} products{{ $featuredStore->is_verified ? ' • ✅ Verified' : '' }}</p>
+                    </div>
+                    <span class="material-symbols-outlined text-[14px] text-gray-300 group-hover:text-primary transition-colors">arrow_forward</span>
+                </a>
+            @endif
+        </div>
+    </div>
+</div>
+
+{{-- ===== Content Sections Wrapper ===== --}}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 mt-5 sm:mt-6 lg:mt-7">
+    <main class="min-w-0">
+        {{-- Categories chips (mobile only) --}}
+        @if($categories->count() > 0)
+            <div class="lg:hidden mb-4">
+                <div class="flex items-center justify-between mb-2">
+                    <h2 class="text-[11px] font-bold text-on-surface uppercase tracking-wider">Categories</h2>
+                    <a href="{{ route('products.index') }}" class="text-[9px] font-semibold text-primary hover:underline">View All</a>
+                </div>
+                <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1 -mx-4 px-4">
+                    @foreach($categories as $cat)
+                        <a href="{{ route('products.index', ['category' => $cat->slug]) }}"
+                           class="category-chip shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-black/8 text-[10px] font-semibold text-on-surface-variant bg-white hover:border-primary/30 hover:text-primary transition-all whitespace-nowrap">
+                            @if($cat->icon && str_starts_with($cat->icon, '<'))
+                                <span class="w-3.5 h-3.5 flex items-center justify-center shrink-0">{!! $cat->icon !!}</span>
+                            @else
+                                <span class="material-symbols-outlined text-[13px]">circle</span>
+                            @endif
+                            {{ $cat->name }}
+                        </a>
+                    @endforeach
+                    <div class="w-4 shrink-0"></div>
+                </div>
+            </div>
+        @endif
+
+{{-- ===== 3. TOP RATED SHOWCASE (Alibaba-inspired) ===== --}}
+@if($topRatedStores->count() > 0 || $topRatedProducts->count() > 0 || $topRatedServices->count() > 0)
+    <section class="mt-4 sm:mt-6 lg:mt-8">
+        <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+                <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-amber-50 flex items-center justify-center shadow-sm">
+                    <span class="material-symbols-outlined text-[12px] sm:text-[14px] text-amber-600" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+                </span>
+                <h2 class="text-xs sm:text-sm font-extrabold text-on-surface">Top Rated</h2>
+            </div>
+            <span class="text-[9px] sm:text-[10px] font-semibold text-on-surface-variant/50">Highest rated across the marketplace</span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-[1fr_1.6fr_1fr] gap-3 sm:gap-4">
+            {{-- Top Rated Stores --}}
+            @if($topRatedStores->count() > 0)
+                <div class="bg-white rounded-xl border border-black/[0.04] shadow-sm overflow-hidden">
+                    <div class="px-3 py-2.5 border-b border-gray-50 flex items-center justify-between">
+                        <div class="flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-[14px] text-primary" style="font-variation-settings: 'FILL' 1;">store</span>
+                            <span class="text-[10px] font-bold text-on-surface uppercase tracking-wider">Top Stores</span>
+                        </div>
+                        <a href="{{ route('stores.index') }}" class="text-[9px] font-semibold text-primary hover:underline">View All</a>
+                    </div>
+                    <div class="p-2 space-y-1">
+                        @foreach($topRatedStores as $ts)
+                            <a href="{{ route('stores.show', $ts->slug) }}" class="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-gray-50 transition-all group">
+                                <div class="w-8 h-8 rounded-full overflow-hidden bg-gray-100 ring-1 ring-gray-200 shrink-0">
                                     @if($ts->logo)
                                         <img src="{{ $ts->logo_url }}" class="w-full h-full object-cover">
                                     @else
@@ -225,60 +503,106 @@
                                     @endif
                                 </div>
                                 <div class="min-w-0 flex-1">
-                                    <p class="text-[11px] font-semibold text-gray-700 truncate group-hover:text-primary transition-colors">{{ $ts->name }}</p>
-                                    <p class="text-[9px] text-gray-400">{{ $ts->products_count }} products</p>
+                                    <div class="flex items-center gap-1">
+                                        <p class="text-[11px] font-semibold text-gray-700 truncate group-hover:text-primary transition-colors">{{ $ts->name }}</p>
+                                        @if($ts->is_verified)
+                                            <span class="material-symbols-outlined text-[9px] text-primary shrink-0" style="font-variation-settings: 'FILL' 1;">verified</span>
+                                        @endif
+                                    </div>
+                                    <div class="flex items-center gap-1">
+                                        <span class="text-[9px] text-gray-400">{{ $ts->products_count }} products</span>
+                                        @if($ts->rating > 0)
+                                            <span class="text-[9px] text-amber-500">· {{ number_format($ts->rating, 1) }} ★</span>
+                                        @endif
+                                    </div>
                                 </div>
+                                <span class="material-symbols-outlined text-[14px] text-gray-300 group-hover:text-gray-500 transition-colors">chevron_right</span>
                             </a>
                         @endforeach
                     </div>
-                    <a href="{{ route('stores.index') }}" class="flex items-center justify-center gap-1 mt-3 pt-3 border-t border-gray-100 text-[10px] font-semibold text-primary hover:text-primary/80 transition-colors">
-                        All Stores
-                        <span class="material-symbols-outlined text-[12px]">arrow_forward</span>
-                    </a>
                 </div>
             @endif
 
-            {{-- Promo card --}}
-            <div class="bg-gradient-to-br from-[#00210d] to-[#004d1f] rounded-xl p-4 text-center">
-                <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center mx-auto mb-2">
-                    <span class="material-symbols-outlined text-[20px] text-white">store</span>
-                </div>
-                <h4 class="text-[13px] font-bold text-white">Sell on Izifai</h4>
-                <p class="text-[10px] text-white/70 mt-1 leading-relaxed">Create your free catalog and reach customers across West Africa.</p>
-                <a href="{{ route('register') }}" class="inline-flex items-center gap-1 mt-3 px-4 py-2 bg-white text-[#00210d] rounded-full text-[10px] font-bold hover:bg-white/90 transition-all">
-                    Start Free
-                    <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
-                </a>
-            </div>
-        </aside>
-
-        {{-- ===== MAIN CONTENT ===== --}}
-        <main class="min-w-0">
-            {{-- Categories chips (mobile only - desktop uses sidebar) --}}
-            @if($categories->count() > 0)
-                <div class="lg:hidden">
-                    <div class="flex items-center justify-between mb-2.5 sm:mb-3">
-                        <h2 class="text-[11px] sm:text-xs font-bold text-on-surface uppercase tracking-wider">Categories</h2>
-                        <a href="{{ route('products.index') }}" class="text-[10px] font-semibold text-primary hover:underline">View All</a>
+            {{-- Top Rated Products --}}
+            @if($topRatedProducts->count() > 0)
+                <div class="bg-white rounded-xl border border-black/[0.04] shadow-sm overflow-hidden">
+                    <div class="px-3 py-2.5 border-b border-gray-50 flex items-center justify-between">
+                        <div class="flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-[14px] text-primary" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
+                            <span class="text-[10px] font-bold text-on-surface uppercase tracking-wider">Top Products</span>
+                        </div>
+                        <a href="{{ route('products.index') }}" class="text-[9px] font-semibold text-primary hover:underline">View All</a>
                     </div>
-                    <div class="flex gap-2 overflow-x-auto no-scrollbar mobile-scroll pb-1 -mx-3 px-3 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0 lg:flex-wrap lg:gap-2">
-                        @foreach($categories as $cat)
-                            <a href="{{ route('products.index', ['category' => $cat->slug]) }}"
-                               class="category-chip shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-black/8 text-[11px] font-semibold text-on-surface-variant bg-white hover:border-primary/30 hover:text-primary transition-all">
-                                @if($cat->icon && str_starts_with($cat->icon, '<'))
-                                    <span class="w-4 h-4 flex items-center justify-center shrink-0">{!! $cat->icon !!}</span>
-                                @else
-                                    <span class="material-symbols-outlined text-[14px]">circle</span>
+                    <div class="grid grid-cols-2 gap-px bg-gray-50">
+                        @foreach($topRatedProducts->take(4) as $tp)
+                            <a href="{{ route('products.show', $tp->slug) }}" class="bg-white p-1.5 hover:bg-gray-50 transition-all group">
+                                <div class="aspect-[4/3] rounded-md overflow-hidden bg-surface-container-low mb-1">
+                                    @if($tp->images->first())
+                                        <img src="{{ $tp->images->first()->url }}" alt="" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                    @else
+                                        <div class="w-full h-full flex items-center justify-center text-on-surface-variant/20">
+                                            <span class="material-symbols-outlined text-xl">image</span>
+                                        </div>
+                                    @endif
+                                </div>
+                                <p class="text-[8px] font-bold text-on-surface leading-snug line-clamp-1 group-hover:text-primary transition-colors">{{ $tp->name }}</p>
+                                <div class="flex items-center gap-1 mt-0.5">
+                                    <span class="text-[9px] font-black text-orange-600">{{ number_format($tp->price) }}</span>
+                                    <span class="text-[5px] font-bold text-orange-400">FCFA</span>
+                                </div>
+                                @if($tp->rating > 0)
+                                    <span class="text-[7px] text-amber-500">{{ number_format($tp->rating, 1) }} ★</span>
                                 @endif
-                                {{ $cat->name }}
                             </a>
                         @endforeach
-                        <div class="w-3 sm:w-6 shrink-0 lg:hidden"></div>
                     </div>
                 </div>
             @endif
 
-{{-- ===== 3. TRENDING PRODUCTS ===== --}}
+            {{-- Top Rated Services --}}
+            @if($topRatedServices->count() > 0)
+                <div class="bg-white rounded-xl border border-black/[0.04] shadow-sm overflow-hidden">
+                    <div class="px-3 py-2.5 border-b border-gray-50 flex items-center justify-between">
+                        <div class="flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-[14px] text-primary" style="font-variation-settings: 'FILL' 1;">handyman</span>
+                            <span class="text-[10px] font-bold text-on-surface uppercase tracking-wider">Top Services</span>
+                        </div>
+                        <a href="{{ route('services.index') }}" class="text-[9px] font-semibold text-primary hover:underline">View All</a>
+                    </div>
+                    <div class="p-2 space-y-1">
+                        @foreach($topRatedServices as $tsvc)
+                            <a href="{{ route('services.show', $tsvc->slug) }}" class="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-gray-50 transition-all group">
+                                <div class="w-8 h-8 rounded-lg overflow-hidden bg-gray-100 shrink-0">
+                                    @if($tsvc->main_image_url)
+                                        <img src="{{ $tsvc->main_image_url }}" class="w-full h-full object-cover">
+                                    @else
+                                        <div class="w-full h-full flex items-center justify-center text-gray-300">
+                                            <span class="material-symbols-outlined text-[14px]">handyman</span>
+                                        </div>
+                                    @endif
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <p class="text-[11px] font-semibold text-gray-700 truncate group-hover:text-primary transition-colors">{{ $tsvc->name }}</p>
+                                    <div class="flex items-center gap-1">
+                                        @if($tsvc->store)
+                                            <span class="text-[9px] text-gray-400 truncate">{{ $tsvc->store->name }}</span>
+                                        @endif
+                                        @if($tsvc->rating > 0)
+                                            <span class="text-[9px] text-amber-500">· {{ number_format($tsvc->rating, 1) }} ★</span>
+                                        @endif
+                                    </div>
+                                </div>
+                                <span class="text-[9px] font-black text-orange-600 shrink-0">From {{ number_format($tsvc->starting_price) }}</span>
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+        </div>
+    </section>
+@endif
+
+{{-- ===== 4. TRENDING PRODUCTS ===== --}}
 @if($trendingProducts->count() > 0)
     <section class="mt-4 sm:mt-6 lg:mt-8">
         <div class="flex items-center justify-between mb-3">
@@ -366,7 +690,7 @@
     </section>
 @endif
 
-{{-- ===== 4. FEATURED PRODUCTS ===== --}}
+{{-- ===== 5. FEATURED PRODUCTS ===== --}}
 @if($products->count() > 0)
     <section class="mt-4 sm:mt-6 lg:mt-8">
         <div class="flex items-center justify-between mb-3">
@@ -401,7 +725,7 @@
                                     @endif
                                 @endif
                                 @if($product->is_featured)
-                                    <span class="absolute top-1.5 left-1.5 bg-primary/90 backdrop-blur-sm text-white text-[7px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5 shadow-sm">
+                                    <span class="absolute top-1.5 right-7 bg-primary/90 backdrop-blur-sm text-white text-[7px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5 shadow-sm">
                                         <span class="material-symbols-outlined text-[8px]" style="font-variation-settings: 'FILL' 1;">stars</span>
                                         Featured
                                     </span>
@@ -412,6 +736,15 @@
                                     <span class="material-symbols-outlined text-[11px] {{ in_array($product->id, $savedProductIds) ? 'text-error' : 'text-on-surface-variant/60' }}"
                                           style="font-variation-settings: 'FILL' {{ in_array($product->id, $savedProductIds) ? 1 : 0 }};">favorite</span>
                                 </button>
+                                @if($product->images->count() > 1)
+                                    <div class="absolute bottom-1.5 right-1.5 flex items-center z-10">
+                                        @foreach($product->images->take(3)->skip(1) as $img)
+                                            <div class="-ml-1.5 first:ml-0 w-4 h-4 rounded-full ring-[1.5px] ring-white overflow-hidden shadow-sm bg-white">
+                                                <img src="{{ $img->url }}" alt="" class="w-full h-full object-cover" loading="lazy" onerror="this.style.display='none'">
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @endif
                                 @if($product->stock_status && $product->stock_status !== 'in_stock')
                                     <span class="absolute bottom-1.5 left-1.5 bg-white/90 backdrop-blur-sm text-[7px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-1 shadow-sm">
                                         <span class="stock-dot {{ $product->stock_status }}"></span>
@@ -487,7 +820,7 @@
                             @endif
 
                             @if($product->is_featured)
-                                <span class="absolute top-2.5 left-2.5 bg-primary/90 backdrop-blur-sm text-on-primary text-[8px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-sm">
+                                <span class="absolute top-2.5 right-2.5 bg-primary/90 backdrop-blur-sm text-on-primary text-[8px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-sm">
                                     <span class="material-symbols-outlined text-[10px]" style="font-variation-settings: 'FILL' 1;">stars</span>
                                     Featured
                                 </span>
@@ -500,7 +833,18 @@
                                 </span>
                             @endif
 
-                            <button class="favorite-btn absolute top-2.5 right-2.5 w-8 h-8 bg-white/85 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-all shadow-sm z-10"
+                            @if($product->images->count() > 1)
+                                <div class="absolute bottom-2.5 left-2.5 flex items-center z-10">
+                                    @foreach($product->images->take(3)->skip(1) as $img)
+                                        <div class="-ml-1.5 first:ml-0 w-5 h-5 rounded-full ring-2 ring-white overflow-hidden shadow-sm bg-white">
+                                            <img src="{{ $img->url }}" alt="" class="w-full h-full object-cover" loading="lazy" onerror="this.style.display='none'">
+                                        </div>
+                                    @endforeach
+                                    <span class="ml-1 text-[8px] font-bold text-white drop-shadow-sm">+{{ $product->images->count() - 1 }}</span>
+                                </div>
+                            @endif
+
+                            <button class="favorite-btn absolute top-9 right-2.5 w-8 h-8 bg-white/85 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-all shadow-sm z-10"
                                     data-product="{{ $product->id }}"
                                     data-favorited="{{ in_array($product->id, $savedProductIds) ? 'true' : 'false' }}">
                                 <span class="material-symbols-outlined text-[15px] {{ in_array($product->id, $savedProductIds) ? 'text-error' : 'text-on-surface-variant/60' }}"
@@ -570,7 +914,7 @@
     </section>
 @endif
 
-{{-- ===== 5. LATEST PRODUCTS ===== --}}
+{{-- ===== 6. LATEST PRODUCTS ===== --}}
 @if($latestProducts->count() > 0)
     <section class="mt-4 sm:mt-6 lg:mt-8">
         <div class="flex items-center justify-between mb-3">
@@ -598,6 +942,15 @@
                                 @if($d > 0)
                                     <span class="absolute top-1.5 left-1.5 bg-error text-on-error text-[7px] font-bold px-1.5 py-0.5 rounded-full shadow-sm">-{{ $d }}%</span>
                                 @endif
+                            @endif
+                            @if($product->images->count() > 1)
+                                <div class="absolute bottom-1.5 right-1.5 flex items-center z-10">
+                                    @foreach($product->images->take(3)->skip(1) as $img)
+                                        <div class="-ml-1 first:ml-0 w-3.5 h-3.5 rounded-full ring-[1.5px] ring-white overflow-hidden shadow-sm bg-white">
+                                            <img src="{{ $img->url }}" alt="" class="w-full h-full object-cover" loading="lazy" onerror="this.style.display='none'">
+                                        </div>
+                                    @endforeach
+                                </div>
                             @endif
                             <button class="favorite-btn absolute top-1.5 right-1.5 w-6 h-6 bg-white/85 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-all shadow-sm z-10"
                                     data-product="{{ $product->id }}"
@@ -655,6 +1008,16 @@
                                     {{ $product->stock_status === 'out_of_stock' ? 'Out of Stock' : 'On Request' }}
                                 </span>
                             @endif
+                            @if($product->images->count() > 1)
+                                <div class="absolute bottom-2.5 right-2.5 flex items-center z-10">
+                                    @foreach($product->images->take(3)->skip(1) as $img)
+                                        <div class="-ml-1.5 first:ml-0 w-5 h-5 rounded-full ring-2 ring-white overflow-hidden shadow-sm bg-white">
+                                            <img src="{{ $img->url }}" alt="" class="w-full h-full object-cover" loading="lazy" onerror="this.style.display='none'">
+                                        </div>
+                                    @endforeach
+                                    <span class="ml-1 text-[8px] font-bold text-on-surface-variant/70">+{{ $product->images->count() - 1 }}</span>
+                                </div>
+                            @endif
                             <button class="favorite-btn absolute top-2.5 right-2.5 w-8 h-8 bg-white/85 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-all shadow-sm z-10"
                                     data-product="{{ $product->id }}"
                                     data-favorited="{{ in_array($product->id, $savedProductIds) ? 'true' : 'false' }}">
@@ -689,7 +1052,7 @@
     </section>
 @endif
 
-{{-- ===== 6. TOP STORES ===== --}}
+{{-- ===== 7. TOP STORES ===== --}}
 @if($topStores->count() > 0)
     <section class="mt-4 sm:mt-6 lg:mt-8">
         <div class="flex items-center justify-between mb-3">
@@ -758,7 +1121,7 @@
     </section>
 @endif
 
-{{-- ===== 7. TRUSTED STORES ===== --}}
+{{-- ===== 8. TRUSTED STORES ===== --}}
 @if($stores->count() > 0)
     <section class="mt-4 sm:mt-6 lg:mt-8">
         <div class="flex items-center justify-between mb-3">
@@ -819,7 +1182,7 @@
     </section>
 @endif
 
-{{-- ===== 8. SERVICES ===== --}}
+{{-- ===== 9. SERVICES ===== --}}
 @if($services->count() > 0)
     <section class="mt-4 sm:mt-6 lg:mt-8">
         <div class="flex items-center justify-between mb-3">
@@ -904,8 +1267,8 @@
     </section>
 @endif
 
-{{-- ===== 9. RENTALS ===== --}}
-@if($rentals->count() > 0)
+{{-- ===== 10. RENTALS ===== --}}
+@if($rentals->count() > 0 || $trendingRentals->count() > 0)
     <section class="mt-4 sm:mt-6 lg:mt-8">
         <div class="flex items-center justify-between mb-3">
             <div class="flex items-center gap-2">
@@ -916,82 +1279,131 @@
             </div>
             <a href="{{ route('rentals.index') }}" class="text-[9px] sm:text-[10px] font-semibold text-primary hover:underline">View All</a>
         </div>
-        <div x-data="autoScroll()" class="flex gap-3 overflow-x-auto no-scrollbar section-scroll pb-2 -mx-3 px-3 sm:-mx-6 sm:px-6 lg:hidden">
-            @foreach($rentals as $item)
-                <div class="w-[150px] sm:w-[170px] shrink-0 card-enter" style="animation-delay: {{ $loop->index * 0.06 }}s">
-                    <a href="{{ route('rentals.show', $item->slug) }}" class="block product-card bg-white rounded-xl overflow-hidden border border-black/[0.04] shadow-sm group">
-                        <div class="aspect-[4/3] relative overflow-hidden bg-surface-container-low">
-                            @if($item->main_image_url)
-                                <img src="{{ $item->main_image_url }}" alt="{{ $item->name }}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                            @else
-                                <div class="w-full h-full flex items-center justify-center text-on-surface-variant/20"><span class="material-symbols-outlined text-3xl">image</span></div>
-                            @endif
-                        </div>
-                        <div class="p-2">
-                            @if($item->category)
-                                <p class="text-[7px] font-semibold text-primary/70 uppercase tracking-wide truncate mb-0.5">{{ $item->category->name }}</p>
-                            @endif
-                            <h3 class="text-[10px] sm:text-[11px] font-bold text-on-surface leading-snug line-clamp-2">{{ $item->name }}</h3>
-                            @if($item->store)
-                                <p class="text-[8px] text-on-surface-variant/50 truncate mt-0.5">{{ $item->store->name }}</p>
-                            @endif
-                            <div class="flex items-baseline gap-1 mt-1">
-                                <p class="text-xs font-black price-current">{{ number_format($item->rate) }} <span class="text-[6px] font-bold price-current-fcfa">FCFA</span></p>
-                                <span class="text-[7px] text-on-surface-variant/50">/{{ $item->billing_unit }}</span>
-                            </div>
-                        </div>
-                    </a>
+        @if($trendingRentals->count() > 0)
+            <div class="mb-4">
+                <div class="flex items-center gap-1.5 mb-2">
+                    <span class="trending-badge w-4 h-4 rounded flex items-center justify-center">
+                        <span class="material-symbols-outlined text-[9px] text-white" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+                    </span>
+                    <span class="text-[9px] font-bold text-on-surface-variant/60 uppercase tracking-wider">Trending Rentals</span>
                 </div>
-            @endforeach
-            <div class="w-3 sm:w-6 shrink-0"></div>
-        </div>
-        <div class="hidden lg:grid lg:grid-cols-4 gap-4">
-            @foreach($rentals as $item)
-                <div class="product-card card-enter bg-white rounded-2xl overflow-hidden border border-black/[0.04] shadow-[0_1px_4px_rgba(0,0,0,0.02)] group relative">
-                    <a href="{{ route('rentals.show', $item->slug) }}" class="block">
-                        <div class="aspect-[4/3] relative overflow-hidden bg-surface-container-low">
-                            @if($item->main_image_url)
-                                <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
-                                     src="{{ $item->main_image_url }}"
-                                     alt="{{ $item->name }}" loading="lazy">
-                            @else
-                                <div class="w-full h-full flex items-center justify-center text-on-surface-variant/20">
-                                    <span class="material-symbols-outlined text-4xl">image</span>
+                <div x-data="autoScroll()" class="flex gap-3 overflow-x-auto no-scrollbar pb-1">
+                    @foreach($trendingRentals as $tr)
+                        <div class="w-[160px] shrink-0">
+                            <a href="{{ route('rentals.show', $tr->slug) }}" class="block bg-white rounded-xl overflow-hidden border border-black/[0.04] shadow-sm group">
+                                <div class="aspect-[4/3] relative overflow-hidden bg-surface-container-low">
+                                    @if($tr->main_image_url)
+                                        <img src="{{ $tr->main_image_url }}" alt="{{ $tr->name }}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                    @else
+                                        <div class="w-full h-full flex items-center justify-center text-on-surface-variant/20"><span class="material-symbols-outlined text-3xl">image</span></div>
+                                    @endif
+                                    @if($tr->location)
+                                        <span class="absolute top-1.5 left-1.5 bg-white/90 backdrop-blur-sm text-[7px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5 shadow-sm">
+                                            <span class="material-symbols-outlined text-[8px]">location_on</span>
+                                            {{ $tr->location }}
+                                        </span>
+                                    @endif
                                 </div>
-                            @endif
-                            @if($item->location)
-                                <span class="absolute top-2.5 left-2.5 bg-white/90 backdrop-blur-sm text-on-surface text-[8px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-sm">
-                                    <span class="material-symbols-outlined text-[10px]">location_on</span>
-                                    {{ $item->location }}
-                                </span>
-                            @endif
+                                <div class="p-2">
+                                    @if($tr->category)
+                                        <p class="text-[7px] font-semibold text-primary/70 uppercase tracking-wide truncate">{{ $tr->category->name }}</p>
+                                    @endif
+                                    <h3 class="text-[10px] font-bold text-on-surface leading-snug line-clamp-1">{{ $tr->name }}</h3>
+                                    <div class="flex items-center justify-between mt-1">
+                                        <span class="text-[10px] font-black text-orange-600">{{ number_format($tr->rate) }}<span class="text-[6px] text-orange-400">/<span class="lowercase">{{ substr($tr->billing_unit,0,1) }}</span></span></span>
+                                        @if($tr->views > 0)
+                                            <span class="text-[7px] text-on-surface-variant/40 flex items-center gap-0.5">
+                                                <span class="material-symbols-outlined text-[7px]">visibility</span>
+                                                {{ $tr->views }}
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </a>
                         </div>
-                        <div class="p-3">
-                            @if($item->category)
-                                <p class="text-[9px] font-semibold text-primary/70 uppercase tracking-wide truncate">{{ $item->category->name }}</p>
-                            @endif
-                            <h3 class="text-[12px] sm:text-sm font-bold text-on-surface leading-snug line-clamp-2">{{ $item->name }}</h3>
-                            @if($item->store)
-                                <p class="text-[10px] text-on-surface-variant/60 truncate mt-0.5 flex items-center gap-1">
-                                    <span class="material-symbols-outlined text-[11px]">store</span>
-                                    {{ $item->store->name }}
-                                </p>
-                            @endif
-                            <div class="flex items-baseline gap-2 mt-1.5">
-                                <p class="text-sm sm:text-base font-black price-current tracking-tight">{{ number_format($item->rate) }}
-                                    <span class="text-[8px] font-bold price-current-fcfa">FCFA</span>
-                                </p>
-                                <span class="text-[10px] text-on-surface-variant/50">/{{ $item->billing_unit }}</span>
-                            </div>
-                        </div>
-                    </a>
+                    @endforeach
+                    <div class="w-2 shrink-0"></div>
                 </div>
-            @endforeach
-        </div>
+            </div>
+        @endif
+        @if($rentals->count() > 0)
+            <div x-data="autoScroll()" class="flex gap-3 overflow-x-auto no-scrollbar section-scroll pb-2 -mx-3 px-3 sm:-mx-6 sm:px-6 lg:hidden">
+                @foreach($rentals as $item)
+                    <div class="w-[150px] sm:w-[170px] shrink-0 card-enter" style="animation-delay: {{ $loop->index * 0.06 }}s">
+                        <a href="{{ route('rentals.show', $item->slug) }}" class="block product-card bg-white rounded-xl overflow-hidden border border-black/[0.04] shadow-sm group">
+                            <div class="aspect-[4/3] relative overflow-hidden bg-surface-container-low">
+                                @if($item->main_image_url)
+                                    <img src="{{ $item->main_image_url }}" alt="{{ $item->name }}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                @else
+                                    <div class="w-full h-full flex items-center justify-center text-on-surface-variant/20"><span class="material-symbols-outlined text-3xl">image</span></div>
+                                @endif
+                            </div>
+                            <div class="p-2">
+                                @if($item->category)
+                                    <p class="text-[7px] font-semibold text-primary/70 uppercase tracking-wide truncate mb-0.5">{{ $item->category->name }}</p>
+                                @endif
+                                <h3 class="text-[10px] sm:text-[11px] font-bold text-on-surface leading-snug line-clamp-2">{{ $item->name }}</h3>
+                                @if($item->store)
+                                    <p class="text-[8px] text-on-surface-variant/50 truncate mt-0.5">{{ $item->store->name }}</p>
+                                @endif
+                                <div class="flex items-baseline gap-1 mt-1">
+                                    <p class="text-xs font-black price-current">{{ number_format($item->rate) }} <span class="text-[6px] font-bold price-current-fcfa">FCFA</span></p>
+                                    <span class="text-[7px] text-on-surface-variant/50">/{{ $item->billing_unit }}</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                @endforeach
+                <div class="w-3 sm:w-6 shrink-0"></div>
+            </div>
+            <div class="hidden lg:grid lg:grid-cols-4 gap-4">
+                @foreach($rentals as $item)
+                    <div class="product-card card-enter bg-white rounded-2xl overflow-hidden border border-black/[0.04] shadow-[0_1px_4px_rgba(0,0,0,0.02)] group relative">
+                        <a href="{{ route('rentals.show', $item->slug) }}" class="block">
+                            <div class="aspect-[4/3] relative overflow-hidden bg-surface-container-low">
+                                @if($item->main_image_url)
+                                    <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                                         src="{{ $item->main_image_url }}"
+                                         alt="{{ $item->name }}" loading="lazy">
+                                @else
+                                    <div class="w-full h-full flex items-center justify-center text-on-surface-variant/20">
+                                        <span class="material-symbols-outlined text-4xl">image</span>
+                                    </div>
+                                @endif
+                                @if($item->location)
+                                    <span class="absolute top-2.5 left-2.5 bg-white/90 backdrop-blur-sm text-on-surface text-[8px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-sm">
+                                        <span class="material-symbols-outlined text-[10px]">location_on</span>
+                                        {{ $item->location }}
+                                    </span>
+                                @endif
+                            </div>
+                            <div class="p-3">
+                                @if($item->category)
+                                    <p class="text-[9px] font-semibold text-primary/70 uppercase tracking-wide truncate">{{ $item->category->name }}</p>
+                                @endif
+                                <h3 class="text-[12px] sm:text-sm font-bold text-on-surface leading-snug line-clamp-2">{{ $item->name }}</h3>
+                                @if($item->store)
+                                    <p class="text-[10px] text-on-surface-variant/60 truncate mt-0.5 flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-[11px]">store</span>
+                                        {{ $item->store->name }}
+                                    </p>
+                                @endif
+                                <div class="flex items-baseline gap-2 mt-1.5">
+                                    <p class="text-sm sm:text-base font-black price-current tracking-tight">{{ number_format($item->rate) }}
+                                        <span class="text-[8px] font-bold price-current-fcfa">FCFA</span>
+                                    </p>
+                                    <span class="text-[10px] text-on-surface-variant/50">/{{ $item->billing_unit }}</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                @endforeach
+            </div>
+        @endif
     </section>
 @endif
 
-{{-- ===== 10. HOW IT WORKS ===== --}}
+{{-- ===== 12. HOW IT WORKS ===== --}}
 <section class="mt-6 sm:mt-10 lg:mt-12">
     <div class="max-w-2xl mx-auto text-center mb-6 sm:mb-8">
         <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-[0.15em]">Simple Process</span>
@@ -1061,7 +1473,7 @@
     </div>
 </section>
 
-{{-- ===== 11. STATS BANNER ===== --}}
+{{-- ===== 13. STATS BANNER ===== --}}
 <section class="mt-6 sm:mt-10 lg:mt-12">
     <div class="relative overflow-hidden rounded-2xl">
         <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1556761175-b413da4baf72?w=1400&q=80');"></div>
@@ -1093,7 +1505,7 @@
     </div>
 </section>
 
-{{-- ===== 12. FINAL CTA ===== --}}
+{{-- ===== 14. FINAL CTA ===== --}}
 <section class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 mt-6 sm:mt-10 lg:mt-12 mb-8 sm:mb-14 lg:mb-16">
     <div class="relative overflow-hidden rounded-2xl bg-white border border-black/5 shadow-sm">
         <div class="absolute top-0 right-0 w-48 h-48 bg-primary/[0.02] rounded-full -translate-y-1/2 translate-x-1/4"></div>
@@ -1125,8 +1537,7 @@
     </div>
 </section>
 
-        </main>
-    </div>
+    </main>
 </div>
 
 @endsection

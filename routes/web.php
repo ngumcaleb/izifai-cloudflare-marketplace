@@ -17,6 +17,7 @@ Route::post('/store/{store}/review', [\App\Http\Controllers\StoreReviewControlle
 Route::get('/products', [\App\Http\Controllers\ProductController::class, 'index'])->name('products.index');
 Route::get('/products/search', [\App\Http\Controllers\ProductController::class, 'search'])->name('products.search');
 Route::get('/products/autocomplete', [\App\Http\Controllers\ProductController::class, 'autocompleteJson'])->name('products.autocomplete');
+Route::get('/search', [\App\Http\Controllers\SearchController::class, 'search'])->name('search');
 Route::get('/search/autocomplete', [\App\Http\Controllers\SearchController::class, 'autocomplete'])->name('search.autocomplete');
 Route::get('/search/trending', [\App\Http\Controllers\SearchController::class, 'trending'])->name('search.trending');
 Route::get('/products/{slug}', [\App\Http\Controllers\ProductController::class, 'show'])->name('products.show');
@@ -84,6 +85,9 @@ Route::middleware(['auth', 'seller'])->prefix('seller')->name('seller.')->group(
     Route::get('/orders/{id}', [\App\Http\Controllers\Seller\OrderController::class, 'show'])->name('orders.show');
     Route::post('/orders/{id}/ship', [\App\Http\Controllers\Seller\OrderController::class, 'markShipped'])->name('orders.ship');
 
+    Route::get('/store/create', [\App\Http\Controllers\Seller\SellerController::class, 'createStore'])->name('store.create');
+    Route::post('/store', [\App\Http\Controllers\Seller\SellerController::class, 'storeStore'])->name('store.store');
+
 });
 
 // === FAPSHI WEBHOOK ===
@@ -91,14 +95,63 @@ Route::post('/webhooks/fapshi', function (\Illuminate\Http\Request $request) {
     $service = new \App\Services\FapshiService;
     $data = $service->handleWebhook($request->all());
 
-    if ($data['status'] === 'success') {
-        $ad = \App\Models\AdvertisementRequest::where('payment_reference', $data['transaction_id'])->first();
-        if ($ad && $ad->payment_status !== 'paid') {
-            $ad->update([
-                'payment_status' => 'paid',
-                'paid_at' => now(),
+    if ($data['status'] !== 'success') {
+        return response('OK');
+    }
+
+    $transId = $data['transaction_id'];
+
+    $transaction = \App\Models\Transaction::where('reference', $transId)->first();
+
+    if ($transaction && $transaction->status !== 'completed') {
+        $order = $transaction->order;
+
+        if ($order && $order->status === 'pending') {
+            $order->update([
+                'status' => 'confirmed',
+                'confirmed_at' => now(),
+                'escrow_status' => 'held',
             ]);
+
+            $transaction->update([
+                'status' => 'completed',
+                'escrow_held_at' => now(),
+            ]);
+
+            foreach ($order->items as $item) {
+                $sellerWallet = $item->store?->user?->wallet;
+                if (!$sellerWallet) continue;
+
+                $itemTotal = $item->price * $item->quantity;
+
+                $sellerWallet->increment('locked_balance', $itemTotal);
+
+                \App\Models\WalletTransaction::create([
+                    'wallet_id' => $sellerWallet->id,
+                    'type' => 'escrow_hold',
+                    'amount' => $itemTotal,
+                    'balance_before' => $sellerWallet->balance,
+                    'balance_after' => $sellerWallet->balance,
+                    'description' => "Payment locked in escrow for Order #{$order->order_number}",
+                    'reference' => "HOLD-{$order->id}-{$item->id}",
+                    'status' => 'completed',
+                    'order_id' => $order->id,
+                    'buyer_name' => $order->user->name,
+                ]);
+            }
+
+            \App\Helpers\AuditLogger::log('order.confirmed', "Payment confirmed for order #{$order->order_number} via Fapshi", $order);
         }
+
+        return response('OK');
+    }
+
+    $ad = \App\Models\AdvertisementRequest::where('payment_reference', $transId)->first();
+    if ($ad && $ad->payment_status !== 'paid') {
+        $ad->update([
+            'payment_status' => 'paid',
+            'paid_at' => now(),
+        ]);
     }
 
     return response('OK');
@@ -220,6 +273,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/conversations/{conversation}/fetch', [\App\Http\Controllers\ConversationController::class, 'fetchMessages'])->name('conversations.messages.fetch');
     Route::get('/conversations/unread/count', [\App\Http\Controllers\ConversationController::class, 'unreadCount'])->name('conversations.unread');
     Route::delete('/conversations/{conversation}', [\App\Http\Controllers\ConversationController::class, 'destroy'])->name('conversations.destroy');
+
+    Route::get('/notifications', [\App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('/notifications/unread-count', [\App\Http\Controllers\NotificationController::class, 'unreadCount'])->name('notifications.unread-count');
+    Route::post('/notifications/{id}/read', [\App\Http\Controllers\NotificationController::class, 'markRead'])->name('notifications.read');
+    Route::post('/notifications/read-all', [\App\Http\Controllers\NotificationController::class, 'markAllRead'])->name('notifications.read-all');
+    Route::delete('/notifications/{id}', [\App\Http\Controllers\NotificationController::class, 'destroy'])->name('notifications.destroy');
+
+    Route::post('/products/{product}/review', [\App\Http\Controllers\ProductController::class, 'review'])->name('products.review');
+    Route::post('/services/{service}/review', [\App\Http\Controllers\ServiceController::class, 'review'])->name('services.review');
+    Route::post('/rentals/{rental}/review', [\App\Http\Controllers\RentalController::class, 'review'])->name('rentals.review');
 });
 
 // === R2 IMAGE PROXY (serves images from Cloudflare R2 for environments without public access) ===

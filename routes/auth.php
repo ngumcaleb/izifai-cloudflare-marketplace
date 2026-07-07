@@ -69,5 +69,6 @@ Route::middleware('auth')->group(function () {
     Route::get('orders', [\App\Http\Controllers\OrderController::class, 'index'])->name('orders.index');
     Route::get('orders/{id}', [\App\Http\Controllers\OrderController::class, 'show'])->name('orders.show');
     Route::post('orders/{id}/confirm-received', [\App\Http\Controllers\OrderController::class, 'confirmReceived'])->name('orders.confirm-received');
+    Route::post('orders/{id}/pay', [\App\Http\Controllers\OrderController::class, 'pay'])->name('orders.pay');
     Route::post('orders/{id}/cancel', [\App\Http\Controllers\OrderController::class, 'cancel'])->name('orders.cancel');
 });

@@ -125,10 +125,11 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                 Dashboard
             </a>
         @else
-            <a href="{{ route('seller.dashboard') }}"
+            @php $hasStore = auth()->user()->store; @endphp
+            <a href="{{ $hasStore ? route('seller.dashboard') : route('seller.store.create') }}"
                class="w-full py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 text-xs text-primary border border-primary/20 hover:bg-primary/5 transition-all">
                 <span class="material-symbols-outlined text-[16px]">store</span>
-                Start Selling
+                {{ $hasStore ? 'Seller Dashboard' : 'Start Selling' }}
             </a>
         @endif
     @endauth
@@ -245,12 +246,12 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                     <div class="flex flex-wrap gap-2 sm:gap-3">
                         <template x-for="color in {{ json_encode($product->colors) }}" :key="color">
                             <button @click="selectedColor = color"
-                                    class="w-8 h-8 sm:w-9 sm:h-9 rounded-full border-2 transition-all flex items-center justify-center"
-                                    :class="selectedColor === color ? 'border-primary ring-2 ring-primary/20' : 'border-outline-variant/30 hover:border-outline-variant'"
+                                    class="w-8 h-8 sm:w-9 sm:h-9 rounded-full transition-all flex items-center justify-center shadow-sm"
+                                    :class="selectedColor === color ? 'ring-2 ring-primary ring-offset-2' : 'ring-1 ring-black/10 hover:ring-black/30'"
                                     :style="'background-color: ' + color.toLowerCase()"
                                     :title="color">
                                 <template x-if="selectedColor === color">
-                                    <span class="material-symbols-outlined text-[12px] sm:text-[14px]" :style="'color: ' + (['white','#fff','#ffffff','whitesmoke'].includes(color.toLowerCase()) ? '#000' : '#fff')" style="font-variation-settings: 'FILL' 1;">check</span>
+                                    <span class="material-symbols-outlined text-[12px] sm:text-[14px]" :style="'color: ' + (['white','#fff','#ffffff','whitesmoke','#f5f5f5','#eee','#e0e0e0','#ddd'].includes(color.toLowerCase().replace(/\s/g,'')) ? '#000' : '#fff')" style="font-variation-settings: 'FILL' 1;">check</span>
                                 </template>
                             </button>
                         </template>
@@ -312,28 +313,34 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                             </button>
                         </form>
 
-                        {{-- Message + WhatsApp row --}}
-                        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-1.5 sm:gap-2">
-                            <form action="{{ route('conversations.store') }}" method="POST" class="flex-1 min-w-0">
-                                @csrf
-                                <input type="hidden" name="seller_id" value="{{ $store->user_id }}">
-                                <input type="hidden" name="target_type" value="product">
-                                <input type="hidden" name="target_id" value="{{ $product->id }}">
-                                <input type="hidden" name="message" value="Hi, I am interested in {{ $product->name }}. Is it still available?">
-                                <button type="submit"
-                                        class="flex items-center justify-center gap-1.5 w-full py-3 sm:py-3 border border-outline-variant/30 text-on-surface-variant rounded-xl text-[11px] sm:text-xs font-bold hover:bg-surface-container transition-all">
-                                    <span class="material-symbols-outlined text-[16px] sm:text-[18px]">chat_bubble_outline</span>
-                                    Message
-                                </button>
-                            </form>
-                            @if($store->whatsapp_number)
-                            <a href="#"
-                               onclick="logContact('whatsapp'); return false;"
-                               class="flex items-center justify-center gap-1.5 w-full py-3 sm:py-3 border border-outline-variant/30 text-[#25D366] rounded-xl text-[11px] sm:text-xs font-bold hover:bg-[#25D366] hover:text-white transition-all group">
-                                {!! $whatsappIcon !!}
-                                WhatsApp
-                            </a>
-                            @endif
+                        {{-- Contact Seller --}}
+                        <div class="border-t border-outline-variant/10 pt-4 mt-4">
+                            <p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-[14px]">support_agent</span>
+                                Contact Seller
+                            </p>
+                            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                                <form action="{{ route('conversations.store') }}" method="POST" class="min-w-0 sm:flex-1">
+                                    @csrf
+                                    <input type="hidden" name="seller_id" value="{{ $store->user_id }}">
+                                    <input type="hidden" name="target_type" value="product">
+                                    <input type="hidden" name="target_id" value="{{ $product->id }}">
+                                    <input type="hidden" name="message" value="Hi, I am interested in {{ $product->name }}. Is it still available?">
+                                    <button type="submit"
+                                            class="flex items-center justify-center gap-2 w-full py-2.5 sm:py-2.5 bg-primary/5 text-primary rounded-xl text-[11px] sm:text-xs font-bold border border-primary/20 hover:bg-primary hover:text-white transition-all">
+                                        <span class="material-symbols-outlined text-[16px] sm:text-[18px]">chat_bubble_outline</span>
+                                        Message Seller
+                                    </button>
+                                </form>
+                                @if($store->whatsapp_number)
+                                <a href="#"
+                                   onclick="logContact('whatsapp'); return false;"
+                                   class="flex items-center justify-center gap-2 w-full sm:w-auto py-2.5 sm:py-2.5 px-4 border border-outline-variant/30 text-[#25D366] rounded-xl text-[11px] sm:text-xs font-bold hover:bg-[#25D366] hover:text-white transition-all whitespace-nowrap">
+                                    {!! $whatsappIcon !!}
+                                    WhatsApp
+                                </a>
+                                @endif
+                            </div>
                         </div>
                         @endif
                     @else
@@ -556,6 +563,22 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
             </div>
         </div>
 
+        {{-- Star Distribution --}}
+        @if(isset($starDistribution))
+        <div class="bg-surface-container-lowest rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-sm border border-outline-variant/10">
+            @foreach($starDistribution as $star => $data)
+            <div class="flex items-center gap-2 sm:gap-3 py-1 sm:py-1.5">
+                <span class="text-[11px] sm:text-xs font-bold text-on-surface w-3 sm:w-4 text-right">{{ $star }}</span>
+                <span class="material-symbols-outlined text-[14px] sm:text-[16px] text-amber-500" style="font-variation-settings: 'FILL' 1;">star</span>
+                <div class="flex-1 h-2 sm:h-2.5 rounded-full bg-surface-container overflow-hidden">
+                    <div class="h-full rounded-full bg-amber-500" style="width: {{ $data['percentage'] }}%"></div>
+                </div>
+                <span class="text-[10px] sm:text-xs text-on-surface-variant w-8 text-right">{{ $data['count'] }}</span>
+            </div>
+            @endforeach
+        </div>
+        @endif
+
         @php $firstReview = $reviews->shift(); @endphp
         @if($firstReview)
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4">
@@ -618,6 +641,36 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
         @endif
     </section>
     @endif
+
+    {{-- PRODUCT REVIEW FORM --}}
+    @auth
+    <section class="bg-surface-container-lowest rounded-2xl p-5 shadow-sm border border-outline-variant/10">
+        <h4 class="text-base font-bold flex items-center gap-2 mb-4">
+            <span class="material-symbols-outlined text-primary text-[18px]">rate_review</span>
+            Write a Review
+        </h4>
+        <form action="{{ route('products.review', $product) }}" method="POST">
+            @csrf
+            <div class="flex items-center gap-1 mb-3" x-data="{ rating: 0 }">
+                <p class="text-xs font-bold text-on-surface-variant mr-2">Your Rating:</p>
+                <template x-for="i in 5" :key="i">
+                    <button type="button" @click="rating = i"
+                            class="material-symbols-outlined text-[24px] transition-colors"
+                            :class="i <= rating ? 'text-orange-500' : 'text-on-surface-variant/30'"
+                            :style="'font-variation-settings: \'FILL\' ' + (i <= rating ? 1 : 0)"
+                            x-text="'star'"></button>
+                </template>
+                <input type="hidden" name="rating" x-model="rating">
+            </div>
+            <textarea name="comment" rows="2" class="w-full bg-surface-container border-none rounded-xl p-3 text-sm text-on-surface focus:ring-2 focus:ring-primary/20 mb-3" placeholder="Share your thoughts about this product..." maxlength="500"></textarea>
+            <div class="flex justify-end">
+                <button type="submit" class="px-5 py-2 bg-primary text-on-primary rounded-xl text-xs font-bold hover:opacity-90 transition-all">
+                    Submit Review
+                </button>
+            </div>
+        </form>
+    </section>
+    @endauth
 
     {{-- HIGHLY LIKED PRODUCTS --}}
     @if($topProducts->count() > 0)
@@ -720,14 +773,21 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
     @endif
     <div class="font-bold text-xs lg:text-sm text-on-surface text-center">{{ $store->name }} — IZIFAI Showroom</div>
     @auth
+        @php $targetStore = auth()->user()->store; @endphp
         @if(auth()->id() === $store->user_id)
             <a href="{{ route('seller.dashboard') }}"
                class="inline-flex items-center gap-1.5 text-primary font-semibold text-xs lg:text-sm hover:underline">
                 <span class="material-symbols-outlined text-[14px]">dashboard</span>
                 Go to Dashboard
             </a>
-        @else
+        @elseif($targetStore)
             <a href="{{ route('seller.dashboard') }}"
+               class="inline-flex items-center gap-1.5 text-primary font-semibold text-xs lg:text-sm hover:underline">
+                <span class="material-symbols-outlined text-[14px]">dashboard</span>
+                Seller Dashboard
+            </a>
+        @else
+            <a href="{{ route('seller.store.create') }}"
                class="text-primary font-semibold text-xs lg:text-sm hover:underline">
                 Start Selling on Izifai &rarr;
             </a>

@@ -59,6 +59,18 @@
              alt="{{ $product->name }}"
              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
         
+        <!-- Image stack -->
+        @if($product->images->count() > 1)
+            <div class="absolute bottom-2 left-2 flex items-center">
+                @foreach($product->images->take(3)->skip(1) as $img)
+                    <div class="-ml-1.5 first:ml-0 w-5 h-5 rounded-full ring-2 ring-white overflow-hidden shadow-sm bg-white">
+                        <img src="{{ $img->url }}" alt="" class="w-full h-full object-cover" loading="lazy" onerror="this.style.display='none'">
+                    </div>
+                @endforeach
+                <span class="ml-1 text-[8px] font-bold text-white drop-shadow-sm">+{{ $product->images->count() - 1 }}</span>
+            </div>
+        @endif
+
         <!-- Quick View Overlay -->
         <div class="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
             <span class="bg-white/90 backdrop-blur text-slate-900 px-3 py-1.5 rounded-full text-[10px] font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform">Quick View</span>
