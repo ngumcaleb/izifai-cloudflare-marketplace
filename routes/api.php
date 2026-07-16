@@ -24,6 +24,7 @@ use App\Http\Controllers\Api\V1\SavedProductController;
 use App\Http\Controllers\Api\V1\SearchController;
 use App\Http\Controllers\Api\V1\ServiceController;
 use App\Http\Controllers\Api\V1\StoreController;
+use App\Http\Controllers\Api\V1\SupportController;
 use App\Http\Controllers\Api\V1\UserNotificationController;
 use App\Http\Controllers\Api\V1\WalletController;
 use Illuminate\Support\Facades\Route;
@@ -72,6 +73,12 @@ Route::prefix('v1')->group(function () {
     Route::get('/search/autocomplete', [SearchController::class, 'autocomplete']);
     Route::get('/search/trending', [SearchController::class, 'trending']);
 
+    // --- Support ---
+    Route::post('/support/report', [SupportController::class, 'store']);
+
+    // --- Reviews (public listing) ---
+    Route::get('/reviews/{targetType}/{targetId}', [ReviewController::class, 'index']);
+
     // ==================== PROTECTED ROUTES ====================
     Route::middleware('auth:sanctum')->group(function () {
 
@@ -95,8 +102,10 @@ Route::prefix('v1')->group(function () {
         Route::post('/products/{product}/favorite', [SavedProductController::class, 'toggle']);
 
         // --- Products (CRUD) ---
+        Route::get('/my-products', [ProductController::class, 'myListings']);
         Route::post('/products', [ProductController::class, 'store']);
         Route::put('/products/{product}', [ProductController::class, 'update']);
+        Route::post('/products/{product}', [ProductController::class, 'update']); // POST + _method=PUT spoofing
         Route::delete('/products/{product}', [ProductController::class, 'destroy']);
 
         // --- Stores (CRUD) ---
@@ -123,8 +132,10 @@ Route::prefix('v1')->group(function () {
         Route::post('/orders/{order}/confirm-received', [OrderController::class, 'confirmReceived']);
 
         // --- Services (CRUD) ---
+        Route::get('/my-services', [ServiceController::class, 'myListings']);
         Route::post('/services', [ServiceController::class, 'store']);
         Route::put('/services/{service}', [ServiceController::class, 'update']);
+        Route::post('/services/{service}', [ServiceController::class, 'update']); // POST + _method=PUT spoofing
         Route::delete('/services/{service}', [ServiceController::class, 'destroy']);
 
         // --- Service Bookings ---
@@ -138,6 +149,7 @@ Route::prefix('v1')->group(function () {
         // --- Rentals (CRUD) ---
         Route::post('/rental-items', [RentalItemController::class, 'store']);
         Route::put('/rental-items/{rentalItem}', [RentalItemController::class, 'update']);
+        Route::post('/rental-items/{rentalItem}', [RentalItemController::class, 'update']); // POST + _method=PUT spoofing
         Route::delete('/rental-items/{rentalItem}', [RentalItemController::class, 'destroy']);
         Route::get('/my-rentals', [RentalItemController::class, 'myListings']);
 
@@ -191,7 +203,7 @@ Route::prefix('v1')->group(function () {
         Route::post('/stores/{store}/review', [ReviewController::class, 'store']);
         Route::post('/products/{product}/review', [ReviewController::class, 'storeProduct']);
         Route::post('/services/{service}/review', [ReviewController::class, 'storeService']);
-        Route::get('/reviews/{targetType}/{targetId}', [ReviewController::class, 'index']);
+        Route::post('/rental-items/{rentalItem}/review', [ReviewController::class, 'storeRental']);
         Route::get('/reviews/{id}', [ReviewController::class, 'show']);
         Route::post('/reviews/{id}/helpful', [ReviewController::class, 'markHelpful']);
         Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']);

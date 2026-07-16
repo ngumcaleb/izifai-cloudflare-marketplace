@@ -71,8 +71,11 @@ class ConversationController extends Controller
                     'id' => $m->id,
                     'sender_id' => $m->sender_id,
                     'body' => $m->body,
+                    'image_url' => $m->image_url,
                     'created_at' => $m->created_at,
+                    'edited_at' => $m->edited_at,
                     'read' => $m->read,
+                    'metadata' => $m->metadata,
                 ]),
             ],
         ]);
@@ -121,10 +124,13 @@ class ConversationController extends Controller
             ]
         );
 
+        $conversation->load('target');
+
         $message = Message::create([
             'conversation_id' => $conversation->id,
             'sender_id' => auth()->id(),
             'body' => $validated['message'],
+            'metadata' => $conversation->target_metadata,
         ]);
 
         $conversation->update([
@@ -137,7 +143,16 @@ class ConversationController extends Controller
         return response()->json([
             'message' => 'Message sent.',
             'conversation_id' => $conversation->id,
-            'data' => $message,
+            'data' => [
+                'id' => $message->id,
+                'sender_id' => $message->sender_id,
+                'body' => $message->body,
+                'image_url' => $message->image_url,
+                'created_at' => $message->created_at,
+                'edited_at' => $message->edited_at,
+                'read' => $message->read,
+                'metadata' => $message->metadata,
+            ],
         ], 201);
     }
 }

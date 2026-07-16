@@ -11,14 +11,34 @@ use Illuminate\Support\Facades\Storage;
 
 class MessageController extends Controller
 {
-    public function index(Conversation $conversation): JsonResponse
+    public function index(Request $request, Conversation $conversation): JsonResponse
     {
         $userId = auth()->id();
         if ($conversation->buyer_id !== $userId && $conversation->seller_id !== $userId) {
             return response()->json(['message' => 'Unauthorized.'], 403);
         }
 
-        $messages = $conversation->messages()->with('sender')->latest()->paginate(50);
+        $query = $conversation->messages()->with('sender');
+
+        if ($request->has('after')) {
+            $query->where('id', '>', $request->integer('after'));
+            $messages = $query->oldest()->get();
+            return response()->json([
+                'messages' => $messages->map(fn($m) => [
+                    'id' => $m->id,
+                    'sender_id' => $m->sender_id,
+                    'body' => $m->body,
+                    'image_url' => $m->image_url,
+                    'created_at' => $m->created_at,
+                    'edited_at' => $m->edited_at,
+                    'read' => $m->read,
+                    'deleted_at' => $m->deleted_at,
+                    'metadata' => $m->metadata,
+                ]),
+            ]);
+        }
+
+        $messages = $query->latest()->paginate(50);
 
         return response()->json([
             'messages' => collect($messages->items())->map(fn($m) => [
@@ -30,6 +50,7 @@ class MessageController extends Controller
                 'edited_at' => $m->edited_at,
                 'read' => $m->read,
                 'deleted_at' => $m->deleted_at,
+                'metadata' => $m->metadata,
             ])->reverse()->values(),
             'pagination' => [
                 'current_page' => $messages->currentPage(),
@@ -55,10 +76,13 @@ class MessageController extends Controller
             return response()->json(['message' => 'Message must have text or an image.'], 422);
         }
 
+        $conversation->load('target');
+
         $data = [
             'conversation_id' => $conversation->id,
             'sender_id' => $userId,
             'body' => $validated['body'] ?? null,
+            'metadata' => $conversation->target_metadata,
         ];
 
         if ($request->hasFile('image')) {
@@ -84,6 +108,7 @@ class MessageController extends Controller
                 'created_at' => $message->created_at,
                 'edited_at' => $message->edited_at,
                 'read' => $message->read,
+                'metadata' => $message->metadata,
             ],
         ], 201);
     }

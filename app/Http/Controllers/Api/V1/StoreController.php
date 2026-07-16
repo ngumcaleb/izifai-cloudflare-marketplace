@@ -134,31 +134,25 @@ class StoreController extends Controller
             'location' => 'required|string|max:255',
             'whatsapp_number' => 'nullable|string|max:20',
             'business_email' => 'nullable|email|max:255',
-            'open_hours' => 'nullable|array',
+            'open_hours' => 'nullable|string|max:500',
             'social_links' => 'nullable|array',
-            'logo' => 'nullable|image|max:2048',
-            'banner' => 'nullable|image|max:5120',
+            'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'banner' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
 
-        $store = Store::create([
-            'user_id' => auth()->id(),
-            'name' => $validated['name'],
-            'slug' => Str::slug($validated['name']) . '-' . Str::random(4),
-            'description' => $validated['description'] ?? null,
-            'location' => $validated['location'],
-            'whatsapp_number' => $validated['whatsapp_number'] ?? null,
-            'business_email' => $validated['business_email'] ?? null,
-            'open_hours' => $validated['open_hours'] ?? null,
-            'social_links' => $validated['social_links'] ?? null,
-            'status' => 'active',
-        ]);
+        $data = $request->only(['name', 'description', 'location', 'whatsapp_number', 'business_email', 'open_hours']);
+        $data['slug'] = Str::slug($request->name) . '-' . Str::random(4);
+        $data['user_id'] = auth()->id();
+        $data['status'] = 'active';
 
         if ($request->hasFile('logo')) {
-            $store->update(['logo' => $request->file('logo')->store('stores/logos', 'r2')]);
+            $data['logo'] = $request->file('logo')->store('store-logos', 'r2');
         }
         if ($request->hasFile('banner')) {
-            $store->update(['banner' => $request->file('banner')->store('stores/banners', 'r2')]);
+            $data['banner'] = $request->file('banner')->store('store-banners', 'r2');
         }
+
+        $store = Store::create($data);
 
         return response()->json([
             'message' => 'Store created.',
@@ -173,26 +167,50 @@ class StoreController extends Controller
         }
 
         $validated = $request->validate([
-            'name' => 'sometimes|string|max:255',
+            'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'location' => 'sometimes|string|max:255',
+            'location' => 'nullable|string|max:255',
             'whatsapp_number' => 'nullable|string|max:20',
             'business_email' => 'nullable|email|max:255',
-            'open_hours' => 'nullable|array',
+            'open_hours' => 'nullable|string|max:500',
             'social_links' => 'nullable|array',
+            'social_links.*.platform' => 'nullable|string|max:50',
+            'social_links.*.url' => 'nullable|url|max:500',
+            'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'banner' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
 
-        if (isset($validated['name']) && $validated['name'] !== $store->name) {
-            $validated['slug'] = Str::slug($validated['name']) . '-' . Str::random(4);
+        $data = $request->only(['name', 'description', 'location', 'whatsapp_number', 'business_email', 'open_hours']);
+
+        if ($request->has('social_links')) {
+            $data['social_links'] = array_values(array_filter(
+                $request->social_links,
+                fn ($link) => !empty($link['platform']) || !empty($link['url'])
+            ));
         }
 
-        $store->update($validated);
+        if (isset($data['name']) && $data['name'] !== $store->name) {
+            $data['slug'] = Str::slug($data['name']) . '-' . Str::random(4);
+        }
 
         if ($request->hasFile('logo')) {
-            $store->update(['logo' => $request->file('logo')->store('stores/logos', 'r2')]);
+            if ($store->logo) {
+                \Illuminate\Support\Facades\Storage::disk('r2')->delete($store->logo);
+            }
+            $data['logo'] = $request->file('logo')->store('store-logos', 'r2');
         }
+
         if ($request->hasFile('banner')) {
-            $store->update(['banner' => $request->file('banner')->store('stores/banners', 'r2')]);
+            if ($store->banner) {
+                \Illuminate\Support\Facades\Storage::disk('r2')->delete($store->banner);
+            }
+            $data['banner'] = $request->file('banner')->store('store-banners', 'r2');
+        }
+
+        $store->update($data);
+
+        if ($request->filled('user_name') && $store->user) {
+            $store->user->update(['name' => $request->user_name]);
         }
 
         return response()->json([

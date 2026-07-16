@@ -11,6 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class ProductController extends Controller
 {
@@ -88,7 +89,7 @@ class ProductController extends Controller
         $product->increment('views');
 
         $store = $product->store;
-        $reviews = $store->reviews()->with('user')->latest()->get();
+        $reviews = $product->reviews()->with('user')->latest()->get();
         $avgRating = $reviews->count() > 0 ? round($reviews->avg('rating'), 1) : 0;
 
         $storeProducts = $store->products()
@@ -100,14 +101,20 @@ class ProductController extends Controller
             ->map(fn($p) => $this->format($p));
 
         $isFavorited = false;
-        if (auth()->check()) {
-            $isFavorited = $product->savedUsers()->where('user_id', auth()->id())->exists();
+        $token = request()->bearerToken();
+        if ($token) {
+            $accessToken = PersonalAccessToken::findToken($token);
+            if ($accessToken) {
+                $user = $accessToken->tokenable;
+                $isFavorited = $product->savedUsers()->where('user_id', $user->id)->exists();
+            }
         }
 
         return response()->json([
             'product' => $this->formatDetail($product),
             'store' => [
                 'id' => $store->id,
+                'user_id' => $store->user_id,
                 'name' => $store->name,
                 'slug' => $store->slug,
                 'description' => $store->description,
@@ -128,6 +135,7 @@ class ProductController extends Controller
                 'id' => $r->id,
                 'rating' => $r->rating,
                 'comment' => $r->comment,
+                'user_id' => $r->user_id,
                 'user_name' => $r->user->name,
                 'created_at' => $r->created_at,
             ]),
@@ -225,25 +233,76 @@ class ProductController extends Controller
             return response()->json(['message' => 'Unauthorized.'], 403);
         }
 
-        $validated = $request->validate([
-            'name' => 'sometimes|string|max:255',
-            'description' => 'nullable|string',
-            'price' => 'sometimes|numeric|min:0',
-            'old_price' => 'nullable|numeric|min:0',
-            'category_id' => 'sometimes|exists:categories,id',
-            'stock_status' => 'nullable|in:in_stock,out_of_stock,pre_order',
-            'brand' => 'nullable|string|max:255',
-            'sku' => 'nullable|string|max:255',
-            'inventory' => 'nullable|integer|min:0',
-            'colors' => 'nullable|array',
-            'sizes' => 'nullable|array',
+        $request->validate([
+            'name'             => 'sometimes|string|max:255',
+            'description'      => 'nullable|string',
+            'price'            => 'sometimes|numeric|min:0',
+            'discount_price'   => 'nullable|numeric|min:0',
+            'old_price'        => 'nullable|numeric|min:0',
+            'category_id'      => 'sometimes|exists:categories,id',
+            'stock_status'     => 'nullable|in:in_stock,out_of_stock,pre_order,on_request',
+            'brand'            => 'nullable|string|max:255',
+            'sku'              => 'nullable|string|max:255',
+            'inventory'        => 'nullable|integer|min:0',
+            'images'           => 'nullable|array',
+            'images.*'         => 'image|max:5120',
+            'existing_images'  => 'nullable|array',
+            'specifications'   => 'nullable|array',
         ]);
 
-        if (isset($validated['name']) && $validated['name'] !== $product->name) {
-            $validated['slug'] = Str::slug($validated['name']) . '-' . Str::random(6);
+        $fields = $request->only(['name', 'description', 'price', 'category_id', 'stock_status', 'brand', 'sku', 'inventory']);
+
+        // Map discount_price → old_price (mobile sends discount_price; DB column is old_price)
+        if ($request->filled('discount_price')) {
+            $fields['old_price'] = $request->input('discount_price');
+        } elseif ($request->has('old_price')) {
+            $fields['old_price'] = $request->input('old_price') ?: null;
+        } elseif ($request->has('discount_price') && !$request->filled('discount_price')) {
+            $fields['old_price'] = null; // explicitly cleared
         }
 
-        $product->update($validated);
+        if (isset($fields['name']) && $fields['name'] !== $product->name) {
+            $fields['slug'] = Str::slug($fields['name']) . '-' . Str::random(6);
+        }
+
+        $product->update($fields);
+
+        // ── Images: keep existing, delete removed, upload new ────────────────
+        $keepUrls = (array) $request->input('existing_images', []);
+
+        foreach ($product->images as $img) {
+            if (!empty($keepUrls) && !in_array($img->url, $keepUrls)) {
+                Storage::disk('r2')->delete($img->path);
+                $img->delete();
+            }
+        }
+
+        if ($request->hasFile('images')) {
+            $product->refresh();
+            $isFirst = $product->images()->count() === 0;
+            foreach ($request->file('images') as $i => $file) {
+                $path = $file->store('products', 'r2');
+                ProductImage::create([
+                    'product_id' => $product->id,
+                    'path'       => $path,
+                    'is_main'    => $isFirst && $i === 0,
+                ]);
+            }
+        }
+
+        // ── Specifications: replace all ──────────────────────────────────────
+        if ($request->has('specifications')) {
+            $product->specifications()->delete();
+            foreach ((array) $request->input('specifications', []) as $spec) {
+                if (!empty($spec['key']) && !empty($spec['value'])) {
+                    ProductSpecification::create([
+                        'product_id' => $product->id,
+                        'key'        => $spec['key'],
+                        'value'      => $spec['value'],
+                    ]);
+                }
+            }
+        }
 
         return response()->json([
             'message' => 'Product updated.',
@@ -266,6 +325,31 @@ class ProductController extends Controller
 
         return response()->json(['message' => 'Product deleted.']);
     }
+
+    public function myListings(): JsonResponse
+    {
+        $store = auth()->user()->store;
+
+        if (!$store) {
+            return response()->json(['products' => []]);
+        }
+
+        $items = Product::where('store_id', $store->id)
+            ->with(['images', 'category', 'specifications'])
+            ->latest()
+            ->paginate(50);
+
+        return response()->json([
+            'products' => collect($items->items())->map(fn($p) => $this->formatDetail($p)),
+            'pagination' => [
+                'current_page' => $items->currentPage(),
+                'last_page'    => $items->lastPage(),
+                'total'        => $items->total(),
+            ],
+        ]);
+    }
+
+
 
     public function featured(): JsonResponse
     {

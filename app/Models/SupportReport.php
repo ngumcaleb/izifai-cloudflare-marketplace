@@ -1,0 +1,23 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class SupportReport extends Model
+{
+    protected $fillable = [
+        'user_id',
+        'category',
+        'description',
+        'email',
+        'order_number',
+        'status',
+        'admin_note',
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+}

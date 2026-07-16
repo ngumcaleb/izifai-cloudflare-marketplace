@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\ProductReview;
+use App\Models\RentalItem;
+use App\Models\RentalReview;
 use App\Models\Service;
 use App\Models\ServiceReview;
 use App\Models\Store;
@@ -122,12 +124,59 @@ class ReviewController extends Controller
         ], 201);
     }
 
+    public function storeRental(Request $request, RentalItem $rentalItem): JsonResponse
+    {
+        if ($rentalItem->store->user_id === auth()->id()) {
+            return response()->json(['message' => 'You cannot review your own rental item.'], 403);
+        }
+
+        $validated = $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+            'comment' => 'nullable|string|max:500',
+            'images' => 'nullable|array',
+        ]);
+
+        $existing = RentalReview::where('rental_item_id', $rentalItem->id)
+            ->where('user_id', auth()->id())
+            ->first();
+
+        if ($existing) {
+            return response()->json(['message' => 'You have already reviewed this rental item.'], 409);
+        }
+
+        $review = RentalReview::create([
+            'rental_item_id' => $rentalItem->id,
+            'user_id' => auth()->id(),
+            'rating' => $validated['rating'],
+            'comment' => $validated['comment'],
+            'images' => $validated['images'] ?? [],
+        ]);
+
+        $rentalItem->update([
+            'rating' => $rentalItem->reviews()->avg('rating'),
+            'review_count' => $rentalItem->reviews()->count(),
+        ]);
+
+        return response()->json([
+            'message' => 'Review submitted.',
+            'review' => [
+                'id' => $review->id,
+                'rating' => $review->rating,
+                'comment' => $review->comment,
+                'images' => $review->images ?? [],
+                'user_name' => $review->user->name,
+                'created_at' => $review->created_at,
+            ],
+        ], 201);
+    }
+
     public function index(string $targetType, int $targetId): JsonResponse
     {
         $model = match ($targetType) {
             'product' => ProductReview::with('user')->where('product_id', $targetId),
             'service' => ServiceReview::with('user')->where('service_id', $targetId),
             'store' => StoreReview::with('user')->where('store_id', $targetId),
+            'rental_item' => RentalReview::with('user')->where('rental_item_id', $targetId),
             default => null,
         };
 
@@ -158,18 +207,20 @@ class ReviewController extends Controller
         ]);
     }
 
-    private function findReview(int $id): ProductReview|ServiceReview|StoreReview|null
+    private function findReview(int $id): ProductReview|ServiceReview|StoreReview|RentalReview|null
     {
         return ProductReview::with('user')->find($id)
             ?? ServiceReview::with('user')->find($id)
-            ?? StoreReview::with('user')->find($id);
+            ?? StoreReview::with('user')->find($id)
+            ?? RentalReview::with('user')->find($id);
     }
 
-    private function findReviewForUpdate(int $id): ProductReview|ServiceReview|StoreReview|null
+    private function findReviewForUpdate(int $id): ProductReview|ServiceReview|StoreReview|RentalReview|null
     {
         return ProductReview::find($id)
             ?? ServiceReview::find($id)
-            ?? StoreReview::find($id);
+            ?? StoreReview::find($id)
+            ?? RentalReview::find($id);
     }
 
     public function show(int $id): JsonResponse
