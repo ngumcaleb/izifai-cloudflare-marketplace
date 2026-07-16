@@ -130,7 +130,7 @@
                         <button @click="showAllCategories = false"
                                 class="w-8 h-8 flex items-center justify-center rounded-xl text-gray-400 hover:text-on-surface hover:bg-gray-100 transition-all">
                             <span class="material-symbols-outlined text-[18px]">close</span>
-                        </button>
+                        </button>  
                     </div>
                     {{-- Body --}}
                     <div class="p-6">
