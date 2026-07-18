@@ -276,6 +276,29 @@ class ServiceController extends Controller
         ]);
     }
 
+    public function myListings(): JsonResponse
+    {
+        $store = auth()->user()->store;
+
+        if (!$store) {
+            return response()->json(['services' => []]);
+        }
+
+        $items = Service::where('store_id', $store->id)
+            ->with(['images', 'category', 'packages'])
+            ->latest()
+            ->paginate(50);
+
+        return response()->json([
+            'services' => collect($items->items())->map(fn($s) => $this->format($s)),
+            'pagination' => [
+                'current_page' => $items->currentPage(),
+                'last_page'    => $items->lastPage(),
+                'total'        => $items->total(),
+            ],
+        ]);
+    }
+
     private function format($service): array
     {
         return [

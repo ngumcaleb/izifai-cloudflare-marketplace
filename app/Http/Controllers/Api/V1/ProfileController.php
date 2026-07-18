@@ -74,7 +74,7 @@ class ProfileController extends Controller
             'badge' => $s->badge,
             'rating' => (float) ($s->rating ?? 0),
             'trust_score' => (float) ($s->trust_score ?? 0),
-            'follower_count' => $s->followers()->count(),
+            'follower_count' => $s->follower_count ?? 0,
             'product_count' => $s->product_count ?? $s->products()->count(),
             'service_count' => $s->service_count ?? $s->services()->count(),
             'status' => $s->status,

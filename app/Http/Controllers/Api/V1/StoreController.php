@@ -220,6 +220,25 @@ class StoreController extends Controller
         return response()->json([
             'message' => 'Store updated.',
             'store' => $store->fresh(),
+            'user' => [
+                'id' => $store->user->id,
+                'name' => $store->user->name,
+                'email' => $store->user->email,
+                'phone' => $store->user->phone,
+                'role' => $store->user->role,
+                'status' => $store->user->status,
+                'location' => $store->user->location,
+                'profile_photo_url' => $store->user->profile_photo_url,
+                'cover_photo_url' => $store->user->cover_photo_url,
+                'verification_level' => $store->user->verification_level,
+                'store' => [
+                    'id' => $store->id,
+                    'name' => $store->name,
+                    'slug' => $store->slug,
+                ],
+                'created_at' => $store->user->created_at,
+                'joined_at' => $store->user->joined_at,
+            ],
         ]);
     }
 
