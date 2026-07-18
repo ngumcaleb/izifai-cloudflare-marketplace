@@ -128,6 +128,10 @@ class StoreController extends Controller
 
     public function store(Request $request): JsonResponse
     {
+        if ($request->user()->store) {
+            return response()->json(['message' => 'You already have a store.'], 422);
+        }
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
