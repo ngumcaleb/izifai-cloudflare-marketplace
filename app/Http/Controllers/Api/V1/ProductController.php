@@ -416,6 +416,7 @@ class ProductController extends Controller
             'store_id' => $product->store_id,
             'store_name' => $product->store?->name,
             'store_slug' => $product->store?->slug,
+            'store_location' => $product->store?->location,
             'category_id' => $product->category_id,
             'category_name' => $product->category?->name,
             'category_slug' => $product->category?->slug,

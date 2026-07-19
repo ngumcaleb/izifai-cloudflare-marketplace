@@ -173,6 +173,7 @@ class HomeController extends Controller
                 'name' => $product->store->name,
                 'slug' => $product->store->slug,
                 'logo_url' => $product->store->logo_url,
+                'location' => $product->store->location,
                 'is_verified' => $product->store->is_verified,
             ] : null,
             'category' => $product->category ? [
@@ -216,6 +217,7 @@ class HomeController extends Controller
                 'name' => $service->store->name,
                 'slug' => $service->store->slug,
                 'logo_url' => $service->store->logo_url,
+                'location' => $service->store->location,
                 'is_verified' => $service->store->is_verified,
             ] : null,
             'category' => $service->category ? [
@@ -244,6 +246,7 @@ class HomeController extends Controller
                 'name' => $rental->store->name,
                 'slug' => $rental->store->slug,
                 'logo_url' => $rental->store->logo_url,
+                'location' => $rental->store->location,
                 'is_verified' => $rental->store->is_verified,
             ] : null,
             'category' => $rental->category ? [
