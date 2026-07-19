@@ -26,10 +26,21 @@ class HomeController extends Controller
             'total_services' => $totalServices,
         ];
 
-        $categories = Category::whereHas('products', fn($q) => $q->whereHas('store', fn($sq) => $sq->where('status', 'active')))
-            ->withCount(['products' => fn($q) => $q->whereHas('store', fn($sq) => $sq->where('status', 'active'))])
+        $categories = Category::query()
+            ->withCount([
+                'products' => fn($q) => $q->whereHas('store', fn($sq) => $sq->where('status', 'active')),
+                'services' => fn($q) => $q->where('status', 'approved'),
+                'rentalItems' => fn($q) => $q->where('status', 'published'),
+            ])
+            ->where(function ($q) {
+                $q->whereHas('products', fn($pq) => $pq->whereHas('store', fn($sq) => $sq->where('status', 'active')))
+                  ->orWhereHas('services', fn($sq) => $sq->where('status', 'approved'))
+                  ->orWhereHas('rentalItems', fn($sq) => $sq->where('status', 'published'));
+            })
             ->orderBy('name')
             ->get()
+            ->filter(fn($c) => ($c->products_count + $c->services_count + $c->rental_items_count) > 0)
+            ->values()
             ->map(fn($c) => [
                 'id' => $c->id,
                 'name' => $c->name,
@@ -37,6 +48,8 @@ class HomeController extends Controller
                 'icon' => $c->icon,
                 'image_url' => $c->image_url,
                 'products_count' => $c->products_count,
+                'services_count' => $c->services_count,
+                'rentals_count' => $c->rental_items_count,
             ]);
 
         $featured_products = Product::active()
