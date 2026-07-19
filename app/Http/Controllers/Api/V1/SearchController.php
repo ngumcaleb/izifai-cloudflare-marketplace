@@ -33,17 +33,17 @@ class SearchController extends Controller
         }
 
         if ($type === 'rentals') {
-            return $this->searchRentals($q, $city, $minPrice, $maxPrice, $category, $page);
+            return $this->searchRentals($q, $city, $minPrice, $maxPrice, $category, $minRating, $page);
         }
 
         if ($type === 'all') {
             return $this->searchAll($q, $city, $minPrice, $maxPrice, $category, $minRating, $page);
         }
 
-        return $this->searchProducts($q, $city, $minPrice, $maxPrice, $category, $page);
+        return $this->searchProducts($q, $city, $minPrice, $maxPrice, $category, $minRating, $page);
     }
 
-    private function searchProducts($q, $city, $minPrice, $maxPrice, $category, $page): JsonResponse
+    private function searchProducts($q, $city, $minPrice, $maxPrice, $category, $minRating, $page): JsonResponse
     {
         $query = Product::active()->with(['images', 'store', 'category']);
 
@@ -72,6 +72,9 @@ class SearchController extends Controller
         if ($category) {
             $query->whereHas('category', fn($c) => $c->where('slug', $category));
         }
+        if ($minRating) {
+            $query->where('rating', '>=', $minRating);
+        }
 
         $results = $query->latest()->paginate(20, ['*'], 'page', $page);
 
@@ -86,6 +89,7 @@ class SearchController extends Controller
                 'main_image_url' => $p->images->first()?->url,
                 'store_name' => $p->store?->name,
                 'store_slug' => $p->store?->slug,
+                'store_location' => $p->store?->location,
                 'category_name' => $p->category?->name,
                 'rating' => $p->rating,
                 'views' => $p->views,
@@ -186,6 +190,7 @@ class SearchController extends Controller
                 'main_image_url' => $s->main_image_url,
                 'store_name' => $s->store?->name,
                 'store_slug' => $s->store?->slug,
+                'store_location' => $s->store?->location,
                 'category_name' => $s->category?->name,
                 'rating' => $s->rating,
                 'delivery_time' => $s->delivery_time,
@@ -199,7 +204,7 @@ class SearchController extends Controller
         ]);
     }
 
-    private function searchRentals($q, $city, $minPrice, $maxPrice, $category, $page): JsonResponse
+    private function searchRentals($q, $city, $minPrice, $maxPrice, $category, $minRating, $page): JsonResponse
     {
         $query = RentalItem::with(['category', 'store']);
 
@@ -217,7 +222,10 @@ class SearchController extends Controller
         }
 
         if ($city) {
-            $query->where('location', 'LIKE', "%{$city}%");
+            $query->where(function ($q) use ($city) {
+                $q->where('location', 'LIKE', "%{$city}%")
+                    ->orWhereHas('store', fn($s) => $s->where('location', 'LIKE', "%{$city}%"));
+            });
         }
         if ($minPrice) {
             $query->where('rate', '>=', $minPrice);
@@ -227,6 +235,9 @@ class SearchController extends Controller
         }
         if ($category) {
             $query->whereHas('category', fn($c) => $c->where('slug', $category));
+        }
+        if ($minRating) {
+            $query->where('rating', '>=', $minRating);
         }
 
         $results = $query->latest()->paginate(20, ['*'], 'page', $page);
@@ -244,6 +255,7 @@ class SearchController extends Controller
                 'main_image_url' => $r->main_image_url,
                 'store_name' => $r->store?->name,
                 'store_slug' => $r->store?->slug,
+                'store_location' => $r->store?->location,
                 'category_name' => $r->category?->name,
                 'rating' => $r->rating,
                 'views' => $r->views,
@@ -258,10 +270,10 @@ class SearchController extends Controller
 
     private function searchAll($q, $city, $minPrice, $maxPrice, $category, $minRating, $page): JsonResponse
     {
-        $products = $this->searchProducts($q, $city, $minPrice, $maxPrice, $category, $page);
+        $products = $this->searchProducts($q, $city, $minPrice, $maxPrice, $category, $minRating, $page);
         $stores = $this->searchStores($q, $city, $page);
         $services = $this->searchServices($q, $city, $minPrice, $maxPrice, $category, $minRating, $page);
-        $rentals = $this->searchRentals($q, $city, $minPrice, $maxPrice, $category, $page);
+        $rentals = $this->searchRentals($q, $city, $minPrice, $maxPrice, $category, $minRating, $page);
 
         $productsData = json_decode($products->getContent(), true);
         $storesData = json_decode($stores->getContent(), true);
@@ -280,7 +292,7 @@ class SearchController extends Controller
     {
         $q = $request->query('q');
         if (!$q || strlen($q) < 2) {
-            return response()->json(['products' => [], 'stores' => [], 'categories' => []]);
+            return response()->json(['products' => [], 'stores' => [], 'categories' => [], 'locations' => []]);
         }
 
         $keywords = array_filter(explode(' ', $q));
@@ -316,10 +328,30 @@ class SearchController extends Controller
             'price' => (float) $p->price, 'category' => $p->category?->name,
         ]);
 
+        $locationResults = Store::where('status', 'active')
+            ->whereNotNull('location')
+            ->where('location', '!=', '')
+            ->where('location', 'LIKE', "%{$q}%")
+            ->selectRaw("
+                LOWER(TRIM(SUBSTRING_INDEX(location, ',', 1))) as normalized_city,
+                MIN(location) as location,
+                COUNT(*) as store_count
+            ")
+            ->groupBy('normalized_city')
+            ->orderByDesc('store_count')
+            ->take(3)
+            ->get()
+            ->map(fn($l) => [
+                'name' => $l->location,
+                'store_count' => $l->store_count,
+                'type' => 'location',
+            ]);
+
         return response()->json([
             'products' => $productResults,
             'stores' => $storeResults,
             'categories' => $categoryResults,
+            'locations' => $locationResults,
         ]);
     }
 

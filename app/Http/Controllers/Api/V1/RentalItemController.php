@@ -36,12 +36,19 @@ class RentalItemController extends Controller
             $query->where('store_id', $request->store_id);
         }
 
+        if ($request->filled('city')) {
+            $query->where(function ($q) use ($request) {
+                $q->where('location', 'LIKE', "%{$request->city}%")
+                    ->orWhereHas('store', fn($s) => $s->where('location', 'LIKE', "%{$request->city}%"));
+            });
+        }
+
         if ($request->filled('min_price')) {
-            $query->where('rate', '>=', (int) $request->min_price);
+            $query->where('rate', '>=', (float) $request->min_price);
         }
 
         if ($request->filled('max_price')) {
-            $query->where('rate', '<=', (int) $request->max_price);
+            $query->where('rate', '<=', (float) $request->max_price);
         }
 
         $sort = $request->get('sort', 'latest');

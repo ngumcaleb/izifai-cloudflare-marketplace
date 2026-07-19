@@ -38,12 +38,16 @@ class ServiceController extends Controller
             $query->whereHas('store', fn($q) => $q->where('slug', $request->store));
         }
 
+        if ($request->filled('city')) {
+            $query->whereHas('store', fn($q) => $q->where('location', 'LIKE', "%{$request->city}%"));
+        }
+
         if ($request->filled('min_price')) {
-            $query->where('starting_price', '>=', (int) $request->min_price);
+            $query->where('starting_price', '>=', (float) $request->min_price);
         }
 
         if ($request->filled('max_price')) {
-            $query->where('starting_price', '<=', (int) $request->max_price);
+            $query->where('starting_price', '<=', (float) $request->max_price);
         }
 
         $sort = $request->get('sort', 'latest');

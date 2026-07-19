@@ -333,11 +333,11 @@ class StoreController extends Controller
         }
 
         if ($request->filled('min_price')) {
-            $query->where('price', '>=', (int) $request->min_price);
+            $query->where('price', '>=', (float) $request->min_price);
         }
 
         if ($request->filled('max_price')) {
-            $query->where('price', '<=', (int) $request->max_price);
+            $query->where('price', '<=', (float) $request->max_price);
         }
 
         $sort = $request->get('sort', 'latest');
@@ -377,5 +377,22 @@ class StoreController extends Controller
                 'has_more' => $products->hasMorePages(),
             ],
         ]);
+    }
+
+    public function getUniqueLocations(): JsonResponse
+    {
+        $locations = Store::where('status', 'active')
+            ->whereNotNull('location')
+            ->where('location', '!=', '')
+            ->selectRaw("
+                LOWER(TRIM(SUBSTRING_INDEX(location, ',', 1))) as normalized_city,
+                MIN(location) as location,
+                COUNT(*) as store_count
+            ")
+            ->groupBy('normalized_city')
+            ->orderByDesc('store_count')
+            ->get();
+
+        return response()->json(['locations' => $locations]);
     }
 }
