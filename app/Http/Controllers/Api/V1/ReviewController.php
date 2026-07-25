@@ -184,6 +184,8 @@ class ReviewController extends Controller
             return response()->json(['message' => 'Invalid review type.'], 400);
         }
 
+        $totalReviews = $model->count();
+        $avgRating = $totalReviews > 0 ? round($model->avg('rating'), 1) : 0;
         $reviews = $model->latest()->paginate(20);
 
         return response()->json([
@@ -197,8 +199,8 @@ class ReviewController extends Controller
                 'user_name' => $r->user->name,
                 'created_at' => $r->created_at,
             ]),
-            'avg_rating' => round($model->get()->avg('rating') ?? 0, 1),
-            'total_reviews' => $model->count(),
+            'avg_rating' => $avgRating,
+            'total_reviews' => $totalReviews,
             'pagination' => [
                 'current_page' => $reviews->currentPage(),
                 'last_page' => $reviews->lastPage(),
