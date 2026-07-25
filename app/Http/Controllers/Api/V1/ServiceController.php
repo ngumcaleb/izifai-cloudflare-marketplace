@@ -313,6 +313,7 @@ class ServiceController extends Controller
             'delivery_time' => $service->delivery_time,
             'views' => $service->views,
             'main_image_url' => $service->main_image_url,
+            'status' => $service->status,
             'store_id' => $service->store_id,
             'store_name' => $service->store?->name,
             'store_slug' => $service->store?->slug,
