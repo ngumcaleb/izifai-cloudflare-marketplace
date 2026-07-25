@@ -194,8 +194,8 @@ class ReviewController extends Controller
                 'rating' => $r->rating,
                 'comment' => $r->comment,
                 'images' => $r->images ?? [],
-                'helpful' => count($r->helpful ?? []),
-                'is_helpful' => auth()->check() ? in_array(auth()->id(), $r->helpful ?? []) : false,
+                'helpful' => is_array($r->helpful ?? null) ? count($r->helpful) : intval($r->helpful ?? 0),
+                'is_helpful' => auth()->check() && is_array($r->helpful ?? null) ? in_array(auth()->id(), $r->helpful) : false,
                 'user_name' => $r->user->name,
                 'created_at' => $r->created_at,
             ]),
@@ -254,7 +254,7 @@ class ReviewController extends Controller
             return response()->json(['message' => 'Review not found.'], 404);
         }
 
-        $helpful = $review->helpful ?? [];
+        $helpful = is_array($review->helpful ?? null) ? $review->helpful : [];
         $userId = auth()->id();
 
         if (in_array($userId, $helpful)) {
