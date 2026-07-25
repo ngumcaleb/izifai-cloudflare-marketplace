@@ -457,6 +457,7 @@ class ProductController extends Controller
                 'name' => $a->name,
                 'values' => $a->values->pluck('value'),
             ]),
+            'store_id' => $product->store_id,
             'category' => $product->category ? [
                 'id' => $product->category->id,
                 'name' => $product->category->name,
