@@ -253,9 +253,11 @@ class ProductController extends Controller
             'images.*'         => 'image|max:5120',
             'existing_images'  => 'nullable|array',
             'specifications'   => 'nullable|array',
+            'colors'           => 'nullable|array',
+            'sizes'            => 'nullable|array',
         ]);
 
-        $fields = $request->only(['name', 'description', 'price', 'category_id', 'stock_status', 'brand', 'sku', 'inventory', 'status']);
+        $fields = $request->only(['name', 'description', 'price', 'category_id', 'stock_status', 'brand', 'sku', 'inventory', 'status', 'colors', 'sizes']);
 
         // Map discount_price → old_price (mobile sends discount_price; DB column is old_price)
         if ($request->filled('discount_price')) {
