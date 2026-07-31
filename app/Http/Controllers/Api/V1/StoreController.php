@@ -109,7 +109,12 @@ class StoreController extends Controller
                 'is_verified' => $store->is_verified,
                 'badge' => $store->badge,
                 'created_at' => $store->created_at,
-                'user' => $store->user ? ['name' => $store->user->name, 'profile_photo_url' => $store->user->profile_photo_url] : null,
+                'user' => $store->user ? [
+                    'name' => $store->user->name,
+                    'phone' => $store->user->phone,
+                    'email' => $store->user->email,
+                    'profile_photo_url' => $store->user->profile_photo_url,
+                ] : null,
             ],
             'reviews' => [
                 'avg_rating' => $avgRating,
