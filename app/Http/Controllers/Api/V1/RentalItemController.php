@@ -212,16 +212,41 @@ class RentalItemController extends Controller
             'status' => 'nullable|in:draft,published,archived',
             'images' => 'nullable|array',
             'images.*' => 'image|max:5120',
+            'existing_images' => 'nullable|array',
         ]);
 
+        // ── Images: keep existing, delete removed, upload new ────────────────
+        $keepUrls = (array) $request->input('existing_images', []);
+        $currentImages = is_array($rentalItem->images) ? $rentalItem->images : [];
+
+        // Delete removed images from R2
+        foreach ($currentImages as $imgUrl) {
+            if (!empty($keepUrls) && !in_array($imgUrl, $keepUrls)) {
+                // Extract R2 path from URL
+                $path = parse_url($imgUrl, PHP_URL_PATH);
+                if ($path) {
+                    $path = ltrim($path, '/r2/');
+                    Storage::disk('r2')->delete($path);
+                }
+            }
+        }
+
+        // Keep only the URLs that should remain
+        if (!empty($keepUrls)) {
+            $validated['images'] = array_values(array_filter($keepUrls));
+        }
+
         if ($request->hasFile('images')) {
-            $validated['images'] = collect($request->file('images'))
+            $newImageUrls = collect($request->file('images'))
                 ->map(function ($file) {
                     $path = $file->store('rentals', 'r2');
                     if ($path) return url('/r2/' . ltrim($path, '/'));
                     $path = $file->store('rentals', 'public');
                     return $path ? Storage::disk('public')->url($path) : null;
                 })->filter()->values()->toArray();
+
+            $existing = $validated['images'] ?? [];
+            $validated['images'] = array_merge($existing, $newImageUrls);
         }
 
         $rentalItem->update($validated);

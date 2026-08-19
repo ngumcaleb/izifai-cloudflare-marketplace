@@ -215,6 +215,9 @@ class ServiceController extends Controller
             'packages.*.description' => 'nullable|string',
             'packages.*.price' => 'required|numeric|min:0',
             'packages.*.delivery_time' => 'nullable|string|max:100',
+            'images' => 'nullable|array',
+            'images.*' => 'image|max:5120',
+            'existing_images' => 'nullable|array',
         ]);
 
         $service->update($request->only([
@@ -252,6 +255,29 @@ class ServiceController extends Controller
             $toDelete = array_diff($existingIds, $incomingIds);
             if (!empty($toDelete)) {
                 ServicePackage::whereIn('id', $toDelete)->delete();
+            }
+        }
+
+        // ── Images: keep existing, delete removed, upload new ────────────────
+        $keepUrls = (array) $request->input('existing_images', []);
+
+        foreach ($service->images as $img) {
+            if (!empty($keepUrls) && !in_array($img->url, $keepUrls)) {
+                Storage::disk('r2')->delete($img->path);
+                $img->delete();
+            }
+        }
+
+        if ($request->hasFile('images')) {
+            $service->refresh();
+            $isFirst = $service->images()->count() === 0;
+            foreach ($request->file('images') as $i => $file) {
+                $path = $file->store('services', 'r2');
+                \App\Models\ServiceImage::create([
+                    'service_id' => $service->id,
+                    'path'       => $path,
+                    'is_main'    => $isFirst && $i === 0,
+                ]);
             }
         }
 
