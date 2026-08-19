@@ -145,6 +145,8 @@ class RentalItemController extends Controller
             'subcategory_id' => 'nullable|exists:categories,id',
             'images' => 'nullable|array',
             'images.*' => 'image|max:5120',
+        ], [
+            'category_id.exists' => 'Please select a valid category.',
         ]);
 
         $categoryId = $validated['category_id'] ?? null;
@@ -213,6 +215,8 @@ class RentalItemController extends Controller
             'images' => 'nullable|array',
             'images.*' => 'image|max:5120',
             'existing_images' => 'nullable|array',
+        ], [
+            'category_id.exists' => 'Please select a valid category.',
         ]);
 
         // ── Images: keep existing, delete removed, upload new ────────────────

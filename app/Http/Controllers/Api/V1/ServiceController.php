@@ -141,6 +141,8 @@ class ServiceController extends Controller
             'packages.*.delivery_time' => 'nullable|string|max:100',
             'images' => 'nullable|array',
             'images.*' => 'image|max:5120',
+        ], [
+            'category_id.exists' => 'Please select a valid category.',
         ]);
 
         $categoryId = $request->category_id;
@@ -218,6 +220,8 @@ class ServiceController extends Controller
             'images' => 'nullable|array',
             'images.*' => 'image|max:5120',
             'existing_images' => 'nullable|array',
+        ], [
+            'category_id.exists' => 'Please select a valid category.',
         ]);
 
         $service->update($request->only([

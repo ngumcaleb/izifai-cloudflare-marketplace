@@ -173,6 +173,8 @@ class ProductController extends Controller
             'specifications' => 'nullable|array',
             'specifications.*.key' => 'required|string',
             'specifications.*.value' => 'required|string',
+        ], [
+            'category_id.exists' => 'Please select a valid category.',
         ]);
 
         $categoryId = $validated['category_id'] ?? null;
@@ -255,6 +257,8 @@ class ProductController extends Controller
             'specifications'   => 'nullable|array',
             'colors'           => 'nullable|array',
             'sizes'            => 'nullable|array',
+        ], [
+            'category_id.exists' => 'Please select a valid category.',
         ]);
 
         $fields = $request->only(['name', 'description', 'price', 'category_id', 'stock_status', 'brand', 'sku', 'inventory', 'status', 'colors', 'sizes']);
