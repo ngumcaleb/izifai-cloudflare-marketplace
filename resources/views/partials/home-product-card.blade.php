@@ -19,8 +19,8 @@
                 </span>
             @endif
 
-            <span class="absolute top-2 sm:top-3 left-2 sm:left-3 z-20 px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-md -skew-x-12 bg-white/95 text-[#3f453f] text-[8px] sm:text-[9px] font-extrabold uppercase tracking-[0.08em] sm:tracking-[0.12em] shadow-sm">
-                {{ $product->category->name ?? 'Marketplace' }}
+            <span class="absolute top-2 sm:top-3 left-2 sm:left-3 z-20 max-w-[calc(100%-4.5rem)] px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-md -skew-x-12 bg-white/95 text-[#3f453f] text-[8px] sm:text-[9px] font-extrabold uppercase tracking-[0.08em] sm:tracking-[0.12em] shadow-sm">
+                <span class="block truncate">{{ $product->category->name ?? 'Marketplace' }}</span>
             </span>
 
             @if($product->old_price && $product->old_price > $product->price)

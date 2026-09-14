@@ -133,41 +133,101 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 sm:
                         @endif
                     </div>
 
-                    {{-- CTAs --}}
-                    <div class="mt-4 sm:mt-5 flex flex-wrap items-center justify-start gap-2">
-                        @if($store->whatsapp_number)
-                            <a href="https://wa.me/{{ wa_url($store->whatsapp_number) }}?text={{ urlencode('Hi ' . $store->name . ', I saw your store on Izifai!') }}" target="_blank"
-                               class="inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-[#25D366] text-white rounded-xl text-[12px] sm:text-[13px] font-bold hover:bg-[#128C7E] active:scale-[0.97] transition-all duration-200 shadow-md">
-                                {!! $whatsappIcon !!}
-                                WhatsApp
-                            </a>
-                        @endif
-                        @auth
-                            @if(auth()->id() !== $store->user_id)
-                            <form action="{{ route('conversations.store') }}" method="POST" class="inline">
-                                @csrf
-                                <input type="hidden" name="seller_id" value="{{ $store->user_id }}">
-                                <input type="hidden" name="target_type" value="store">
-                                <input type="hidden" name="target_id" value="{{ $store->id }}">
-                                <input type="hidden" name="message" value="Hi, I am interested in {{ $store->name }} on Izifai.">
-                                <button type="submit"
-                                        class="inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-white text-[#1c201e] rounded-xl text-[12px] sm:text-[13px] font-bold border border-[#1c201e] hover:bg-[#1c201e] hover:text-[#9acd32] active:scale-[0.97] transition-all duration-200">
-                                    <i class="fa-regular fa-comment text-[15px] sm:text-[16px]"></i>
-                                    Message
-                                </button>
-                            </form>
+                    {{-- CTAs + Store Search --}}
+                    <div class="mt-4 sm:mt-5" x-data="{ storeSearch: {{ request('search') ? 'true' : 'false' }} }">
+                        <div class="flex flex-wrap items-center justify-start gap-2">
+                            <button @click="storeSearch = !storeSearch"
+                                    class="inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 bg-[#f2f9df] text-[#659316] rounded-xl text-[12px] sm:text-[13px] font-bold border border-[#9acd32]/30 hover:border-[#7ca81d] active:scale-[0.97] transition-all duration-200">
+                                <i class="fa-solid fa-magnifying-glass text-[14px] sm:text-[15px]"></i>
+                                <span>Search</span>
+                                @if(request('search'))
+                                    <span class="w-1.5 h-1.5 rounded-full bg-[#659316] animate-pulse"></span>
+                                @endif
+                            </button>
+                            @if($store->whatsapp_number)
+                                <a href="https://wa.me/{{ wa_url($store->whatsapp_number) }}?text={{ urlencode('Hi ' . $store->name . ', I saw your store on Izifai!') }}" target="_blank"
+                                   class="inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-[#25D366] text-white rounded-xl text-[12px] sm:text-[13px] font-bold hover:bg-[#128C7E] active:scale-[0.97] transition-all duration-200 shadow-md">
+                                    {!! $whatsappIcon !!}
+                                    WhatsApp
+                                </a>
                             @endif
-                        @endauth
-                        <button onclick="copyToClipboard(window.location.href, this, 'Done!')"
-                                class="inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-white text-[#1c201e] rounded-xl text-[12px] sm:text-[13px] font-bold border border-[#e8eae8] hover:border-[#1c201e] active:scale-[0.97] transition-all duration-200">
-                            <i class="fa-solid fa-share-nodes text-[15px] sm:text-[16px] copy-icon"></i>
-                            <span class="copy-label">Share</span>
-                        </button>
+                            @auth
+                                @if(auth()->id() !== $store->user_id)
+                                <form action="{{ route('conversations.store') }}" method="POST" class="inline">
+                                    @csrf
+                                    <input type="hidden" name="seller_id" value="{{ $store->user_id }}">
+                                    <input type="hidden" name="target_type" value="store">
+                                    <input type="hidden" name="target_id" value="{{ $store->id }}">
+                                    <input type="hidden" name="message" value="Hi, I am interested in {{ $store->name }} on Izifai.">
+                                    <button type="submit"
+                                            class="inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-white text-[#1c201e] rounded-xl text-[12px] sm:text-[13px] font-bold border border-[#1c201e] hover:bg-[#1c201e] hover:text-[#9acd32] active:scale-[0.97] transition-all duration-200">
+                                        <i class="fa-regular fa-comment text-[15px] sm:text-[16px]"></i>
+                                        Message
+                                    </button>
+                                </form>
+                                @endif
+                            @endauth
+                            <button onclick="copyToClipboard(window.location.href, this, 'Done!')"
+                                    class="inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-white text-[#1c201e] rounded-xl text-[12px] sm:text-[13px] font-bold border border-[#e8eae8] hover:border-[#1c201e] active:scale-[0.97] transition-all duration-200">
+                                <i class="fa-solid fa-share-nodes text-[15px] sm:text-[16px] copy-icon"></i>
+                                <span class="copy-label">Share</span>
+                            </button>
+                        </div>
+
+                        {{-- Collapsible Store Search --}}
+                        <div x-show="storeSearch" x-cloak
+                             x-transition:enter="transition ease-out duration-200"
+                             x-transition:enter-start="opacity-0 -translate-y-1"
+                             x-transition:enter-end="opacity-100 translate-y-0"
+                             x-transition:leave="transition ease-in duration-150"
+                             x-transition:leave-start="opacity-100 translate-y-0"
+                             x-transition:leave-end="opacity-0 -translate-y-1"
+                             class="mt-3 max-w-lg">
+                            <form method="GET" action="{{ route('stores.show', $store->slug) }}#catalog" class="flex items-center gap-2 bg-white border border-[#e0e3e0] rounded-xl px-3 h-11 shadow-sm focus-within:border-[#9acd32] focus-within:ring-2 focus-within:ring-[#9acd32]/15 transition-all">
+                                @foreach(request()->only(['category', 'sort']) as $k => $v)
+                                    <input type="hidden" name="{{ $k }}" value="{{ $v }}">
+                                @endforeach
+                                <i class="fa-solid fa-magnifying-glass text-[16px] text-[#9aa19c]"></i>
+                                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search {{ $store->name }}..."
+                                       class="w-full bg-transparent text-[12px] sm:text-xs font-semibold text-[#1c201e] placeholder:text-[#9aa19c] outline-none" x-ref="storeSearchInput" x-init="$watch('storeSearch', v => { if(v) setTimeout(() => $refs.storeSearchInput.focus(), 100) })">
+                                @if(request('search'))
+                                    <a href="{{ route('stores.show', $store->slug) }}?category={{ request('category') }}&sort={{ request('sort') }}#catalog" class="text-[#9aa19c] hover:text-[#1c201e] shrink-0">
+                                        <i class="fa-solid fa-xmark text-[16px]"></i>
+                                    </a>
+                                @endif
+                                <button type="submit" class="shrink-0 h-8 px-3 sm:px-4 rounded-lg bg-[#1c201e] text-[#9acd32] text-[11px] sm:text-xs font-bold hover:bg-[#2a2f2b] transition-colors">Search</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </header>
+
+    {{-- ================================================================
+         1.5. SECTION TABS (Products | Services | Rentals)
+    ================================================================ --}}
+    <section class="max-w-7xl mx-auto px-2.5 sm:px-6 mt-5 sm:mt-6">
+        <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+            <a href="#catalog" class="scroll-link shrink-0 inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl text-[11.5px] sm:text-[12px] font-bold transition-all duration-200 -skew-x-6 bg-[#1c201e] text-[#9acd32] shadow-sm">
+                <span class="skew-x-6 inline-flex items-center gap-1.5">
+                    <i class="fa-solid fa-boxes-stacked text-[15px]" style=""></i>
+                    Products
+                    <span class="px-1.5 py-0.5 rounded-md bg-[#9acd32]/15 text-[#9acd32] text-[10px] font-black">{{ number_format($totalProducts) }}</span>
+                </span>
+            </a>
+            <a href="#services" class="scroll-link shrink-0 inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl text-[11.5px] sm:text-[12px] font-bold transition-all duration-200 bg-white border border-[#e8eae8] text-[#3f453f] hover:border-[#9acd32]/50 hover:text-[#7ca81d] {{ $totalServices > 0 ? '' : 'opacity-40 pointer-events-none' }}">
+                <i class="fa-solid fa-bell-concierge text-[15px] text-purple-500" style=""></i>
+                Services
+                <span class="px-1.5 py-0.5 rounded-md bg-purple-50 text-purple-600 text-[10px] font-black">{{ number_format($totalServices) }}</span>
+            </a>
+            <a href="#rentals" class="scroll-link shrink-0 inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl text-[11.5px] sm:text-[12px] font-bold transition-all duration-200 bg-white border border-[#e8eae8] text-[#3f453f] hover:border-[#9acd32]/50 hover:text-[#7ca81d] {{ $totalRentals > 0 ? '' : 'opacity-40 pointer-events-none' }}">
+                <i class="fa-solid fa-handshake text-[15px] text-blue-500" style=""></i>
+                Rentals
+                <span class="px-1.5 py-0.5 rounded-md bg-blue-50 text-blue-600 text-[10px] font-black">{{ number_format($totalRentals) }}</span>
+            </a>
+        </div>
+    </section>
 
     {{-- ================================================================
          2. STORE CATEGORIES CHIP BAR (Exact Catalog Aesthetic)
@@ -231,8 +291,8 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 sm:
                             <span class="absolute top-2 left-2 bg-[#dc2626] text-white text-[9px] sm:text-[10px] font-black px-1.5 py-0.5 rounded-md -skew-x-12 shadow-sm">-{{ round((1 - $product->price / $product->old_price) * 100) }}%</span>
                         @endif
 
-                        <span class="absolute top-2 right-2 px-1.5 py-0.5 rounded-md -skew-x-12 bg-[#1c201e]/80 text-[#9acd32] text-[8px] sm:text-[9px] font-extrabold uppercase tracking-wide shadow-sm">
-                            <span class="skew-x-6 inline-block">{{ $product->category->name ?? 'Featured' }}</span>
+                        <span class="absolute top-2 right-2 max-w-[calc(100%-4rem)] px-1.5 py-0.5 rounded-md -skew-x-12 bg-[#1c201e]/80 text-[#9acd32] text-[8px] sm:text-[9px] font-extrabold uppercase tracking-wide shadow-sm">
+                            <span class="skew-x-6 block truncate">{{ $product->category->name ?? 'Featured' }}</span>
                         </span>
 
                         <button class="favorite-btn absolute bottom-2 right-2 w-6 h-6 sm:w-8 sm:h-8 bg-white/95 backdrop-blur rounded-full flex items-center justify-center hover:bg-white transition-colors shadow-md z-20"
@@ -264,25 +324,19 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 sm:
     <section id="catalog" class="max-w-7xl mx-auto px-2.5 sm:px-6 mt-8 sm:mt-10 scroll-mt-[130px]">
         <div class="bg-white rounded-2xl border border-[#e8eae8] p-2.5 sm:p-4 flex flex-wrap items-center justify-between gap-2.5 sm:gap-3 shadow-sm">
             <div class="flex items-center gap-2.5 flex-wrap">
-                {{-- Search Box --}}
-                <form method="GET" action="{{ route('stores.show', $store->slug) }}" class="flex items-center bg-[#f5f6f5] border border-[#e0e3e0] rounded-xl px-3 h-10 gap-2 focus-within:border-[#9acd32] focus-within:bg-white transition-all w-48 sm:w-64">
-                    @foreach(request()->except(['q', 'search', 'page', 'category', 'sort']) as $k => $v)
-                        <input type="hidden" name="{{ $k }}" value="{{ $v }}">
-                    @endforeach
-                    <i class="fa-solid fa-magnifying-glass text-[18px] text-[#9aa19c]"></i>
-                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Search this store..."
-                           class="w-full bg-transparent text-[12px] font-semibold text-[#1c201e] placeholder:text-[#9aa19c] outline-none">
-                    @if(request('search'))
-                        <a href="{{ route('stores.show', $store->slug) }}?category={{ request('category') }}&sort={{ request('sort') }}#catalog" class="text-[#9aa19c] hover:text-[#1c201e]">
-                            <i class="fa-solid fa-xmark text-[16px]"></i>
-                        </a>
-                    @endif
-                </form>
-
                 {{-- Results Count --}}
-                <span class="text-xs font-semibold text-[#6b716c] hidden sm:inline-block">
+                <span class="text-xs font-semibold text-[#6b716c]">
                     Showing <strong class="text-[#1c201e]">{{ $products->firstItem() ?? 0 }}–{{ $products->lastItem() ?? 0 }}</strong> of <strong class="text-[#1c201e]">{{ number_format($products->total()) }}</strong> products
                 </span>
+                @if(request('search'))
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#f2f9df] border border-[#9acd32]/25 text-[11px] font-bold text-[#659316]">
+                        <i class="fa-solid fa-magnifying-glass text-[11px]" style=""></i>
+                        "{{ request('search') }}"
+                        <a href="{{ route('stores.show', $store->slug) }}?category={{ request('category') }}&sort={{ request('sort') }}#catalog" class="text-[#9aa19c] hover:text-[#1c201e]">
+                            <i class="fa-solid fa-xmark text-[13px]"></i>
+                        </a>
+                    </span>
+                @endif
             </div>
 
             {{-- Right: Sort Selector --}}
@@ -441,7 +495,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 sm:
     <section class="max-w-7xl mx-auto px-1 sm:px-6 mt-8 sm:mt-12 space-y-8 sm:space-y-12">
         {{-- Services --}}
         @if($services->count() > 0)
-        <div class="space-y-3 sm:space-y-4">
+        <div id="services" class="space-y-3 sm:space-y-4 scroll-mt-[130px]">
             <div class="flex items-end justify-between gap-3">
                 <div class="flex items-center gap-2.5 sm:gap-3">
                     <span class="grid place-items-center w-8 h-8 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-purple-50 text-purple-600 shadow-sm shrink-0">
@@ -514,7 +568,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 sm:
 
         {{-- Rentals --}}
         @if($rentals->count() > 0)
-        <div class="space-y-3 sm:space-y-4">
+        <div id="rentals" class="space-y-3 sm:space-y-4 scroll-mt-[130px]">
             <div class="flex items-end justify-between gap-3">
                 <div class="flex items-center gap-2.5 sm:gap-3">
                     <span class="grid place-items-center w-8 h-8 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-blue-50 text-blue-600 shadow-sm shrink-0">
@@ -588,6 +642,96 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 sm:
             </div>
         </div>
         @endif
+    </section>
+    @endif
+
+    {{-- ================================================================
+         7.5 SUGGESTED FOR YOU (Cross-Store Products)
+    ================================================================ --}}
+    @if($suggestedProducts->count() > 0)
+    <section class="max-w-7xl mx-auto px-2.5 sm:px-6 mt-8 sm:mt-12">
+        <div class="flex items-end justify-between gap-3 mb-3.5 sm:mb-5">
+            <div class="flex items-center gap-2.5 sm:gap-3">
+                <span class="grid place-items-center w-8 h-8 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-[#f2f9df] text-[#659316] shadow-sm shrink-0">
+                    <i class="fa-solid fa-wand-magic-sparkles text-[16px] sm:text-[20px]" style=""></i>
+                </span>
+                <div>
+                    <h2 class="text-sm sm:text-xl font-extrabold tracking-tight text-[#1c201e]">Suggested for You</h2>
+                    <p class="text-[10px] sm:text-[12px] text-[#6b716c] -mt-0.5">More picks from other stores on Izifai</p>
+                </div>
+            </div>
+            <a href="{{ route('products.index') }}"
+               class="inline-flex items-center gap-1 text-xs font-bold text-[#7ca81d] hover:text-[#659316] transition-colors whitespace-nowrap shrink-0">
+                Browse Marketplace <i class="fa-solid fa-arrow-right text-[15px]" style=""></i>
+            </a>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-4">
+            @foreach($suggestedProducts as $sugg)
+                <div class="group relative w-full min-w-0 bg-white rounded-xl sm:rounded-2xl border border-black/[0.07] overflow-hidden hover:shadow-[0_18px_44px_-14px_rgba(20,27,11,0.18)] hover:-translate-y-1 transition-all duration-300">
+                    <span class="absolute top-0 left-0 right-0 h-[3px] z-20 bg-gradient-to-r from-[#9acd32] via-[#86b92c] to-transparent origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+                    <a href="{{ route('products.show', $sugg->slug) }}" class="block">
+                        <div class="relative aspect-square overflow-hidden bg-[#f6f6f6]">
+                            @if($sugg->images->first())
+                                <img src="{{ $sugg->images->first()->url }}"
+                                     alt="{{ $sugg->name }}" loading="lazy"
+                                     class="w-full h-full object-cover transform transition-transform duration-700 ease-out group-hover:scale-[1.05]"
+                                     onerror="this.parentElement.innerHTML = '<div class=\'w-full h-full grid place-items-center text-[#9aa19c]/30\'><i class=\'fa-solid fa-image text-4xl sm:text-5xl\'></i></div>'">
+                            @else
+                                <div class="w-full h-full grid place-items-center text-[#9aa19c]/30">
+                                    <i class="fa-solid fa-image text-4xl sm:text-5xl"></i>
+                                </div>
+                            @endif
+
+                            @if($sugg->old_price && $sugg->old_price > $sugg->price)
+                                @php $suggDisc = round((1 - $sugg->price / $sugg->old_price) * 100); @endphp
+                                @if($suggDisc > 0)
+                                    <span class="absolute top-2 left-2 z-20 px-1.5 py-0.5 -skew-x-12 bg-[#dc2626] text-white text-[9px] sm:text-[10px] font-black shadow-md">-{{ $suggDisc }}%</span>
+                                @endif
+                            @endif
+
+                            @if($sugg->stock_status === 'out_of_stock')
+                                <span class="absolute inset-x-0 bottom-0 z-10 py-1 bg-[#1c201e]/80 text-white text-[9px] sm:text-[10px] font-bold text-center backdrop-blur-sm">Out of Stock</span>
+                            @endif
+                        </div>
+
+                        <div class="p-2.5 sm:p-3.5">
+                            <div class="flex items-center justify-between gap-1.5">
+                                <p class="text-[8.5px] sm:text-[10px] font-semibold uppercase tracking-[0.08em] sm:tracking-[0.12em] text-[#9aa19c] truncate">{{ $sugg->store->name ?? 'Marketplace' }}</p>
+                                @if($sugg->stock_status === 'in_stock')
+                                    <span class="inline-flex items-center gap-1 text-[8.5px] sm:text-[10px] font-bold text-[#659316] shrink-0">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-[#9acd32] inline-block"></span> In Stock
+                                    </span>
+                                @endif
+                            </div>
+
+                            <h3 class="text-[11px] sm:text-[13px] font-bold text-[#1c201e] leading-snug line-clamp-2 mt-1 group-hover:text-[#7ca81d] transition-colors">{{ $sugg->name }}</h3>
+
+                            <div class="flex items-end justify-between gap-1 mt-2 pt-2 border-t border-[#f0f1f0]">
+                                <div class="flex items-baseline gap-1 min-w-0">
+                                    @if($sugg->old_price && $sugg->old_price > $sugg->price)
+                                        <span class="text-[9.5px] sm:text-[11px] text-[#f97316] line-through font-medium tnum truncate">{{ number_format($sugg->old_price) }}</span>
+                                    @endif
+                                    <span class="text-[12px] sm:text-[14px] font-black text-[#659316] tnum truncate">{{ number_format($sugg->price) }} <span class="text-[8.5px] sm:text-[10px] font-bold">F</span></span>
+                                </div>
+                                @if(($sugg->rating ?? 0) > 0)
+                                    <span class="inline-flex items-center gap-0.5 text-[9.5px] sm:text-[11px] font-extrabold text-[#5c625e] shrink-0">
+                                        <i class="fa-solid fa-star text-[11px] sm:text-[13px] text-amber-400" style=""></i>
+                                        {{ number_format($sugg->rating, 1) }}
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                    </a>
+
+                    <button class="favorite-btn absolute top-2 right-2 w-7 h-7 bg-white/90 backdrop-blur rounded-full flex items-center justify-center hover:bg-white transition-colors z-30"
+                            data-product="{{ $sugg->id }}"
+                            data-favorited="{{ in_array($sugg->id, $suggestedSavedIds) ? 'true' : 'false' }}">
+                        <i class="{{ in_array($sugg->id, $suggestedSavedIds) ? 'fa-solid' : 'fa-regular' }} fa-heart text-[13px] {{ in_array($sugg->id, $suggestedSavedIds) ? 'text-[#dc2626]' : 'text-[#5c625e]' }}" style=""></i>
+                    </button>
+                </div>
+            @endforeach
+        </div>
     </section>
     @endif
 

@@ -175,6 +175,22 @@ class StoreController extends Controller
 
         $totalItems = $totalProducts + $totalServices + $totalRentals;
 
+        // Suggested products from other active stores
+        $suggestedProducts = \App\Models\Product::active()
+            ->with(['images', 'store', 'category'])
+            ->whereNot('store_id', $store->id)
+            ->inRandomOrder()
+            ->take(8)
+            ->get();
+
+        $suggestedSavedIds = [];
+        if (auth()->check() && $suggestedProducts->isNotEmpty()) {
+            $suggestedSavedIds = \App\Models\SavedProduct::where('user_id', auth()->id())
+                ->whereIn('product_id', $suggestedProducts->pluck('id'))
+                ->pluck('product_id')
+                ->toArray();
+        }
+
         // Store tenure
         $joinedDate = $store->created_at ? $store->created_at->format('M d, Y') : 'N/A';
 
@@ -183,7 +199,8 @@ class StoreController extends Controller
             'starDistribution', 'avgRating', 'totalReviews',
             'totalProducts', 'topProducts', 'joinedDate',
             'savedProductIds', 'services', 'totalServices',
-            'rentals', 'totalRentals', 'allCategories', 'storeCategories', 'totalItems'
+            'rentals', 'totalRentals', 'allCategories', 'storeCategories', 'totalItems',
+            'suggestedProducts', 'suggestedSavedIds'
         ));
     }
 
