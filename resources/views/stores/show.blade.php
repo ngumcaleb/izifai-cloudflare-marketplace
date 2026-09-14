@@ -54,10 +54,10 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 sm:
                 <img src="{{ $store->banner_url }}" alt="{{ $store->name }}" loading="lazy"
                      class="absolute inset-0 w-full h-full object-cover" onerror="this.classList.add('hidden')">
             @else
-                <div class="absolute inset-0 bg-gradient-to-r from-[#1c201e] via-[#2a2f2b] to-[#141715]">
-                    <div class="absolute -top-24 -right-16 w-96 h-96 rounded-full bg-[#9acd32]/15 blur-3xl pointer-events-none"></div>
-                    <div class="absolute -bottom-28 -left-16 w-80 h-80 rounded-full bg-[#7ca81d]/15 blur-3xl pointer-events-none"></div>
-                </div>
+                {{-- Default marketplace cover fallback --}}
+                <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1600&q=80&auto=format&fit=crop"
+                     alt="" loading="lazy"
+                     class="absolute inset-0 w-full h-full object-cover" onerror="this.classList.add('hidden')">
             @endif
 
             {{-- Bottom fade : merge the cover into the page background --}}
