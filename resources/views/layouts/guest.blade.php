@@ -4,10 +4,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="theme-color" content="#006d38">
+    <meta name="theme-color" content="#9acd32">
     <link rel="canonical" href="{{ url()->current() }}">
     <link rel="icon" type="image/svg+xml" href="{{ asset('images/favicon.svg') }}">
-    <link rel="apple-touch-icon" href="{{ asset('images/favicon.svg') }}">
+    <link rel="apple-touch-icon" href="{{ asset('icons/apple-touch-icon.png') }}">
+    <link rel="manifest" href="{{ asset('manifest.webmanifest') }}">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>@yield('title', 'Izifai — Your Store in a Link')</title>
     <meta name="description" content="@yield('description', 'Izifai helps Cameroon merchants create beautiful, shareable product catalogs. No app needed — just a link.')">
     <meta property="og:title" content="@yield('og_title', 'Izifai — Your Store in a Link')">
@@ -22,10 +25,10 @@
     <meta name="twitter:description" content="@yield('twitter_description', 'Izifai helps Cameroon merchants create beautiful, shareable product catalogs.')">
     <meta name="twitter:image" content="@yield('twitter_image', asset('images/logo.png'))">
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&family=Material+Symbols+Rounded:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script>
         tailwind.config = {
@@ -33,6 +36,12 @@
             theme: {
                 extend: {
                     colors: {
+                        accent: {
+                            DEFAULT: "#9acd32",
+                            dark: "#7ca81d",
+                            soft: "#f2f9df",
+                        },
+                        ink: "#1c201e",
                         "surface-container-highest": "#dde5db",
                         "primary-fixed-dim": "#59df89",
                         "outline-variant": "#bccabc",
@@ -54,8 +63,8 @@
                         "on-secondary-fixed-variant": "#414754",
                         "on-background": "#161d17",
                         "secondary": "#585e6c",
-                        "background": "#f4fcf1",
-                        "primary-container": "#00a859",
+                        "background": "#f5f6f5",
+                        "primary-container": "#9acd32",
                         "tertiary": "#536258",
                         "on-secondary": "#ffffff",
                         "primary-fixed": "#77fca3",
@@ -68,18 +77,17 @@
                         "surface-dim": "#d5dcd2",
                         "on-surface": "#161d17",
                         "inverse-on-surface": "#ebf3e9",
-                        "error-container": "#ffdad6",
                         "surface-container": "#e8f0e6",
                         "on-surface-variant": "#3d4a3f",
-                        "surface-tint": "#006d38",
-                        "primary": "#006d38",
+                        "surface-tint": "#659316",
+                        "primary": "#659316",
                         "on-tertiary-fixed": "#111e17",
                         "secondary-fixed-dim": "#c1c6d7",
                         "surface-container-low": "#eef6eb",
                         "surface": "#f4fcf1",
                         "on-secondary-fixed": "#161c27",
                         "on-primary-fixed": "#00210d",
-                        "error": "#ba1a1a"
+                        "error": "#dc2626"
                     },
                     borderRadius: {
                         DEFAULT: "0.25rem",
@@ -90,7 +98,7 @@
                         full: "9999px"
                     },
                     fontFamily: {
-                        sans: ["Plus Jakarta Sans", "sans-serif"],
+                        sans: ["Poppins", "system-ui", "-apple-system", "Segoe UI", "Roboto", "sans-serif"],
                     }
                 }
             }
@@ -98,8 +106,9 @@
     </script>
     <style>
         html { scroll-behavior: smooth; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fafcfa; }
+        body { font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; background-color: #f5f6f5; }
         .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .material-symbols-rounded { font-family: 'Material Symbols Rounded'; font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .touch-none { touch-action: none; }
@@ -122,22 +131,19 @@
         .animate-shimmer { animation: shimmer 3s infinite; }
         .card-enter { opacity: 0; animation: cardFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 
-        .header-scrolled { background: rgba(255, 255, 255, 0.78); backdrop-filter: blur(24px) saturate(1.2); -webkit-backdrop-filter: blur(24px) saturate(1.2); border-bottom: 1px solid rgba(0, 0, 0, 0.04); }
+        .header-scrolled { background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(18px) saturate(1.1); -webkit-backdrop-filter: blur(18px) saturate(1.1); border-bottom: 1px solid rgba(0, 0, 0, 0.05); }
         .header-top { background: transparent; border-bottom: 1px solid transparent; }
 
         .nav-link { position: relative; padding: 0.375rem 0; }
-        .nav-link::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 1.5px; background: #006d38; transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1); border-radius: 2px; }
+        .nav-link::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background: #9acd32; transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1); border-radius: 2px; }
         .nav-link:hover::after { width: 100%; }
 
-        .search-card { background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
-        .search-card::before { content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1px; background: linear-gradient(135deg, rgba(0, 109, 56, 0.15), transparent 50%, rgba(0, 109, 56, 0.08)); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
+        .back-to-top-btn { background: #9acd32; box-shadow: 0 8px 24px rgba(154, 205, 50, 0.25); }
+        .back-to-top-btn:hover { background: #7ca81d; }
 
+        .tnum { font-variant-numeric: tabular-nums; }
 
-
-        .back-to-top-btn { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(0, 0, 0, 0.06); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08); }
-        .back-to-top-btn:hover { background: #006d38; border-color: #006d38; box-shadow: 0 8px 32px rgba(0, 109, 56, 0.25); }
-
-        ::selection { background: rgba(0, 109, 56, 0.15); color: #003317; }
+        ::selection { background: rgba(154, 205, 50, 0.14); color: #431d00; }
         .safe-area-bottom { padding-bottom: env(safe-area-inset-bottom, 0px); }
     </style>
     @stack('styles')
@@ -146,49 +152,52 @@
 
     {{-- ============ FIXED HEADER WRAPPER ============ --}}
     <div class="fixed top-0 left-0 right-0 z-50">
+
     {{-- ============ TOP BAR ============ --}}
-    <div class="h-9 flex items-center justify-center bg-[#00210d] text-on-primary/80 text-[10px] font-medium tracking-wide overflow-hidden">
-        <div class="absolute inset-0 opacity-[0.03] bg-[radial-gradient(ellipse_at_center,_rgba(89,223,137,0.3)_0%,_transparent_70%)]"></div>
+    <div class="h-9 flex items-center justify-center bg-[#0b3a24] text-white/80 text-[10px] font-medium tracking-wide overflow-hidden">
         @auth
             @php $userStore = auth()->user()->store; @endphp
             @if($userStore)
-                <span class="inline-flex items-center gap-2 relative">
-                    <span class="w-1.5 h-1.5 rounded-full bg-primary-fixed-dim animate-pulse"></span>
+                <span class="inline-flex items-center gap-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-[#59df89]"></span>
                     <a href="{{ route('stores.show', $userStore->slug) }}" class="font-semibold hover:opacity-80 transition-opacity underline underline-offset-2">{{ $userStore->name }}</a>
                     <span class="opacity-40">•</span>
-                    <a href="{{ route('seller.dashboard') }}" class="underline underline-offset-2 font-semibold text-primary-fixed-dim hover:opacity-80 transition-opacity">Dashboard</a>
+                    <a href="{{ route('seller.dashboard') }}" class="underline underline-offset-2 font-semibold text-[#59df89] hover:opacity-80 transition-opacity">Dashboard</a>
                 </span>
             @else
-                <span class="inline-flex items-center gap-2 relative">
-                    <span class="w-1.5 h-1.5 rounded-full bg-primary-fixed-dim animate-pulse"></span>
+                <span class="inline-flex items-center gap-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-[#59df89]"></span>
                     Welcome back! Ready to start selling?
-                    <a href="{{ route('seller.store.create') }}" class="ml-0.5 underline underline-offset-2 font-semibold text-primary-fixed-dim hover:opacity-80 transition-opacity">Create Your Store</a>
+                    <a href="{{ route('seller.store.create') }}" class="ml-0.5 underline underline-offset-2 font-semibold text-[#59df89] hover:opacity-80 transition-opacity">Create Your Store</a>
                 </span>
             @endif
         @else
-            <span class="inline-flex items-center gap-2 relative">
-                <span class="w-1.5 h-1.5 rounded-full bg-primary-fixed-dim animate-pulse"></span>
+            <span class="inline-flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-[#9acd32]"></span>
                 Free to Start — Create your catalog in 2 minutes
-                <a href="{{ route('register') }}" class="ml-0.5 underline underline-offset-2 font-semibold text-primary-fixed-dim hover:opacity-80 transition-opacity">Get Started</a>
+                <a href="{{ route('register') }}" class="ml-0.5 underline underline-offset-2 font-semibold text-[#ffb27a] hover:opacity-80 transition-opacity">Get Started</a>
             </span>
         @endauth
     </div>
 
     {{-- ============ HEADER ============ --}}
-    <header class="header-scrolled shadow-[0_1px_0_rgba(0,0,0,0.04)] bg-white">
+    <header class="header-scrolled bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6">
             {{-- Main header row --}}
             <div class="h-14 sm:h-16 flex items-center justify-between gap-3">
 
                 {{-- Hamburger + Logo --}}
                 <div class="flex items-center gap-2 shrink-0">
-                    <button @click="mobileMenu = !mobileMenu" class="sm:hidden relative w-9 h-9 flex items-center justify-center rounded-xl text-on-surface-variant hover:text-primary hover:bg-black/5 transition-all active:scale-90" aria-label="Menu">
+                    <button @click="mobileMenu = !mobileMenu" class="sm:hidden relative w-9 h-9 flex items-center justify-center rounded-xl text-[#3f453f] hover:text-[#1c201e] hover:bg-black/5 transition-all active:scale-90" aria-label="Menu">
                         <svg x-show="!mobileMenu" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
                         <svg x-show="mobileMenu" class="w-5 h-5" x-cloak fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                     </button>
                     <a href="/" class="shrink-0 transition-opacity hover:opacity-80">
                         <x-application-logo class="h-7 sm:h-8" />
                     </a>
+                    <span class="hidden lg:inline-flex items-center gap-1 text-[9px] font-extrabold uppercase tracking-[0.14em] text-[#9acd32] bg-[#9acd32]/10 px-2 py-1 rounded-md ml-1">
+                        Marketplace
+                    </span>
                 </div>
 
                 {{-- Search bar (desktop, prominent) --}}
@@ -196,13 +205,16 @@
                     @yield('header-search')
                 @else
                 <div class="hidden sm:flex flex-1 max-w-xl lg:max-w-2xl mx-4">
-                    <div class="w-full flex rounded-xl overflow-hidden border-2 border-primary/30 focus-within:border-primary transition-colors shadow-sm">
+                    <div class="group w-full flex items-center rounded-full bg-white border border-[#e4e7e4] focus-within:border-[#9acd32] focus-within:ring-4 focus-within:ring-[#9acd32]/10 hover:border-[#c9cdc9] shadow-sm transition-all duration-200">
+                        <span class="grid place-items-center pl-4 pr-1 text-[#9aa19c] group-focus-within:text-[#7ca81d] transition-colors">
+                            <span class="material-symbols-outlined text-[20px]" style="font-variation-settings:'FILL' 1;">search</span>
+                        </span>
                         <input type="text" placeholder="What are you looking for?"
                                @click="$dispatch('open-search')"
-                               class="w-full h-10 px-4 text-[13px] outline-none bg-white text-on-surface placeholder-gray-400" readonly>
-                        <button class="h-10 px-5 bg-primary text-on-primary text-sm font-bold flex items-center gap-1.5 hover:bg-primary/90 transition-colors">
-                            <span class="material-symbols-outlined text-[18px]">search</span>
-                            <span class="hidden lg:inline">Search</span>
+                               class="w-full h-11 bg-transparent text-[13px] px-2 outline-none text-[#1c201e] placeholder-[#9aa19c] cursor-pointer truncate" readonly>
+                        <button @click="$dispatch('open-search')" class="m-1 h-9 shrink-0 rounded-full px-4 bg-[#9acd32] hover:bg-[#7ca81d] text-white text-[13px] font-bold flex items-center gap-1.5 transition-all active:scale-[0.98]">
+                            <span class="material-symbols-outlined text-[18px]" style="font-variation-settings:'FILL' 1;">search</span>
+                            Search
                         </button>
                     </div>
                 </div>
@@ -210,31 +222,27 @@
 
                 {{-- Right icons --}}
                 <div class="flex items-center gap-1.5 sm:gap-2">
+                    <button @click="$dispatch('open-search')" aria-label="Search"
+                            class="sm:hidden w-9 h-9 grid place-items-center rounded-xl text-[#3f453f] hover:text-[#1c201e] hover:bg-black/5 transition-all">
+                        <span class="material-symbols-outlined text-[21px]" style="font-variation-settings:'FILL' 1;">search</span>
+                    </button>
                     @auth
                         @php
                             $userStore = auth()->user()->store;
-                            $cartCount = \App\Models\Cart::where('user_id', auth()->id())->withCount('items')->first()?->items_count ?? 0;
                         @endphp
-                        <a href="{{ route('cart.index') }}"
-                           class="relative w-9 h-9 flex items-center justify-center rounded-xl text-on-surface-variant/70 hover:text-on-surface hover:bg-black/5 transition-all">
-                            <span class="material-symbols-outlined text-[20px]">shopping_cart</span>
-                            @if($cartCount > 0)
-                                <span class="absolute -top-0.5 -right-0.5 w-4 h-4 bg-error text-on-primary text-[8px] font-bold rounded-full flex items-center justify-center">{{ min($cartCount, 99) }}</span>
-                            @endif
-                        </a>
                         <a href="{{ route('notifications.index') }}"
-                           class="relative w-9 h-9 flex items-center justify-center rounded-xl text-on-surface-variant/70 hover:text-on-surface hover:bg-black/5 transition-all">
-                            <span class="material-symbols-outlined text-[20px]">notifications</span>
-                            <span class="notif-badge hidden absolute -top-0.5 -right-0.5 w-4 h-4 bg-error text-on-primary text-[8px] font-bold rounded-full flex items-center justify-center">0</span>
+                           class="relative w-9 h-9 flex items-center justify-center rounded-xl text-[#5c625e] hover:text-[#1c201e] hover:bg-black/5 transition-all">
+                            <span class="material-symbols-outlined text-[20px]" style="font-variation-settings:'FILL' 1;">notifications</span>
+                            <span class="notif-badge hidden absolute -top-0.5 -right-0.5 w-4 h-4 bg-[#dc2626] text-white text-[8px] font-bold rounded-full flex items-center justify-center">0</span>
                         </a>
                         <a href="{{ route('conversations.index') }}"
-                           class="relative w-9 h-9 flex items-center justify-center rounded-xl text-on-surface-variant/70 hover:text-on-surface hover:bg-black/5 transition-all">
-                            <span class="material-symbols-outlined text-[20px]">chat_bubble</span>
-                            <span class="unread-badge hidden absolute -top-0.5 -right-0.5 w-4 h-4 bg-error text-on-primary text-[8px] font-bold rounded-full flex items-center justify-center">0</span>
+                           class="relative w-9 h-9 flex items-center justify-center rounded-xl text-[#5c625e] hover:text-[#1c201e] hover:bg-black/5 transition-all">
+                            <span class="material-symbols-outlined text-[20px]" style="font-variation-settings:'FILL' 1;">chat_bubble</span>
+                            <span class="unread-badge hidden absolute -top-0.5 -right-0.5 w-4 h-4 bg-[#dc2626] text-white text-[8px] font-bold rounded-full flex items-center justify-center">0</span>
                         </a>
-                        <div class="w-px h-6 bg-gray-200 mx-1 hidden sm:block"></div>
+                        <div class="w-px h-6 bg-[#e5e7e5] mx-1 hidden sm:block"></div>
                         <div class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
-                            <button class="w-8 h-8 rounded-full overflow-hidden bg-black/5 flex items-center justify-center text-on-surface/60 text-xs font-bold hover:ring-2 hover:ring-primary/30 transition-all ring-1 ring-black/10">
+                            <button class="w-8 h-8 rounded-full overflow-hidden bg-black/5 flex items-center justify-center text-[#3f453f] text-xs font-bold hover:ring-2 hover:ring-[#9acd32]/40 transition-all ring-1 ring-black/10">
                                 @if($userStore && $userStore->logo)
                                     <img src="{{ $userStore->logo_url }}" alt="" class="w-full h-full object-cover">
                                 @else
@@ -242,33 +250,30 @@
                                 @endif
                             </button>
                             <div x-show="open" x-cloak @click="open = false"
-                                 class="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-50">
-                                <a href="{{ route('orders.index') }}" class="flex items-center gap-2.5 px-4 py-2 text-[12px] font-medium text-gray-700 hover:bg-gray-50 transition-colors">
-                                    <span class="material-symbols-outlined text-[16px] text-gray-400">shopping_cart</span> My Orders
-                                </a>
-                                <a href="{{ $userStore ? route('seller.dashboard') : route('seller.store.create') }}" class="flex items-center gap-2.5 px-4 py-2 text-[12px] font-medium text-gray-700 hover:bg-gray-50 transition-colors">
-                                    <span class="material-symbols-outlined text-[16px] text-gray-400">store</span> {{ $userStore ? 'Dashboard' : 'Open a Store' }}
+                                 class="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-lg border border-[#e8eae8] py-2 z-50">
+<a href="{{ $userStore ? route('seller.dashboard') : route('seller.store.create') }}" class="flex items-center gap-2.5 px-4 py-2 text-[12px] font-medium text-[#3f453f] hover:bg-[#f5f6f5] transition-colors">
+                                    <span class="material-symbols-outlined text-[16px] text-[#9aa19c]">store</span> {{ $userStore ? 'Dashboard' : 'Open a Store' }}
                                 </a>
                                 @if(!$userStore)
-                                    <a href="{{ route('seller.store.create') }}" class="flex items-center gap-2.5 px-4 py-2 text-[12px] font-medium text-gray-700 hover:bg-gray-50 transition-colors">
-                                        <span class="material-symbols-outlined text-[16px] text-gray-400">add_business</span> Create Your Store
+                                    <a href="{{ route('seller.store.create') }}" class="flex items-center gap-2.5 px-4 py-2 text-[12px] font-medium text-[#3f453f] hover:bg-[#f5f6f5] transition-colors">
+                                        <span class="material-symbols-outlined text-[16px] text-[#9aa19c]" style="font-variation-settings:'FILL' 1;">add_business</span> Create Your Store
                                     </a>
                                 @endif
-                                <hr class="my-1 border-gray-100">
+                                <hr class="my-1 border-[#e8eae8]">
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
-                                    <button type="submit" class="w-full flex items-center gap-2.5 px-4 py-2 text-[12px] font-medium text-error hover:bg-error/5 transition-colors">
-                                        <span class="material-symbols-outlined text-[16px]">logout</span> Log Out
+                                    <button type="submit" class="w-full flex items-center gap-2.5 px-4 py-2 text-[12px] font-medium text-[#dc2626] hover:bg-[#dc2626]/5 transition-colors">
+                                        <span class="material-symbols-outlined text-[16px]" style="font-variation-settings:'FILL' 1;">logout</span> Log Out
                                     </button>
                                 </form>
                             </div>
                         </div>
                     @endauth
                     @guest
-                        <a href="{{ route('register') }}" class="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-[12px] font-bold text-primary bg-primary/5 hover:bg-primary/10 rounded-xl transition-all">
+                        <a href="{{ route('register') }}" class="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 text-[12px] font-bold text-white bg-[#9acd32] hover:bg-[#7ca81d] rounded-full transition-all">
                             Join Free
                         </a>
-                        <a href="{{ route('login') }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 text-[12px] font-semibold text-on-surface-variant/80 hover:text-on-surface hover:bg-black/5 rounded-xl transition-all">
+                        <a href="{{ route('login') }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 text-[12px] font-semibold text-[#3f453f] hover:text-[#1c201e] hover:bg-black/5 rounded-full transition-all">
                             Sign In
                         </a>
                     @endguest
@@ -276,62 +281,91 @@
             </div>
 
             {{-- Navigation row (desktop) --}}
-            <div class="hidden sm:flex items-center h-11 border-t border-gray-100">
+            <div class="hidden sm:flex items-center h-11 border-t border-[#eff1ef]">
                 {{-- Categories mega menu --}}
                 <div class="relative h-full" x-data="{ catOpen: false }" @mouseenter="catOpen = true" @mouseleave="catOpen = false">
-                    <button class="h-full flex items-center gap-2 px-4 text-[12px] font-bold text-on-surface bg-gray-50/80 hover:bg-gray-100 rounded-t-lg transition-colors">
-                        <span class="material-symbols-outlined text-[18px] text-primary">category</span>
+                    <button class="h-full flex items-center gap-2 px-5 text-[12px] font-bold text-white bg-[#9acd32] hover:bg-[#7ca81d] rounded-b-xl transition-colors">
+                        <span class="material-symbols-outlined text-[18px]" style="font-variation-settings:'FILL' 1;">category</span>
                         All Categories
-                        <span class="material-symbols-outlined text-[14px] text-gray-400" :class="catOpen ? 'rotate-180' : ''" style="transition: transform 0.2s">expand_more</span>
+                        <span class="material-symbols-outlined text-[14px] opacity-80" :class="catOpen ? 'rotate-180' : ''" style="font-variation-settings:'FILL' 1; transition: transform 0.2s">expand_more</span>
                     </button>
-                    <div x-show="catOpen" x-cloak @click="catOpen = false"
-                         class="absolute left-0 top-full mt-0 bg-white rounded-b-xl rounded-r-xl shadow-xl border border-gray-100 z-50 flex"
-                         style="min-width: 600px; max-width: 800px;">
-                        <div class="grid grid-cols-3 gap-0 p-3 flex-1">
-                            @foreach($headerCategories->whereNull('parent_id')->take(18) as $cat)
-                                <a href="{{ route('products.index', ['category' => $cat->slug]) }}"
-                                   class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary/5 hover:text-primary transition-all text-[12px] font-medium text-gray-700">
-                                    @if($cat->icon && str_starts_with($cat->icon, '<'))
-                                        <span class="w-4 h-4 flex items-center justify-center shrink-0 text-gray-400">{!! $cat->icon !!}</span>
-                                    @else
-                                        <span class="material-symbols-outlined text-[16px] text-gray-400">circle</span>
-                                    @endif
-                                    <span class="truncate">{{ $cat->name }}</span>
-                                    @if($cat->products_count > 0)
-                                        <span class="ml-auto text-[9px] text-gray-400 font-medium">{{ $cat->products_count }}</span>
-                                    @endif
+                    <div x-show="catOpen" x-cloak
+                         @click="catOpen = false"
+                         class="absolute left-0 top-full mt-1 z-50 w-[min(42rem,calc(100vw-2rem))] bg-white rounded-2xl shadow-xl border border-[#e8eae8] lg:grid lg:grid-cols-[1fr_11rem] overflow-hidden">
+                        <div class="p-2.5">
+                            <div class="flex items-center justify-between px-3 py-1.5 mb-1">
+                                <span class="text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#9aa19c]">Categories</span>
+                                <a href="{{ route('products.index') }}"
+                                   class="text-[11px] font-bold text-[#9acd32] hover:text-[#7ca81d] transition-colors inline-flex items-center gap-0.5">
+                                    Browse all <span class="material-symbols-outlined text-[13px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
                                 </a>
-                            @endforeach
+                            </div>
+                            <div class="grid grid-cols-2 min-[480px]:grid-cols-3 gap-0.5 max-h-[21rem] overflow-y-auto no-scrollbar">
+                                @php $catTints = [['#fff0e4', '#c25400'], ['#e6f2ec', '#659316'], ['#eff1f4', '#454b57'], ['#fbf0c8', '#8a6d00']]; @endphp
+                                @foreach($headerCategories->whereNull('parent_id')->take(18) as $cat)
+                                    @php $tc = $catTints[$loop->index % count($catTints)]; @endphp
+                                    <a href="{{ route('products.index', ['category' => $cat->slug]) }}"
+                                       class="flex items-center gap-2.5 px-2.5 py-2 rounded-xl hover:bg-[#f2f9df] hover:text-[#7ca81d] transition-all text-[12px] font-medium text-[#3f453f] group">
+                                        <span class="w-8 h-8 rounded-lg grid place-items-center shrink-0 overflow-hidden">
+                                            @if($cat->image_url)
+                                                <img src="{{ $cat->image_url }}" alt="" class="w-full h-full object-cover">
+                                            @elseif($cat->icon && str_starts_with($cat->icon, '<'))
+                                                <span class="text-[15px] leading-none flex items-center justify-center w-full h-full" style="background: {{ $tc[0] }}">{!! $cat->icon !!}</span>
+                                            @else
+                                                <span class="text-[12px] font-extrabold w-full h-full flex items-center justify-center" style="background: {{ $tc[0] }}; color: {{ $tc[1] }};">{{ strtoupper(substr($cat->name, 0, 1)) }}</span>
+                                            @endif
+                                        </span>
+                                        <span class="truncate flex-1">{{ $cat->name }}</span>
+                                        @if($cat->products_count > 0)
+                                            <span class="text-[10px] font-semibold text-[#9aa19c] group-hover:text-[#7ca81d] transition-colors tnum">{{ number_format($cat->products_count) }}</span>
+                                        @endif
+                                    </a>
+                                @endforeach
+                            </div>
                         </div>
-                        <div class="w-40 bg-gray-50/80 p-3 rounded-r-xl flex flex-col gap-1">
-                            <span class="text-[9px] font-bold text-gray-400 uppercase tracking-wider mb-1">Quick Links</span>
-                            <a href="{{ route('stores.index') }}" class="text-[11px] font-medium text-gray-600 hover:text-primary transition-colors px-2 py-1 rounded hover:bg-white">Top Stores</a>
-                            <a href="{{ route('products.index') }}" class="text-[11px] font-medium text-gray-600 hover:text-primary transition-colors px-2 py-1 rounded hover:bg-white">New Arrivals</a>
-                            <a href="{{ route('services.index') }}" class="text-[11px] font-medium text-gray-600 hover:text-primary transition-colors px-2 py-1 rounded hover:bg-white">Services</a>
-                            <a href="{{ route('rentals.index') }}" class="text-[11px] font-medium text-gray-600 hover:text-primary transition-colors px-2 py-1 rounded hover:bg-white">Rentals</a>
-                            <a href="{{ route('products.index') }}" class="text-[11px] font-medium text-primary hover:text-primary/80 transition-colors px-2 py-1 rounded hover:bg-white mt-auto font-semibold">All Categories →</a>
+                        <div class="hidden lg:flex flex-col gap-1 bg-[#f5f6f5] border-l border-[#e8eae8] p-3">
+                            <span class="text-[9px] font-bold text-[#9aa19c] uppercase tracking-wider mb-1 px-2">Quick Links</span>
+                            <a href="{{ route('stores.index') }}" class="inline-flex items-center gap-2 text-[11px] font-medium text-[#3f453f] hover:text-[#7ca81d] transition-colors px-2 py-1.5 rounded-lg hover:bg-white">
+                                <span class="material-symbols-outlined text-[14px] text-[#9aa19c]">store</span> Top Stores
+                            </a>
+                            <a href="{{ route('products.index') }}" class="inline-flex items-center gap-2 text-[11px] font-medium text-[#3f453f] hover:text-[#7ca81d] transition-colors px-2 py-1.5 rounded-lg hover:bg-white">
+                                <span class="material-symbols-outlined text-[14px] text-[#9aa19c]">new_releases</span> New Arrivals
+                            </a>
+                            <a href="{{ route('services.index') }}" class="inline-flex items-center gap-2 text-[11px] font-medium text-[#3f453f] hover:text-[#7ca81d] transition-colors px-2 py-1.5 rounded-lg hover:bg-white">
+                                <span class="material-symbols-outlined text-[14px] text-[#9aa19c]">handyman</span> Services
+                            </a>
+                            <a href="{{ route('rentals.index') }}" class="inline-flex items-center gap-2 text-[11px] font-medium text-[#3f453f] hover:text-[#7ca81d] transition-colors px-2 py-1.5 rounded-lg hover:bg-white">
+                                <span class="material-symbols-outlined text-[14px] text-[#9aa19c]">shelves</span> Rentals
+                            </a>
+                            <a href="{{ route('stores.index') }}" class="mt-auto inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-[#9acd32] text-white text-[11px] font-bold rounded-full hover:bg-[#7ca81d] transition-colors">
+                                Explore stores
+                                <span class="material-symbols-outlined text-[13px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+                            </a>
                         </div>
                     </div>
                 </div>
 
                 {{-- Nav links --}}
                 <nav class="flex items-center h-full gap-1 ml-2">
-                    <a href="{{ route('home') }}" class="h-full flex items-center px-3.5 text-[12px] font-semibold text-on-surface border-b-2 border-primary transition-colors">Home</a>
-                    <a href="{{ route('products.index') }}" class="h-full flex items-center px-3.5 text-[12px] font-medium text-gray-600 hover:text-on-surface hover:bg-gray-50 transition-all">Products</a>
-                    <a href="{{ route('stores.index') }}" class="h-full flex items-center px-3.5 text-[12px] font-medium text-gray-600 hover:text-on-surface hover:bg-gray-50 transition-all">Stores</a>
-                    <a href="{{ route('services.index') }}" class="h-full flex items-center px-3.5 text-[12px] font-medium text-gray-600 hover:text-on-surface hover:bg-gray-50 transition-all">Services</a>
-                    <a href="{{ route('rentals.index') }}" class="h-full flex items-center px-3.5 text-[12px] font-medium text-gray-600 hover:text-on-surface hover:bg-gray-50 transition-all">Rentals</a>
+                    <a href="{{ route('home') }}" class="h-full flex items-center px-3.5 text-[12px] font-semibold text-[#1c201e] border-b-2 border-[#9acd32] transition-colors">Home</a>
+                    <a href="{{ route('products.index') }}" class="h-full flex items-center px-3.5 text-[12px] font-medium text-[#5c625e] hover:text-[#1c201e] hover:bg-black/[0.03] transition-all">Products</a>
+                    <a href="{{ route('stores.index') }}" class="h-full flex items-center px-3.5 text-[12px] font-medium text-[#5c625e] hover:text-[#1c201e] hover:bg-black/[0.03] transition-all">Stores</a>
+                    <a href="{{ route('services.index') }}" class="h-full flex items-center px-3.5 text-[12px] font-medium text-[#5c625e] hover:text-[#1c201e] hover:bg-black/[0.03] transition-all">Services</a>
+                    <a href="{{ route('rentals.index') }}" class="h-full flex items-center px-3.5 text-[12px] font-medium text-[#5c625e] hover:text-[#1c201e] hover:bg-black/[0.03] transition-all">Rentals</a>
                 </nav>
 
-                <div class="ml-auto flex items-center gap-2 text-[11px] text-gray-500">
+                <div class="ml-auto flex items-center gap-2 text-[11px]">
                     @auth
                         @if(!($userStore ?? null))
-                            <a href="{{ route('seller.store.create') }}" class="font-semibold text-primary hover:underline">Open Your Store</a>
+                            <a href="{{ route('seller.store.create') }}" class="font-semibold text-[#9acd32] hover:text-[#7ca81d] hover:underline">Open Your Store</a>
                         @else
-                            <a href="{{ route('seller.dashboard') }}" class="font-semibold text-primary hover:underline">Seller Dashboard</a>
+                            <a href="{{ route('seller.dashboard') }}" class="font-semibold text-[#9acd32] hover:text-[#7ca81d] hover:underline">Seller Dashboard</a>
                         @endif
                     @else
-                        <a href="{{ route('register') }}" class="font-semibold text-primary hover:underline">Start Selling</a>
+                        <a href="{{ route('register') }}" class="inline-flex items-center gap-1.5 px-4 py-1.5 bg-[#7ca81d] text-white font-bold rounded-full hover:bg-[#7ca81d] transition-colors">
+                            Start Selling
+                            <span class="material-symbols-outlined text-[14px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+                        </a>
                     @endauth
                 </div>
             </div>
@@ -359,13 +393,13 @@
              x-transition:leave-start="translate-x-0"
              x-transition:leave-end="-translate-x-full">
             <div class="flex flex-col h-full">
-                <div class="h-1 shrink-0 bg-gradient-to-r from-primary to-emerald-500"></div>
+                <div class="h-1.5 shrink-0 bg-[#9acd32]"></div>
 
                 {{-- Header --}}
                 <div class="flex items-center justify-between px-5 pt-4 pb-3 shrink-0">
                     <x-application-logo class="h-6" />
                     <button @click="mobileMenu = false"
-                            class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition-all">
+                            class="w-8 h-8 flex items-center justify-center rounded-lg text-[#9aa19c] hover:text-[#3f453f] hover:bg-[#f5f6f5] transition-all">
                         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                     </button>
                 </div>
@@ -377,39 +411,39 @@
                         $userStore = $user->store;
                         $isSeller = $user->store !== null;
                     @endphp
-                    <div class="px-5 py-4 border-b border-gray-100 shrink-0">
+                    <div class="px-5 py-4 border-b border-[#eff1ef] shrink-0">
                         <div class="flex items-center gap-3.5">
-                            <div class="w-11 h-11 rounded-xl overflow-hidden bg-gray-100 ring-2 ring-gray-100 shrink-0">
+                            <div class="w-11 h-11 rounded-xl overflow-hidden bg-[#f5f6f5] ring-2 ring-[#f0f2f0] shrink-0">
                                 @if($userStore && $userStore->logo)
                                     <img src="{{ $userStore->logo_url }}" class="w-full h-full object-cover">
                                 @elseif($userStore)
                                     <x-store-default-logo :store="$userStore" size="sm" />
                                 @else
-                                    <div class="w-full h-full flex items-center justify-center bg-primary/10 text-primary font-bold text-sm">
+                                    <div class="w-full h-full flex items-center justify-center bg-[#9acd32]/10 text-[#9acd32] font-bold text-sm">
                                         {{ substr($user->name ?? $user->email, 0, 1) }}
                                     </div>
                                 @endif
                             </div>
                             <div class="min-w-0 flex-1">
                                 <div class="flex items-center gap-2">
-                                    <p class="text-sm font-semibold text-gray-900 truncate">{{ $user->name ?? 'User' }}</p>
+                                    <p class="text-sm font-semibold text-[#1c201e] truncate">{{ $user->name ?? 'User' }}</p>
                                     @if($isSeller)
                                         <span class="shrink-0 text-[9px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded-md border border-amber-200/50">SELLER</span>
                                     @endif
                                 </div>
-                                <p class="text-xs text-gray-500 truncate mt-0.5">{{ $user->email }}</p>
+                                <p class="text-xs text-[#6b716c] truncate mt-0.5">{{ $user->email }}</p>
                             </div>
                         </div>
                     </div>
                 @else
-                    <div class="px-5 py-5 border-b border-gray-100 shrink-0">
-                        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Account</p>
+                    <div class="px-5 py-5 border-b border-[#eff1ef] shrink-0">
+                        <p class="text-xs font-semibold text-[#9aa19c] uppercase tracking-wider mb-3">Account</p>
                         <a href="{{ route('register') }}" @click="mobileMenu = false"
-                           class="block w-full text-center py-2.5 bg-gray-900 text-white text-sm font-semibold rounded-xl hover:bg-gray-800 transition-all active:scale-[0.98]">
+                           class="block w-full text-center py-2.5 bg-[#9acd32] text-white text-sm font-semibold rounded-full hover:bg-[#7ca81d] transition-all active:scale-[0.98]">
                             Get Started
                         </a>
                         <a href="{{ route('login') }}" @click="mobileMenu = false"
-                           class="block w-full text-center py-2.5 mt-2 text-sm font-semibold text-gray-600 border border-gray-200 rounded-xl hover:bg-gray-50 transition-all active:scale-[0.98]">
+                           class="block w-full text-center py-2.5 mt-2 text-sm font-semibold text-[#3f453f] border border-[#e4e7e4] rounded-full hover:bg-[#f5f6f5] transition-all active:scale-[0.98]">
                             Log In
                         </a>
                     </div>
@@ -417,83 +451,78 @@
 
                 {{-- Nav Links --}}
                 <div class="flex-1 overflow-y-auto px-4 py-3">
-                    <p class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider px-3 mb-2">Browse</p>
+                    <p class="text-[10px] font-semibold text-[#9aa19c] uppercase tracking-wider px-3 mb-2">Browse</p>
                     <div class="space-y-0.5">
                         <a href="{{ route('home') }}" @click="mobileMenu = false"
-                           class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-gray-700 rounded-xl hover:bg-gray-50 hover:text-gray-900 transition-all group">
-                            <span class="material-symbols-outlined text-[20px] text-gray-400 group-hover:text-primary">home</span>
+                           class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-[#3f453f] rounded-xl hover:bg-[#f2f9df] hover:text-[#7ca81d] transition-all group">
+                            <span class="material-symbols-outlined text-[20px] text-[#9aa19c] group-hover:text-[#9acd32]" style="font-variation-settings:'FILL' 1;">home</span>
                             Home
                         </a>
                         <a href="{{ route('products.index') }}" @click="mobileMenu = false"
-                           class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-gray-700 rounded-xl hover:bg-gray-50 hover:text-gray-900 transition-all group">
-                            <span class="material-symbols-outlined text-[20px] text-gray-400 group-hover:text-primary">shopping_bag</span>
+                           class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-[#3f453f] rounded-xl hover:bg-[#f2f9df] hover:text-[#7ca81d] transition-all group">
+                            <span class="material-symbols-outlined text-[20px] text-[#9aa19c] group-hover:text-[#9acd32]" style="font-variation-settings:'FILL' 1;">shopping_bag</span>
                             Products
                         </a>
                         <a href="{{ route('services.index') }}" @click="mobileMenu = false"
-                           class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-gray-700 rounded-xl hover:bg-gray-50 hover:text-gray-900 transition-all group">
-                            <span class="material-symbols-outlined text-[20px] text-gray-400 group-hover:text-primary">handyman</span>
+                           class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-[#3f453f] rounded-xl hover:bg-[#f2f9df] hover:text-[#7ca81d] transition-all group">
+                            <span class="material-symbols-outlined text-[20px] text-[#9aa19c] group-hover:text-[#9acd32]" style="font-variation-settings:'FILL' 1;">handyman</span>
                             Services
                         </a>
                         <a href="{{ route('rentals.index') }}" @click="mobileMenu = false"
-                           class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-gray-700 rounded-xl hover:bg-gray-50 hover:text-gray-900 transition-all group">
-                            <span class="material-symbols-outlined text-[20px] text-gray-400 group-hover:text-primary">shelves</span>
+                           class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-[#3f453f] rounded-xl hover:bg-[#f2f9df] hover:text-[#7ca81d] transition-all group">
+                            <span class="material-symbols-outlined text-[20px] text-[#9aa19c] group-hover:text-[#9acd32]" style="font-variation-settings:'FILL' 1;">shelves</span>
                             Rentals
                         </a>
                         <a href="{{ route('stores.index') }}" @click="mobileMenu = false"
-                           class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-gray-700 rounded-xl hover:bg-gray-50 hover:text-gray-900 transition-all group">
-                            <span class="material-symbols-outlined text-[20px] text-gray-400 group-hover:text-primary">store</span>
+                           class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-[#3f453f] rounded-xl hover:bg-[#f2f9df] hover:text-[#7ca81d] transition-all group">
+                            <span class="material-symbols-outlined text-[20px] text-[#9aa19c] group-hover:text-[#9acd32]" style="font-variation-settings:'FILL' 1;">store</span>
                             Stores
                         </a>
                     </div>
 
                     @auth
-                        <div class="mt-4 pt-4 border-t border-gray-100">
-                            <p class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider px-3 mb-2">My Account</p>
-                            <a href="{{ route('orders.index') }}" @click="mobileMenu = false"
-                               class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-gray-700 rounded-xl hover:bg-gray-50 hover:text-gray-900 transition-all group">
-                                <span class="material-symbols-outlined text-[20px] text-gray-400 group-hover:text-primary">shopping_cart</span>
-                                My Orders
-                            </a>
+                        <div class="mt-4 pt-4 border-t border-[#eff1ef]">
+                            <p class="text-[10px] font-semibold text-[#9aa19c] uppercase tracking-wider px-3 mb-2">My Account</p>
                             <a href="{{ route('notifications.index') }}" @click="mobileMenu = false"
-                               class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-gray-700 rounded-xl hover:bg-gray-50 hover:text-gray-900 transition-all group relative">
-                                <span class="material-symbols-outlined text-[20px] text-gray-400 group-hover:text-primary">notifications</span>
+                               class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-[#3f453f] rounded-xl hover:bg-[#f2f9df] hover:text-[#7ca81d] transition-all group relative">
+                                <span class="material-symbols-outlined text-[20px] text-[#9aa19c] group-hover:text-[#9acd32]" style="font-variation-settings:'FILL' 1;">notifications</span>
                                 Notifications
-                                <span class="notif-badge hidden ml-auto w-4 h-4 bg-error text-on-error text-[9px] font-bold rounded-full flex items-center justify-center leading-none">0</span>
+                                <span class="notif-badge hidden ml-auto w-4 h-4 bg-[#dc2626] text-white text-[9px] font-bold rounded-full flex items-center justify-center leading-none">0</span>
                             </a>
                             <a href="{{ route('conversations.index') }}" @click="mobileMenu = false"
-                               class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-gray-700 rounded-xl hover:bg-gray-50 hover:text-gray-900 transition-all group relative">
-                                <span class="material-symbols-outlined text-[20px] text-gray-400 group-hover:text-primary">chat_bubble</span>
+                               class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-[#3f453f] rounded-xl hover:bg-[#f2f9df] hover:text-[#7ca81d] transition-all group relative">
+                                <span class="material-symbols-outlined text-[20px] text-[#9aa19c] group-hover:text-[#9acd32]" style="font-variation-settings:'FILL' 1;">chat_bubble</span>
                                 Inbox
-                                <span class="unread-badge hidden ml-auto w-4 h-4 bg-error text-on-error text-[9px] font-bold rounded-full flex items-center justify-center leading-none">0</span>
+                                <span class="unread-badge hidden ml-auto w-4 h-4 bg-[#dc2626] text-white text-[9px] font-bold rounded-full flex items-center justify-center leading-none">0</span>
                             </a>
                         </div>
-                        <div class="mt-4 pt-4 border-t border-gray-100">
-                            <p class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider px-3 mb-2">Sell{{ $isSeller ? 'ing' : '' }}</p>
+                        <div class="mt-4 pt-4 border-t border-[#eff1ef]">
+                            <p class="text-[10px] font-semibold text-[#9aa19c] uppercase tracking-wider px-3 mb-2">Sell{{ $isSeller ? 'ing' : '' }}</p>
                             @if($isSeller)
                                 <a href="{{ route('seller.dashboard') }}" @click="mobileMenu = false"
-                                   class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-gray-700 rounded-xl hover:bg-amber-50 hover:text-amber-800 transition-all group">
-                                    <span class="material-symbols-outlined text-[20px] text-gray-400 group-hover:text-amber-500">dashboard</span>
+                                   class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-[#3f453f] rounded-xl hover:bg-[#f2f9df] hover:text-[#7ca81d] transition-all group">
+                                    <span class="material-symbols-outlined text-[20px] text-[#9aa19c] group-hover:text-[#9acd32]" style="font-variation-settings:'FILL' 1;">dashboard</span>
                                     Dashboard
                                 </a>
                                 <a href="{{ route('seller.products.index') }}" @click="mobileMenu = false"
-                                   class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-gray-700 rounded-xl hover:bg-amber-50 hover:text-amber-800 transition-all group">
-                                    <span class="material-symbols-outlined text-[20px] text-gray-400 group-hover:text-amber-500">inventory_2</span>
+                                   class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-[#3f453f] rounded-xl hover:bg-[#f2f9df] hover:text-[#7ca81d] transition-all group">
+                                    <span class="material-symbols-outlined text-[20px] text-[#9aa19c] group-hover:text-[#9acd32]" style="font-variation-settings:'FILL' 1;">inventory_2</span>
                                     Manage Products
                                 </a>
                             @else
                                 <a href="{{ route('seller.store.create') }}" @click="mobileMenu = false"
-                                   class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-amber-700 rounded-xl hover:bg-amber-50 transition-all group">
-                                    <span class="material-symbols-outlined text-[20px] text-amber-500">storefront</span>
+                                   class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-[#7ca81d] rounded-xl hover:bg-[#f2f9df] transition-all group">
+                                    <span class="material-symbols-outlined text-[20px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">storefront</span>
                                     Open Your Store
                                 </a>
                             @endif
                         </div>
                     @else
-                        <div class="mt-4 pt-4 border-t border-gray-100">
-                            <p class="text-[10px] font-semibold text-gray-400 uppercase tracking-wider px-3 mb-2">Sell</p>
+                        <div class="mt-4 pt-4 border-t border-[#eff1ef]">
+                            <p class="text-[10px] font-semibold text-[#9aa19c] uppercase tracking-wider px-3 mb-2">Sell</p>
                             <a href="{{ route('register') }}" @click="mobileMenu = false"
-                               class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-amber-700 rounded-xl hover:bg-amber-50 transition-all group">
-                                <span class="material-symbols-outlined text-[20px] text-amber-500">storefront</span>
+                               class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-[#7ca81d] rounded-xl hover:bg-[#f2f9df] transition-all group">
+                                <span class="material-symbols-outlined text-[20px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">storefront</span>
                                 Open a Store
                             </a>
                         </div>
@@ -502,11 +531,11 @@
 
                 {{-- Logout --}}
                 @auth
-                    <div class="px-5 py-4 border-t border-gray-100 shrink-0">
+                    <div class="px-5 py-4 border-t border-[#eff1ef] shrink-0">
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button type="submit"
-                                    class="flex items-center gap-3 text-sm font-medium text-red-600 hover:text-red-700 transition-all group">
+                                    class="flex items-center gap-3 text-sm font-medium text-[#dc2626] hover:text-[#b91c1c] transition-all group">
                                 <span class="material-symbols-outlined text-[20px]">logout</span>
                                 Log Out
                             </button>
@@ -517,7 +546,7 @@
         </div>
     </div>
 
-    {{-- ============ SEARCH OVERLAY (Alibaba-style fullscreen) ============ --}}
+    {{-- ============ SEARCH OVERLAY ============ --}}
     <div x-data="globalSearch()"
          @open-search.window="searchOpen = true; $nextTick(() => $refs.searchInput?.focus())"
          @keydown.escape.window="searchOpen = false"
@@ -540,45 +569,45 @@
              x-transition:leave-start="sm:opacity-100 sm:scale-100 sm:translate-y-0"
              x-transition:leave-end="sm:opacity-0 sm:scale-[0.96] sm:translate-y-6">
 
-            {{-- Colored Branded Header --}}
-            <div class="shrink-0 bg-gradient-to-r from-primary/5 via-primary/[0.02] to-transparent border-b border-primary/10">
+            {{-- Header --}}
+            <div class="shrink-0 border-b border-[#eff1ef]">
                 <div class="flex items-center gap-3 px-4 sm:px-6 h-14 sm:h-16">
-                    <button @click="searchOpen = false" class="sm:hidden p-1.5 -ml-1.5 text-gray-500 hover:text-gray-700 rounded-xl hover:bg-gray-100 transition-all">
+                    <button @click="searchOpen = false" class="sm:hidden p-1.5 -ml-1.5 text-[#5c625e] hover:text-[#1c201e] rounded-xl hover:bg-[#f5f6f5] transition-all">
                         <span class="material-symbols-outlined text-[20px]">arrow_back</span>
                     </button>
                     <div class="hidden sm:flex items-center gap-2.5 shrink-0 mr-1">
                         <x-application-logo class="w-7 h-7" />
-                        <span class="text-[11px] font-bold text-primary/60 uppercase tracking-[0.12em]">Search</span>
+                        <span class="text-[11px] font-bold text-[#9acd32] uppercase tracking-[0.12em]">Search</span>
                     </div>
                     <div class="flex-1 relative">
-                        <span class="material-symbols-outlined text-[20px] text-primary/40 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">search</span>
+                        <span class="material-symbols-outlined text-[20px] text-[#9acd32] absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">search</span>
                         <input x-ref="searchInput" x-model="query" @input.debounce.150ms="search()"
                                type="text" x-bind:placeholder="placeholderText"
-                               class="w-full h-10 sm:h-11 pl-11 pr-4 text-sm sm:text-[15px] focus:outline-none placeholder:text-gray-300 font-medium text-gray-800"
-                               style="border-radius:9999px;background:#f4fcf1;border:1.5px solid #e8f0e6;transition:all 0.2s"
-                               @focus=" $el.style.borderColor='#00a859'; $el.style.background='#fafff8' "
-                               @blur=" $el.style.borderColor='#e8f0e6'; $el.style.background='#f4fcf1' ">
+                               class="w-full h-10 sm:h-11 pl-11 pr-4 text-sm sm:text-[15px] focus:outline-none placeholder:text-[#b9beb9] font-medium text-[#1c201e]"
+                               style="border-radius:9999px;background:#f5f6f5;border:1.5px solid #e4e7e4;transition:all 0.2s"
+                               @focus=" $el.style.borderColor='#9acd32'; $el.style.background='#fff' "
+                               @blur=" $el.style.borderColor='#e4e7e4'; $el.style.background='#f5f6f5' ">
                     </div>
                     <button x-show="query.length > 0"
                             @click="query = ''; results = { products: [], services: [], rentals: [], stores: [], categories: [], locations: [], users: [] }"
                             x-cloak
-                            class="p-1.5 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-all">
+                            class="p-1.5 text-[#9aa19c] hover:text-[#3f453f] rounded-full hover:bg-[#f5f6f5] transition-all">
                         <span class="material-symbols-outlined text-[18px]">close</span>
                     </button>
                     <button @click="searchOpen = false; results = { products: [], services: [], rentals: [], stores: [], categories: [], locations: [], users: [] }; query = ''"
-                            class="hidden sm:inline-flex text-sm font-semibold text-gray-500 hover:text-gray-700 px-4 py-1.5 rounded-full hover:bg-gray-100 transition-all shrink-0">
+                            class="hidden sm:inline-flex text-sm font-semibold text-[#5c625e] hover:text-[#1c201e] px-4 py-1.5 rounded-full hover:bg-[#f5f6f5] transition-all shrink-0">
                         Cancel
                     </button>
                 </div>
             </div>
 
             {{-- Scope Tabs --}}
-            <div class="shrink-0 px-4 sm:px-6 py-2.5 border-b border-gray-100 bg-white/80 backdrop-blur-sm">
+            <div class="shrink-0 px-4 sm:px-6 py-2.5 border-b border-[#f0f2f0] bg-white/80 backdrop-blur-sm">
                 <div class="flex items-center gap-1">
                     <template x-for="tab in ['products', 'services', 'rentals']" :key="tab">
                         <button @click="switchScope(tab)"
                                 class="px-4 py-1.5 rounded-full text-[11px] font-bold transition-all capitalize"
-                                :class="scope === tab ? 'bg-primary text-on-primary shadow-sm' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'"
+                                :class="scope === tab ? 'bg-[#9acd32] text-white shadow-sm' : 'text-[#5c625e] hover:text-[#1c201e] hover:bg-[#f5f6f5]'"
                                 x-text="tab"></button>
                     </template>
                 </div>
@@ -590,34 +619,34 @@
                 <div x-show="query.length < 2 && !loading" class="px-5 sm:px-8 py-8 sm:py-10">
                     <div class="max-w-3xl mx-auto">
                         {{-- Brand intro --}}
-                        <div class="text-center sm:text-left mb-8 sm:mb-10">
-                            <p class="text-sm text-gray-400 max-w-md" x-text="'Discover ' + scope + ' from stores across Cameroon.'"></p>
+                        <div class="mb-8 sm:mb-10">
+                            <p class="text-sm text-[#6b716c] max-w-md" x-text="'Discover ' + scope + ' from stores across Cameroon.'"></p>
                         </div>
 
                         <div class="flex flex-col sm:flex-row sm:items-start gap-8 sm:gap-12">
                             <div class="flex-1">
-                                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-[0.1em] mb-4">Trending Searches</p>
+                                <p class="text-[11px] font-bold text-[#9aa19c] uppercase tracking-[0.1em] mb-4">Trending Searches</p>
                                 <div class="flex flex-wrap gap-2" x-show="trending.length">
                                     <template x-for="item in trending" :key="item.id">
                                         <a :href="item.url" @click="searchOpen = false"
-                                           class="px-4 py-2 bg-gray-50 hover:bg-gray-100 hover:text-primary text-[12px] font-semibold text-gray-600 rounded-full transition-all cursor-pointer"
+                                           class="px-4 py-2 bg-[#f5f6f5] hover:bg-[#f2f9df] hover:text-[#7ca81d] text-[12px] font-semibold text-[#5c625e] rounded-full transition-all cursor-pointer"
                                            x-text="item.name"></a>
                                     </template>
                                 </div>
-                                <p x-show="!trending.length" class="text-sm text-gray-300 italic">Loading...</p>
+                                <p x-show="!trending.length" class="text-sm text-[#c9cdc9] italic">Loading...</p>
                             </div>
                             <div class="flex-1 sm:max-w-xs">
-                                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-[0.1em] mb-4">Browse Categories</p>
-                            <div class="space-y-1">
-                                <a :href="scopeRoute" @click="searchOpen = false" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-primary/5 transition-all text-sm font-medium text-gray-700 hover:text-primary">
-                                    <span class="material-symbols-outlined text-[18px] text-primary/40">category</span>
-                                    <span x-text="'All ' + scope.charAt(0).toUpperCase() + scope.slice(1)"></span>
-                                </a>
-                                <a href="{{ route('stores.index') }}" @click="searchOpen = false" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-primary/5 transition-all text-sm font-medium text-gray-700 hover:text-primary">
-                                    <span class="material-symbols-outlined text-[18px] text-primary/40">store</span>
-                                    All Stores
-                                </a>
-                            </div>
+                                <p class="text-[11px] font-bold text-[#9aa19c] uppercase tracking-[0.1em] mb-4">Browse Categories</p>
+                                <div class="space-y-1">
+                                    <a :href="scopeRoute" @click="searchOpen = false" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-[#f2f9df] transition-all text-sm font-medium text-[#3f453f] hover:text-[#7ca81d]">
+                                        <span class="material-symbols-outlined text-[18px] text-[#9acd32]">category</span>
+                                        <span x-text="'All ' + scope.charAt(0).toUpperCase() + scope.slice(1)"></span>
+                                    </a>
+                                    <a href="{{ route('stores.index') }}" @click="searchOpen = false" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-[#f2f9df] transition-all text-sm font-medium text-[#3f453f] hover:text-[#7ca81d]">
+                                        <span class="material-symbols-outlined text-[18px] text-[#9acd32]">store</span>
+                                        All Stores
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -625,8 +654,8 @@
 
                 {{-- Loading --}}
                 <div x-show="loading" class="px-6 py-20 text-center">
-                    <svg class="w-7 h-7 mx-auto animate-spin text-primary mb-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-                    <p class="text-sm text-gray-400">Searching <span class="text-gray-500 font-medium" x-text="query"></span>&hellip;</p>
+                    <svg class="w-7 h-7 mx-auto animate-spin text-[#9acd32] mb-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                    <p class="text-sm text-[#6b716c]">Searching <span class="text-[#1c201e] font-medium" x-text="query"></span>&hellip;</p>
                 </div>
 
                 {{-- Results --}}
@@ -634,29 +663,29 @@
                     <template x-if="hasResults">
                         <div class="sm:grid sm:grid-cols-5 sm:gap-0">
                             {{-- Left column: Primary results (Products / Services / Rentals) --}}
-                            <div class="sm:col-span-3 sm:border-r sm:border-gray-50">
+                            <div class="sm:col-span-3 sm:border-r sm:border-[#f0f2f0]">
                                 {{-- Products --}}
                                 <template x-if="scope === 'products' && results.products.length">
                                     <div class="px-4 sm:px-6 pt-4 pb-2">
                                         <div class="flex items-center justify-between mb-3">
-                                            <p class="text-[11px] font-bold text-gray-400 uppercase tracking-[0.08em]">Products</p>
-                                            <a :href="'/search?q=' + encodeURIComponent(query) + '&scope=products'" @click="searchOpen = false" class="text-[11px] font-semibold text-primary hover:text-primary/80 transition-colors">View All</a>
+                                            <p class="text-[11px] font-bold text-[#9aa19c] uppercase tracking-[0.08em]">Products</p>
+                                            <a :href="'/search?q=' + encodeURIComponent(query) + '&scope=products'" @click="searchOpen = false" class="text-[11px] font-semibold text-[#9acd32] hover:text-[#7ca81d] transition-colors">View All</a>
                                         </div>
                                         <div class="space-y-1">
                                             <template x-for="product in results.products" :key="product.id">
                                                 <a :href="product.url" @click="searchOpen = false"
-                                                   class="flex items-center gap-3.5 px-3 py-3 rounded-xl hover:bg-gray-50 active:bg-gray-100 transition-all -mx-3 group">
-                                                    <div class="w-12 h-12 sm:w-10 sm:h-10 rounded-xl bg-gray-100 overflow-hidden shrink-0 ring-1 ring-black/5">
+                                                   class="flex items-center gap-3.5 px-3 py-3 rounded-xl hover:bg-[#f5f6f5] active:bg-[#ededee] transition-all -mx-3 group">
+                                                    <div class="w-12 h-12 sm:w-10 sm:h-10 rounded-xl bg-[#f0f2f0] overflow-hidden shrink-0 ring-1 ring-black/5">
                                                         <img x-show="product.image" :src="'/r2/' + product.image" class="w-full h-full object-cover group-hover:scale-105 transition-transform" alt="">
-                                                        <div x-show="!product.image" class="w-full h-full flex items-center justify-center text-gray-300">
+                                                        <div x-show="!product.image" class="w-full h-full flex items-center justify-center text-[#c9cdc9]">
                                                             <span class="material-symbols-outlined text-[18px]">image</span>
                                                         </div>
                                                     </div>
                                                     <div class="min-w-0 flex-1">
-                                                        <p class="text-sm font-semibold text-gray-800 truncate group-hover:text-primary transition-colors" x-text="product.name"></p>
-                                                        <p class="text-[11px] text-gray-400" x-text="product.category"></p>
+                                                        <p class="text-sm font-semibold text-[#3f453f] truncate group-hover:text-[#1c201e] transition-colors" x-text="product.name"></p>
+                                                        <p class="text-[11px] text-[#9aa19c]" x-text="product.category"></p>
                                                     </div>
-                                                    <p class="text-xs font-bold text-primary shrink-0 whitespace-nowrap" x-text="Number(product.price).toLocaleString() + ' FCFA'"></p>
+                                                    <p class="text-xs font-bold text-[#9acd32] shrink-0 whitespace-nowrap" x-text="Number(product.price).toLocaleString() + ' FCFA'"></p>
                                                 </a>
                                             </template>
                                         </div>
@@ -667,24 +696,24 @@
                                 <template x-if="scope === 'services' && results.services.length">
                                     <div class="px-4 sm:px-6 pt-4 pb-2">
                                         <div class="flex items-center justify-between mb-3">
-                                            <p class="text-[11px] font-bold text-gray-400 uppercase tracking-[0.08em]">Services</p>
-                                            <a :href="'/search?q=' + encodeURIComponent(query) + '&scope=services'" @click="searchOpen = false" class="text-[11px] font-semibold text-primary hover:text-primary/80 transition-colors">View All</a>
+                                            <p class="text-[11px] font-bold text-[#9aa19c] uppercase tracking-[0.08em]">Services</p>
+                                            <a :href="'/search?q=' + encodeURIComponent(query) + '&scope=services'" @click="searchOpen = false" class="text-[11px] font-semibold text-[#9acd32] hover:text-[#7ca81d] transition-colors">View All</a>
                                         </div>
                                         <div class="space-y-1">
                                             <template x-for="service in results.services" :key="service.id">
                                                 <a :href="service.url" @click="searchOpen = false"
-                                                   class="flex items-center gap-3.5 px-3 py-3 rounded-xl hover:bg-gray-50 active:bg-gray-100 transition-all -mx-3 group">
-                                                    <div class="w-12 h-12 sm:w-10 sm:h-10 rounded-xl bg-gray-100 overflow-hidden shrink-0 ring-1 ring-black/5">
+                                                   class="flex items-center gap-3.5 px-3 py-3 rounded-xl hover:bg-[#f5f6f5] active:bg-[#ededee] transition-all -mx-3 group">
+                                                    <div class="w-12 h-12 sm:w-10 sm:h-10 rounded-xl bg-[#f0f2f0] overflow-hidden shrink-0 ring-1 ring-black/5">
                                                         <img x-show="service.image" :src="service.image" class="w-full h-full object-cover group-hover:scale-105 transition-transform" alt="">
-                                                        <div x-show="!service.image" class="w-full h-full flex items-center justify-center text-gray-300">
+                                                        <div x-show="!service.image" class="w-full h-full flex items-center justify-center text-[#c9cdc9]">
                                                             <span class="material-symbols-outlined text-[18px]">image</span>
                                                         </div>
                                                     </div>
                                                     <div class="min-w-0 flex-1">
-                                                        <p class="text-sm font-semibold text-gray-800 truncate group-hover:text-primary transition-colors" x-text="service.name"></p>
-                                                        <p class="text-[11px] text-gray-400" x-text="service.category"></p>
+                                                        <p class="text-sm font-semibold text-[#3f453f] truncate group-hover:text-[#1c201e] transition-colors" x-text="service.name"></p>
+                                                        <p class="text-[11px] text-[#9aa19c]" x-text="service.category"></p>
                                                     </div>
-                                                    <p class="text-xs font-bold text-primary shrink-0 whitespace-nowrap" x-text="'From ' + Number(service.price).toLocaleString() + ' FCFA'"></p>
+                                                    <p class="text-xs font-bold text-[#9acd32] shrink-0 whitespace-nowrap" x-text="'From ' + Number(service.price).toLocaleString() + ' FCFA'"></p>
                                                 </a>
                                             </template>
                                         </div>
@@ -695,24 +724,24 @@
                                 <template x-if="scope === 'rentals' && results.rentals.length">
                                     <div class="px-4 sm:px-6 pt-4 pb-2">
                                         <div class="flex items-center justify-between mb-3">
-                                            <p class="text-[11px] font-bold text-gray-400 uppercase tracking-[0.08em]">Rentals</p>
-                                            <a :href="'/rentals?search=' + encodeURIComponent(query)" @click="searchOpen = false" class="text-[11px] font-semibold text-primary hover:text-primary/80 transition-colors">View All</a>
+                                            <p class="text-[11px] font-bold text-[#9aa19c] uppercase tracking-[0.08em]">Rentals</p>
+                                            <a :href="'/rentals?search=' + encodeURIComponent(query)" @click="searchOpen = false" class="text-[11px] font-semibold text-[#9acd32] hover:text-[#7ca81d] transition-colors">View All</a>
                                         </div>
                                         <div class="space-y-1">
                                             <template x-for="item in results.rentals" :key="item.id">
                                                 <a :href="item.url" @click="searchOpen = false"
-                                                   class="flex items-center gap-3.5 px-3 py-3 rounded-xl hover:bg-gray-50 active:bg-gray-100 transition-all -mx-3 group">
-                                                    <div class="w-12 h-12 sm:w-10 sm:h-10 rounded-xl bg-gray-100 overflow-hidden shrink-0 ring-1 ring-black/5">
+                                                   class="flex items-center gap-3.5 px-3 py-3 rounded-xl hover:bg-[#f5f6f5] active:bg-[#ededee] transition-all -mx-3 group">
+                                                    <div class="w-12 h-12 sm:w-10 sm:h-10 rounded-xl bg-[#f0f2f0] overflow-hidden shrink-0 ring-1 ring-black/5">
                                                         <img x-show="item.image" :src="item.image" class="w-full h-full object-cover group-hover:scale-105 transition-transform" alt="">
-                                                        <div x-show="!item.image" class="w-full h-full flex items-center justify-center text-gray-300">
+                                                        <div x-show="!item.image" class="w-full h-full flex items-center justify-center text-[#c9cdc9]">
                                                             <span class="material-symbols-outlined text-[18px]">image</span>
                                                         </div>
                                                     </div>
                                                     <div class="min-w-0 flex-1">
-                                                        <p class="text-sm font-semibold text-gray-800 truncate group-hover:text-primary transition-colors" x-text="item.name"></p>
-                                                        <p class="text-[11px] text-gray-400" x-text="item.category"></p>
+                                                        <p class="text-sm font-semibold text-[#3f453f] truncate group-hover:text-[#1c201e] transition-colors" x-text="item.name"></p>
+                                                        <p class="text-[11px] text-[#9aa19c]" x-text="item.category"></p>
                                                     </div>
-                                                    <p class="text-xs font-bold text-primary shrink-0 whitespace-nowrap" x-text="Number(item.rate).toLocaleString() + ' FCFA/' + item.billing_unit"></p>
+                                                    <p class="text-xs font-bold text-[#9acd32] shrink-0 whitespace-nowrap" x-text="Number(item.rate).toLocaleString() + ' FCFA/' + item.billing_unit"></p>
                                                 </a>
                                             </template>
                                         </div>
@@ -724,15 +753,15 @@
                             <div class="sm:col-span-2">
                                 <template x-if="results.categories.length">
                                     <div class="px-4 sm:px-6 pt-4 pb-2">
-                                        <p class="text-[11px] font-bold text-gray-400 uppercase tracking-[0.08em] mb-2.5">Categories</p>
+                                        <p class="text-[11px] font-bold text-[#9aa19c] uppercase tracking-[0.08em] mb-2.5">Categories</p>
                                         <div class="space-y-0.5">
                                             <template x-for="cat in results.categories" :key="cat.id">
                                                 <a :href="cat.url" @click="searchOpen = false"
-                                                   class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-gray-50 active:bg-gray-100 transition-all -mx-2">
-                                                    <span class="w-7 h-7 rounded-lg bg-primary/[0.06] flex items-center justify-center text-primary shrink-0">
+                                                   class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-[#f5f6f5] active:bg-[#ededee] transition-all -mx-2">
+                                                    <span class="w-7 h-7 rounded-lg bg-[#9acd32]/10 flex items-center justify-center text-[#9acd32] shrink-0">
                                                         <span class="material-symbols-outlined text-[14px]">category</span>
                                                     </span>
-                                                    <span class="text-sm font-semibold text-gray-800" x-text="cat.name"></span>
+                                                    <span class="text-sm font-semibold text-[#3f453f]" x-text="cat.name"></span>
                                                 </a>
                                             </template>
                                         </div>
@@ -741,19 +770,19 @@
 
                                 <template x-if="results.stores.length">
                                     <div class="px-4 sm:px-6 pt-3 pb-2">
-                                        <p class="text-[11px] font-bold text-gray-400 uppercase tracking-[0.08em] mb-2.5">Stores</p>
+                                        <p class="text-[11px] font-bold text-[#9aa19c] uppercase tracking-[0.08em] mb-2.5">Stores</p>
                                         <div class="space-y-0.5">
                                             <template x-for="store in results.stores" :key="store.id">
                                                 <a :href="store.url" @click="searchOpen = false"
-                                                   class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-gray-50 active:bg-gray-100 transition-all -mx-2">
-                                                    <div class="w-7 h-7 rounded-lg bg-gray-100 overflow-hidden shrink-0 flex items-center justify-center">
+                                                   class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-[#f5f6f5] active:bg-[#ededee] transition-all -mx-2">
+                                                    <div class="w-7 h-7 rounded-lg bg-[#f0f2f0] overflow-hidden shrink-0 flex items-center justify-center">
                                                         <img x-show="store.logo" :src="store.logo_url" class="w-full h-full object-cover" alt="">
-                                                        <span x-show="!store.logo" class="text-[9px] font-bold text-gray-400" x-text="store.name.charAt(0).toUpperCase()"></span>
+                                                        <span x-show="!store.logo" class="text-[9px] font-bold text-[#9aa19c]" x-text="store.name.charAt(0).toUpperCase()"></span>
                                                     </div>
                                                     <div class="min-w-0 flex-1">
-                                                        <p class="text-sm font-semibold text-gray-800 truncate" x-text="store.name"></p>
+                                                        <p class="text-sm font-semibold text-[#3f453f] truncate" x-text="store.name"></p>
                                                     </div>
-                                                    <span x-show="store.is_verified" class="text-primary shrink-0">
+                                                    <span x-show="store.is_verified" class="text-[#659316] shrink-0">
                                                         <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">verified</span>
                                                     </span>
                                                 </a>
@@ -764,15 +793,15 @@
 
                                 <template x-if="results.locations.length">
                                     <div class="px-4 sm:px-6 pt-3 pb-2">
-                                        <p class="text-[11px] font-bold text-gray-400 uppercase tracking-[0.08em] mb-2.5">Locations</p>
+                                        <p class="text-[11px] font-bold text-[#9aa19c] uppercase tracking-[0.08em] mb-2.5">Locations</p>
                                         <div class="space-y-0.5">
                                             <template x-for="loc in results.locations" :key="loc.name">
                                                 <a :href="'/stores?location=' + encodeURIComponent(loc.name)" @click="searchOpen = false"
-                                                   class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-gray-50 active:bg-gray-100 transition-all -mx-2">
-                                                    <span class="w-7 h-7 rounded-lg bg-primary/[0.06] flex items-center justify-center text-primary shrink-0">
+                                                   class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-[#f5f6f5] active:bg-[#ededee] transition-all -mx-2">
+                                                    <span class="w-7 h-7 rounded-lg bg-[#9acd32]/10 flex items-center justify-center text-[#9acd32] shrink-0">
                                                         <span class="material-symbols-outlined text-[14px]">location_on</span>
                                                     </span>
-                                                    <span class="text-sm font-semibold text-gray-800" x-text="loc.name"></span>
+                                                    <span class="text-sm font-semibold text-[#3f453f]" x-text="loc.name"></span>
                                                 </a>
                                             </template>
                                         </div>
@@ -781,17 +810,17 @@
 
                                 <template x-if="results.users.length">
                                     <div class="px-4 sm:px-6 pt-3 pb-2">
-                                        <p class="text-[11px] font-bold text-gray-400 uppercase tracking-[0.08em] mb-2.5">People</p>
+                                        <p class="text-[11px] font-bold text-[#9aa19c] uppercase tracking-[0.08em] mb-2.5">People</p>
                                         <div class="space-y-0.5">
                                             <template x-for="user in results.users" :key="user.id">
                                                 <a :href="user.url" @click="searchOpen = false"
-                                                   class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-gray-50 active:bg-gray-100 transition-all -mx-2">
-                                                    <div class="w-7 h-7 rounded-lg bg-primary/[0.08] flex items-center justify-center text-primary font-bold text-[10px] shrink-0">
+                                                   class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-[#f5f6f5] active:bg-[#ededee] transition-all -mx-2">
+                                                    <div class="w-7 h-7 rounded-lg bg-[#9acd32]/10 flex items-center justify-center text-[#9acd32] font-bold text-[10px] shrink-0">
                                                         <span x-text="user.name.charAt(0).toUpperCase()"></span>
                                                     </div>
                                                     <div class="min-w-0 flex-1">
-                                                        <p class="text-sm font-semibold text-gray-800 truncate" x-text="user.name"></p>
-                                                        <p class="text-[11px] text-gray-400 truncate" x-show="user.store" x-text="user.store"></p>
+                                                        <p class="text-sm font-semibold text-[#3f453f] truncate" x-text="user.name"></p>
+                                                        <p class="text-[11px] text-[#9aa19c] truncate" x-show="user.store" x-text="user.store"></p>
                                                     </div>
                                                 </a>
                                             </template>
@@ -804,11 +833,11 @@
 
                     {{-- No results --}}
                     <div x-show="!hasResults" class="px-6 py-16 sm:py-14 text-center">
-                        <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-gray-50 flex items-center justify-center ring-1 ring-black/5">
-                            <span class="material-symbols-outlined text-[24px] text-gray-300">search_off</span>
+                        <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-[#f0f2f0] flex items-center justify-center ring-1 ring-black/5">
+                            <span class="material-symbols-outlined text-[24px] text-[#c9cdc9]">search_off</span>
                         </div>
-                        <p class="text-base font-bold text-gray-800">No results for "<span class="text-primary" x-text="query"></span>"</p>
-                        <p class="text-sm text-gray-400 mt-1.5 max-w-xs mx-auto leading-relaxed">Try different keywords, check your spelling, or browse categories.</p>
+                        <p class="text-base font-bold text-[#1c201e]">No results for "<span class="text-[#9acd32]" x-text="query"></span>"</p>
+                        <p class="text-sm text-[#6b716c] mt-1.5 max-w-xs mx-auto leading-relaxed">Try different keywords, check your spelling, or browse categories.</p>
                     </div>
                 </div>
             </div>
@@ -816,10 +845,10 @@
     </div>
 
     {{-- ============ MAIN CONTENT ============ --}}
-    <main class="min-h-screen bg-[#fafcfa] pt-[108px] sm:pt-[160px] pb-[72px] sm:pb-0">
+    <main class="min-h-screen bg-[#f5f6f5] pt-[108px] sm:pt-[160px] pb-[72px] sm:pb-0">
         {{-- Left sidebar (store show page) --}}
         @hasSection('store-sidebar')
-            <aside class="fixed left-0 top-[100px] sm:top-[108px] h-[calc(100vh-100px)] sm:h-[calc(100vh-108px)] w-[260px] bg-white border-r border-gray-100 shadow-sm z-30 hidden lg:block overflow-y-auto no-scrollbar">
+            <aside class="fixed left-0 top-[100px] sm:top-[108px] h-[calc(100vh-100px)] sm:h-[calc(100vh-108px)] w-[260px] bg-white border-r border-[#eff1ef] shadow-sm z-30 hidden lg:block overflow-y-auto no-scrollbar">
                 @yield('store-sidebar')
             </aside>
             <div class="lg:ml-[260px]">
@@ -827,7 +856,7 @@
 
         {{-- Store nav bar (mobile: fixed below header, desktop: static or hidden when sidebar exists) --}}
         @hasSection('store-nav')
-            <div class="fixed lg:static top-[100px] sm:top-[108px] left-0 right-0 z-30 bg-white border-b border-gray-100 shadow-sm overflow-x-auto no-scrollbar @hasSection('store-sidebar') lg:hidden @endif">
+            <div class="fixed lg:static top-[100px] sm:top-[108px] left-0 right-0 z-30 bg-white border-b border-[#eff1ef] shadow-sm overflow-x-auto no-scrollbar @hasSection('store-sidebar') lg:hidden @endif">
                 <div class="max-w-7xl mx-auto px-5 sm:px-8">
                     @yield('store-nav')
                 </div>
@@ -836,9 +865,9 @@
 
         @if(session('success'))
             <div class="max-w-7xl mx-auto px-5 sm:px-8 mb-4 pt-4">
-                <div class="bg-green-50 border border-green-200 rounded-xl p-4 flex items-center gap-3 animate-slide-down">
-                    <span class="material-symbols-outlined text-green-600">check_circle</span>
-                    <p class="text-sm font-semibold text-green-800">{{ session('success') }}</p>
+                <div class="bg-lime-100 border border-lime-200 rounded-xl p-4 flex items-center gap-3 animate-slide-down">
+                    <span class="material-symbols-outlined text-lime-600">check_circle</span>
+                    <p class="text-sm font-semibold text-lime-800">{{ session('success') }}</p>
                 </div>
             </div>
         @endif
@@ -863,43 +892,87 @@
     @hasSection('footer')
         @yield('footer')
     @else
-    <footer class="bg-[#fafcfa] border-t border-black/5 pb-[72px] sm:pb-0">
-        <div class="max-w-7xl mx-auto px-5 sm:px-8 py-10 sm:py-14">
-            <div class="flex flex-col sm:flex-row items-center justify-between gap-6">
-                <div class="flex flex-col items-center sm:items-start gap-3">
-                    <a href="/" class="transition-opacity hover:opacity-80">
+    <footer class="bg-white border-t border-[#eceeec] pb-[72px] sm:pb-0">
+        <div class="max-w-7xl mx-auto px-5 sm:px-8 py-12 sm:py-16">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-10">
+                <div class="col-span-2 md:col-span-1">
+                    <a href="/" class="inline-block transition-opacity hover:opacity-80">
                         <x-application-logo class="h-7" />
                     </a>
-                    <p class="text-xs text-on-surface-variant/50 text-center sm:text-left max-w-xs">
-                        Cameroon's marketplace for merchants.
+                    <p class="text-xs text-[#6b716c] max-w-xs mt-3 leading-relaxed">
+                        Cameroon's marketplace — buy products, book services, rent equipment, and sell your own catalog in one link.
+                    </p>
+                    <div class="flex items-center gap-2 mt-5">
+                        @hasSection('storeWhatsApp')
+                            <a href="https://wa.me/{{ wa_url(($__env->yieldContent('storeWhatsApp'))) }}?text={{ urlencode('Hi, I saw your store on Izifai.') }}" target="_blank"
+                               class="inline-flex items-center gap-1.5 text-[11px] font-bold text-white bg-[#7ca81d] px-3.5 py-2 rounded-full hover:bg-[#7ca81d] transition-colors">
+                                <span class="material-symbols-outlined text-[14px]">chat</span> Contact
+                            </a>
+                        @else
+                            <a href="https://chat.whatsapp.com/J3of97nRhL5IdTSXpScYLl" target="_blank"
+                               class="inline-flex items-center gap-1.5 text-[11px] font-bold text-white bg-[#7ca81d] px-3.5 py-2 rounded-full hover:bg-[#7ca81d] transition-colors">
+                                <span class="material-symbols-outlined text-[14px]">groups</span> Community
+                            </a>
+                        @endif
+                    </div>
+                </div>
+
+                <div>
+                    <p class="text-[11px] font-extrabold uppercase tracking-[0.12em] text-[#9aa19c] mb-4">Marketplace</p>
+                    <div class="space-y-2.5">
+                        <a href="{{ route('home') }}" class="block text-[13px] font-medium text-[#3f453f] hover:text-[#9acd32] transition-colors">Home</a>
+                        <a href="{{ route('products.index') }}" class="block text-[13px] font-medium text-[#3f453f] hover:text-[#9acd32] transition-colors">Products</a>
+                        <a href="{{ route('stores.index') }}" class="block text-[13px] font-medium text-[#3f453f] hover:text-[#9acd32] transition-colors">Stores</a>
+                        <a href="{{ route('services.index') }}" class="block text-[13px] font-medium text-[#3f453f] hover:text-[#9acd32] transition-colors">Services</a>
+                        <a href="{{ route('rentals.index') }}" class="block text-[13px] font-medium text-[#3f453f] hover:text-[#9acd32] transition-colors">Rentals</a>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="text-[11px] font-extrabold uppercase tracking-[0.12em] text-[#9aa19c] mb-4">Account</p>
+                    <div class="space-y-2.5">
+                        @auth
+                            @php $userStore = auth()->user()->store; @endphp
+                            <a href="{{ route('notifications.index') }}" class="block text-[13px] font-medium text-[#3f453f] hover:text-[#9acd32] transition-colors">Notifications</a>
+                            @if($userStore)
+                                <a href="{{ route('seller.dashboard') }}" class="block text-[13px] font-medium text-[#3f453f] hover:text-[#9acd32] transition-colors">Seller Dashboard</a>
+                            @else
+                                <a href="{{ route('seller.store.create') }}" class="block text-[13px] font-medium text-[#3f453f] hover:text-[#9acd32] transition-colors">Open Your Store</a>
+                            @endif
+                        @else
+                            <a href="{{ route('login') }}" class="block text-[13px] font-medium text-[#3f453f] hover:text-[#9acd32] transition-colors">Log In</a>
+                            <a href="{{ route('register') }}" class="block text-[13px] font-medium text-[#3f453f] hover:text-[#9acd32] transition-colors">Create Account</a>
+                            <a href="{{ route('register') }}" class="block text-[13px] font-medium text-[#3f453f] hover:text-[#9acd32] transition-colors">Start Selling</a>
+                        @endauth
+                    </div>
+                </div>
+
+                <div>
+                    <p class="text-[11px] font-extrabold uppercase tracking-[0.12em] text-[#9aa19c] mb-4">Payments</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#3f453f] bg-[#f5f6f5] border border-[#e8eae8] px-3 py-1.5 rounded-full">
+                            <span class="material-symbols-outlined text-[14px] text-[#9acd32]">smartphone</span> MTN MoMo
+                        </span>
+                        <span class="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#3f453f] bg-[#f5f6f5] border border-[#e8eae8] px-3 py-1.5 rounded-full">
+                            <span class="material-symbols-outlined text-[14px] text-[#9acd32]">smartphone</span> Orange Money
+                        </span>
+                        <span class="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#3f453f] bg-[#f5f6f5] border border-[#e8eae8] px-3 py-1.5 rounded-full">
+                            <span class="material-symbols-outlined text-[14px] text-[#9acd32]">credit_card</span> Cards
+                        </span>
+                        <span class="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#3f453f] bg-[#f5f6f5] border border-[#e8eae8] px-3 py-1.5 rounded-full">
+                            <span class="material-symbols-outlined text-[14px] text-[#659316]" style="font-variation-settings:'FILL' 1;">verified</span> Verified sellers
+                        </span>
+                    </div>
+                    <p class="text-[11px] text-[#6b716c] mt-5 leading-relaxed">
+                        Trusted by {{ number_format(\App\Models\Store::count()) }}+ sellers across Cameroon.
                     </p>
                 </div>
-                <div class="flex items-center gap-4 sm:gap-6">
-                    @auth
-                        @php $userStore = auth()->user()->store; @endphp
-                        @if($userStore)
-                            <a href="{{ route('stores.show', $userStore->slug) }}" class="text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors">My Store</a>
-                            <a href="{{ route('seller.dashboard') }}" class="text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors">Dashboard</a>
-                        @else
-                            <a href="{{ route('seller.store.create') }}" class="text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors">Open Your Store</a>
-                            <a href="{{ route('seller.store.create') }}" class="text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors">Dashboard</a>
-                        @endif
-                    @else
-                        <a href="{{ route('register') }}" class="text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors">Create Store</a>
-                        <a href="{{ route('login') }}" class="text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors">Log In</a>
-                    @endauth
-                    <a href="{{ route('stores.index') }}" class="text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors">Browse</a>
-                    @hasSection('storeWhatsApp')
-                        <a href="https://wa.me/{{ wa_url(($__env->yieldContent('storeWhatsApp'))) }}?text={{ urlencode('Hi, I saw your store on Izifai.') }}" target="_blank" class="text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors">Contact</a>
-                    @else
-                        <a href="https://chat.whatsapp.com/J3of97nRhL5IdTSXpScYLl" target="_blank" class="text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors">Community</a>
-                    @endif
-                </div>
             </div>
-            <div class="mt-8 pt-5 border-t border-black/5 flex flex-col sm:flex-row items-center justify-between gap-3">
-                <p class="text-[11px] text-on-surface-variant/40">&copy; {{ date('Y') }} Izifai. Simplify Your Shopping.</p>
-                <span class="text-[11px] text-on-surface-variant/40 flex items-center gap-1">
-                    Trusted by {{ number_format(\App\Models\Store::count()) }}+ sellers
+            <div class="mt-10 pt-6 border-t border-[#eff1ef] flex flex-col sm:flex-row items-center justify-between gap-2">
+                <p class="text-[11px] text-[#9aa19c]">&copy; {{ date('Y') }} Izifai. Simplify Your Shopping.</p>
+                <span class="text-[11px] text-[#9aa19c] inline-flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[13px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">location_on</span>
+                    Made in Cameroon
                 </span>
             </div>
         </div>
@@ -919,7 +992,7 @@
             x-transition:leave-start="opacity-100 translate-y-0 scale-100"
             x-transition:leave-end="opacity-0 translate-y-3 scale-90"
              class="back-to-top-btn fixed bottom-[76px] sm:bottom-6 right-6 z-40 w-11 h-11 rounded-2xl flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 group">
-        <svg class="w-5 h-5 text-on-surface-variant/60 group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5"/></svg>
+        <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5"/></svg>
     </button>
 
     <script>
@@ -1055,72 +1128,50 @@
     </script>
 
     {{-- ============ MOBILE BOTTOM TAB BAR ============ --}}
-    <nav class="fixed bottom-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-t border-outline-variant/20 shadow-[0_-2px_16px_rgba(0,0,0,0.04)] sm:hidden safe-area-bottom">
-        <div class="flex items-center justify-around h-[64px] px-2 pb-1">
+    <nav class="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-[#eceeec] sm:hidden safe-area-bottom">
+        <div class="flex items-stretch h-[62px]">
             @php
                 $currentRoute = request()->route()?->getName() ?? '';
                 $isActive = fn($prefix) => str_starts_with($currentRoute, $prefix);
+                $homeOn = $isActive('home') && !$isActive('home.');
+                $productsOn = $isActive('products.') || $isActive('rentals.');
+                $servicesOn = $isActive('services.');
+                $chatOn = $isActive('conversations.');
+                $accountOn = $isActive('login') || $isActive('register');
             @endphp
 
-            {{-- Home --}}
             <a href="{{ route('home') }}"
-               class="flex flex-col items-center justify-center gap-0.5 py-1 px-3 rounded-xl transition-all relative {{ $isActive('home') && !$isActive('home.') ? 'text-primary' : 'text-on-surface-variant/50 hover:text-on-surface-variant' }}">
-                @if($isActive('home') && !$isActive('home.'))
-                    <span class="absolute -top-0.5 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-primary rounded-full"></span>
-                @endif
-                <span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' {{ $isActive('home') && !$isActive('home.') ? 1 : 0 }};">home</span>
-                <span class="text-[9px] font-bold {{ $isActive('home') && !$isActive('home.') ? 'text-primary' : 'text-on-surface-variant/50' }}">Home</span>
+               class="flex-1 flex flex-col items-center justify-center gap-1 py-1.5 {{ $homeOn ? 'text-[#9acd32]' : 'text-[#a0a6a1] hover:text-[#3f453f]' }} transition-colors">
+                <span class="material-symbols-rounded text-[23px] leading-none" style="font-variation-settings: 'FILL' 1;">home</span>
+                <span class="text-[9px] {{ $homeOn ? 'font-extrabold' : 'font-medium' }}">Home</span>
             </a>
 
-            {{-- Products --}}
             <a href="{{ route('products.index') }}"
-               class="flex flex-col items-center justify-center gap-0.5 py-1 px-3 rounded-xl transition-all relative {{ $isActive('products.') ? 'text-primary' : 'text-on-surface-variant/50 hover:text-on-surface-variant' }}">
-                @if($isActive('products.'))
-                    <span class="absolute -top-0.5 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-primary rounded-full"></span>
-                @endif
-                <span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' {{ $isActive('products.') ? 1 : 0 }};">shopping_bag</span>
-                <span class="text-[9px] font-bold {{ $isActive('products.') ? 'text-primary' : 'text-on-surface-variant/50' }}">Products</span>
+               class="flex-1 flex flex-col items-center justify-center gap-1 py-1.5 {{ $productsOn ? 'text-[#9acd32]' : 'text-[#a0a6a1] hover:text-[#3f453f]' }} transition-colors">
+                <span class="material-symbols-rounded text-[23px] leading-none" style="font-variation-settings: 'FILL' 1;">storefront</span>
+                <span class="text-[9px] {{ $productsOn ? 'font-extrabold' : 'font-medium' }}">Shop</span>
             </a>
 
-            {{-- Services --}}
             <a href="{{ route('services.index') }}"
-               class="flex flex-col items-center justify-center gap-0.5 py-1 px-3 rounded-xl transition-all relative {{ $isActive('services.') ? 'text-primary' : 'text-on-surface-variant/50 hover:text-on-surface-variant' }}">
-                @if($isActive('services.'))
-                    <span class="absolute -top-0.5 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-primary rounded-full"></span>
-                @endif
-                <span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' {{ $isActive('services.') ? 1 : 0 }};">handyman</span>
-                <span class="text-[9px] font-bold {{ $isActive('services.') ? 'text-primary' : 'text-on-surface-variant/50' }}">Services</span>
+               class="flex-1 flex flex-col items-center justify-center gap-1 py-1.5 {{ $servicesOn ? 'text-[#9acd32]' : 'text-[#a0a6a1] hover:text-[#3f453f]' }} transition-colors">
+                <span class="material-symbols-rounded text-[23px] leading-none" style="font-variation-settings: 'FILL' 1;">handyman</span>
+                <span class="text-[9px] {{ $servicesOn ? 'font-extrabold' : 'font-medium' }}">Services</span>
             </a>
 
-            {{-- Rentals --}}
-            <a href="{{ route('rentals.index') }}"
-               class="flex flex-col items-center justify-center gap-0.5 py-1 px-3 rounded-xl transition-all relative {{ $isActive('rentals.') ? 'text-primary' : 'text-on-surface-variant/50 hover:text-on-surface-variant' }}">
-                @if($isActive('rentals.'))
-                    <span class="absolute -top-0.5 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-primary rounded-full"></span>
-                @endif
-                <span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' {{ $isActive('rentals.') ? 1 : 0 }};">shelves</span>
-                <span class="text-[9px] font-bold {{ $isActive('rentals.') ? 'text-primary' : 'text-on-surface-variant/50' }}">Rentals</span>
-            </a>
-
-            {{-- Inbox / Account --}}
             @auth
                 <a href="{{ route('conversations.index') }}"
-                   class="flex flex-col items-center justify-center gap-0.5 py-1 px-3 rounded-xl transition-all relative {{ $isActive('conversations.') ? 'text-primary' : 'text-on-surface-variant/50 hover:text-on-surface-variant' }}">
-                    @if($isActive('conversations.'))
-                        <span class="absolute -top-0.5 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-primary rounded-full"></span>
-                    @endif
-                    <span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' {{ $isActive('conversations.') ? 1 : 0 }};">chat_bubble</span>
-                    <span class="unread-badge hidden absolute -top-0.5 right-1/2 translate-x-[14px] min-w-[16px] h-4 bg-error text-on-error text-[9px] font-bold rounded-full flex items-center justify-center px-1 leading-none shadow-sm border border-white">0</span>
-                    <span class="text-[9px] font-bold {{ $isActive('conversations.') ? 'text-primary' : 'text-on-surface-variant/50' }}">Inbox</span>
+                   class="flex-1 flex flex-col items-center justify-center gap-1 py-1.5 {{ $chatOn ? 'text-[#9acd32]' : 'text-[#a0a6a1] hover:text-[#3f453f]' }} transition-colors">
+                    <span class="relative">
+                        <span class="material-symbols-rounded text-[23px] leading-none" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
+                        <span class="unread-badge hidden absolute -top-1 -right-2.5 min-w-[16px] h-[16px] bg-[#dc2626] text-white text-[9px] font-bold rounded-full flex items-center justify-center px-1 leading-none border border-white">0</span>
+                    </span>
+                    <span class="text-[9px] {{ $chatOn ? 'font-extrabold' : 'font-medium' }}">Inbox</span>
                 </a>
             @else
                 <a href="{{ route('login') }}"
-                   class="flex flex-col items-center justify-center gap-0.5 py-1 px-3 rounded-xl transition-all relative {{ $isActive('login') || $isActive('register') ? 'text-primary' : 'text-on-surface-variant/50 hover:text-on-surface-variant' }}">
-                    @if($isActive('login') || $isActive('register'))
-                        <span class="absolute -top-0.5 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-primary rounded-full"></span>
-                    @endif
-                    <span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' {{ $isActive('login') || $isActive('register') ? 1 : 0 }};">person</span>
-                    <span class="text-[9px] font-bold {{ $isActive('login') || $isActive('register') ? 'text-primary' : 'text-on-surface-variant/50' }}">Account</span>
+                   class="flex-1 flex flex-col items-center justify-center gap-1 py-1.5 {{ $accountOn ? 'text-[#9acd32]' : 'text-[#a0a6a1] hover:text-[#3f453f]' }} transition-colors">
+                    <span class="material-symbols-rounded text-[23px] leading-none" style="font-variation-settings: 'FILL' 1;">person</span>
+                    <span class="text-[9px] {{ $accountOn ? 'font-extrabold' : 'font-medium' }}">Account</span>
                 </a>
             @endauth
         </div>

@@ -117,7 +117,7 @@
                                 <div class="flex flex-col">
                                     <span class="text-xs font-bold text-navy-800 leading-none">XAF {{ number_format($product->price) }}</span>
                                     @if($product->old_price)
-                                        <span class="text-[9px] text-slate-400 line-through mt-1">XAF {{ number_format($product->old_price) }}</span>
+                                        <span class="text-[9px] text-[#f97316] line-through mt-1">XAF {{ number_format($product->old_price) }}</span>
                                     @endif
                                 </div>
                             </td>

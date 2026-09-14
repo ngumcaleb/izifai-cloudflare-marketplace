@@ -454,7 +454,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                     <div class="flex items-baseline gap-1 mt-0.5 min-w-0">
                         <span class="text-[10px] font-black text-primary truncate">{{ number_format($product->price) }} FCFA</span>
                         @if($product->old_price)
-                            <span class="text-[7px] text-on-surface-variant line-through truncate">{{ number_format($product->old_price) }} FCFA</span>
+                            <span class="text-[7px] text-[#f97316] line-through truncate">{{ number_format($product->old_price) }} FCFA</span>
                         @endif
                     </div>
                 </div>
@@ -542,7 +542,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                                 <h3 class="text-[11px] sm:text-sm font-bold text-on-surface truncate leading-tight">{{ $product->name }}</h3>
                                 <p class="text-xs sm:text-base font-black text-primary mt-0.5 truncate">{{ number_format($product->price) }} FCFA</p>
                                 @if($product->old_price)
-                                    <p class="text-[9px] sm:text-[11px] text-on-surface-variant line-through truncate">{{ number_format($product->old_price) }} FCFA</p>
+                                    <p class="text-[9px] sm:text-[11px] text-[#f97316] line-through truncate">{{ number_format($product->old_price) }} FCFA</p>
                                 @endif
                             </div>
                         </a>

@@ -95,7 +95,7 @@
         <div class="flex items-baseline gap-1.5 pt-0.5">
             <span class="text-[14px] font-extrabold text-slate-900"><span class="text-[9px] text-slate-400 font-medium mr-0.5">XAF</span>{{ number_format($product->price) }}</span>
             @if($product->old_price && $product->old_price > $product->price)
-                <span class="text-[10px] text-slate-300 line-through font-medium">{{ number_format($product->old_price) }}</span>
+                <span class="text-[10px] text-[#f97316] line-through font-medium">{{ number_format($product->old_price) }}</span>
             @endif
         </div>
 

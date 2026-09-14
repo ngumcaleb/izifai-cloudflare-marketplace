@@ -42,7 +42,7 @@
                                 <p class="text-[10px] font-bold text-slate-400 uppercase">Price</p>
                                 <p class="text-lg font-bold text-navy-800">XAF {{ number_format($product->price) }}</p>
                                 @if($product->old_price)
-                                    <p class="text-xs text-slate-400 line-through">XAF {{ number_format($product->old_price) }}</p>
+                                    <p class="text-xs text-[#f97316] line-through">XAF {{ number_format($product->old_price) }}</p>
                                 @endif
                             </div>
                             <div>

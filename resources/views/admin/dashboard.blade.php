@@ -100,15 +100,6 @@
         </div>
         <div class="admin-card p-5 flex items-center justify-between group hover:border-gold-400 transition-all">
             <div class="min-w-0">
-                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Bookings</p>
-                <h3 class="text-xl font-bold text-navy-800 tracking-tight">{{ number_format($metrics['total_bookings']) }}</h3>
-            </div>
-            <div class="w-10 h-10 bg-pink-50 rounded-lg flex items-center justify-center text-pink-500 shrink-0">
-                <i data-lucide="calendar" class="w-5 h-5"></i>
-            </div>
-        </div>
-        <div class="admin-card p-5 flex items-center justify-between group hover:border-gold-400 transition-all">
-            <div class="min-w-0">
                 <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Withdrawals</p>
                 <h3 class="text-xl font-bold text-navy-800 tracking-tight">{{ $metrics['pending_withdrawals'] }}</h3>
                 <p class="text-[9px] text-rose-500 font-bold mt-1">Pending Approval</p>

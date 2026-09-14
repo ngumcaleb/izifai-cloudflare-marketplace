@@ -16,7 +16,7 @@
         </div>
 
         <div class="admin-card p-6 md:p-8">
-            <form action="{{ route('admin.categories.store') }}" method="POST">
+            <form action="{{ route('admin.categories.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
                 <div class="space-y-6">
@@ -65,15 +65,42 @@
                         <p class="text-[9px] text-slate-400 mt-1.5">Optional icon displayed alongside the category name throughout the marketplace.</p>
                     </div>
 
-                    <!-- Image Path -->
+                    <!-- Image -->
                     <div>
-                        <label class="block text-[11px] font-bold text-navy-800 uppercase tracking-widest mb-2">Image Path <span class="text-slate-400 font-normal normal-case">(storage path)</span></label>
-                        <input type="text" name="image_path" value="{{ old('image_path') }}"
-                               class="w-full px-4 py-3 bg-slate-50 border-none rounded-xl text-sm font-mono font-medium focus:ring-2 focus:ring-gold-400/20 transition-all"
-                               placeholder="e.g. categories/electronics.jpg">
-                        <p class="text-[9px] text-slate-400 mt-1.5">Relative path inside <code class="text-[9px] font-mono bg-slate-100 px-1 py-0.5 rounded">storage/app/public/</code></p>
+                        <label class="block text-[11px] font-bold text-navy-800 uppercase tracking-widest mb-2">Image <span class="text-slate-400 font-normal normal-case">(upload)</span></label>
+                        <label for="category-image"
+                               class="flex items-center gap-4 p-4 bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl cursor-pointer hover:border-gold-400 hover:bg-gold-400/5 transition-all">
+                            <span class="w-14 h-14 bg-white rounded-lg border border-slate-100 overflow-hidden grid place-items-center shrink-0">
+                                <img id="imagePreview" src="data:," alt="" class="w-full h-full object-cover hidden">
+                                <i data-lucide="image" id="imagePlaceholder" class="w-5 h-5 text-slate-300"></i>
+                            </span>
+                            <span class="min-w-0">
+                                <span class="block text-xs font-bold text-navy-800">Click to upload a category image</span>
+                                <span class="block text-[10px] text-slate-400 mt-0.5">JPG, PNG, WebP or GIF · max 2 MB · shown in the homepage tiles &amp; the categories menu</span>
+                            </span>
+                        </label>
+                        <input type="file" id="category-image" name="image" accept="image/*" class="sr-only" onchange="previewCategoryImage(this, 'imagePreview', 'imagePlaceholder')">
+                        @error('image')
+                            <p class="text-[10px] text-rose-500 mt-1.5 font-medium">{{ $message }}</p>
+                        @enderror
                     </div>
                 </div>
+
+                <script>
+                    function previewCategoryImage(input, previewId, placeholderId) {
+                        var img = document.getElementById(previewId);
+                        var ph = document.getElementById(placeholderId);
+                        if (input.files && input.files[0]) {
+                            var reader = new FileReader();
+                            reader.onload = function (e) {
+                                img.src = e.target.result;
+                                img.classList.remove('hidden');
+                                if (ph) ph.style.display = 'none';
+                            };
+                            reader.readAsDataURL(input.files[0]);
+                        }
+                    }
+                </script>
 
                 <!-- Actions -->
                 <div class="flex items-center justify-between mt-8 pt-6 border-t border-slate-100">

@@ -1,606 +1,446 @@
 @extends('layouts.guest')
+
 @section('title', 'Find Stores — Izifai')
 @section('description', 'Browse verified sellers and stores on Izifai. Find the best products from trusted merchants across Cameroon.')
 
 @push('styles')
 <style>
-    .store-card { transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
-    .store-card:hover { transform: translateY(-6px); box-shadow: 0 20px 60px -12px rgba(0,0,0,0.08), 0 4px 12px -4px rgba(0,0,0,0.03); }
-    .store-card .store-banner { transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
-    .store-card:hover .store-banner { transform: scale(1.05); }
-    .store-card .store-logo { transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
-    .store-card:hover .store-logo { transform: scale(1.1) rotate(-3deg); }
-    .store-card .view-store-arrow { transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-    .store-card:hover .view-store-arrow { transform: translateX(4px); }
-    .category-chip { transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
-    .category-chip.active { background: #006d38; color: white; border-color: #006d38; box-shadow: 0 2px 8px rgba(0,109,56,0.25); }
-    .filter-accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
-    .filter-accordion-content.open { max-height: 500px; }
-    .filter-arrow { transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-    .filter-arrow.open { transform: rotate(180deg); }
-    @keyframes cardIn { from { opacity: 0; transform: translateY(20px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
-    .card-enter { animation: cardIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
-    .card-enter:nth-child(1) { animation-delay: 0s; }
-    .card-enter:nth-child(2) { animation-delay: 0.04s; }
-    .card-enter:nth-child(3) { animation-delay: 0.08s; }
-    .card-enter:nth-child(4) { animation-delay: 0.12s; }
-    .card-enter:nth-child(5) { animation-delay: 0.16s; }
-    .card-enter:nth-child(6) { animation-delay: 0.2s; }
-    .card-enter:nth-child(7) { animation-delay: 0.24s; }
-    .card-enter:nth-child(8) { animation-delay: 0.28s; }
-    .card-enter:nth-child(9) { animation-delay: 0.32s; }
-    .card-enter:nth-child(10) { animation-delay: 0.36s; }
-    .card-enter:nth-child(11) { animation-delay: 0.4s; }
-    .card-enter:nth-child(12) { animation-delay: 0.44s; }
-    .card-enter:nth-child(n+13) { animation-delay: 0.48s; }
-    .h-scroll { scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scroll-padding-left: 12px; scroll-padding-right: 12px; }
-    .h-scroll > * { scroll-snap-align: start; }
+    body { font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif !important; background-color: #f5f6f5; }
+    .tnum { font-variant-numeric: tabular-nums; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    .mobile-sticky-bar { box-shadow: 0 -4px 20px rgba(0,0,0,0.06); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
-    .hero-gradient { background: linear-gradient(135deg, #00210d 0%, #003317 50%, #005228 100%); }
-    .section-scroll { scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scroll-padding-left: 12px; scroll-padding-right: 12px; }
-    .section-scroll > * { scroll-snap-align: start; }
-    .trending-grid-card { transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
-    .trending-grid-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px -12px rgba(0,0,0,0.1); }
-    .filter-sheet { transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+    .filter-sheet { transform: translateY(100%); transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
     .filter-sheet.open { transform: translateY(0); }
-    .store-badge { background: linear-gradient(135deg, #006d38, #00a859); }
-    .store-hero-bg { background-image: url('https://images.unsplash.com/photo-1601597111158-2fceff292cdc?w=1400&q=80'); background-size: cover; background-position: center; }
-    @keyframes dotPulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.8; } }
-    @keyframes scalePulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-    .animate-dot-pulse { animation: dotPulse 1.5s ease-in-out infinite; }
-    .animate-dot-pulse-delayed { animation: dotPulse 1.5s ease-in-out 0.5s infinite; }
-    .animate-dot-pulse-slower { animation: dotPulse 1.5s ease-in-out 1s infinite; }
-    .animate-scale-pulse { animation: scalePulse 2s ease-in-out infinite; }
-    .hero-pattern { background-image: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.05) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255,255,255,0.08) 0%, transparent 50%); }
 </style>
 @endpush
 
-{{-- ==================== STORE SIDEBAR (DESKTOP) ==================== --}}
-@section('store-sidebar')
-    {{-- Sidebar: Categories --}}
-    <div class="p-4 border-b border-gray-100" x-data="{ open: true }">
-        <button @click="open = !open" class="flex items-center justify-between w-full text-[10px] font-bold text-on-surface uppercase tracking-wider">
-            <span class="flex items-center gap-2">
-                <span class="material-symbols-outlined text-[15px] text-primary">category</span>
-                Categories
-            </span>
-            <span class="material-symbols-outlined text-[16px] text-on-surface-variant/40 filter-arrow" :class="open && 'open'">expand_more</span>
-        </button>
-        <div class="filter-accordion-content mt-3" :class="open && 'open'">
-            <div class="space-y-0.5">
-                <a href="{{ route('stores.index', request()->except(['category', 'page'])) }}"
-                   class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs {{ !request('category') ? 'bg-primary/[0.06] text-primary font-bold' : 'text-on-surface-variant hover:bg-black/[0.02] hover:text-on-surface' }} transition-all">
-                    <span class="material-symbols-outlined text-[15px] {{ !request('category') ? 'text-primary' : '' }}">grid_view</span>
-                    All Stores
-                </a>
-                @foreach($categories as $cat)
-                    <a href="{{ route('stores.index', array_merge(request()->except(['category', 'page']), ['category' => $cat->slug])) }}"
-                       class="flex items-center justify-between gap-2.5 px-3 py-2 rounded-lg text-xs {{ request('category') === $cat->slug ? 'bg-primary/[0.06] text-primary font-bold' : 'text-on-surface-variant hover:bg-black/[0.02] hover:text-on-surface' }} transition-all">
-                        <span class="flex items-center gap-2.5 truncate">
-                            @if($cat->icon && str_starts_with($cat->icon, '<'))
-                                <span class="w-4 h-4 flex items-center justify-center shrink-0">{!! $cat->icon !!}</span>
-                            @else
-                                <span class="material-symbols-outlined text-[15px] shrink-0">circle</span>
-                            @endif
-                            <span class="truncate">{{ $cat->name }}</span>
-                        </span>
-                        <span class="text-[10px] text-on-surface-variant/40 font-medium shrink-0">{{ $cat->products_count ?? $cat->products?->count() ?? 0 }}</span>
-                    </a>
-                @endforeach
-            </div>
-        </div>
-    </div>
-
-    {{-- Sidebar: Sort By --}}
-    <div class="p-4 border-b border-gray-100" x-data="{ open: true }">
-        <button @click="open = !open" class="flex items-center justify-between w-full text-[10px] font-bold text-on-surface uppercase tracking-wider">
-            <span class="flex items-center gap-2">
-                <span class="material-symbols-outlined text-[15px] text-primary">sort</span>
-                Sort By
-            </span>
-            <span class="material-symbols-outlined text-[16px] text-on-surface-variant/40 filter-arrow" :class="open && 'open'">expand_more</span>
-        </button>
-        <div class="filter-accordion-content mt-3" :class="open && 'open'">
-            <div class="space-y-0.5">
-                @foreach(['newest' => 'Newest First', 'rating' => 'Highest Rated', 'products' => 'Most Products'] as $val => $label)
-                    <a href="{{ route('stores.index', array_merge(request()->except(['sort', 'page']), ['sort' => $val])) }}"
-                       class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs {{ request('sort', 'newest') === $val ? 'bg-primary/[0.06] text-primary font-bold' : 'text-on-surface-variant hover:bg-black/[0.02] hover:text-on-surface' }} transition-all">
-                        <span class="material-symbols-outlined text-[15px] {{ request('sort', 'newest') === $val ? 'text-primary' : 'text-on-surface-variant/30' }}">{{ $val === 'newest' ? 'schedule' : ($val === 'rating' ? 'star' : 'inventory_2') }}</span>
-                        {{ $label }}
-                    </a>
-                @endforeach
-            </div>
-        </div>
-    </div>
-@endsection
-
 @section('content')
-<div x-data="{ openMobileFilters: false }" class="min-h-screen bg-surface pb-20 lg:pb-0">
+<div x-data="{ openMobileFilters: false }" class="pb-16 sm:pb-24">
 
-    {{-- ===== 1. HERO ===== --}}
-    <section class="mx-3 sm:mx-6 lg:mx-8 mt-3 sm:mt-4">
-        <div class="relative min-h-[220px] sm:min-h-[280px] lg:min-h-[300px] rounded-2xl shadow-sm">
-            <div class="absolute inset-0 bg-cover bg-center rounded-2xl store-hero-bg"></div>
-            <div class="absolute inset-0 rounded-2xl bg-gradient-to-t from-black/70 via-black/30 to-black/10"></div>
-            <div class="absolute inset-0 rounded-2xl hero-pattern"></div>
-            <div class="absolute top-[-120px] right-[-80px] w-[400px] h-[400px] rounded-full bg-white/5 blur-[80px]"></div>
-            <div class="absolute bottom-[-100px] left-[-60px] w-[300px] h-[300px] rounded-full bg-white/5 blur-[80px]"></div>
-            <div class="absolute inset-0 pointer-events-none opacity-[0.04]">
-                <div class="absolute top-20 left-[15%] w-1 h-1 rounded-full bg-white animate-dot-pulse"></div>
-                <div class="absolute top-40 left-[35%] w-1.5 h-1.5 rounded-full bg-white animate-dot-pulse-delayed"></div>
-                <div class="absolute top-10 right-[25%] w-1 h-1 rounded-full bg-white animate-dot-pulse-slower"></div>
-                <div class="absolute bottom-40 right-[20%] w-1.5 h-1.5 rounded-full bg-white animate-dot-pulse-delayed"></div>
-                <div class="absolute bottom-20 left-[40%] w-1 h-1 rounded-full bg-white animate-dot-pulse"></div>
-            </div>
-            <div class="absolute bottom-0 left-0 right-0 px-5 sm:px-6 lg:px-10 py-4 sm:py-6 lg:py-8">
-                <div class="max-w-7xl mx-auto">
-                    <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
-                        <div class="max-w-2xl min-w-0">
-                            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/15 mb-2 sm:mb-3">
-                                <span class="w-1.5 h-1.5 rounded-full bg-[#00a859] animate-scale-pulse"></span>
-                                <span class="text-[8px] sm:text-[10px] font-bold text-white/90 tracking-wide truncate max-w-[180px] sm:max-w-none">Trusted Stores in Cameroon</span>
-                            </div>
-                            <h1 class="text-xl sm:text-3xl lg:text-5xl font-black leading-[1.1] sm:leading-[1.04] tracking-[-0.03em] text-white text-balance">
-                                Discover <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#00a859] to-[#4ade80]">Stores</span>
-                            </h1>
-                            <p class="text-[10px] sm:text-sm text-white/80 max-w-xl leading-snug sm:leading-relaxed mt-1 sm:mt-2 line-clamp-1 sm:line-clamp-none">
-                                Browse trusted sellers and find exactly what you need from merchants across Cameroon.
-                            </p>
-                            <div class="flex flex-wrap items-center gap-1.5 sm:gap-3 mt-2 sm:mt-4">
-                                <a href="{{ route('register') }}"
-                                   class="inline-flex items-center justify-center gap-1 px-4 sm:px-6 py-2 sm:py-3 bg-white text-[#00210d] rounded-full text-[10px] sm:text-[13px] font-bold hover:bg-white/90 active:scale-[0.97] transition-all duration-200 shadow-sm group shrink-0">
-                                    Start Selling Free
-                                    <svg class="w-3 h-3 sm:w-4 sm:h-4 group-hover:translate-x-0.5 transition-transform shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
-                                </a>
-                                <a href="#stores-section"
-                                   class="inline-flex items-center justify-center gap-1.5 px-4 sm:px-6 py-2 sm:py-3 bg-white/10 backdrop-blur-sm text-white rounded-full text-[10px] sm:text-[13px] font-bold border border-white/20 hover:bg-white/20 active:scale-[0.97] transition-all duration-200 shrink-0">
-                                    Browse Stores
-                                </a>
-                            </div>
-                            <div class="flex flex-wrap items-center gap-2 sm:gap-5 mt-2 sm:mt-4">
-                                <span class="text-white text-[10px] sm:text-sm font-bold">
-                                    <span class="text-sm sm:text-lg font-black">{{ $totalStores }}+</span> Active Stores
+    {{-- ================================================================
+         1. HERO HEADER BANNER (Consistent with Home Theme)
+    ================================================================ --}}
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-4 sm:mt-6">
+        <div class="relative overflow-hidden rounded-3xl bg-[#1c201e] border border-black/5 shadow-[0_14px_44px_-16px_rgba(0,0,0,0.18)] p-6 sm:p-10 lg:p-12 text-white">
+            {{-- Ambient glow orbs --}}
+            <div class="absolute -top-24 -right-16 w-80 h-80 rounded-full bg-[#9acd32]/15 blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-28 -left-16 w-72 h-72 rounded-full bg-[#7ca81d]/15 blur-3xl pointer-events-none"></div>
+
+            <div class="relative z-10 max-w-2xl">
+                {{-- Skewed Kicker Badge --}}
+                <span class="inline-flex items-center gap-2 px-3.5 py-1.5 -skew-x-6 rounded-md bg-gradient-to-r from-[#9acd32] to-[#86b92c] text-[#1c201e] text-[10px] sm:text-[11px] font-extrabold uppercase tracking-[0.16em] shadow-[0_6px_18px_-6px_rgba(154,205,50,0.55)]">
+                    <span class="skew-x-6 inline-flex items-center gap-1.5">
+                        <span class="material-symbols-rounded text-[14px]" style="font-variation-settings:'FILL' 1;">storefront</span>
+                        Verified Merchants
+                    </span>
+                </span>
+
+                <h1 class="mt-4 text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white leading-[1.15]">
+                    {{ request('search') ? 'Stores Matching "' . request('search') . '"' : 'Find Trusted Stores in Cameroon' }}
+                </h1>
+
+                <p class="mt-2 text-xs sm:text-sm text-white/75 leading-relaxed max-w-xl">
+                    Discover verified local sellers and manufacturers across Cameroon. Browse real store catalogs, connect directly on WhatsApp, and buy with escrow safety.
+                </p>
+
+                {{-- Highlights / Quick Stats --}}
+                <div class="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px] sm:text-xs font-semibold text-white/80">
+                    <span class="inline-flex items-center gap-1.5">
+                        <span class="material-symbols-rounded text-[14px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">store</span>
+                        <strong class="text-white">{{ number_format($totalStores) }}+</strong> active stores
+                    </span>
+                    <span class="inline-flex items-center gap-1.5">
+                        <span class="material-symbols-rounded text-[14px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">inventory_2</span>
+                        <strong class="text-white">{{ number_format($totalProducts) }}+</strong> products listed
+                    </span>
+                    <span class="inline-flex items-center gap-1.5">
+                        <span class="material-symbols-rounded text-[14px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">verified</span>
+                        Verified badge check
+                    </span>
+                </div>
+
+                {{-- Active Filters Pills --}}
+                @php
+                    $hasActiveFilters = request('search') || (request('category') && request('category') !== 'all') || (request('sort') && request('sort') !== 'newest');
+                @endphp
+                @if($hasActiveFilters)
+                    <div class="mt-5 pt-4 border-t border-white/10 flex flex-wrap items-center gap-2">
+                        <span class="text-[11px] font-bold text-white/50 uppercase tracking-wider">Active:</span>
+
+                        @if(request('search'))
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg -skew-x-6 bg-white/15 backdrop-blur-sm text-white text-[11px] font-semibold">
+                                <span class="skew-x-6 flex items-center gap-1">
+                                    "{{ request('search') }}"
+                                    <a href="{{ route('stores.index', request()->except(['search', 'page'])) }}" class="hover:text-[#9acd32] transition-colors ml-0.5">
+                                        <span class="material-symbols-rounded text-[13px]">close</span>
+                                    </a>
                                 </span>
-                                <span class="text-white/60 text-[8px] sm:text-[10px]">{{ number_format($totalProducts) }}+ products listed</span>
-                            </div>
+                            </span>
+                        @endif
 
-                            @if(request('search') || request('category'))
-                                <div class="flex flex-wrap items-center gap-1 mt-1">
-                                    @if(request('category'))
-                                        @php $catName = $categories->firstWhere('slug', request('category'))?->name ?? request('category'); @endphp
-                                        <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-white/12 text-white rounded-full text-[7px] font-semibold backdrop-blur-sm border border-white/10">
-                                            {{ $catName }}
-                                            <a href="{{ route('stores.index', request()->except(['category', 'page'])) }}"><span class="material-symbols-outlined text-[8px] cursor-pointer hover:text-white/70">close</span></a>
-                                        </span>
-                                    @endif
-                                    @if(request('search'))
-                                        <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-white/12 text-white rounded-full text-[7px] font-semibold backdrop-blur-sm border border-white/10">
-                                            "{{ request('search') }}"
-                                            <a href="{{ route('stores.index', request()->except(['search', 'page'])) }}"><span class="material-symbols-outlined text-[8px] cursor-pointer hover:text-white/70">close</span></a>
-                                        </span>
-                                    @endif
-                                    <a href="{{ route('stores.index') }}" class="text-[7px] font-semibold text-white/60 hover:text-white underline underline-offset-2 transition-colors">Clear</a>
-                                </div>
-                            @endif
-                        </div>
+                        @if(request('category') && request('category') !== 'all')
+                            @php $activeCat = $categories->firstWhere('slug', request('category')); @endphp
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg -skew-x-6 bg-[#9acd32] text-[#1c201e] text-[11px] font-extrabold">
+                                <span class="skew-x-6 flex items-center gap-1">
+                                    {{ $activeCat->name ?? request('category') }}
+                                    <a href="{{ route('stores.index', request()->except(['category', 'page'])) }}" class="hover:opacity-75 transition-opacity ml-0.5">
+                                        <span class="material-symbols-rounded text-[13px]">close</span>
+                                    </a>
+                                </span>
+                            </span>
+                        @endif
+
+                        @if(request('sort') && request('sort') !== 'newest')
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg -skew-x-6 bg-white/15 backdrop-blur-sm text-white text-[11px] font-semibold">
+                                <span class="skew-x-6 flex items-center gap-1">
+                                    {{ request('sort') === 'rating' ? 'Top Rated' : 'Most Products' }}
+                                    <a href="{{ route('stores.index', request()->except(['sort', 'page'])) }}" class="hover:text-[#9acd32] transition-colors ml-0.5">
+                                        <span class="material-symbols-rounded text-[13px]">close</span>
+                                    </a>
+                                </span>
+                            </span>
+                        @endif
+
+                        <a href="{{ route('stores.index') }}" class="text-[11px] font-bold text-[#9acd32] hover:text-[#b0ea3d] underline transition-colors ml-1">
+                            Reset all
+                        </a>
+                    </div>
+                @endif
+            </div>
+        </div>
+    </section>
+
+    {{-- ================================================================
+         2. CATEGORIES HORIZONTAL BAR
+    ================================================================ --}}
+    @if($categories->isNotEmpty())
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-6">
+        <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+            {{-- All Stores chip --}}
+            <a href="{{ route('stores.index', request()->except(['category', 'page'])) }}"
+               class="shrink-0 px-4 py-2 rounded-xl text-[12px] font-bold transition-all duration-200 flex items-center gap-1.5 {{ !request('category') || request('category') === 'all' ? '-skew-x-6 bg-[#1c201e] text-[#9acd32] shadow-sm' : 'bg-white border border-[#e8eae8] text-[#3f453f] hover:border-[#9acd32]/50 hover:text-[#7ca81d]' }}">
+                <span class="{{ !request('category') || request('category') === 'all' ? 'skew-x-6' : '' }} flex items-center gap-1.5">
+                    <span class="material-symbols-rounded text-[16px]" style="font-variation-settings:'FILL' 1;">storefront</span>
+                    All Stores
+                </span>
+            </a>
+
+            @foreach($categories as $cat)
+                @php $isActive = request('category') === $cat->slug; @endphp
+                <a href="{{ route('stores.index', array_merge(request()->except(['category', 'page']), ['category' => $cat->slug])) }}"
+                   class="shrink-0 px-4 py-2 rounded-xl text-[12px] font-bold transition-all duration-200 flex items-center gap-1.5 {{ $isActive ? '-skew-x-6 bg-[#9acd32] text-[#1c201e] shadow-sm shadow-[#9acd32]/30' : 'bg-white border border-[#e8eae8] text-[#3f453f] hover:border-[#9acd32]/50 hover:text-[#7ca81d]' }}">
+                    <span class="{{ $isActive ? 'skew-x-6' : '' }} flex items-center gap-1.5">
+                        {{ $cat->name }}
+                        @if(($cat->products_count ?? 0) > 0)
+                            <span class="text-[10px] opacity-75 font-semibold">({{ $cat->products_count }})</span>
+                        @endif
+                    </span>
+                </a>
+            @endforeach
+        </div>
+    </section>
+    @endif
+
+    {{-- ================================================================
+         3. TOOLBAR / SEARCH & SORT STRIP
+    ================================================================ --}}
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-6">
+        <div class="bg-white rounded-2xl border border-[#e8eae8] p-3 sm:p-4 flex flex-wrap items-center justify-between gap-3 shadow-sm">
+            {{-- Left: Search input & indicators --}}
+            <div class="flex items-center gap-2.5 flex-1 max-w-md">
+                {{-- Search Store Form --}}
+                <form method="GET" action="{{ route('stores.index') }}" class="w-full flex items-center bg-[#f5f6f5] border border-[#e0e3e0] rounded-xl px-3 h-10 gap-2 focus-within:border-[#9acd32] focus-within:bg-white transition-all">
+                    @foreach(request()->except(['search', 'page']) as $k => $v)
+                        <input type="hidden" name="{{ $k }}" value="{{ $v }}">
+                    @endforeach
+                    <span class="material-symbols-rounded text-[18px] text-[#9aa19c]">search</span>
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Search store name, city or keyword..."
+                           class="w-full bg-transparent text-[12px] font-semibold text-[#1c201e] placeholder:text-[#9aa19c] outline-none">
+                    @if(request('search'))
+                        <a href="{{ route('stores.index', request()->except(['search', 'page'])) }}" class="text-[#9aa19c] hover:text-[#1c201e]">
+                            <span class="material-symbols-rounded text-[16px]">close</span>
+                        </a>
+                    @endif
+                </form>
+
+                {{-- Mobile Filter Drawer Button --}}
+                <button @click="openMobileFilters = true"
+                        class="lg:hidden inline-flex items-center gap-1.5 h-10 px-3.5 rounded-xl bg-[#f5f6f5] border border-[#e0e3e0] text-[#1c201e] text-[12px] font-bold hover:bg-[#eceeed] transition-all shrink-0">
+                    <span class="material-symbols-rounded text-[17px]" style="font-variation-settings:'FILL' 1;">tune</span>
+                    Filters
+                </button>
+            </div>
+
+            {{-- Right: Results count & Sort Selector --}}
+            <div class="flex items-center gap-3 ml-auto">
+                <span class="text-xs font-semibold text-[#6b716c] hidden sm:inline-block">
+                    Showing <strong class="text-[#1c201e]">{{ $stores->firstItem() ?? 0 }}–{{ $stores->lastItem() ?? 0 }}</strong> of <strong class="text-[#1c201e]">{{ number_format($stores->total()) }}</strong> stores
+                </span>
+
+                <div class="flex items-center gap-2">
+                    <span class="text-[11px] font-bold text-[#9aa19c] uppercase tracking-wider hidden sm:inline">Sort:</span>
+                    <div class="relative">
+                        <select onchange="window.location.href=this.value"
+                                class="h-10 pl-3.5 pr-8 bg-[#f5f6f5] border border-[#e0e3e0] rounded-xl text-[12px] font-bold text-[#1c201e] outline-none cursor-pointer hover:border-[#9acd32] focus:border-[#9acd32] transition-all appearance-none">
+                            @foreach([
+                                'newest' => 'Newest First',
+                                'rating' => 'Highest Rated',
+                                'products' => 'Most Products'
+                            ] as $val => $label)
+                                <option value="{{ route('stores.index', array_merge(request()->except(['sort', 'page']), ['sort' => $val])) }}"
+                                        {{ request('sort', 'newest') === $val ? 'selected' : '' }}>
+                                    {{ $label }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <span class="material-symbols-rounded text-[16px] text-[#6b716c] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none">
+                            expand_more
+                        </span>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    {{-- ===== 2. POPULAR STORES ===== --}}
-    @if($stores->count() > 0)
-        <section class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 mt-4 sm:mt-6 lg:mt-8">
-            <div class="flex items-center justify-between mb-3">
-                <div class="flex items-center gap-2">
-                    <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-primary/10 flex items-center justify-center shadow-sm">
-                        <span class="material-symbols-outlined text-[12px] sm:text-[14px] text-primary" style="font-variation-settings: 'FILL' 1;">communities</span>
-                    </span>
-                    <h2 class="text-xs sm:text-sm font-extrabold text-on-surface">Popular Stores</h2>
-                </div>
-                <span class="text-[9px] sm:text-[10px] font-semibold text-on-surface-variant/50">New &amp; trending</span>
-            </div>
+    {{-- ================================================================
+         4. MAIN STORES GRID (4 Cards Per Row on PC View)
+    ================================================================ --}}
+    <section id="stores-section" class="max-w-7xl mx-auto px-4 sm:px-6 mt-6">
+        @if($stores->count() > 0)
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 items-stretch gap-4 sm:gap-5 w-full">
+                @foreach($stores as $store)
+                    <div class="group relative w-full bg-white rounded-2xl border border-black/[0.07] overflow-hidden hover:shadow-[0_18px_44px_-14px_rgba(20,27,11,0.18)] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
+                        {{-- Top Animated Gradient Line --}}
+                        <span class="absolute top-0 left-0 right-0 h-[3px] z-20 bg-gradient-to-r from-[#9acd32] via-[#86b92c] to-transparent origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
 
-            {{-- Mobile: horizontal scroll --}}
-            <div x-data="autoScroll()" class="flex gap-3 overflow-x-auto no-scrollbar section-scroll pb-2 -mx-3 px-3 sm:-mx-6 sm:px-6 lg:hidden">
-                @php $popularStores = $stores->take(8); @endphp
-                @foreach($popularStores as $store)
-                    <div class="w-[140px] sm:w-[160px] shrink-0 card-enter" style="animation-delay: {{ $loop->index * 0.06 }}s">
-                        <a href="{{ route('stores.show', $store->slug) }}" class="block store-card bg-white rounded-xl overflow-hidden border border-black/[0.04] shadow-sm group">
-                            <div class="aspect-square relative overflow-hidden bg-surface-container-low">
+                        <div>
+                            {{-- Store Banner Header --}}
+                            <a href="{{ route('stores.show', $store->slug) }}" class="block relative aspect-[16/9] overflow-hidden bg-[#eef0ee]">
                                 @if($store->banner)
-                                    <img src="{{ $store->banner_url }}" alt="{{ $store->name }}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                    <img src="{{ $store->banner_url }}" alt="{{ $store->name }}" loading="lazy"
+                                         class="w-full h-full object-cover transform transition-transform duration-700 ease-out group-hover:scale-105">
                                 @else
                                     <x-store-default-banner :store="$store" variant="card" />
                                 @endif
-                                <div class="absolute top-1.5 left-1.5">
-                                    <x-store-badge :store="$store" size="sm" />
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+
+                                {{-- Badges on top of banner --}}
+                                <div class="absolute top-2.5 right-2.5 flex items-center gap-1.5 z-10">
+                                    @if($store->is_verified)
+                                        <span class="px-2 py-0.5 rounded-md -skew-x-6 bg-[#1c201e]/85 backdrop-blur-sm text-[#9acd32] text-[9px] font-extrabold uppercase tracking-wide shadow-sm flex items-center gap-1">
+                                            <span class="material-symbols-rounded text-[11px]" style="font-variation-settings:'FILL' 1;">verified</span>
+                                            Verified
+                                        </span>
+                                    @endif
+
+                                    @if($store->created_at && $store->created_at->diffInDays(now()) <= 14)
+                                        <span class="px-2 py-0.5 rounded-md -skew-x-6 bg-[#9acd32] text-[#1c201e] text-[9px] font-extrabold uppercase tracking-wide shadow-sm">
+                                            New
+                                        </span>
+                                    @endif
                                 </div>
-                                @if($store->created_at && $store->created_at->diffInDays(now()) <= 7)
-                                    <span class="absolute top-1.5 right-1.5 bg-amber-500/90 backdrop-blur-sm text-white text-[7px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-1 shadow-sm">
-                                        <span class="material-symbols-outlined text-[8px]" style="font-variation-settings: 'FILL' 1;">new_releases</span>
-                                        New
-                                    </span>
+                            </a>
+
+                            {{-- Store Logo Avatar (Floating over banner) --}}
+                            <div class="px-4 relative">
+                                <div class="flex items-end justify-between -mt-7 mb-2 relative z-10">
+                                    <a href="{{ route('stores.show', $store->slug) }}"
+                                       class="w-14 h-14 rounded-2xl bg-white p-1 ring-2 ring-white shadow-md overflow-hidden shrink-0 block group-hover:ring-[#9acd32]/50 transition-all">
+                                        @if($store->logo)
+                                            <img src="{{ $store->logo_url }}" alt="{{ $store->name }}" class="w-full h-full object-cover rounded-xl">
+                                        @else
+                                            <div class="w-full h-full rounded-xl bg-[#eef4d8] text-[#659316] font-extrabold text-lg grid place-items-center">
+                                                {{ strtoupper(substr($store->name, 0, 1)) }}
+                                            </div>
+                                        @endif
+                                    </a>
+
+                                    {{-- Rating badge --}}
+                                    @if($store->reviews_avg_rating && $store->reviews_avg_rating > 0)
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#fffbeb] border border-amber-200/60 text-amber-700 text-[11px] font-extrabold shadow-sm">
+                                            <span class="material-symbols-rounded text-[13px] text-amber-400" style="font-variation-settings:'FILL' 1;">star</span>
+                                            {{ number_format($store->reviews_avg_rating, 1) }}
+                                            <span class="text-[9px] text-[#9aa19c] font-medium">({{ $store->reviews_count ?? 0 }})</span>
+                                        </span>
+                                    @else
+                                        <span class="text-[10px] font-bold text-[#9aa19c] bg-[#f5f6f5] px-2 py-0.5 rounded-md">
+                                            New Seller
+                                        </span>
+                                    @endif
+                                </div>
+
+                                {{-- Store Title & Location --}}
+                                <a href="{{ route('stores.show', $store->slug) }}" class="block mt-1">
+                                    <h3 class="text-sm font-extrabold text-[#1c201e] leading-snug truncate group-hover:text-[#7ca81d] transition-colors flex items-center gap-1">
+                                        {{ $store->name }}
+                                        @if($store->is_verified)
+                                            <span class="material-symbols-rounded text-[14px] text-[#659316] shrink-0" style="font-variation-settings:'FILL' 1;">verified</span>
+                                        @endif
+                                    </h3>
+                                </a>
+
+                                @if($store->location)
+                                    <p class="text-[11px] text-[#6b716c] truncate mt-0.5 flex items-center gap-1">
+                                        <span class="material-symbols-rounded text-[13px] text-[#9aa19c]">location_on</span>
+                                        {{ $store->location }}
+                                    </p>
+                                @endif
+
+                                @if($store->description)
+                                    <p class="text-[11px] text-[#9aa19c] line-clamp-2 mt-1.5 leading-relaxed">
+                                        {{ $store->description }}
+                                    </p>
                                 @endif
                             </div>
-                            <div class="p-2">
-                                <h3 class="text-[10px] sm:text-[11px] font-bold text-on-surface leading-snug line-clamp-1">{{ $store->name }}</h3>
-                                <div class="mt-0.5">
-                                    <p class="text-[9px] text-on-surface-variant/50 truncate">{{ $store->products_count ?? 0 }} products</p>
-                                </div>
-                            </div>
-                        </a>
+                        </div>
+
+                        {{-- Card Footer --}}
+                        <div class="p-4 pt-3 mt-3 border-t border-[#f0f1f0] flex items-center justify-between gap-2">
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md -skew-x-6 bg-[#f2f9df] text-[#659316] text-[11px] font-extrabold">
+                                <span class="skew-x-6">
+                                    {{ number_format($store->products_count ?? 0) }} {{ Str::plural('product', $store->products_count ?? 0) }}
+                                </span>
+                            </span>
+
+                            <a href="{{ route('stores.show', $store->slug) }}"
+                               class="inline-flex items-center gap-1 text-[11px] font-extrabold text-[#1c201e] group-hover:text-[#7ca81d] transition-colors">
+                                Visit Store
+                                <span class="grid place-items-center w-6 h-6 rounded-full bg-[#f2f9df] text-[#7ca81d] group-hover:bg-[#9acd32] group-hover:text-[#1c201e] transition-colors">
+                                    <span class="material-symbols-rounded text-[13px]">arrow_forward</span>
+                                </span>
+                            </a>
+                        </div>
                     </div>
                 @endforeach
-                <div class="w-3 sm:w-6 shrink-0"></div>
             </div>
 
-            {{-- Desktop: 2-column grid --}}
-            <div class="hidden lg:grid lg:grid-cols-2 lg:gap-3">
-                @php $popularStoresDesktop = $stores->take(6); @endphp
-                @foreach($popularStoresDesktop as $store)
-                    <div class="trending-grid-card bg-white rounded-xl overflow-hidden border border-black/[0.04] shadow-sm flex gap-3 p-2 card-enter" style="animation-delay: {{ $loop->index * 0.06 }}s">
-                        <a href="{{ route('stores.show', $store->slug) }}" class="w-16 h-16 rounded-lg overflow-hidden shrink-0 bg-surface-container-low block">
-                            @if($store->logo)
-                                <img src="{{ $store->logo_url }}" alt="" class="w-full h-full object-cover">
-                            @else
-                                <x-store-default-logo :store="$store" size="lg" />
+            {{-- Pagination --}}
+            @if($stores->hasPages())
+                <div class="mt-10 sm:mt-12 flex justify-center">
+                    {{ $stores->links('partials.pagination') }}
+                </div>
+            @endif
+
+        @else
+            {{-- Empty State --}}
+            <div class="bg-white rounded-3xl border border-[#e8eae8] p-10 sm:p-16 text-center shadow-sm">
+                <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-[#f2f9df] text-[#659316] flex items-center justify-center mx-auto mb-4">
+                    <span class="material-symbols-rounded text-4xl sm:text-5xl" style="font-variation-settings:'FILL' 1;">storefront</span>
+                </div>
+                <h3 class="text-lg sm:text-xl font-extrabold text-[#1c201e]">No stores found</h3>
+                <p class="text-xs sm:text-sm text-[#6b716c] mt-1.5 max-w-md mx-auto leading-relaxed">
+                    @if($hasActiveFilters)
+                        We couldn't find any stores matching your criteria. Try adjusting your search query or reset filters.
+                    @else
+                        No stores have been registered on the marketplace yet. Be the first to open your storefront!
+                    @endif
+                </p>
+                <div class="mt-6 flex items-center justify-center gap-3">
+                    @if($hasActiveFilters)
+                        <a href="{{ route('stores.index') }}"
+                           class="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg -skew-x-6 bg-[#1c201e] text-white text-xs font-bold hover:bg-[#9acd32] hover:text-[#1c201e] transition-all shadow-md">
+                            <span class="skew-x-6 flex items-center gap-1.5">
+                                <span class="material-symbols-rounded text-[15px]">refresh</span>
+                                Reset Filters
+                            </span>
+                        </a>
+                    @else
+                        <a href="{{ route('register') }}"
+                           class="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg -skew-x-6 bg-[#9acd32] text-[#1c201e] text-xs font-bold hover:bg-[#86b92c] transition-all shadow-md">
+                            <span class="skew-x-6 flex items-center gap-1.5">
+                                <span class="material-symbols-rounded text-[15px]">storefront</span>
+                                Open Your Store
+                            </span>
+                        </a>
+                    @endif
+                </div>
+            </div>
+        @endif
+    </section>
+
+    {{-- ================================================================
+         5. MOBILE FILTER BOTTOM SHEET
+    ================================================================ --}}
+    <div x-cloak x-show="openMobileFilters" class="fixed inset-0 z-50 lg:hidden" style="display: none;">
+        {{-- Backdrop --}}
+        <div x-show="openMobileFilters"
+             x-transition:enter="transition-opacity duration-300"
+             x-transition:leave="transition-opacity duration-200"
+             class="absolute inset-0 bg-black/60 backdrop-blur-sm"
+             @click="openMobileFilters = false"></div>
+
+        {{-- Sheet --}}
+        <div x-show="openMobileFilters"
+             x-transition:enter="transition-transform duration-300 ease-out"
+             x-transition:leave="transition-transform duration-250 ease-in"
+             class="filter-sheet open absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl max-h-[85vh] overflow-y-auto shadow-2xl flex flex-col">
+
+            {{-- Sheet Header --}}
+            <div class="sticky top-0 bg-white/95 backdrop-blur-md border-b border-[#eff1ef] px-5 py-4 flex items-center justify-between z-10">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-rounded text-[20px] text-[#7ca81d]" style="font-variation-settings:'FILL' 1;">tune</span>
+                    <h3 class="text-sm font-extrabold text-[#1c201e]">Filter Stores</h3>
+                </div>
+                <div class="flex items-center gap-3">
+                    @if($hasActiveFilters)
+                        <a href="{{ route('stores.index') }}" class="text-xs font-bold text-[#7ca81d] hover:underline">Reset</a>
+                    @endif
+                    <button @click="openMobileFilters = false" class="w-8 h-8 rounded-full bg-[#f5f6f5] flex items-center justify-center text-[#1c201e]">
+                        <span class="material-symbols-rounded text-[18px]">close</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="p-5 space-y-6">
+                {{-- Categories Filter --}}
+                <div>
+                    <h4 class="text-xs font-extrabold text-[#1c201e] uppercase tracking-wider mb-2.5">Category</h4>
+                    <div class="space-y-1 max-h-48 overflow-y-auto pr-1">
+                        <a href="{{ route('stores.index', request()->except(['category', 'page'])) }}"
+                           class="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold {{ !request('category') || request('category') === 'all' ? 'bg-[#f2f9df] text-[#659316]' : 'text-[#3f453f] hover:bg-[#f5f6f5]' }}">
+                            All Categories
+                            @if(!request('category') || request('category') === 'all')
+                                <span class="material-symbols-rounded text-[16px]">check</span>
                             @endif
                         </a>
-                        <div class="min-w-0 flex-1 flex flex-col justify-between py-0.5">
-                            <div>
-                                <a href="{{ route('stores.show', $store->slug) }}" class="text-[11px] sm:text-xs font-bold text-on-surface leading-snug line-clamp-1 hover:text-primary transition-colors">{{ $store->name }}</a>
-                                @if($store->location)
-                                    <p class="text-[9px] text-on-surface-variant/50 truncate mt-0.5">{{ $store->location }}</p>
+                        @foreach($categories as $c)
+                            @php $isCActive = request('category') === $c->slug; @endphp
+                            <a href="{{ route('stores.index', array_merge(request()->except(['category', 'page']), ['category' => $c->slug])) }}"
+                               class="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold {{ $isCActive ? 'bg-[#f2f9df] text-[#659316]' : 'text-[#3f453f] hover:bg-[#f5f6f5]' }}">
+                                <span>{{ $c->name }}</span>
+                                @if($isCActive)
+                                    <span class="material-symbols-rounded text-[16px]">check</span>
+                                @else
+                                    <span class="text-[10px] text-[#9aa19c] font-semibold">{{ $c->products_count }}</span>
                                 @endif
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <span class="text-[9px] font-semibold text-on-surface-variant/60">{{ $store->products_count ?? 0 }} products</span>
-                                <x-store-badge :store="$store" size="sm" />
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        </section>
-    @endif
-
-    {{-- ===== 3. CATEGORIES ===== --}}
-    @if($categories->count() > 0)
-        <section class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 mt-4 sm:mt-6 lg:mt-8 lg:hidden">
-            <div class="flex items-center justify-between mb-2.5 sm:mb-3">
-                <h2 class="text-[11px] sm:text-xs font-bold text-on-surface uppercase tracking-wider">Categories</h2>
-                <a href="{{ route('stores.index', request()->except(['category', 'page'])) }}"
-                   class="text-[10px] font-semibold text-primary hover:underline {{ !request('category') ? 'hidden' : '' }}">All</a>
-            </div>
-            <div class="flex gap-2 overflow-x-auto no-scrollbar h-scroll pb-1 -mx-3 px-3 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0 lg:flex-wrap lg:gap-2">
-                <a href="{{ route('stores.index', request()->except(['category', 'page'])) }}"
-                   class="category-chip shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border text-[11px] font-semibold transition-all {{ !request('category') ? 'active' : 'border-black/8 text-on-surface-variant bg-white hover:border-primary/30 hover:text-primary' }}">
-                    <span class="material-symbols-outlined text-[14px]">grid_view</span>
-                    All
-                </a>
-                @foreach($categories as $cat)
-                    <a href="{{ route('stores.index', array_merge(request()->except(['category', 'page']), ['category' => $cat->slug])) }}"
-                       class="category-chip shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border text-[11px] font-semibold transition-all {{ request('category') === $cat->slug ? 'active' : 'border-black/8 text-on-surface-variant bg-white hover:border-primary/30 hover:text-primary' }}">
-                        @if($cat->icon && str_starts_with($cat->icon, '<'))
-                            <span class="w-4 h-4 flex items-center justify-center shrink-0">{!! $cat->icon !!}</span>
-                        @else
-                            <span class="material-symbols-outlined text-[14px]">circle</span>
-                        @endif
-                        {{ $cat->name }}
-                    </a>
-                @endforeach
-                <div class="w-3 sm:w-6 shrink-0 lg:hidden"></div>
-            </div>
-        </section>
-    @endif
-
-    {{-- ===== 4. FILTER BAR ===== --}}
-    <section class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 mt-4 sm:mt-6">
-        <div class="flex items-center gap-2.5">
-            <button @click="openMobileFilters = true"
-                    class="lg:hidden flex items-center gap-2 h-9 px-3.5 bg-white border border-black/8 rounded-xl text-[11px] font-bold text-on-surface hover:border-black/15 transition-all shadow-sm">
-                <span class="material-symbols-outlined text-[15px]">filter_list</span>
-                Filters
-                @php $activeFilterCount = collect([request('category')])->filter()->count(); @endphp
-                @if($activeFilterCount > 0)
-                    <span class="w-4 h-4 rounded-full bg-primary text-on-primary text-[7px] font-bold flex items-center justify-center">{{ $activeFilterCount }}</span>
-                @endif
-            </button>
-
-            <select onchange="window.location.href=this.value"
-                    class="lg:hidden h-9 px-3 bg-white border border-black/8 rounded-xl text-[11px] font-medium text-on-surface focus:outline-none focus:border-primary transition-all shadow-sm flex-1 max-w-[160px]">
-                @foreach(['newest' => 'Newest', 'rating' => 'Highest Rated', 'products' => 'Most Products'] as $val => $label)
-                    <option value="{{ route('stores.index', array_merge(request()->except(['sort', 'page']), ['sort' => $val])) }}" {{ request('sort', 'newest') === $val ? 'selected' : '' }}>{{ $label }}</option>
-                @endforeach
-            </select>
-
-            <div class="hidden lg:flex items-center gap-3 ml-auto">
-                <span class="text-xs text-on-surface-variant">
-                    <span class="font-bold text-on-surface">{{ $stores->firstItem() ?? 0 }}</span>–<span class="font-bold text-on-surface">{{ $stores->lastItem() ?? 0 }}</span>
-                    <span class="text-on-surface-variant/40">of</span>
-                    <span class="font-bold text-on-surface">{{ number_format($stores->total()) }}</span>
-                </span>
-            </div>
-        </div>
-    </section>
-
-    {{-- ===== 5. STORES ===== --}}
-    <section id="stores-section" class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 mt-4 sm:mt-6">
-        <div class="flex-1 min-w-0">
-                @if($stores->count() > 0)
-
-                    {{-- Stores Grid (desktop) --}}
-                    <div class="hidden lg:flex items-center justify-between mb-3">
-                        <h2 class="text-[11px] font-bold text-on-surface uppercase tracking-wider">All Stores</h2>
-                        <span class="text-xs text-on-surface-variant">{{ $stores->total() }} results</span>
-                    </div>
-                    <div class="hidden lg:grid grid-cols-3 xl:grid-cols-4 gap-4">
-                        @foreach($stores as $store)
-                            <div class="store-card card-enter bg-white rounded-2xl overflow-hidden border border-black/[0.04] shadow-[0_1px_4px_rgba(0,0,0,0.02)] group relative">
-                                <a href="{{ route('stores.show', $store->slug) }}" class="block">
-                                    <div class="aspect-[4/3] relative overflow-hidden bg-surface-container-low">
-                                        @if($store->banner)
-                                            <img src="{{ $store->banner_url }}" alt="{{ $store->name }}" loading="lazy" class="store-banner w-full h-full object-cover">
-                                        @else
-                                            <x-store-default-banner :store="$store" variant="card" />
-                                        @endif
-                                        <div class="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
-                                        <div class="absolute bottom-2.5 left-2.5 flex items-center gap-1.5">
-                                            <div class="store-logo w-8 h-8 rounded-lg overflow-hidden bg-white shadow-md ring-2 ring-white shrink-0">
-                                                @if($store->logo)
-                                                    <img src="{{ $store->logo_url }}" alt="" class="w-full h-full object-cover">
-                                                @else
-                                                    <x-store-default-logo :store="$store" size="sm" />
-                                                @endif
-                                            </div>
-                                        </div>
-                                        <div class="absolute top-2 right-2">
-                                            <x-store-badge :store="$store" size="sm" />
-                                        </div>
-                                        @if($store->created_at && $store->created_at->diffInDays(now()) <= 7)
-                                            <span class="absolute top-2 left-2 bg-amber-500/90 backdrop-blur-sm text-white text-[8px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-lg">
-                                                <span class="material-symbols-outlined text-[10px]" style="font-variation-settings: 'FILL' 1;">new_releases</span>
-                                                New
-                                            </span>
-                                        @endif
-                                    </div>
-                                    <div class="p-3 pt-2.5">
-                                        <div class="flex items-center gap-1 min-w-0">
-                                            <h3 class="text-[12px] sm:text-sm font-bold text-on-surface truncate min-w-0 shrink group-hover:text-primary transition-colors">{{ $store->name }}</h3>
-                                            @if($store->products_count >= 10)
-                                                <span class="material-symbols-outlined text-[12px] text-primary shrink-0" style="font-variation-settings: 'FILL' 1;">verified</span>
-                                            @endif
-                                        </div>
-                                        <div class="flex items-center gap-2 mt-0.5">
-                                            @if($store->reviews_avg_rating)
-                                                <div class="flex items-center gap-0.5">
-                                                    <span class="material-symbols-outlined text-[12px] text-amber-500" style="font-variation-settings: 'FILL' 1;">star</span>
-                                                    <span class="text-[10px] font-bold text-on-surface">{{ number_format($store->reviews_avg_rating, 1) }}</span>
-                                                    <span class="text-[8px] text-on-surface-variant">({{ $store->reviews_count ?? 0 }})</span>
-                                                </div>
-                                            @else
-                                                <span class="text-[9px] text-on-surface-variant/50">No reviews</span>
-                                            @endif
-                                        </div>
-                                        @if($store->location)
-                                            <p class="text-[10px] text-on-surface-variant/60 truncate mt-0.5 flex items-center gap-0.5">
-                                                <span class="material-symbols-outlined text-[12px]">location_on</span>
-                                                {{ $store->location }}
-                                            </p>
-                                        @endif
-                                        <div class="flex items-center justify-between mt-2 pt-2 border-t border-black/[0.04]">
-                                            <span class="text-[10px] font-semibold text-on-surface-variant">{{ $store->products_count ?? 0 }} {{ Str::plural('product', $store->products_count) }}</span>
-                                            <span class="view-store-arrow material-symbols-outlined text-[15px] text-on-surface-variant/30 group-hover:text-primary">arrow_forward</span>
-                        </div>
-                    </div>
-                                </a>
-                            </div>
+                            </a>
                         @endforeach
                     </div>
+                </div>
 
-                    {{-- MOBILE: Stores Grid --}}
-                    <div class="lg:hidden">
-                        <div class="flex items-center justify-between mb-2.5">
-                            <h2 class="text-[11px] font-bold text-on-surface uppercase tracking-wider">All Stores</h2>
-                            <span class="text-[10px] text-on-surface-variant font-medium">{{ $stores->total() }} results</span>
-                        </div>
-                        <div class="grid grid-cols-2 gap-3">
-                            @foreach($stores as $store)
-                                <div class="store-card card-enter bg-white rounded-xl overflow-hidden border border-black/[0.04] shadow-sm group relative">
-                                    <a href="{{ route('stores.show', $store->slug) }}" class="block">
-                                        <div class="aspect-[4/3] relative overflow-hidden bg-surface-container-low">
-                                            @if($store->banner)
-                                                <img src="{{ $store->banner_url }}" alt="{{ $store->name }}" loading="lazy" class="w-full h-full object-cover">
-                                            @else
-                                                <x-store-default-banner :store="$store" variant="card" />
-                                            @endif
-                                            <div class="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
-                                            <div class="absolute bottom-2 left-2">
-                                                <div class="store-logo w-7 h-7 rounded-md overflow-hidden bg-white shadow-md ring-2 ring-white">
-                                                    @if($store->logo)
-                                                        <img src="{{ $store->logo_url }}" alt="" class="w-full h-full object-cover">
-                                                    @else
-                                                        <x-store-default-logo :store="$store" size="xs" />
-                                                    @endif
-                                                </div>
-                                            </div>
-                                            <div class="absolute top-1.5 right-1.5">
-                                                <x-store-badge :store="$store" size="sm" />
-                                            </div>
-                                            @if($store->created_at && $store->created_at->diffInDays(now()) <= 7)
-                                                <span class="absolute top-1.5 left-1.5 bg-amber-500/90 backdrop-blur-sm text-white text-[7px] font-bold px-1.5 py-0.5 rounded-full shadow-sm">New</span>
-                                            @endif
-                                        </div>
-                                        <div class="p-2">
-                                            <h3 class="text-[11px] font-bold text-on-surface leading-snug truncate group-hover:text-primary transition-colors">{{ $store->name }}</h3>
-                                            @if($store->location)
-                                                <p class="text-[8px] text-on-surface-variant/50 truncate mt-0.5">{{ $store->location }}</p>
-                                            @endif
-                                            <div class="flex items-center gap-1 mt-1">
-                                                <span class="text-[9px] font-semibold text-on-surface-variant/60">{{ $store->products_count ?? 0 }} {{ Str::plural('product', $store->products_count) }}</span>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-
-                    {{-- Pagination --}}
-                    @if($stores->hasPages())
-                        <div class="mt-6 sm:mt-8 lg:mt-10">
-                            {{ $stores->links('partials.pagination') }}
-                        </div>
-                    @endif
-
-                @else
-                    {{-- Empty State --}}
-                    <div class="text-center py-16 sm:py-24 bg-white rounded-2xl border border-black/[0.04] shadow-sm">
-                        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-surface-container-low flex items-center justify-center mx-auto mb-4">
-                            <span class="material-symbols-outlined text-4xl sm:text-5xl text-on-surface-variant/30" style="font-variation-settings: 'FILL' 1;">storefront</span>
-                        </div>
-                        <h3 class="text-base sm:text-lg font-bold text-on-surface">No stores found</h3>
-                        @if(request('search') || request('category'))
-                            <p class="text-sm text-on-surface-variant mt-1 max-w-sm mx-auto leading-relaxed">
-                                @if(request('search'))
-                                    Nothing matches "<span class="font-semibold text-primary">{{ request('search') }}</span>"
-                                @else
-                                    No stores in this category yet
+                {{-- Sort Filter --}}
+                <div>
+                    <h4 class="text-xs font-extrabold text-[#1c201e] uppercase tracking-wider mb-2.5">Sort Order</h4>
+                    <div class="space-y-1">
+                        @foreach([
+                            'newest' => 'Newest First',
+                            'rating' => 'Highest Rated',
+                            'products' => 'Most Products'
+                        ] as $sVal => $sLabel)
+                            @php $isSortActive = request('sort', 'newest') === $sVal; @endphp
+                            <a href="{{ route('stores.index', array_merge(request()->except(['sort', 'page']), ['sort' => $sVal])) }}"
+                               class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold {{ $isSortActive ? 'bg-[#f2f9df] text-[#659316]' : 'text-[#3f453f] hover:bg-[#f5f6f5]' }}">
+                                {{ $sLabel }}
+                                @if($isSortActive)
+                                    <span class="material-symbols-rounded text-[16px]">check</span>
                                 @endif
-                            </p>
-                            <div class="flex items-center justify-center gap-3 mt-6">
-                                <a href="{{ route('stores.index') }}"
-                                   class="inline-flex items-center gap-1.5 px-6 py-2.5 bg-on-surface text-on-primary rounded-full text-[12px] font-bold hover:bg-on-surface/90 active:scale-[0.97] transition-all shadow-sm">
-                                    <span class="material-symbols-outlined text-[14px]">close</span>
-                                    Clear All Filters
-                                </a>
-                                <a href="{{ route('stores.index') }}"
-                                   class="inline-flex items-center gap-1.5 px-6 py-2.5 bg-white text-on-surface rounded-full text-[12px] font-bold border border-black/10 hover:border-black/20 active:scale-[0.97] transition-all">
-                                    <span class="material-symbols-outlined text-[14px]">arrow_back</span>
-                                    Reset
-                                </a>
-                            </div>
-                        @else
-                            <p class="text-sm text-on-surface-variant mt-1">No stores have been created yet. Check back soon!</p>
-                            <a href="{{ route('register') }}"
-                               class="inline-flex items-center gap-1.5 mt-6 px-6 py-2.5 bg-on-surface text-on-primary rounded-full text-[12px] font-bold hover:bg-on-surface/90 active:scale-[0.97] transition-all shadow-sm">
-                                <span class="material-symbols-outlined text-[14px]">add</span>
-                                Create Your Store
                             </a>
-                        @endif
-                    </div>
-                @endif
-            </div>
-    </section>
-
-    {{-- ===== MOBILE BOTTOM STICKY BAR ===== --}}
-    <div class="lg:hidden fixed bottom-0 left-0 right-0 z-40 mobile-sticky-bar bg-white/90 border-t border-black/[0.04] px-3 py-2.5">
-        <div class="flex items-center gap-2.5 max-w-lg mx-auto">
-            <button @click="openMobileFilters = true"
-                    class="flex items-center justify-center gap-2 h-9 flex-1 bg-white border border-black/8 rounded-xl text-[11px] font-bold text-on-surface hover:border-black/15 transition-all shadow-sm">
-                <span class="material-symbols-outlined text-[16px]">filter_list</span>
-                Filters
-                @php $activeFilterCount = collect([request('category')])->filter()->count(); @endphp
-                @if($activeFilterCount > 0)
-                    <span class="w-4 h-4 rounded-full bg-primary text-on-primary text-[7px] font-bold flex items-center justify-center">{{ $activeFilterCount }}</span>
-                @endif
-            </button>
-
-            <button onclick="document.getElementById('stores-section')?.scrollIntoView({ behavior: 'smooth' })"
-                    class="flex items-center justify-center gap-2 h-9 flex-1 bg-white border border-black/8 rounded-xl text-[11px] font-bold text-on-surface hover:border-black/15 transition-all shadow-sm">
-                <span class="material-symbols-outlined text-[16px]">communities</span>
-                Stores
-            </button>
-
-            <select onchange="window.location.href=this.value"
-                    class="h-9 px-2.5 bg-white border border-black/8 rounded-xl text-[11px] font-medium text-on-surface focus:outline-none focus:border-primary transition-all shadow-sm flex-1 max-w-[130px]">
-                @foreach(['newest' => 'Newest', 'rating' => 'Top Rated', 'products' => 'Most Products'] as $val => $label)
-                    <option value="{{ route('stores.index', array_merge(request()->except(['sort', 'page']), ['sort' => $val])) }}" {{ request('sort', 'newest') === $val ? 'selected' : '' }}>{{ $label }}</option>
-                @endforeach
-            </select>
-        </div>
-    </div>
-
-    {{-- ===== MOBILE FILTER BOTTOM SHEET ===== --}}
-    <div x-cloak x-show="openMobileFilters" class="fixed inset-0 z-50 lg:hidden">
-        <div x-show="openMobileFilters" x-transition:enter="transition-opacity duration-250" x-transition:leave="transition-opacity duration-200"
-             class="absolute inset-0 bg-black/30 backdrop-blur-sm" @click="openMobileFilters = false"></div>
-        <div x-show="openMobileFilters" x-transition:enter="transition-transform duration-350 ease-out" x-transition:leave="transition-transform duration-250 ease-in"
-             class="filter-sheet open absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl max-h-[88vh] overflow-y-auto shadow-2xl">
-            <div class="sticky top-0 bg-white/95 backdrop-blur-md border-b border-black/[0.04] px-5 py-4 flex items-center justify-between rounded-t-3xl z-10">
-                <div class="flex items-center gap-3">
-                    <h3 class="text-sm font-bold text-on-surface">Filters</h3>
-                    @php $totalFilters = collect([request('category'), request('search')])->filter()->count(); @endphp
-                    @if($totalFilters > 0)
-                        <span class="px-2 py-0.5 rounded-full bg-primary/5 text-primary text-[9px] font-bold">{{ $totalFilters }} active</span>
-                    @endif
-                </div>
-                <div class="flex items-center gap-2">
-                    @if($totalFilters > 0)
-                        <a href="{{ route('stores.index') }}" class="text-[10px] font-semibold text-primary hover:underline">Reset</a>
-                    @endif
-                    <button @click="openMobileFilters = false" class="w-8 h-8 rounded-full bg-black/[0.04] flex items-center justify-center hover:bg-black/[0.08] transition-colors">
-                        <span class="material-symbols-outlined text-[18px]">close</span>
-                    </button>
-                </div>
-            </div>
-            <div class="p-5 space-y-5">
-                <div class="bg-surface-container-lowest rounded-2xl border border-black/[0.03] p-4" x-data="{ open: true }">
-                    <button @click="open = !open" class="flex items-center justify-between w-full text-[11px] font-bold text-on-surface uppercase tracking-wider">
-                        <span class="flex items-center gap-2">
-                            <span class="material-symbols-outlined text-[16px] text-primary">category</span>
-                            Category
-                        </span>
-                        <span class="material-symbols-outlined text-[16px] text-on-surface-variant/40 filter-arrow" :class="open && 'open'">expand_more</span>
-                    </button>
-                    <div class="filter-accordion-content mt-3" :class="open && 'open'">
-                        <div class="space-y-0.5">
-                            <a href="{{ route('stores.index', request()->except(['category', 'page'])) }}"
-                               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm {{ !request('category') ? 'bg-primary/5 text-primary font-bold' : 'text-on-surface-variant hover:bg-black/[0.02]' }} transition-all"
-                               @click="openMobileFilters = false">
-                                <span class="material-symbols-outlined text-[18px]">grid_view</span>
-                                All Stores
-                            </a>
-                            @foreach($categories as $cat)
-                                <a href="{{ route('stores.index', array_merge(request()->except(['category', 'page']), ['category' => $cat->slug])) }}"
-                                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm {{ request('category') === $cat->slug ? 'bg-primary/5 text-primary font-bold' : 'text-on-surface-variant hover:bg-black/[0.02]' }} transition-all"
-                                   @click="openMobileFilters = false">
-                                    @if($cat->icon && str_starts_with($cat->icon, '<'))
-                                        <span class="w-5 h-5 flex items-center justify-center shrink-0">{!! $cat->icon !!}</span>
-                                    @else
-                                        <span class="material-symbols-outlined text-[18px]">circle</span>
-                                    @endif
-                                    {{ $cat->name }}
-                                </a>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-surface-container-lowest rounded-2xl border border-black/[0.03] p-4" x-data="{ open: true }">
-                    <button @click="open = !open" class="flex items-center justify-between w-full text-[11px] font-bold text-on-surface uppercase tracking-wider">
-                        <span class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-primary">sort</span>Sort By</span>
-                        <span class="material-symbols-outlined text-[16px] text-on-surface-variant/40 filter-arrow" :class="open && 'open'">expand_more</span>
-                    </button>
-                    <div class="filter-accordion-content mt-3" :class="open && 'open'">
-                        <div class="space-y-0.5">
-                            @foreach(['newest' => 'Newest First', 'rating' => 'Highest Rated', 'products' => 'Most Products'] as $val => $label)
-                                <a href="{{ route('stores.index', array_merge(request()->except(['sort', 'page']), ['sort' => $val])) }}"
-                                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm {{ request('sort', 'newest') === $val ? 'bg-primary/5 text-primary font-bold' : 'text-on-surface-variant hover:bg-black/[0.02]' }} transition-all"
-                                   @click="openMobileFilters = false">
-                                    <span class="material-symbols-outlined text-[18px] {{ request('sort', 'newest') === $val ? 'text-primary' : 'text-on-surface-variant/30' }}">{{ $val === 'newest' ? 'schedule' : ($val === 'rating' ? 'star' : 'inventory_2') }}</span>
-                                    {{ $label }}
-                                </a>
-                            @endforeach
-                        </div>
+                        @endforeach
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
 </div>
 @endsection

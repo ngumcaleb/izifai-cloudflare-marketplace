@@ -1,903 +1,491 @@
 @extends('layouts.guest')
+
 @section('title', $title . ' — Izifai')
 @section('description', $description)
 
 @push('styles')
 <style>
-    .rental-card { transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-    .rental-card:hover { box-shadow: 0 8px 32px -8px rgba(0,109,56,0.12), 0 2px 8px -4px rgba(0,0,0,0.04); }
-    .rental-card .img-wrap { position: relative; overflow: hidden; }
-    .rental-card .img-wrap img { transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
-    .rental-card:hover .img-wrap img { transform: scale(1.08); }
-
-    .category-card-rental { transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-    .category-card-rental:hover { transform: translateY(-4px); }
-    .category-card-rental.active { box-shadow: 0 0 0 2px #006d38, 0 4px 20px rgba(0,109,56,0.2); }
-    .filter-sheet { transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-    .filter-sheet.open { transform: translateY(0); }
-    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-    .shimmer-bg { background: linear-gradient(90deg, #f0f7f0 0%, #e8f0e6 40%, #f0f7f0 80%); background-size: 200% 100%; animation: shimmer 1.8s infinite; }
-    .filter-accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
-    .filter-accordion-content.open { max-height: 500px; }
-    .filter-arrow { transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-    .filter-arrow.open { transform: rotate(180deg); }
-    .h-scroll { scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scroll-padding-left: 12px; scroll-padding-right: 12px; }
-    .h-scroll > * { scroll-snap-align: start; }
+    body { font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif !important; background-color: #f5f6f5; }
+    .tnum { font-variant-numeric: tabular-nums; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    @keyframes cardIn { from { opacity: 0; transform: translateY(20px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
-    .card-enter { animation: cardIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
-    .card-enter:nth-child(1) { animation-delay: 0s; }
-    .card-enter:nth-child(2) { animation-delay: 0.04s; }
-    .card-enter:nth-child(3) { animation-delay: 0.08s; }
-    .card-enter:nth-child(4) { animation-delay: 0.12s; }
-    .card-enter:nth-child(5) { animation-delay: 0.16s; }
-    .card-enter:nth-child(6) { animation-delay: 0.2s; }
-    .card-enter:nth-child(7) { animation-delay: 0.24s; }
-    .card-enter:nth-child(8) { animation-delay: 0.28s; }
-    .card-enter:nth-child(9) { animation-delay: 0.32s; }
-    .card-enter:nth-child(10) { animation-delay: 0.36s; }
-    .card-enter:nth-child(n+11) { animation-delay: 0.4s; }
-    .hero-bg { background-image: url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1400&q=80'); background-size: cover; background-position: center; }
-    .hero-pattern-rental { background-image: radial-gradient(circle at 25% 40%, rgba(255,255,255,0.06) 0%, transparent 50%), radial-gradient(circle at 70% 60%, rgba(255,255,255,0.04) 0%, transparent 50%), repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.02) 40px, rgba(255,255,255,0.02) 80px); }
-    .mobile-sticky-bar { box-shadow: 0 -4px 20px rgba(0,0,0,0.06); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
-    .store-card { transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
-    .store-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px -8px rgba(0,0,0,0.08); }
-    .store-avatar { border: 2px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-    @keyframes dotPulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.8; } }
-    @keyframes scalePulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-    .animate-dot-pulse { animation: dotPulse 1.5s ease-in-out infinite; }
-    .animate-dot-pulse-delayed { animation: dotPulse 1.5s ease-in-out 0.5s infinite; }
-    .animate-dot-pulse-slower { animation: dotPulse 1.5s ease-in-out 1s infinite; }
-    .animate-scale-pulse { animation: scalePulse 2s ease-in-out infinite; }
-    .billing-unit-tag { background: rgba(0, 0, 0, 0.04); }
-    .deposit-badge { background: rgba(245,158,11,0.12); color: #b45309; }
 </style>
 @endpush
 
-@section('store-sidebar')
-    @if($topStores->count() > 0)
-        <div class="p-4 border-b border-gray-100">
-            <div class="flex items-center justify-between mb-3">
-                <div class="flex items-center gap-2">
-                    <span class="material-symbols-outlined text-[15px] text-amber-600" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
-                    <h2 class="text-[10px] font-extrabold text-on-surface uppercase tracking-wider">Top Stores</h2>
-                </div>
-                <a href="{{ route('stores.index') }}" class="text-[9px] font-semibold text-primary hover:underline">View all</a>
-            </div>
-            <div class="space-y-2">
-                @foreach($topStores as $store)
-                    <a href="{{ route('stores.show', $store->slug) }}" class="store-card flex items-center gap-2.5 bg-surface-container-lowest rounded-xl p-2.5 border border-black/[0.03] transition-all hover:border-primary/20">
-                        @if($store->logo)
-                            <div class="store-avatar w-9 h-9 rounded-xl overflow-hidden shrink-0 bg-white">
-                                <img src="{{ $store->logo_url }}" alt="" class="w-full h-full object-cover">
-                            </div>
-                        @else
-                            <x-store-default-logo :store="$store" size="sm" class="store-avatar rounded-xl" />
-                        @endif
-                        <div class="min-w-0 flex-1">
-                            <div class="flex items-center gap-1">
-                                <h3 class="text-[11px] font-bold text-on-surface truncate">{{ $store->name }}</h3>
-                                @if($store->is_verified)
-                                    <span class="material-symbols-outlined text-[9px] text-primary shrink-0" style="font-variation-settings: 'FILL' 1;">verified</span>
-                                @endif
-                            </div>
-                            <div class="flex items-center gap-1.5 mt-0.5">
-                                <span class="text-[8px] text-on-surface-variant/50">{{ $store->rental_items_count ?? 0 }} rentals</span>
-                                @if($store->location)
-                                    <span class="text-[8px] text-on-surface-variant/40 truncate">· {{ $store->location }}</span>
-                                @endif
-                            </div>
-                        </div>
-                        <span class="material-symbols-outlined text-[14px] text-on-surface-variant/20">chevron_right</span>
-                    </a>
-                @endforeach
-            </div>
-        </div>
-    @endif
-
-    <div class="p-4 border-b border-gray-100" x-data="{ open: true }">
-        <button @click="open = !open" class="flex items-center justify-between w-full text-[10px] font-bold text-on-surface uppercase tracking-wider">
-            <span class="flex items-center gap-2">
-                <span class="material-symbols-outlined text-[15px] text-primary">category</span>
-                Categories
-            </span>
-            <span class="material-symbols-outlined text-[16px] text-on-surface-variant/40 filter-arrow" :class="open && 'open'">expand_more</span>
-        </button>
-        <div class="filter-accordion-content mt-3" :class="open && 'open'">
-            <div class="space-y-0.5">
-                <a href="{{ route('rentals.index', request()->except(['category', 'page'])) }}"
-                   class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs {{ !request('category') ? 'bg-primary/[0.06] text-primary font-bold' : 'text-on-surface-variant hover:bg-black/[0.02] hover:text-on-surface' }} transition-all">
-                    <span class="material-symbols-outlined text-[15px] {{ !request('category') ? 'text-primary' : '' }}">grid_view</span>
-                    All Rentals
-                </a>
-                @foreach($categories as $cat)
-                    <a href="{{ route('rentals.index', array_merge(request()->except(['category', 'page']), ['category' => $cat->slug])) }}"
-                       class="flex items-center justify-between gap-2.5 px-3 py-2 rounded-lg text-xs {{ request('category') === $cat->slug ? 'bg-primary/[0.06] text-primary font-bold' : 'text-on-surface-variant hover:bg-black/[0.02] hover:text-on-surface' }} transition-all">
-                        <span class="flex items-center gap-2.5 truncate">
-                            @if($cat->icon && str_starts_with($cat->icon, '<'))
-                                <span class="w-4 h-4 flex items-center justify-center shrink-0">{!! $cat->icon !!}</span>
-                            @else
-                                <span class="material-symbols-outlined text-[15px] shrink-0">circle</span>
-                            @endif
-                            <span class="truncate">{{ $cat->name }}</span>
-                        </span>
-                        <span class="text-[10px] text-on-surface-variant/40 font-medium shrink-0">{{ $cat->rentalItems->count() }}</span>
-                    </a>
-                @endforeach
-            </div>
-        </div>
-    </div>
-
-    <div class="p-4 border-b border-gray-100" x-data="{ open: true }">
-        <button @click="open = !open" class="flex items-center justify-between w-full text-[10px] font-bold text-on-surface uppercase tracking-wider">
-            <span class="flex items-center gap-2">
-                <span class="material-symbols-outlined text-[15px] text-primary">payments</span>
-                Price Range
-            </span>
-            <span class="material-symbols-outlined text-[16px] text-on-surface-variant/40 filter-arrow" :class="open && 'open'">expand_more</span>
-        </button>
-        <div class="filter-accordion-content mt-3" :class="open && 'open'">
-            <form method="GET" action="{{ route('rentals.index') }}" id="sidebar-price-form">
-                @foreach(request()->except(['min_price', 'max_price', 'page']) as $key => $value)
-                    <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-                @endforeach
-                <div class="flex items-center gap-2">
-                    <input type="number" name="min_price" placeholder="Min" value="{{ request('min_price') }}"
-                           class="w-full h-9 px-3 bg-surface-container-low border border-black/8 rounded-lg text-xs focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all"
-                           onchange="document.getElementById('sidebar-price-form').submit()">
-                    <span class="text-[10px] text-on-surface-variant/30 font-medium">to</span>
-                    <input type="number" name="max_price" placeholder="Max" value="{{ request('max_price') }}"
-                           class="w-full h-9 px-3 bg-surface-container-low border border-black/8 rounded-lg text-xs focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all"
-                           onchange="document.getElementById('sidebar-price-form').submit()">
-                </div>
-                <button type="submit" class="mt-2.5 w-full h-9 bg-on-surface/5 hover:bg-on-surface/10 text-on-surface text-[11px] font-bold rounded-lg transition-all active:scale-[0.98]">Apply</button>
-            </form>
-        </div>
-    </div>
-
-    <div class="p-4 border-b border-gray-100" x-data="{ open: true }">
-        <button @click="open = !open" class="flex items-center justify-between w-full text-[10px] font-bold text-on-surface uppercase tracking-wider">
-            <span class="flex items-center gap-2">
-                <span class="material-symbols-outlined text-[15px] text-primary">schedule</span>
-                Billing Period
-            </span>
-            <span class="material-symbols-outlined text-[16px] text-on-surface-variant/40 filter-arrow" :class="open && 'open'">expand_more</span>
-        </button>
-        <div class="filter-accordion-content mt-3" :class="open && 'open'">
-            <div class="space-y-0.5">
-                <a href="{{ route('rentals.index', request()->except(['billing_unit', 'page'])) }}"
-                   class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs {{ !request('billing_unit') ? 'bg-primary/[0.06] text-primary font-bold' : 'text-on-surface-variant hover:bg-black/[0.02] hover:text-on-surface' }} transition-all">
-                    Any Period
-                </a>
-                @foreach(['hourly' => 'Per Hour', 'daily' => 'Per Day', 'weekly' => 'Per Week', 'monthly' => 'Per Month'] as $val => $label)
-                    <a href="{{ route('rentals.index', array_merge(request()->except(['billing_unit', 'page']), ['billing_unit' => $val])) }}"
-                       class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs {{ request('billing_unit') === $val ? 'bg-primary/[0.06] text-primary font-bold' : 'text-on-surface-variant hover:bg-black/[0.02] hover:text-on-surface' }} transition-all">
-                        {{ $label }}
-                    </a>
-                @endforeach
-            </div>
-        </div>
-    </div>
-
-    <div class="p-4 border-b border-gray-100" x-data="{ open: true }">
-        <button @click="open = !open" class="flex items-center justify-between w-full text-[10px] font-bold text-on-surface uppercase tracking-wider">
-            <span class="flex items-center gap-2">
-                <span class="material-symbols-outlined text-[15px] text-primary">location_on</span>
-                Location
-            </span>
-            <span class="material-symbols-outlined text-[16px] text-on-surface-variant/40 filter-arrow" :class="open && 'open'">expand_more</span>
-        </button>
-        <div class="filter-accordion-content mt-3" :class="open && 'open'">
-            <form method="GET" action="{{ route('rentals.index') }}" id="sidebar-location-form">
-                @foreach(request()->except(['location', 'page']) as $key => $value)
-                    <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-                @endforeach
-                <input type="text" name="location" placeholder="City or area..." value="{{ request('location') }}"
-                       class="w-full h-9 px-3 bg-surface-container-low border border-black/8 rounded-lg text-xs focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all"
-                       onchange="document.getElementById('sidebar-location-form').submit()">
-                <button type="submit" class="mt-2.5 w-full h-9 bg-on-surface/5 hover:bg-on-surface/10 text-on-surface text-[11px] font-bold rounded-lg transition-all active:scale-[0.98]">Apply</button>
-            </form>
-        </div>
-    </div>
-
-    <div class="p-4" x-data="{ open: true }">
-        <button @click="open = !open" class="flex items-center justify-between w-full text-[10px] font-bold text-on-surface uppercase tracking-wider">
-            <span class="flex items-center gap-2">
-                <span class="material-symbols-outlined text-[15px] text-primary">sort</span>
-                Sort By
-            </span>
-            <span class="material-symbols-outlined text-[16px] text-on-surface-variant/40 filter-arrow" :class="open && 'open'">expand_more</span>
-        </button>
-        <div class="filter-accordion-content mt-3" :class="open && 'open'">
-            <div class="space-y-0.5">
-                @foreach(['latest' => 'Latest', 'price_low' => 'Price: Low to High', 'price_high' => 'Price: High to Low', 'popular' => 'Most Viewed'] as $val => $label)
-                    <a href="{{ route('rentals.index', array_merge(request()->except(['sort', 'page']), ['sort' => $val])) }}"
-                       class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs {{ request('sort', 'latest') === $val ? 'bg-primary/[0.06] text-primary font-bold' : 'text-on-surface-variant hover:bg-black/[0.02] hover:text-on-surface' }} transition-all">
-                        <span class="material-symbols-outlined text-[15px] {{ request('sort', 'latest') === $val ? 'text-primary' : 'text-on-surface-variant/30' }}">{{ $val === 'latest' ? 'schedule' : ($val === 'price_low' ? 'north' : ($val === 'price_high' ? 'south' : 'visibility')) }}</span>
-                        {{ $label }}
-                    </a>
-                @endforeach
-            </div>
-        </div>
-    </div>
-@endsection
-
 @section('content')
-<div x-data="{ openMobileFilters: false }" class="min-h-screen bg-surface pb-20 lg:pb-0">
+<div x-data="{ openMobileFilters: false }" class="pb-16 sm:pb-24">
 
-    {{-- HERO — rental equipment image + dark overlay --}}
-    <section class="mx-3 sm:mx-6 lg:mx-8 mt-3 sm:mt-4">
-        <div class="relative min-h-[220px] sm:min-h-[280px] lg:min-h-[300px] rounded-2xl overflow-hidden shadow-sm">
-            <div class="absolute inset-0 bg-cover bg-center rounded-2xl hero-bg"></div>
-            <div class="absolute inset-0 rounded-2xl bg-gradient-to-t from-black/70 via-black/30 to-black/10"></div>
-            <div class="absolute inset-0 hero-pattern-rental"></div>
-            <div class="absolute inset-0 pointer-events-none opacity-[0.06]">
-                <div class="absolute top-20 left-[15%] w-1 h-1 rounded-full bg-white animate-dot-pulse"></div>
-                <div class="absolute top-40 left-[35%] w-1.5 h-1.5 rounded-full bg-white animate-dot-pulse-delayed"></div>
-                <div class="absolute top-10 right-[25%] w-1 h-1 rounded-full bg-white animate-dot-pulse-slower"></div>
-                <div class="absolute bottom-40 right-[20%] w-1.5 h-1.5 rounded-full bg-white animate-dot-pulse-delayed"></div>
-                <div class="absolute bottom-20 left-[40%] w-1 h-1 rounded-full bg-white animate-dot-pulse"></div>
-            </div>
-            <div class="absolute bottom-0 left-0 right-0 px-5 sm:px-6 lg:px-10 py-4 sm:py-6 lg:py-8">
-                <div class="max-w-7xl mx-auto">
-                    <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
-                        <div class="max-w-2xl min-w-0">
-                            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/15 mb-2 sm:mb-3">
-                                <span class="w-1.5 h-1.5 rounded-full bg-green-300 animate-scale-pulse"></span>
-                                <span class="text-[8px] sm:text-[10px] font-bold text-white/90 tracking-wide truncate max-w-[180px] sm:max-w-none">Equipment & Gear Rental</span>
-                            </div>
-                            <h1 class="text-xl sm:text-3xl lg:text-5xl font-black leading-[1.1] sm:leading-[1.04] tracking-[-0.03em] text-white text-balance">
-                                Borrow <span class="text-transparent bg-clip-text bg-gradient-to-r from-green-300 to-emerald-300">What You Need</span>
-                            </h1>
-                            <p class="text-[10px] sm:text-sm text-white/80 max-w-xl leading-snug sm:leading-relaxed mt-1 sm:mt-2 line-clamp-1 sm:line-clamp-none">
-                                Rent equipment, tools, vehicles and more from trusted providers near you — pay by the hour, day, or week.
-                            </p>
-                            <div class="flex items-center gap-2 sm:gap-5 mt-2 sm:mt-4">
-                                <span class="text-white text-[10px] sm:text-sm font-bold">
-                                    <span class="text-sm sm:text-lg font-black">{{ number_format($rentals->total()) }}</span> Items
-                                </span>
-                                <span class="text-white/60 text-[8px] sm:text-[10px]">Flexible rental periods</span>
-                            </div>
+    {{-- ================================================================
+         1. HERO HEADER BANNER (Strict Izifai Theme)
+    ================================================================ --}}
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-4 sm:mt-6">
+        <div class="relative overflow-hidden rounded-3xl bg-[#1c201e] border border-black/5 shadow-[0_14px_44px_-16px_rgba(0,0,0,0.18)] p-6 sm:p-10 lg:p-12 text-white">
+            {{-- Ambient glow orbs --}}
+            <div class="absolute -top-24 -right-16 w-80 h-80 rounded-full bg-[#9acd32]/15 blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-28 -left-16 w-72 h-72 rounded-full bg-[#7ca81d]/15 blur-3xl pointer-events-none"></div>
 
-                            @if(request('q') || request('category') || request('min_price') || request('max_price') || request('billing_unit') || request('location') || (request('sort') && request('sort') !== 'latest'))
-                                <div class="flex flex-wrap items-center gap-1 mt-1">
-                                    @if(request('category'))
-                                        @php $catName = $categories->firstWhere('slug', request('category'))?->name ?? request('category'); @endphp
-                                        <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-white/12 text-white rounded-full text-[7px] font-semibold backdrop-blur-sm border border-white/10">
-                                            {{ $catName }}
-                                            <a href="{{ route('rentals.index', request()->except(['category', 'page'])) }}"><span class="material-symbols-outlined text-[8px] cursor-pointer hover:text-white/70">close</span></a>
-                                        </span>
-                                    @endif
-                                    @if(request('min_price') || request('max_price'))
-                                        <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-white/12 text-white rounded-full text-[7px] font-semibold backdrop-blur-sm border border-white/10">
-                                            @if(request('min_price') && request('max_price'))
-                                                {{ number_format((int)request('min_price')) }}–{{ number_format((int)request('max_price')) }} FCFA
-                                            @elseif(request('min_price'))
-                                                From {{ number_format((int)request('min_price')) }} FCFA
-                                            @else
-                                                Up to {{ number_format((int)request('max_price')) }} FCFA
-                                            @endif
-                                            <a href="{{ route('rentals.index', request()->except(['min_price', 'max_price', 'page'])) }}"><span class="material-symbols-outlined text-[8px] cursor-pointer hover:text-white/70">close</span></a>
-                                        </span>
-                                    @endif
-                                    @if(request('billing_unit'))
-                                        <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-white/12 text-white rounded-full text-[7px] font-semibold backdrop-blur-sm border border-white/10">
-                                            {{ ucfirst(request('billing_unit')) }}
-                                            <a href="{{ route('rentals.index', request()->except(['billing_unit', 'page'])) }}"><span class="material-symbols-outlined text-[8px] cursor-pointer hover:text-white/70">close</span></a>
-                                        </span>
-                                    @endif
-                                    @if(request('location'))
-                                        <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-white/12 text-white rounded-full text-[7px] font-semibold backdrop-blur-sm border border-white/10">
-                                            {{ request('location') }}
-                                            <a href="{{ route('rentals.index', request()->except(['location', 'page'])) }}"><span class="material-symbols-outlined text-[8px] cursor-pointer hover:text-white/70">close</span></a>
-                                        </span>
-                                    @endif
-                                    @if(request('sort') && request('sort') !== 'latest')
-                                        <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-white/12 text-white rounded-full text-[7px] font-semibold backdrop-blur-sm border border-white/10">
-                                            {{ request('sort') === 'price_low' ? 'Low→High' : (request('sort') === 'price_high' ? 'High→Low' : 'Popular') }}
-                                            <a href="{{ route('rentals.index', request()->except(['sort', 'page'])) }}"><span class="material-symbols-outlined text-[8px] cursor-pointer hover:text-white/70">close</span></a>
-                                        </span>
-                                    @endif
-                                    <a href="{{ route('rentals.index') }}" class="text-[7px] font-semibold text-white/60 hover:text-white underline underline-offset-2 transition-colors">Clear</a>
-                                </div>
-                            @endif
-                        </div>
-                    </div>
+            <div class="relative z-10 max-w-2xl">
+                {{-- Skewed Kicker Badge --}}
+                <span class="inline-flex items-center gap-2 px-3.5 py-1.5 -skew-x-6 rounded-md bg-gradient-to-r from-[#9acd32] to-[#86b92c] text-[#1c201e] text-[10px] sm:text-[11px] font-extrabold uppercase tracking-[0.16em] shadow-[0_6px_18px_-6px_rgba(154,205,50,0.55)]">
+                    <span class="skew-x-6 inline-flex items-center gap-1.5">
+                        <span class="material-symbols-rounded text-[14px]" style="font-variation-settings:'FILL' 1;">handyman</span>
+                        Equipment & Vehicle Rentals
+                    </span>
+                </span>
+
+                <h1 class="mt-4 text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white leading-[1.15]">
+                    {{ $title }}
+                </h1>
+
+                <p class="mt-2 text-xs sm:text-sm text-white/75 leading-relaxed max-w-xl">
+                    {{ $description }}
+                </p>
+
+                {{-- Highlights / Quick Stats --}}
+                <div class="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px] sm:text-xs font-semibold text-white/80">
+                    <span class="inline-flex items-center gap-1.5">
+                        <span class="material-symbols-rounded text-[14px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">inventory_2</span>
+                        <strong class="text-white">{{ number_format($rentals->total()) }}</strong> items available
+                    </span>
+                    <span class="inline-flex items-center gap-1.5">
+                        <span class="material-symbols-rounded text-[14px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">verified</span>
+                        Verified owners
+                    </span>
+                    <span class="inline-flex items-center gap-1.5">
+                        <span class="material-symbols-rounded text-[14px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">shield</span>
+                        Escrow deposit protection
+                    </span>
                 </div>
+
+                {{-- Active Filters Pills --}}
+                @php
+                    $hasActiveFilters = request('q') || request('category') || request('billing_unit') || request('min_price') || request('max_price') || (request('sort') && request('sort') !== 'latest');
+                @endphp
+                @if($hasActiveFilters)
+                    <div class="mt-5 pt-4 border-t border-white/10 flex flex-wrap items-center gap-2">
+                        <span class="text-[11px] font-bold text-white/50 uppercase tracking-wider">Active:</span>
+
+                        @if(request('q'))
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg -skew-x-6 bg-white/15 backdrop-blur-sm text-white text-[11px] font-semibold">
+                                <span class="skew-x-6 flex items-center gap-1">
+                                    "{{ request('q') }}"
+                                    <a href="{{ route('rentals.index', request()->except(['q', 'page'])) }}" class="hover:text-[#9acd32] transition-colors ml-0.5">
+                                        <span class="material-symbols-rounded text-[13px]">close</span>
+                                    </a>
+                                </span>
+                            </span>
+                        @endif
+
+                        @if(request('category'))
+                            @php $activeCat = $categories->firstWhere('slug', request('category')); @endphp
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg -skew-x-6 bg-[#9acd32] text-[#1c201e] text-[11px] font-extrabold shadow-sm">
+                                <span class="skew-x-6 flex items-center gap-1">
+                                    {{ $activeCat->name ?? request('category') }}
+                                    <a href="{{ route('rentals.index', request()->except(['category', 'page'])) }}" class="hover:opacity-75 transition-opacity ml-0.5">
+                                        <span class="material-symbols-rounded text-[13px]">close</span>
+                                    </a>
+                                </span>
+                            </span>
+                        @endif
+
+                        @if(request('billing_unit'))
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg -skew-x-6 bg-white/15 backdrop-blur-sm text-white text-[11px] font-semibold">
+                                <span class="skew-x-6 flex items-center gap-1">
+                                    Period: {{ ucfirst(request('billing_unit')) }}
+                                    <a href="{{ route('rentals.index', request()->except(['billing_unit', 'page'])) }}" class="hover:text-[#9acd32] transition-colors ml-0.5">
+                                        <span class="material-symbols-rounded text-[13px]">close</span>
+                                    </a>
+                                </span>
+                            </span>
+                        @endif
+
+                        @if(request('min_price') || request('max_price'))
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg -skew-x-6 bg-white/15 backdrop-blur-sm text-white text-[11px] font-semibold">
+                                <span class="skew-x-6 flex items-center gap-1">
+                                    {{ number_format(request('min_price', 0)) }} - {{ request('max_price') ? number_format(request('max_price')) : '∞' }} F
+                                    <a href="{{ route('rentals.index', request()->except(['min_price', 'max_price', 'page'])) }}" class="hover:text-[#9acd32] transition-colors ml-0.5">
+                                        <span class="material-symbols-rounded text-[13px]">close</span>
+                                    </a>
+                                </span>
+                            </span>
+                        @endif
+
+                        @if(request('sort') && request('sort') !== 'latest')
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg -skew-x-6 bg-white/15 backdrop-blur-sm text-white text-[11px] font-semibold">
+                                <span class="skew-x-6 flex items-center gap-1">
+                                    {{ request('sort') === 'price_low' ? 'Price: Low → High' : (request('sort') === 'price_high' ? 'Price: High → Low' : 'Most Viewed') }}
+                                    <a href="{{ route('rentals.index', request()->except(['sort', 'page'])) }}" class="hover:text-[#9acd32] transition-colors ml-0.5">
+                                        <span class="material-symbols-rounded text-[13px]">close</span>
+                                    </a>
+                                </span>
+                            </span>
+                        @endif
+
+                        <a href="{{ route('rentals.index') }}" class="text-[11px] font-bold text-[#9acd32] hover:text-[#b0ea3d] underline transition-colors ml-1">
+                            Reset all
+                        </a>
+                    </div>
+                @endif
             </div>
         </div>
     </section>
 
-    {{-- FEATURED RENTALS — horizontal card style with premium badge --}}
-    @if($featuredRentals->count() > 0)
-        <section class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 mt-4 sm:mt-6 lg:mt-8">
-            <div class="flex items-center justify-between mb-3">
-                <div class="flex items-center gap-2">
-                    <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-primary/[0.06] flex items-center justify-center shadow-sm border border-primary/10">
-                        <span class="material-symbols-outlined text-[12px] sm:text-[14px] text-primary" style="font-variation-settings: 'FILL' 1;">recommend</span>
+    {{-- ================================================================
+         2. CATEGORIES HORIZONTAL BAR (Exact Products Aesthetic)
+    ================================================================ --}}
+    @if($categories->isNotEmpty())
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-6">
+        <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+            {{-- All Categories chip --}}
+            <a href="{{ route('rentals.index', request()->except(['category', 'page'])) }}"
+               class="shrink-0 px-4 py-2 rounded-xl text-[12px] font-bold transition-all duration-200 flex items-center gap-1.5 {{ !request('category') ? '-skew-x-6 bg-[#1c201e] text-[#9acd32] shadow-sm' : 'bg-white border border-[#e8eae8] text-[#3f453f] hover:border-[#9acd32]/50 hover:text-[#7ca81d]' }}">
+                <span class="{{ !request('category') ? 'skew-x-6' : '' }} flex items-center gap-1.5">
+                    <span class="material-symbols-rounded text-[16px]" style="font-variation-settings:'FILL' 1;">grid_view</span>
+                    All Gear
+                </span>
+            </a>
+
+            @foreach($categories as $cat)
+                @php $isActive = request('category') === $cat->slug; @endphp
+                <a href="{{ route('rentals.index', array_merge(request()->except(['category', 'page']), ['category' => $cat->slug])) }}"
+                   class="shrink-0 px-4 py-2 rounded-xl text-[12px] font-bold transition-all duration-200 flex items-center gap-1.5 {{ $isActive ? '-skew-x-6 bg-[#9acd32] text-[#1c201e] shadow-sm shadow-[#9acd32]/30' : 'bg-white border border-[#e8eae8] text-[#3f453f] hover:border-[#9acd32]/50 hover:text-[#7ca81d]' }}">
+                    <span class="{{ $isActive ? 'skew-x-6' : '' }} flex items-center gap-1.5">
+                        {{ $cat->name }}
+                        @if(($cat->rental_items_count ?? 0) > 0)
+                            <span class="text-[10px] opacity-75 font-semibold">({{ $cat->rental_items_count }})</span>
+                        @endif
                     </span>
-                    <h2 class="text-xs sm:text-sm font-extrabold text-on-surface">Featured Rentals</h2>
-                </div>
-                <span class="text-[9px] sm:text-[10px] font-semibold text-on-surface-variant/50">Top picks</span>
-            </div>
-            {{-- Mobile horizontal scroll --}}
-            <div x-data="autoScroll()" class="flex gap-3 overflow-x-auto no-scrollbar h-scroll pb-2 -mx-3 px-3 sm:-mx-6 sm:px-6 lg:hidden">
-                @foreach($featuredRentals as $item)
-                    <div class="w-[280px] shrink-0 card-enter" style="animation-delay: {{ $loop->index * 0.06 }}s">
-                        <a href="{{ route('rentals.show', $item->slug) }}" class="block rental-card bg-white rounded-xl overflow-hidden border border-black/[0.04] shadow-sm group flex">
-                            <div class="w-[120px] shrink-0 aspect-[4/3] bg-surface-container-low overflow-hidden">
-                                @if($item->main_image_url)
-                                    <img src="{{ $item->main_image_url }}" alt="{{ $item->name }}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                                @else
-                                    <div class="w-full h-full flex items-center justify-center text-on-surface-variant/20"><span class="material-symbols-outlined text-2xl">image</span></div>
-                                @endif
-                            </div>
-                            <div class="flex-1 p-2.5 min-w-0 flex flex-col justify-between">
-                                <div class="min-w-0">
-                                    <div class="flex items-center gap-1 mb-0.5">
-                                        <span class="text-[7px] font-bold text-primary uppercase tracking-wide bg-primary/[0.06] px-1 py-0.5 rounded flex items-center gap-0.5"><span class="material-symbols-outlined text-[7px]" style="font-variation-settings: 'FILL' 1;">stars</span> Featured</span>
-                                        @if($item->category)
-                                            <span class="text-[7px] text-on-surface-variant/50 truncate">{{ $item->category->name }}</span>
-                                        @endif
-                                    </div>
-                                    <h3 class="text-[10px] font-bold text-on-surface leading-snug line-clamp-1">{{ $item->name }}</h3>
-                                    @if($item->store)
-                                        <p class="text-[7px] text-on-surface-variant/50 truncate mt-0.5">{{ $item->store->name }}</p>
-                                    @endif
-                                </div>
-                                <div class="flex items-center justify-between mt-1 pt-1 border-t border-black/[0.04]">
-                                    <span class="text-[10px] font-black text-orange-600">{{ number_format($item->rate) }}<span class="text-[6px] text-orange-400">/<span class="lowercase">{{ substr($item->billing_unit,0,1) }}</span></span></span>
-                                    @if($item->deposit)
-                                        <span class="deposit-badge text-[6px] font-bold px-1 py-0.5 rounded">Dep {{ number_format($item->deposit/1000,1) }}k</span>
-                                    @endif
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                @endforeach
-                <div class="w-3 sm:w-6 shrink-0"></div>
-            </div>
-            {{-- Desktop grid --}}
-            <div class="hidden lg:grid lg:grid-cols-2 gap-3">
-                @foreach($featuredRentals as $item)
-                    <div class="rental-card bg-white rounded-2xl overflow-hidden border border-black/[0.04] shadow-sm group flex card-enter" style="animation-delay: {{ $loop->index * 0.06 }}s">
-                        <a href="{{ route('rentals.show', $item->slug) }}" class="flex w-full">
-                            <div class="w-[40%] shrink-0 aspect-[4/3] bg-surface-container-low overflow-hidden relative">
-                                @if($item->main_image_url)
-                                    <img src="{{ $item->main_image_url }}" alt="" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                                @else
-                                    <div class="w-full h-full flex items-center justify-center text-on-surface-variant/20"><span class="material-symbols-outlined text-3xl">image</span></div>
-                                @endif
-                                <span class="absolute top-2 left-2 bg-primary/90 backdrop-blur-sm text-on-primary text-[7px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5 shadow-sm">
-                                    <span class="material-symbols-outlined text-[7px]" style="font-variation-settings: 'FILL' 1;">stars</span>
-                                    Featured
-                                </span>
-                            </div>
-                            <div class="flex-1 p-3.5 min-w-0 flex flex-col justify-between">
-                                <div class="min-w-0">
-                                    <div class="flex items-center gap-2 mb-0.5">
-                                        @if($item->category)
-                                            <p class="text-[9px] font-semibold text-primary/70 uppercase tracking-wide truncate">{{ $item->category->name }}</p>
-                                        @endif
-                                        @if($item->rating > 0)
-                                            <span class="flex items-center gap-0.5 text-[9px] font-semibold text-amber-600">
-                                                <span class="material-symbols-outlined text-[10px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                                {{ number_format($item->rating, 1) }}
-                                            </span>
-                                        @endif
-                                    </div>
-                                    <h3 class="text-sm font-bold text-on-surface leading-snug line-clamp-1">{{ $item->name }}</h3>
-                                    @if($item->store)
-                                        <p class="text-[10px] text-on-surface-variant/60 truncate mt-0.5 flex items-center gap-1">
-                                            <span class="material-symbols-outlined text-[10px]">store</span>
-                                            {{ $item->store->name }}
-                                        </p>
-                                    @endif
-                                    <div class="flex flex-wrap items-center gap-2 mt-1.5">
-                                        @if($item->location)
-                                            <span class="inline-flex items-center gap-0.5 text-[8px] text-on-surface-variant/50">
-                                                <span class="material-symbols-outlined text-[9px]">location_on</span>
-                                                {{ $item->location }}
-                                            </span>
-                                        @endif
-                                        @if($item->deposit)
-                                            <span class="deposit-badge text-[8px] font-bold px-1.5 py-0.5 rounded">Dep {{ number_format($item->deposit/1000,1) }}k</span>
-                                        @endif
-                                        <span class="billing-unit-tag text-[8px] font-semibold px-1.5 py-0.5 rounded-full capitalize">{{ $item->billing_unit }}</span>
-                                    </div>
-                                </div>
-                                <div class="flex items-center justify-between mt-2 pt-2 border-t border-black/[0.04]">
-                                    <span class="text-xs font-black text-orange-600">{{ number_format($item->rate) }} <span class="text-[7px] font-bold text-orange-400">FCFA/<span class="lowercase">{{ $item->billing_unit }}</span></span></span>
-                                    <span class="inline-flex items-center gap-1 px-3 py-1 bg-primary text-on-primary text-[9px] font-bold rounded-lg hover:bg-primary/90 active:scale-[0.97] transition-all shadow-sm">
-                                        Rent Now
-                                        <span class="material-symbols-outlined text-[10px]">arrow_forward</span>
-                                    </span>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                @endforeach
-            </div>
-        </section>
+                </a>
+            @endforeach
+        </div>
+    </section>
     @endif
 
-    {{-- CATEGORIES — green-toned icon cards --}}
-    @if($categories->count() > 0)
-        @php
-            $rentalColors = [
-                ['bg' => 'from-emerald-600 to-green-700', 'light' => 'bg-emerald-50', 'icon' => 'text-emerald-600'],
-                ['bg' => 'from-green-600 to-teal-700', 'light' => 'bg-green-50', 'icon' => 'text-green-600'],
-                ['bg' => 'from-teal-600 to-cyan-700', 'light' => 'bg-teal-50', 'icon' => 'text-teal-600'],
-                ['bg' => 'from-lime-600 to-green-700', 'light' => 'bg-lime-50', 'icon' => 'text-lime-600'],
-            ];
-        @endphp
-        <section class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 mt-4 sm:mt-6 lg:mt-8">
-            <div class="flex items-center justify-between mb-3">
-                <div class="flex items-center gap-2">
-                    <span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-primary/[0.06] flex items-center justify-center shadow-sm border border-primary/10">
-                        <span class="material-symbols-outlined text-[12px] sm:text-[14px] text-primary">category</span>
-                    </span>
-                    <h2 class="text-xs sm:text-sm font-extrabold text-on-surface">Browse by Category</h2>
-                </div>
-                @if(request('category'))
-                    <a href="{{ route('rentals.index', request()->except(['category', 'page'])) }}" class="text-[10px] font-semibold text-primary hover:underline">All</a>
-                @endif
-            </div>
-            <div class="flex gap-3 overflow-x-auto no-scrollbar h-scroll pb-2 sm:pb-0 -mx-3 px-3 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0 lg:grid lg:grid-cols-4 lg:gap-3">
-                @foreach($categories as $i => $cat)
-                    @php $c = $rentalColors[$i % count($rentalColors)]; @endphp
-                    <a href="{{ route('rentals.index', array_merge(request()->except(['category', 'page']), ['category' => $cat->slug])) }}"
-                       class="category-card-rental shrink-0 w-[130px] sm:w-[140px] lg:w-auto lg:shrink-0 block bg-white rounded-2xl border border-black/[0.04] shadow-sm overflow-hidden group {{ request('category') === $cat->slug ? 'active' : 'hover:shadow-md' }} transition-all">
-                        <div class="h-[72px] sm:h-20 bg-gradient-to-br {{ $c['bg'] }} flex items-center justify-center relative overflow-hidden">
-                            <div class="absolute inset-0 bg-black/10"></div>
-                            @if($cat->icon && str_starts_with($cat->icon, '<'))
-                                <span class="text-white/90 text-2xl sm:text-3xl relative z-10">{!! $cat->icon !!}</span>
-                            @else
-                                <span class="material-symbols-outlined text-white/80 text-2xl sm:text-3xl relative z-10" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
-                            @endif
-                            @if(request('category') === $cat->slug)
-                                <span class="absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-white/90 flex items-center justify-center">
-                                    <span class="material-symbols-outlined text-[10px] text-primary" style="font-variation-settings: 'FILL' 1;">check</span>
-                                </span>
-                            @endif
-                        </div>
-                        <div class="p-2.5 sm:p-3">
-                            <h3 class="text-[10px] sm:text-xs font-bold text-on-surface truncate">{{ $cat->name }}</h3>
-                            <p class="text-[8px] sm:text-[9px] text-on-surface-variant/50 mt-0.5">{{ $cat->rentalItems->count() }} items</p>
-                        </div>
-                    </a>
-                @endforeach
-                <div class="w-3 sm:w-6 shrink-0 lg:hidden"></div>
-            </div>
-        </section>
-    @endif
-
-    {{-- FILTER BAR --}}
-    <section class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 mt-4 sm:mt-6">
-        <div class="flex items-center gap-2.5">
-            <form method="GET" action="{{ route('rentals.index') }}" class="flex-1 max-w-xs hidden sm:block">
-                @foreach(request()->except(['q', 'page']) as $key => $value)
-                    @if(is_array($value))
-                        @foreach($value as $v)
-                            <input type="hidden" name="{{ $key }}[]" value="{{ $v }}">
-                        @endforeach
-                    @else
-                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+    {{-- ================================================================
+         3. TOOLBAR / FILTER & SORT STRIP (Identical to Products)
+    ================================================================ --}}
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-6">
+        <div class="bg-white rounded-2xl border border-[#e8eae8] p-3 sm:p-4 flex flex-wrap items-center justify-between gap-3 shadow-sm">
+            {{-- Left: Filter button & quick indicators --}}
+            <div class="flex items-center gap-2.5 flex-wrap">
+                {{-- Mobile Filter Trigger --}}
+                <button @click="openMobileFilters = true"
+                        class="lg:hidden inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-[#f5f6f5] border border-[#e0e3e0] text-[#1c201e] text-[12px] font-bold hover:bg-[#eceeed] transition-all">
+                    <span class="material-symbols-rounded text-[18px]" style="font-variation-settings:'FILL' 1;">tune</span>
+                    Filters
+                    @php $filterCount = collect([request('category'), request('billing_unit'), request('min_price'), request('max_price')])->filter()->count(); @endphp
+                    @if($filterCount > 0)
+                        <span class="w-5 h-5 rounded-full bg-[#9acd32] text-[#1c201e] text-[10px] font-extrabold flex items-center justify-center">{{ $filterCount }}</span>
                     @endif
-                @endforeach
-                <div class="relative">
-                    <span class="material-symbols-outlined text-[16px] text-on-surface-variant/30 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">search</span>
-                    <input type="text" name="q" placeholder="Search rentals..." value="{{ request('q') }}"
-                           class="w-full h-9 pl-9 pr-3 bg-white border border-black/8 rounded-xl text-[11px] font-medium text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all placeholder:text-on-surface-variant/30">
+                </button>
+
+                {{-- Desktop Quick Price Filter Form --}}
+                <form method="GET" action="{{ route('rentals.index') }}" class="hidden lg:flex items-center gap-2">
+                    @foreach(request()->except(['min_price', 'max_price', 'page']) as $k => $v)
+                        <input type="hidden" name="{{ $k }}" value="{{ $v }}">
+                    @endforeach
+
+                    <div class="flex items-center bg-[#f5f6f5] border border-[#e0e3e0] rounded-xl px-2.5 h-10 gap-1.5 focus-within:border-[#9acd32] focus-within:bg-white transition-all">
+                        <span class="text-[11px] font-bold text-[#9aa19c]">Price:</span>
+                        <input type="number" name="min_price" value="{{ request('min_price') }}" placeholder="Min F"
+                               class="w-20 bg-transparent text-[12px] font-semibold text-[#1c201e] placeholder:text-[#9aa19c] outline-none">
+                        <span class="text-[#9aa19c] text-xs">–</span>
+                        <input type="number" name="max_price" value="{{ request('max_price') }}" placeholder="Max F"
+                               class="w-20 bg-transparent text-[12px] font-semibold text-[#1c201e] placeholder:text-[#9aa19c] outline-none">
+                        <button type="submit" class="w-6 h-6 rounded-lg bg-[#1c201e] text-white flex items-center justify-center hover:bg-[#9acd32] hover:text-[#1c201e] transition-colors">
+                            <span class="material-symbols-rounded text-[14px]">arrow_forward</span>
+                        </button>
+                    </div>
+                </form>
+
+                {{-- Desktop Billing Period Selector --}}
+                <div class="relative hidden sm:block">
+                    <select onchange="window.location.href=this.value"
+                            class="h-10 pl-3.5 pr-8 bg-[#f5f6f5] border border-[#e0e3e0] rounded-xl text-[12px] font-bold text-[#1c201e] outline-none cursor-pointer hover:border-[#9acd32] focus:border-[#9acd32] transition-all appearance-none">
+                        <option value="{{ route('rentals.index', request()->except(['billing_unit', 'page'])) }}" {{ !request('billing_unit') ? 'selected' : '' }}>
+                            Period: All
+                        </option>
+                        @foreach(['hourly' => 'Per Hour', 'daily' => 'Per Day', 'weekly' => 'Per Week', 'monthly' => 'Per Month'] as $val => $label)
+                            <option value="{{ route('rentals.index', array_merge(request()->except(['billing_unit', 'page']), ['billing_unit' => $val])) }}"
+                                    {{ request('billing_unit') === $val ? 'selected' : '' }}>
+                                {{ $label }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <span class="material-symbols-rounded text-[16px] text-[#6b716c] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none">
+                        expand_more
+                    </span>
                 </div>
-            </form>
 
-            <button @click="openMobileFilters = true"
-                    class="lg:hidden flex items-center gap-2 h-9 px-3.5 bg-white border border-black/8 rounded-xl text-[11px] font-bold text-on-surface hover:border-black/15 transition-all shadow-sm">
-                <span class="material-symbols-outlined text-[15px]">filter_list</span>
-                Filters
-                @php $activeFilterCount = collect([request('category'), request('min_price'), request('max_price'), request('billing_unit'), request('location')])->filter()->count(); @endphp
-                @if($activeFilterCount > 0)
-                    <span class="w-4 h-4 rounded-full bg-primary text-on-primary text-[7px] font-bold flex items-center justify-center">{{ $activeFilterCount }}</span>
-                @endif
-            </button>
-
-            <select onchange="window.location.href=this.value"
-                    class="lg:hidden h-9 px-3 bg-white border border-black/8 rounded-xl text-[11px] font-medium text-on-surface focus:outline-none focus:border-primary transition-all shadow-sm flex-1 max-w-[160px]">
-                @foreach(['latest' => 'Latest', 'price_low' => 'Price: Low ↑', 'price_high' => 'Price: High ↓', 'popular' => 'Most Viewed'] as $val => $label)
-                    <option value="{{ route('rentals.index', array_merge(request()->except(['sort', 'page']), ['sort' => $val])) }}" {{ request('sort', 'latest') === $val ? 'selected' : '' }}>{{ $label }}</option>
-                @endforeach
-            </select>
-
-            <div class="hidden lg:flex items-center gap-3 ml-auto">
-                <span class="text-xs text-on-surface-variant">
-                    <span class="font-bold text-on-surface">{{ $rentals->firstItem() ?? 0 }}</span>–<span class="font-bold text-on-surface">{{ $rentals->lastItem() ?? 0 }}</span>
-                    <span class="text-on-surface-variant/40">of</span>
-                    <span class="font-bold text-on-surface">{{ number_format($rentals->total()) }}</span>
+                {{-- Results Count --}}
+                <span class="text-xs font-semibold text-[#6b716c] hidden sm:inline-block">
+                    Showing <strong class="text-[#1c201e]">{{ $rentals->firstItem() ?? 0 }}–{{ $rentals->lastItem() ?? 0 }}</strong> of <strong class="text-[#1c201e]">{{ number_format($rentals->total()) }}</strong> items
                 </span>
             </div>
+
+            {{-- Right: Sort Selector --}}
+            <div class="flex items-center gap-2 ml-auto">
+                <span class="text-[11px] font-bold text-[#9aa19c] uppercase tracking-wider hidden sm:inline">Sort:</span>
+                <div class="relative">
+                    <select onchange="window.location.href=this.value"
+                            class="h-10 pl-3.5 pr-8 bg-[#f5f6f5] border border-[#e0e3e0] rounded-xl text-[12px] font-bold text-[#1c201e] outline-none cursor-pointer hover:border-[#9acd32] focus:border-[#9acd32] transition-all appearance-none">
+                        @foreach([
+                            'latest' => 'Latest Listed',
+                            'popular' => 'Most Viewed',
+                            'price_low' => 'Price: Low to High',
+                            'price_high' => 'Price: High to Low'
+                        ] as $val => $label)
+                            <option value="{{ route('rentals.index', array_merge(request()->except(['sort', 'page']), ['sort' => $val])) }}"
+                                    {{ request('sort', 'latest') === $val ? 'selected' : '' }}>
+                                {{ $label }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <span class="material-symbols-rounded text-[16px] text-[#6b716c] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none">
+                        expand_more
+                    </span>
+                </div>
+            </div>
         </div>
     </section>
 
-    {{-- RENTALS GRID — "Equipment Showcase" cards --}}
-    <section id="rentals-section" class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 mt-4 sm:mt-6">
+    {{-- ================================================================
+         4. MAIN RENTALS GRID (Wall-to-Wall 4 Cards on PC View, 2 on Mobile)
+    ================================================================ --}}
+    <section id="rentals-section" class="max-w-7xl mx-auto px-4 sm:px-6 mt-6">
         @if($rentals->count() > 0)
-            <div class="hidden lg:flex items-center justify-between mb-3">
-                <h2 class="text-[11px] font-bold text-on-surface uppercase tracking-wider">All Rentals</h2>
-                <span class="text-xs text-on-surface-variant">{{ $rentals->total() }} results</span>
-            </div>
-            <div class="hidden lg:grid grid-cols-2 gap-3">
+            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 items-stretch auto-rows-fr gap-3.5 sm:gap-4.5 w-full">
                 @foreach($rentals as $item)
-                    <div class="rental-card card-enter bg-white rounded-2xl overflow-hidden border border-black/[0.04] shadow-[0_1px_4px_rgba(0,0,0,0.02)] group flex">
-                        <a href="{{ route('rentals.show', $item->slug) }}" class="flex w-full">
-                            {{-- Image --}}
-                            <div class="img-wrap w-[36%] shrink-0 bg-surface-container-low relative overflow-hidden">
-                                @if($item->main_image_url)
-                                    <img class="w-full h-full object-cover"
-                                         src="{{ $item->main_image_url }}"
-                                         alt="{{ $item->name }}" loading="lazy"
-                                         onerror="this.parentElement.innerHTML = '<div class=\'w-full h-full flex items-center justify-center text-on-surface-variant/20\'><span class=\'material-symbols-outlined text-3xl\'>image</span></div>'">
-                                @else
-                                    <div class="w-full h-full flex items-center justify-center text-on-surface-variant/20">
-                                        <span class="material-symbols-outlined text-3xl">image</span>
-                                    </div>
-                                @endif
-                            </div>
-                            {{-- Info panel --}}
-                            <div class="flex-1 p-3.5 flex flex-col justify-between min-w-0">
-                                <div class="min-w-0">
-                                    {{-- Top row: Category + Rate --}}
-                                    <div class="flex items-start justify-between gap-2">
-                                        @if($item->category)
-                                            <p class="text-[9px] font-semibold text-primary/70 uppercase tracking-wide truncate">{{ $item->category->name }}</p>
-                                        @endif
-                                        <span class="text-xs font-black text-orange-600 shrink-0 leading-none">{{ number_format($item->rate) }} <span class="text-[7px] font-bold text-orange-400 font-sans">/{{ $item->billing_unit }}</span></span>
-                                    </div>
-                                    {{-- Item name --}}
-                                    <h3 class="text-[13px] font-bold text-on-surface leading-snug line-clamp-1 mt-0.5">{{ $item->name }}</h3>
-                                    {{-- Store + Rating --}}
-                                    <div class="flex items-center gap-2 mt-1">
-                                        @if($item->store)
-                                            <p class="text-[10px] text-on-surface-variant/60 truncate flex items-center gap-1">
-                                                <span class="material-symbols-outlined text-[10px]">store</span>
-                                                {{ $item->store->name }}
-                                            </p>
-                                        @endif
-                                        @if($item->rating > 0)
-                                            <span class="flex items-center gap-0.5 text-[9px] font-semibold text-amber-600 shrink-0">
-                                                <span class="material-symbols-outlined text-[10px]" style="font-variation-settings: 'FILL' 1;">star</span>
-                                                {{ number_format($item->rating, 1) }}
-                                            </span>
-                                        @endif
-                                    </div>
-                                    {{-- Specs row: Location · Deposit · Billing unit --}}
-                                    <div class="flex flex-wrap items-center gap-2 mt-1.5">
-                                        @if($item->location)
-                                            <span class="inline-flex items-center gap-0.5 text-[8px] text-on-surface-variant/50">
-                                                <span class="material-symbols-outlined text-[9px]">location_on</span>
-                                                {{ $item->location }}
-                                            </span>
-                                        @endif
-                                        @if($item->deposit)
-                                            <span class="deposit-badge text-[8px] font-bold px-1.5 py-0.5 rounded">Dep {{ number_format($item->deposit/1000,1) }}k</span>
-                                        @endif
-                                        <span class="billing-unit-tag text-[8px] font-semibold px-1.5 py-0.5 rounded-full capitalize">{{ $item->billing_unit }}</span>
-                                    </div>
-                                </div>
-                                {{-- Bottom row: Views + Rent Now button --}}
-                                <div class="flex items-center justify-between mt-2 pt-2 border-t border-black/[0.04]">
-                                    <span class="flex items-center gap-0.5 text-[8px] text-on-surface-variant/40">
-                                        <span class="material-symbols-outlined text-[9px]">visibility</span>
-                                        {{ number_format($item->views) }}
-                                    </span>
-                                    <span class="inline-flex items-center gap-1 px-3 py-1 bg-primary text-on-primary text-[9px] font-bold rounded-lg hover:bg-primary/90 active:scale-[0.97] transition-all shadow-sm">
-                                        Rent Now
-                                        <span class="material-symbols-outlined text-[10px]">arrow_forward</span>
-                                    </span>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
+                    @include('rentals.partials.rental-card', ['item' => $item])
                 @endforeach
             </div>
 
-            <div class="lg:hidden">
-                <div class="flex items-center justify-between mb-2.5">
-                    <h2 class="text-[11px] font-bold text-on-surface uppercase tracking-wider">More Rentals</h2>
-                    <span class="text-[10px] text-on-surface-variant font-medium">{{ $rentals->total() }} results</span>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    @foreach($rentals as $item)
-                        <div class="rental-card card-enter bg-white rounded-xl overflow-hidden border border-black/[0.04] shadow-sm flex flex-col group">
-                            <a href="{{ route('rentals.show', $item->slug) }}" class="flex flex-col h-full">
-                                <div class="aspect-[4/3] bg-surface-container-low relative overflow-hidden shrink-0">
-                                    @if($item->main_image_url)
-                                        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                             src="{{ $item->main_image_url }}"
-                                             alt="{{ $item->name }}" loading="lazy">
-                                    @else
-                                        <div class="w-full h-full flex items-center justify-center text-on-surface-variant/20">
-                                            <span class="material-symbols-outlined text-4xl">image</span>
-                                        </div>
-                                    @endif
-                                    @if($item->location)
-                                        <span class="absolute top-1.5 left-1.5 bg-white/90 backdrop-blur-sm text-slate-800 text-[7px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5 shadow-sm">
-                                            <span class="material-symbols-outlined text-[8px]">location_on</span>
-                                            {{ $item->location }}
-                                        </span>
-                                    @endif
-                                </div>
-                                <div class="p-2 flex flex-col flex-1 justify-between gap-1">
-                                    <div class="min-w-0">
-                                        <div class="flex items-start justify-between gap-1">
-                                            <div class="min-w-0 flex-1">
-                                                @if($item->category)
-                                                    <p class="text-[7px] font-semibold text-primary/70 uppercase tracking-wide truncate">{{ $item->category->name }}</p>
-                                                @endif
-                                                <h3 class="text-[10px] font-bold text-on-surface leading-snug line-clamp-1">{{ $item->name }}</h3>
-                                            </div>
-                                            <span class="text-[10px] font-black text-orange-600 shrink-0 leading-none mt-0.5">{{ number_format($item->rate) }}<span class="text-[6px] text-orange-400">/<span class="lowercase">{{ substr($item->billing_unit,0,1) }}</span></span></span>
-                                        </div>
-                                        @if($item->store)
-                                            <p class="text-[7px] text-on-surface-variant/50 truncate mt-0.5">{{ $item->store->name }}</p>
-                                        @endif
-                                    </div>
-                                    <div class="flex items-center gap-1.5 flex-wrap">
-                                        @if($item->deposit)
-                                            <span class="deposit-badge text-[6px] font-bold px-1 py-0.5 rounded">Dep {{ number_format($item->deposit/1000,1) }}k</span>
-                                        @endif
-                                        <span class="billing-unit-tag text-[6px] font-semibold px-1 py-0.5 rounded capitalize">{{ $item->billing_unit }}</span>
-                                        <span class="ml-auto text-[7px] text-on-surface-variant/40 flex items-center gap-0.5">
-                                            <span class="material-symbols-outlined text-[7px]">visibility</span>
-                                            {{ $item->views }}
-                                        </span>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-
-            @if($topStores->count() > 0)
-                <div class="lg:hidden mt-8">
-                    <div class="flex items-center justify-between mb-2.5">
-                        <div class="flex items-center gap-1.5">
-                            <span class="material-symbols-outlined text-[14px] text-amber-600" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
-                            <h2 class="text-[10px] font-extrabold text-on-surface uppercase tracking-wider">Top Stores</h2>
-                        </div>
-                        <a href="{{ route('stores.index') }}" class="text-[9px] font-semibold text-primary hover:underline">View all</a>
-                    </div>
-                    <div class="flex gap-2.5 overflow-x-auto no-scrollbar pb-2 -mx-3 px-3">
-                        @foreach($topStores as $store)
-                            <div class="w-[150px] shrink-0">
-                                <a href="{{ route('stores.show', $store->slug) }}" class="store-card block bg-white rounded-xl overflow-hidden border border-black/[0.04] shadow-sm">
-                                    @if($store->banner)
-                                        <div class="h-12 overflow-hidden bg-surface-container-low">
-                                            <img src="{{ $store->banner_url }}" alt="" class="w-full h-full object-cover">
-                                        </div>
-                                    @else
-                                        <x-store-default-banner :store="$store" variant="card" class="h-12" />
-                                    @endif
-                                    <div class="px-2.5 pb-2.5 relative">
-                                        <div class="flex items-end -mt-5 mb-1.5">
-                                            @if($store->logo)
-                                                <div class="store-avatar w-8 h-8 rounded-lg overflow-hidden shrink-0 bg-white">
-                                                    <img src="{{ $store->logo_url }}" alt="" class="w-full h-full object-cover">
-                                                </div>
-                                            @else
-                                                <x-store-default-logo :store="$store" size="sm" class="store-avatar rounded-lg" />
-                                            @endif
-                                            @if($store->is_verified)
-                                                <span class="ml-1 mb-0.5 w-3 h-3 rounded-full bg-primary/10 flex items-center justify-center">
-                                                    <span class="material-symbols-outlined text-[7px] text-primary" style="font-variation-settings: 'FILL' 1;">verified</span>
-                                                </span>
-                                            @endif
-                                        </div>
-                                        <h3 class="text-[10px] font-bold text-on-surface truncate">{{ $store->name }}</h3>
-                                        <span class="text-[8px] text-on-surface-variant/50">{{ $store->rental_items_count ?? 0 }} rentals</span>
-                                    </div>
-                                </a>
-                            </div>
-                        @endforeach
-                        <div class="w-3 shrink-0"></div>
-                    </div>
-                </div>
-            @endif
-
-            <div class="mt-6 sm:mt-8 lg:mt-10">
+            {{-- Pagination --}}
+            <div class="mt-10 sm:mt-12 flex justify-center">
                 {{ $rentals->links('partials.pagination') }}
             </div>
+
         @else
-            <div class="text-center py-16 sm:py-24 bg-white rounded-2xl border border-black/[0.04] shadow-sm">
-                <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-surface-container-low flex items-center justify-center mx-auto mb-4">
-                    <span class="material-symbols-outlined text-4xl sm:text-5xl text-on-surface-variant/30" style="font-variation-settings: 'FILL' 1;">shelves</span>
+            {{-- Empty State --}}
+            <div class="bg-white rounded-3xl border border-[#e8eae8] p-10 sm:p-16 text-center shadow-sm">
+                <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-[#f2f9df] text-[#659316] flex items-center justify-center mx-auto mb-4">
+                    <span class="material-symbols-rounded text-4xl sm:text-5xl" style="font-variation-settings:'FILL' 1;">handyman</span>
                 </div>
-                <h3 class="text-base sm:text-lg font-bold text-on-surface">No rentals found</h3>
-                @if(request('q') || request('category') || request('min_price') || request('max_price') || request('billing_unit') || request('location'))
-                    <p class="text-sm text-on-surface-variant mt-1 max-w-sm mx-auto leading-relaxed">We couldn't find any rental items matching your criteria. Try adjusting your filters.</p>
-                    <div class="flex items-center justify-center gap-3 mt-6">
+                <h3 class="text-lg sm:text-xl font-extrabold text-[#1c201e]">No rentals found</h3>
+                <p class="text-xs sm:text-sm text-[#6b716c] mt-1.5 max-w-md mx-auto leading-relaxed">
+                    @if($hasActiveFilters)
+                        We couldn't find any rentals matching your selected filters. Try broadening your criteria or reset filters.
+                    @else
+                        No rental equipment has been listed in this catalog yet. Check back soon or explore our stores.
+                    @endif
+                </p>
+                <div class="mt-6 flex items-center justify-center gap-3">
+                    @if($hasActiveFilters)
                         <a href="{{ route('rentals.index') }}"
-                           class="inline-flex items-center gap-1.5 px-6 py-2.5 bg-on-surface text-on-primary rounded-full text-[12px] font-bold hover:bg-on-surface/90 active:scale-[0.97] transition-all shadow-sm">
-                            <span class="material-symbols-outlined text-[14px]">close</span>
-                            Clear All Filters
+                           class="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg -skew-x-6 bg-[#1c201e] text-white text-xs font-bold hover:bg-[#9acd32] hover:text-[#1c201e] transition-all shadow-md">
+                            <span class="skew-x-6 flex items-center gap-1.5">
+                                <span class="material-symbols-rounded text-[15px]">refresh</span>
+                                Reset Filters
+                            </span>
                         </a>
-                    </div>
-                @else
-                    <p class="text-sm text-on-surface-variant mt-1">No rental items have been listed yet. Check back soon!</p>
-                @endif
+                    @endif
+                    <a href="{{ route('stores.index') }}"
+                       class="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg -skew-x-6 bg-[#f2f9df] text-[#659316] text-xs font-bold hover:bg-[#9acd32] hover:text-[#1c201e] transition-all">
+                        <span class="skew-x-6 flex items-center gap-1.5">
+                            <span class="material-symbols-rounded text-[15px]">store</span>
+                            Explore Stores
+                        </span>
+                    </a>
+                </div>
             </div>
         @endif
     </section>
 
-    {{-- MOBILE BOTTOM STICKY BAR --}}
-    <div class="lg:hidden fixed bottom-0 left-0 right-0 z-40 mobile-sticky-bar bg-white/90 border-t border-black/[0.04] px-3 py-2.5">
-        <div class="flex items-center gap-2.5 max-w-lg mx-auto">
-            <button @click="openMobileFilters = true"
-                    class="flex items-center justify-center gap-2 h-9 flex-1 bg-white border border-black/8 rounded-xl text-[11px] font-bold text-on-surface hover:border-black/15 transition-all shadow-sm">
-                <span class="material-symbols-outlined text-[16px]">filter_list</span>
-                Filters
-                @if($activeFilterCount > 0)
-                    <span class="w-4 h-4 rounded-full bg-primary text-on-primary text-[7px] font-bold flex items-center justify-center">{{ $activeFilterCount }}</span>
-                @endif
-            </button>
-
-            <button @click="document.querySelector('#rentals-section')?.scrollIntoView({ behavior: 'smooth' })"
-                    class="flex items-center justify-center gap-2 h-9 flex-1 bg-white border border-black/8 rounded-xl text-[11px] font-bold text-on-surface hover:border-black/15 transition-all shadow-sm">
-                <span class="material-symbols-outlined text-[16px]">grid_view</span>
-                Rentals
-            </button>
-
-            <select onchange="window.location.href=this.value"
-                    class="h-9 px-2.5 bg-white border border-black/8 rounded-xl text-[11px] font-medium text-on-surface focus:outline-none focus:border-primary transition-all shadow-sm flex-1 max-w-[130px]">
-                @foreach(['latest' => 'Latest', 'price_low' => 'Low ↑', 'price_high' => 'High ↓', 'popular' => 'Popular'] as $val => $label)
-                    <option value="{{ route('rentals.index', array_merge(request()->except(['sort', 'page']), ['sort' => $val])) }}" {{ request('sort', 'latest') === $val ? 'selected' : '' }}>{{ $label }}</option>
-                @endforeach
-            </select>
-        </div>
-    </div>
-
-    {{-- MOBILE FILTER BOTTOM SHEET --}}
-    <div x-cloak x-show="openMobileFilters" class="fixed inset-0 z-50 lg:hidden">
-        <div x-show="openMobileFilters" x-transition:enter="transition-opacity duration-250" x-transition:leave="transition-opacity duration-200"
-             class="absolute inset-0 bg-black/30 backdrop-blur-sm" @click="openMobileFilters = false"></div>
-        <div x-show="openMobileFilters" x-transition:enter="transition-transform duration-350 ease-out" x-transition:leave="transition-transform duration-250 ease-in"
-             class="filter-sheet open absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl max-h-[88vh] overflow-y-auto shadow-2xl">
-            <div class="sticky top-0 bg-white/95 backdrop-blur-md border-b border-black/[0.04] px-5 py-4 flex items-center justify-between rounded-t-3xl z-10">
-                <div class="flex items-center gap-3">
-                    <h3 class="text-sm font-bold text-on-surface">Filters</h3>
-                    @php $totalFilters = collect([request('category'), request('min_price'), request('max_price'), request('q'), request('billing_unit'), request('location')])->filter()->count(); @endphp
-                    @if($totalFilters > 0)
-                        <span class="px-2 py-0.5 rounded-full bg-primary/5 text-primary text-[9px] font-bold">{{ $totalFilters }} active</span>
-                    @endif
-                </div>
-                <div class="flex items-center gap-2">
-                    @if($totalFilters > 0)
-                        <a href="{{ route('rentals.index') }}" class="text-[10px] font-semibold text-primary hover:underline">Reset</a>
-                    @endif
-                    <button @click="openMobileFilters = false" class="w-8 h-8 rounded-full bg-black/[0.04] flex items-center justify-center hover:bg-black/[0.08] transition-colors">
-                        <span class="material-symbols-outlined text-[18px]">close</span>
-                    </button>
+    {{-- ================================================================
+         5. FEATURED / HIGH DEMAND RENTALS (Matching Products Trending Strip)
+    ================================================================ --}}
+    @if(isset($featuredRentals) && $featuredRentals->count() > 0 && !request('q'))
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-14">
+        <div class="flex items-end justify-between gap-3 mb-5">
+            <div class="flex items-center gap-3">
+                <span class="grid place-items-center w-11 h-11 rounded-2xl bg-[#dc2626] text-white shadow-lg shadow-red-500/20 shrink-0">
+                    <span class="material-symbols-rounded text-[20px]" style="font-variation-settings:'FILL' 1;">local_fire_department</span>
+                </span>
+                <div>
+                    <h2 class="text-lg sm:text-xl font-extrabold tracking-tight text-[#1c201e]">High-Demand Gear</h2>
+                    <p class="text-[12px] text-[#6b716c] -mt-0.5">Most booked equipment and tools this week</p>
                 </div>
             </div>
-            <div class="p-5 space-y-5">
-                <div class="bg-surface-container-lowest rounded-2xl border border-black/[0.03] p-4" x-data="{ open: true }">
-                    <button @click="open = !open" class="flex items-center justify-between w-full text-[11px] font-bold text-on-surface uppercase tracking-wider">
-                        <span class="flex items-center gap-2">
-                            <span class="material-symbols-outlined text-[16px] text-primary">category</span>
-                            Category
-                        </span>
-                        <span class="material-symbols-outlined text-[16px] text-on-surface-variant/40 filter-arrow" :class="open && 'open'">expand_more</span>
-                    </button>
-                    <div class="filter-accordion-content mt-3" :class="open && 'open'">
-                        <div class="space-y-0.5">
-                            <a href="{{ route('rentals.index', request()->except(['category', 'page'])) }}"
-                               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm {{ !request('category') ? 'bg-primary/[0.06] text-primary font-bold' : 'text-on-surface-variant hover:bg-black/[0.02]' }} transition-all"
-                               @click="openMobileFilters = false">
-                                <span class="material-symbols-outlined text-[18px]">grid_view</span>
-                                All Rentals
-                            </a>
-                            @foreach($categories as $cat)
-                                <a href="{{ route('rentals.index', array_merge(request()->except(['category', 'page']), ['category' => $cat->slug])) }}"
-                                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm {{ request('category') === $cat->slug ? 'bg-primary/[0.06] text-primary font-bold' : 'text-on-surface-variant hover:bg-black/[0.02]' }} transition-all"
-                                   @click="openMobileFilters = false">
-                                    @if($cat->icon && str_starts_with($cat->icon, '<'))
-                                        <span class="w-5 h-5 flex items-center justify-center shrink-0">{!! $cat->icon !!}</span>
-                                    @else
-                                        <span class="material-symbols-outlined text-[18px]">circle</span>
-                                    @endif
-                                    {{ $cat->name }}
-                                </a>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
+        </div>
 
-                <div class="bg-surface-container-lowest rounded-2xl border border-black/[0.03] p-4" x-data="{ open: true }">
-                    <button @click="open = !open" class="flex items-center justify-between w-full text-[11px] font-bold text-on-surface uppercase tracking-wider">
-                        <span class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-primary">payments</span>Price Range</span>
-                        <span class="material-symbols-outlined text-[16px] text-on-surface-variant/40 filter-arrow" :class="open && 'open'">expand_more</span>
-                    </button>
-                    <div class="filter-accordion-content mt-3" :class="open && 'open'">
-                        <form method="GET" action="{{ route('rentals.index') }}" id="mobile-price-form">
-                            @foreach(request()->except(['min_price', 'max_price', 'page']) as $key => $value)
-                                <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-                            @endforeach
-                            <div class="flex items-center gap-3">
-                                <input type="number" name="min_price" placeholder="Min (FCFA)" value="{{ request('min_price') }}"
-                                       class="w-full h-10 bg-surface-container-low border border-black/8 rounded-xl px-3 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15"
-                                       onchange="document.getElementById('mobile-price-form').submit()">
-                                <span class="text-[11px] text-on-surface-variant/30 font-medium">to</span>
-                                <input type="number" name="max_price" placeholder="Max (FCFA)" value="{{ request('max_price') }}"
-                                       class="w-full h-10 bg-surface-container-low border border-black/8 rounded-xl px-3 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15"
-                                       onchange="document.getElementById('mobile-price-form').submit()">
+        <div class="flex gap-3.5 overflow-x-auto no-scrollbar pb-2">
+            @foreach($featuredRentals as $item)
+                <a href="{{ route('rentals.show', $item->slug) }}" class="group shrink-0 w-[10.5rem] sm:w-48 rounded-2xl bg-white border border-[#e8eae8] overflow-hidden hover:shadow-[0_16px_40px_-12px_rgba(0,0,0,0.14)] hover:-translate-y-1 transition-all duration-300">
+                    <div class="relative aspect-square bg-[#f5f6f5] overflow-hidden">
+                        @if($item->main_image_url)
+                            <img src="{{ $item->main_image_url }}" alt="{{ $item->name }}" loading="lazy"
+                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        @else
+                            <div class="w-full h-full grid place-items-center text-[#9aa19c]/30">
+                                <span class="material-symbols-rounded text-4xl">inventory_2</span>
                             </div>
-                            <button type="submit" class="mt-2.5 w-full h-10 bg-on-surface/5 hover:bg-on-surface/10 text-on-surface text-xs font-bold rounded-xl transition-all active:scale-[0.98]">Apply</button>
-                        </form>
-                    </div>
-                </div>
+                        @endif
 
-                <div class="bg-surface-container-lowest rounded-2xl border border-black/[0.03] p-4" x-data="{ open: true }">
-                    <button @click="open = !open" class="flex items-center justify-between w-full text-[11px] font-bold text-on-surface uppercase tracking-wider">
-                        <span class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-primary">schedule</span>Billing Period</span>
-                        <span class="material-symbols-outlined text-[16px] text-on-surface-variant/40 filter-arrow" :class="open && 'open'">expand_more</span>
-                    </button>
-                    <div class="filter-accordion-content mt-3" :class="open && 'open'">
-                        <div class="space-y-0.5">
-                            <a href="{{ route('rentals.index', request()->except(['billing_unit', 'page'])) }}"
-                               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm {{ !request('billing_unit') ? 'bg-primary/[0.06] text-primary font-bold' : 'text-on-surface-variant hover:bg-black/[0.02]' }} transition-all"
-                               @click="openMobileFilters = false">
-                                Any Period
-                            </a>
-                            @foreach(['hourly' => 'Per Hour', 'daily' => 'Per Day', 'weekly' => 'Per Week', 'monthly' => 'Per Month'] as $val => $label)
-                                <a href="{{ route('rentals.index', array_merge(request()->except(['billing_unit', 'page']), ['billing_unit' => $val])) }}"
-                                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm {{ request('billing_unit') === $val ? 'bg-primary/[0.06] text-primary font-bold' : 'text-on-surface-variant hover:bg-black/[0.02]' }} transition-all"
-                                   @click="openMobileFilters = false">
-                                    {{ $label }}
-                                </a>
-                            @endforeach
+                        <span class="absolute top-2.5 left-2.5 rounded-lg bg-[#1c201e] text-[#9acd32] text-[10px] font-extrabold px-2 py-0.5 shadow-sm uppercase">
+                            /{{ $item->billing_unit ?? 'day' }}
+                        </span>
+                    </div>
+                    <div class="p-3">
+                        <p class="text-[12px] font-bold text-[#1c201e] line-clamp-1 group-hover:text-[#7ca81d] transition-colors">{{ $item->name }}</p>
+                        <p class="text-[10px] text-[#9aa19c] truncate mt-0.5">{{ $item->store->name ?? 'Verified Fleet' }}</p>
+                        <div class="flex items-baseline gap-1.5 mt-1.5">
+                            <span class="text-[14px] font-black text-[#659316] tnum">{{ number_format($item->rate) }} <span class="text-[10px] font-bold">F</span></span>
                         </div>
                     </div>
-                </div>
+                </a>
+            @endforeach
+        </div>
+    </section>
+    @endif
 
-                <div class="bg-surface-container-lowest rounded-2xl border border-black/[0.03] p-4" x-data="{ open: true }">
-                    <button @click="open = !open" class="flex items-center justify-between w-full text-[11px] font-bold text-on-surface uppercase tracking-wider">
-                        <span class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-primary">location_on</span>Location</span>
-                        <span class="material-symbols-outlined text-[16px] text-on-surface-variant/40 filter-arrow" :class="open && 'open'">expand_more</span>
-                    </button>
-                    <div class="filter-accordion-content mt-3" :class="open && 'open'">
-                        <form method="GET" action="{{ route('rentals.index') }}" id="mobile-location-form">
-                            @foreach(request()->except(['location', 'page']) as $key => $value)
-                                <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-                            @endforeach
-                            <input type="text" name="location" placeholder="City or area..." value="{{ request('location') }}"
-                                   class="w-full h-10 bg-surface-container-low border border-black/8 rounded-xl px-3 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/15"
-                                   onchange="document.getElementById('mobile-location-form').submit()">
-                        </form>
-                    </div>
-                </div>
-
-                <div class="bg-surface-container-lowest rounded-2xl border border-black/[0.03] p-4" x-data="{ open: true }">
-                    <button @click="open = !open" class="flex items-center justify-between w-full text-[11px] font-bold text-on-surface uppercase tracking-wider">
-                        <span class="flex items-center gap-2"><span class="material-symbols-outlined text-[16px] text-primary">sort</span>Sort By</span>
-                        <span class="material-symbols-outlined text-[16px] text-on-surface-variant/40 filter-arrow" :class="open && 'open'">expand_more</span>
-                    </button>
-                    <div class="filter-accordion-content mt-3" :class="open && 'open'">
-                        <div class="space-y-0.5">
-                            @foreach(['latest' => 'Latest', 'price_low' => 'Price: Low to High', 'price_high' => 'Price: High to Low', 'popular' => 'Most Viewed'] as $val => $label)
-                                <a href="{{ route('rentals.index', array_merge(request()->except(['sort', 'page']), ['sort' => $val])) }}"
-                                   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm {{ request('sort', 'latest') === $val ? 'bg-primary/[0.06] text-primary font-bold' : 'text-on-surface-variant hover:bg-black/[0.02]' }} transition-all"
-                                   @click="openMobileFilters = false">
-                                    <span class="material-symbols-outlined text-[18px] {{ request('sort', 'latest') === $val ? 'text-primary' : 'text-on-surface-variant/30' }}">{{ $val === 'latest' ? 'schedule' : ($val === 'price_low' ? 'north' : ($val === 'price_high' ? 'south' : 'visibility')) }}</span>
-                                    {{ $label }}
-                                </a>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
+    {{-- ================================================================
+         6. TOP VERIFIED FLEETS / STORES (Matching Products Top Stores Strip)
+    ================================================================ --}}
+    @if(isset($topStores) && $topStores->isNotEmpty())
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-14">
+        <div class="flex items-end justify-between gap-3 mb-5">
+            <div>
+                <h2 class="text-lg sm:text-xl font-extrabold tracking-tight text-[#1c201e]">Top Verified Rental Fleets</h2>
+                <p class="text-[12px] text-[#6b716c] mt-0.5">Reliable equipment rental shops across Cameroon</p>
             </div>
+            <a href="{{ route('stores.index') }}" class="inline-flex items-center gap-1 text-xs font-bold text-[#7ca81d] hover:text-[#659316] transition-colors whitespace-nowrap">
+                View all stores <span class="material-symbols-rounded text-[15px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
+            @foreach($topStores as $store)
+                <a href="{{ route('stores.show', $store->slug) }}"
+                   class="group rounded-2xl bg-white border border-[#e8eae8] p-4 hover:border-[#9acd32]/50 hover:shadow-[0_16px_40px_-12px_rgba(0,0,0,0.12)] transition-all duration-300 flex items-center gap-3.5">
+                    <div class="w-13 h-13 rounded-2xl bg-[#eef0ee] overflow-hidden grid place-items-center border border-black/5 shrink-0">
+                        @if($store->logo)
+                            <img src="{{ $store->logo_url }}" alt="{{ $store->name }}" class="w-full h-full object-cover">
+                        @else
+                            <span class="material-symbols-rounded text-2xl text-[#9aa19c]">storefront</span>
+                        @endif
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <div class="flex items-center gap-1">
+                            <h3 class="text-sm font-bold text-[#1c201e] truncate group-hover:text-[#7ca81d] transition-colors">{{ $store->name }}</h3>
+                            @if($store->is_verified)
+                                <span class="material-symbols-rounded text-[14px] text-[#659316] shrink-0" style="font-variation-settings:'FILL' 1;">verified</span>
+                            @endif
+                        </div>
+                        <p class="text-[11px] font-bold text-[#659316] mt-0.5">{{ $store->rental_items_count ?? 0 }} rentals</p>
+                        @if($store->location)
+                            <p class="text-[10px] text-[#9aa19c] truncate mt-0.5">{{ $store->location }}</p>
+                        @endif
+                    </div>
+                    <span class="material-symbols-rounded text-[18px] text-[#c9cecb] group-hover:text-[#9acd32] group-hover:translate-x-0.5 transition-all">chevron_right</span>
+                </a>
+            @endforeach
+        </div>
+    </section>
+    @endif
+
+    {{-- ================================================================
+         7. MOBILE FILTER DRAWER (Matching Products Drawer)
+    ================================================================ --}}
+    <div x-show="openMobileFilters"
+         x-cloak
+         class="fixed inset-0 z-50 overflow-hidden"
+         style="display: none;">
+        <div @click="openMobileFilters = false"
+             x-show="openMobileFilters"
+             x-transition:enter="transition-opacity ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition-opacity ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed inset-0 bg-black/60 backdrop-blur-sm"></div>
+
+        <div x-show="openMobileFilters"
+             x-transition:enter="transition ease-out duration-300 transform"
+             x-transition:enter-start="translate-y-full"
+             x-transition:enter-end="translate-y-0"
+             x-transition:leave="transition ease-in duration-200 transform"
+             x-transition:leave-start="translate-y-0"
+             x-transition:leave-end="translate-y-full"
+             class="fixed inset-x-0 bottom-0 max-h-[85vh] bg-white rounded-t-3xl shadow-2xl flex flex-col z-50">
+            
+            {{-- Header --}}
+            <div class="p-4 border-b border-[#e8eae8] flex items-center justify-between shrink-0">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-rounded text-lg text-[#1c201e]">tune</span>
+                    <h3 class="text-sm font-extrabold text-[#1c201e]">Filter Rentals</h3>
+                </div>
+                <button @click="openMobileFilters = false" class="w-8 h-8 rounded-full bg-black/5 flex items-center justify-center text-black/60">
+                    <span class="material-symbols-rounded text-lg">close</span>
+                </button>
+            </div>
+
+            {{-- Form Fields --}}
+            <form method="GET" action="{{ route('rentals.index') }}" class="p-5 pb-24 sm:pb-5 overflow-y-auto flex-1 space-y-5">
+                @if(request('q'))
+                    <input type="hidden" name="q" value="{{ request('q') }}">
+                @endif
+                @if(request('sort'))
+                    <input type="hidden" name="sort" value="{{ request('sort') }}">
+                @endif
+
+                {{-- Category --}}
+                <div>
+                    <label class="block text-xs font-extrabold text-[#1c201e] uppercase tracking-wider mb-2">Category</label>
+                    <select name="category" class="w-full h-11 px-3 text-xs bg-[#f5f6f5] rounded-xl border border-[#e0e3e0] focus:border-[#9acd32] focus:outline-none">
+                        <option value="">All Categories</option>
+                        @foreach($categories as $cat)
+                            <option value="{{ $cat->slug }}" {{ request('category') === $cat->slug ? 'selected' : '' }}>{{ $cat->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                {{-- Billing Period --}}
+                <div>
+                    <label class="block text-xs font-extrabold text-[#1c201e] uppercase tracking-wider mb-2">Billing Period</label>
+                    <select name="billing_unit" class="w-full h-11 px-3 text-xs bg-[#f5f6f5] rounded-xl border border-[#e0e3e0] focus:border-[#9acd32] focus:outline-none">
+                        <option value="">Any Period</option>
+                        @foreach(['hourly' => 'Per Hour', 'daily' => 'Per Day', 'weekly' => 'Per Week', 'monthly' => 'Per Month'] as $unit => $uLabel)
+                            <option value="{{ $unit }}" {{ request('billing_unit') === $unit ? 'selected' : '' }}>{{ $uLabel }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                {{-- Price Range --}}
+                <div>
+                    <label class="block text-xs font-extrabold text-[#1c201e] uppercase tracking-wider mb-2">Rate (XAF)</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="number" name="min_price" value="{{ request('min_price') }}" placeholder="Min Rate"
+                               class="w-full h-11 px-3 text-xs bg-[#f5f6f5] rounded-xl border border-[#e0e3e0] focus:border-[#9acd32] focus:outline-none">
+                        <input type="number" name="max_price" value="{{ request('max_price') }}" placeholder="Max Rate"
+                               class="w-full h-11 px-3 text-xs bg-[#f5f6f5] rounded-xl border border-[#e0e3e0] focus:border-[#9acd32] focus:outline-none">
+                    </div>
+                </div>
+
+                {{-- Buttons --}}
+                <div class="pt-3 flex items-center gap-2">
+                    <a href="{{ route('rentals.index') }}"
+                       class="flex-1 h-12 rounded-xl bg-black/5 hover:bg-black/10 text-center font-bold text-xs text-[#1c201e] flex items-center justify-center">
+                        Reset
+                    </a>
+                    <button type="submit"
+                            class="flex-[2] h-12 rounded-xl bg-[#1c201e] hover:bg-[#9acd32] hover:text-[#1c201e] text-white font-extrabold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-md">
+                        Apply Filters
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
+
 </div>
 @endsection

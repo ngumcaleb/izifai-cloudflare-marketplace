@@ -79,7 +79,7 @@
                         <span class="text-[11px] text-gray-300">•</span>
                         <span class="text-[11px] font-bold text-gray-800">{{ number_format($product->price) }} XAF</span>
                         @if($product->old_price)
-                            <span class="text-[10px] text-gray-400 line-through">{{ number_format($product->old_price) }} XAF</span>
+                            <span class="text-[10px] text-[#f97316] line-through">{{ number_format($product->old_price) }} XAF</span>
                         @endif
                     </div>
                 </div>

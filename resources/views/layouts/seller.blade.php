@@ -4,6 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="apple-touch-icon" href="{{ asset('icons/apple-touch-icon.png') }}">
+    <link rel="manifest" href="{{ asset('manifest.webmanifest') }}">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>@yield('title', 'Seller Center') — IZIFAI SellerCenter</title>
 
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -18,8 +22,8 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: "#006d38",
-                        "primary-container": "#00a859",
+                        primary: "#659316",
+                        "primary-container": "#9acd32",
                         "on-primary": "#ffffff",
                         "on-primary-container": "#003317",
                         "primary-fixed-dim": "#59df89",
@@ -179,23 +183,9 @@
                 <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isRentals ? '1' : '0' }};">shelves</span>
                 My Rentals
             </a>
-            @php $isOrders = request()->routeIs('seller.orders.*'); @endphp
-            <a href="{{ route('seller.orders.index') }}"
-               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isOrders ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
-                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isOrders ? '1' : '0' }};">shopping_cart</span>
-                Incoming Orders
-            </a>
-            <a href="{{ route('orders.index') }}"
-               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium">
-                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 0;">receipt_long</span>
-                My Purchases
-            </a>
-            @php $isWallet = request()->routeIs('seller.wallet.*'); @endphp
-            <a href="{{ route('seller.wallet.index') }}"
-               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isWallet ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
-                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isWallet ? '1' : '0' }};">account_balance_wallet</span>
-                My Wallet
-            </a>
+            
+            
+            
             @php $isAds = request()->routeIs('seller.ads.*'); @endphp
             <a href="{{ route('seller.ads.index') }}"
                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isAds ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
@@ -306,23 +296,9 @@
                 <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isRentals ? '1' : '0' }};">shelves</span>
                 My Rentals
             </a>
-            @php $isOrders = request()->routeIs('seller.orders.*'); @endphp
-            <a href="{{ route('seller.orders.index') }}"
-               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isOrders ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
-                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isOrders ? '1' : '0' }};">shopping_cart</span>
-                Incoming Orders
-            </a>
-            <a href="{{ route('orders.index') }}"
-               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium">
-                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 0;">receipt_long</span>
-                My Purchases
-            </a>
-            @php $isWallet = request()->routeIs('seller.wallet.*'); @endphp
-            <a href="{{ route('seller.wallet.index') }}"
-               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isWallet ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
-                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isWallet ? '1' : '0' }};">account_balance_wallet</span>
-                My Wallet
-            </a>
+            
+            
+            
             @php $isAds = request()->routeIs('seller.ads.*'); @endphp
             <a href="{{ route('seller.ads.index') }}"
                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isAds ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
@@ -397,9 +373,9 @@
 
         <div class="px-4 md:px-6 py-4 md:py-6 max-w-7xl mx-auto space-y-4 md:space-y-6">
             @if(session('success'))
-                <div class="bg-green-50 border border-green-200 rounded-xl p-4 flex items-center gap-3 animate-slide-down">
-                    <span class="material-symbols-outlined text-green-600">check_circle</span>
-                    <p class="text-sm font-semibold text-green-800">{{ session('success') }}</p>
+                <div class="bg-lime-100 border border-lime-200 rounded-xl p-4 flex items-center gap-3 animate-slide-down">
+                    <span class="material-symbols-outlined text-lime-600">check_circle</span>
+                    <p class="text-sm font-semibold text-lime-800">{{ session('success') }}</p>
                 </div>
             @endif
 

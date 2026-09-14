@@ -1,4 +1,4 @@
-﻿<x-seller-layout>
+<x-seller-layout>
     <x-slot name="title">Post New Rental</x-slot>
 
     <div class="max-w-4xl mx-auto animate-fade-in">
@@ -15,6 +15,7 @@
 
         <form action="{{ route('seller.rentals.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4 md:space-y-6"
               x-data="{
+                billingUnit: '{{ old('billing_unit', 'daily') }}',
                 scActive: {{ $selectedCategory ? 'true' : 'false' }},
                 scCustom: false,
                 scVal: '{{ $selectedCategory?->id ?? '' }}',
@@ -101,21 +102,54 @@
                             </template>
                         @endif
                     </div>
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-semibold text-gray-500 ml-1">Rate (XAF)</label>
-                        <input type="number" name="rate" required placeholder="e.g. 50000"
-                               class="w-full h-11 md:h-12 bg-gray-50 border border-gray-200 rounded-xl px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50">
+                    {{-- Billing Period Selector --}}
+                    <div class="md:col-span-2 space-y-2">
+                        <label class="text-xs font-bold text-gray-700 ml-1 flex items-center justify-between">
+                            <span class="flex items-center gap-1">
+                                Billing Period <span class="text-red-500">*</span>
+                            </span>
+                            <span class="text-[11px] font-semibold text-gray-400">Controls which period filter this listing appears under</span>
+                        </label>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                            @foreach([
+                                'hourly' => ['label' => 'Per Hour', 'sub' => 'Hourly billing', 'icon' => 'schedule'],
+                                'daily' => ['label' => 'Per Day', 'sub' => 'Most common', 'icon' => 'calendar_today'],
+                                'weekly' => ['label' => 'Per Week', 'sub' => '7-day rental', 'icon' => 'date_range'],
+                                'monthly' => ['label' => 'Per Month', 'sub' => '30-day lease', 'icon' => 'calendar_month']
+                            ] as $val => $opt)
+                                <label class="relative flex flex-col p-3 rounded-xl border-2 cursor-pointer transition-all select-none"
+                                       :class="billingUnit === '{{ $val }}' 
+                                           ? 'border-[#9acd32] bg-[#f2f9df]/40 shadow-sm ring-1 ring-[#9acd32]' 
+                                           : 'border-gray-200 bg-gray-50/50 hover:bg-gray-50 hover:border-gray-300'">
+                                    <input type="radio" name="billing_unit" value="{{ $val }}" 
+                                           x-model="billingUnit" class="sr-only" required>
+                                    <div class="flex items-center justify-between mb-1.5">
+                                        <span class="material-symbols-outlined text-[20px]"
+                                              :class="billingUnit === '{{ $val }}' ? 'text-[#659316]' : 'text-gray-400'">
+                                            {{ $opt['icon'] }}
+                                        </span>
+                                        <span class="w-4 h-4 rounded-full border flex items-center justify-center transition-all"
+                                              :class="billingUnit === '{{ $val }}' ? 'border-[#659316] bg-[#659316]' : 'border-gray-300 bg-white'">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-white" x-show="billingUnit === '{{ $val }}'"></span>
+                                        </span>
+                                    </div>
+                                    <span class="text-xs font-bold text-gray-900">{{ $opt['label'] }}</span>
+                                    <span class="text-[10px] text-gray-500 mt-0.5">{{ $opt['sub'] }}</span>
+                                </label>
+                            @endforeach
+                        </div>
+                        @error('billing_unit')
+                            <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
+
                     <div class="space-y-1.5">
-                        <label class="text-xs font-semibold text-gray-500 ml-1">Billing Unit</label>
-                        <select name="billing_unit" required
-                                class="w-full h-11 md:h-12 bg-gray-50 border border-gray-200 rounded-xl px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50">
-                            <option value="">Select Period</option>
-                            <option value="hourly">Per Hour</option>
-                            <option value="daily">Per Day</option>
-                            <option value="weekly">Per Week</option>
-                            <option value="monthly">Per Month</option>
-                        </select>
+                        <label class="text-xs font-semibold text-gray-500 ml-1 flex items-center gap-1">
+                            <span>Rate (XAF) <span class="text-red-500">*</span></span>
+                            <span class="text-[11px] font-bold text-[#659316]" x-text="'/ ' + (billingUnit || 'day')"></span>
+                        </label>
+                        <input type="number" name="rate" required value="{{ old('rate') }}" placeholder="e.g. 25000"
+                               class="w-full h-11 md:h-12 bg-gray-50 border border-gray-200 rounded-xl px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50">
                     </div>
                     <div class="space-y-1.5">
                         <label class="text-xs font-semibold text-gray-500 ml-1">Deposit (XAF, optional)</label>

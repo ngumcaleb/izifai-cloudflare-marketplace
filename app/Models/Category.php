@@ -37,6 +37,14 @@ class Category extends Model
 
     public function getImageUrlAttribute(): ?string
     {
-        return $this->image_path ? url('/r2/' . ltrim($this->image_path, '/')) : null;
+        if (!$this->image_path) {
+            return null;
+        }
+
+        if (filter_var($this->image_path, FILTER_VALIDATE_URL)) {
+            return $this->image_path;
+        }
+
+        return url('/r2/' . ltrim($this->image_path, '/'));
     }
 }

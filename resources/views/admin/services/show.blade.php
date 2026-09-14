@@ -91,24 +91,5 @@
                 </div>
             </div>
         @endif
-
-        @if($service->bookings->count() > 0)
-            <div class="admin-card p-6">
-                <h3 class="text-sm font-bold text-navy-800 mb-4">Bookings ({{ $service->bookings->count() }})</h3>
-                <div class="space-y-2">
-                    @foreach($service->bookings as $booking)
-                        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                            <div>
-                                <p class="text-xs font-bold text-navy-800">{{ $booking->user->name }}</p>
-                                <p class="text-[10px] text-slate-500">{{ $booking->booking_date->format('M d, Y') }}</p>
-                            </div>
-                            <span class="px-2 py-0.5 rounded text-[8px] font-bold uppercase {{ $booking->status === 'confirmed' ? 'bg-emerald-50 text-emerald-600' : ($booking->status === 'pending' ? 'bg-amber-50 text-amber-600' : 'bg-slate-100 text-slate-500') }}">
-                                {{ $booking->status }}
-                            </span>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        @endif
     </div>
 </x-admin-layout>

@@ -131,12 +131,6 @@
                     <span class="text-[12px] font-semibold">Orders</span>
                 </a>
 
-                <a href="{{ route('admin.bookings.index') }}" 
-                   class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.bookings.*') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
-                    <span class="material-symbols-outlined text-[18px]">calendar_month</span>
-                    <span class="text-[12px] font-semibold">Bookings</span>
-                </a>
-
                 <a href="{{ route('admin.rental-transactions.index') }}" 
                    class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.rental-transactions.*') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
                     <span class="material-symbols-outlined text-[18px]">assignment</span>

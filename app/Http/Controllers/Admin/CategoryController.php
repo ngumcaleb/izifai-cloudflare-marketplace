@@ -6,6 +6,7 @@ use App\Helpers\AuditLogger;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Category;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class CategoryController extends Controller
@@ -50,11 +51,15 @@ class CategoryController extends Controller
             'name' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255|unique:categories,slug',
             'icon' => 'nullable|string',
-            'image_path' => 'nullable|string|max:255',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:2048',
             'parent_id' => 'nullable|exists:categories,id',
         ]);
 
         $validated['slug'] = $validated['slug'] ?? Str::slug($validated['name']);
+
+        if ($request->hasFile('image')) {
+            $validated['image_path'] = $request->file('image')->store('categories', 'r2');
+        }
 
         $category = Category::create($validated);
 
@@ -76,11 +81,20 @@ class CategoryController extends Controller
             'name' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255|unique:categories,slug,' . $category->id,
             'icon' => 'nullable|string',
-            'image_path' => 'nullable|string|max:255',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg|max:2048',
             'parent_id' => 'nullable|exists:categories,id',
         ]);
 
         $validated['slug'] = $validated['slug'] ?? Str::slug($validated['name']);
+
+        if ($request->hasFile('image')) {
+            if ($category->image_path && !str_starts_with($category->image_path, 'http')) {
+                Storage::disk('r2')->delete($category->image_path);
+            }
+            $validated['image_path'] = $request->file('image')->store('categories', 'r2');
+        } else {
+            unset($validated['image_path']);
+        }
 
         $oldValues = $category->only(['name', 'slug', 'parent_id']);
         $category->update($validated);
@@ -96,6 +110,10 @@ class CategoryController extends Controller
     {
         if ($category->products()->count() > 0) {
             return back()->with('error', 'Cannot delete "' . $category->name . '" — it has ' . $category->products()->count() . ' product(s) assigned. Reassign or remove them first.');
+        }
+
+        if ($category->image_path && !str_starts_with($category->image_path, 'http')) {
+            Storage::disk('r2')->delete($category->image_path);
         }
 
         $category->delete();

@@ -175,6 +175,8 @@
                         <div class="w-9 h-9 bg-slate-100 rounded-lg flex items-center justify-center text-navy-800 shrink-0 border border-slate-100">
                             @if($category->icon && str_starts_with($category->icon, '<'))
                                 <span class="text-xs">{!! $category->icon !!}</span>
+                            @elseif($category->image_path)
+                                <img src="{{ $category->image_url }}" class="w-full h-full object-cover rounded-lg">
                             @else
                                 <i data-lucide="folder" class="w-4 h-4 text-slate-400"></i>
                             @endif

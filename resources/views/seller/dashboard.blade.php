@@ -50,21 +50,8 @@
                         </div>
                         <span>Rentals</span>
                     </a>
-                    <hr class="border-gray-100 mx-2 my-1">
-                    <a href="{{ route('seller.orders.index') }}"
-                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold text-gray-700 hover:bg-primary/5 hover:text-primary transition-all group active:scale-[0.98]">
-                        <div class="w-8 h-8 rounded-lg bg-primary/5 flex items-center justify-center text-primary shrink-0">
-                            <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">shopping_cart</span>
-                        </div>
-                        <span>Orders</span>
-                    </a>
-                    <a href="{{ route('seller.wallet.index') }}"
-                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold text-gray-700 hover:bg-primary/5 hover:text-primary transition-all group active:scale-[0.98]">
-                        <div class="w-8 h-8 rounded-lg bg-primary/5 flex items-center justify-center text-primary shrink-0">
-                            <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
-                        </div>
-                        <span>Wallet</span>
-                    </a>
+                    
+                    
                     <a href="{{ route('seller.store-categories.index') }}"
                        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold text-gray-700 hover:bg-primary/5 hover:text-primary transition-all group active:scale-[0.98]">
                         <div class="w-8 h-8 rounded-lg bg-primary/5 flex items-center justify-center text-primary shrink-0">
@@ -94,14 +81,7 @@
                         </div>
                         <span>Settings</span>
                     </a>
-                    <hr class="border-gray-100 mx-2 my-1">
-                    <a href="{{ route('orders.index') }}"
-                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold text-gray-700 hover:bg-primary/5 hover:text-primary transition-all group active:scale-[0.98]">
-                        <div class="w-8 h-8 rounded-lg bg-primary/5 flex items-center justify-center text-primary shrink-0">
-                            <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">receipt_long</span>
-                        </div>
-                        <span>Purchases</span>
-                    </a>
+                    
                     <a href="{{ route('stores.show', $store->slug) }}" target="_blank"
                        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold text-gray-700 hover:bg-primary/5 hover:text-primary transition-all group active:scale-[0.98]">
                         <div class="w-8 h-8 rounded-lg bg-primary/5 flex items-center justify-center text-primary shrink-0">
@@ -252,20 +232,8 @@
                         </div>
                         <span class="text-[9px] md:text-[11px] font-bold text-gray-600 group-hover:text-primary text-center leading-tight">Rentals</span>
                     </a>
-                    <a href="{{ route('seller.orders.index') }}"
-                       class="flex flex-col items-center gap-1 md:gap-1.5 p-2 md:p-3 bg-white rounded-xl md:rounded-2xl border border-gray-100/80 shadow-sm hover:border-primary/30 hover:shadow-md hover:-translate-y-0.5 transition-all group">
-                        <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-primary/5 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-                            <span class="material-symbols-outlined text-[16px] md:text-[20px]" style="font-variation-settings: 'FILL' 1;">shopping_cart</span>
-                        </div>
-                        <span class="text-[9px] md:text-[11px] font-bold text-gray-600 group-hover:text-primary text-center leading-tight">Orders</span>
-                    </a>
-                    <a href="{{ route('seller.wallet.index') }}"
-                       class="flex flex-col items-center gap-1 md:gap-1.5 p-2 md:p-3 bg-white rounded-xl md:rounded-2xl border border-gray-100/80 shadow-sm hover:border-primary/30 hover:shadow-md hover:-translate-y-0.5 transition-all group">
-                        <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-primary/5 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-                            <span class="material-symbols-outlined text-[16px] md:text-[20px]" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
-                        </div>
-                        <span class="text-[9px] md:text-[11px] font-bold text-gray-600 group-hover:text-primary text-center leading-tight">Wallet</span>
-                    </a>
+                    
+                    
                     <a href="{{ route('seller.store-categories.index') }}"
                        class="flex flex-col items-center gap-1 md:gap-1.5 p-2 md:p-3 bg-white rounded-xl md:rounded-2xl border border-gray-100/80 shadow-sm hover:border-primary/30 hover:shadow-md hover:-translate-y-0.5 transition-all group">
                         <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-primary/5 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
@@ -294,13 +262,7 @@
                         </div>
                         <span class="text-[9px] md:text-[11px] font-bold text-gray-600 group-hover:text-primary text-center leading-tight">Settings</span>
                     </a>
-                    <a href="{{ route('orders.index') }}"
-                       class="flex flex-col items-center gap-1 md:gap-1.5 p-2 md:p-3 bg-white rounded-xl md:rounded-2xl border border-gray-100/80 shadow-sm hover:border-primary/30 hover:shadow-md hover:-translate-y-0.5 transition-all group">
-                        <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-primary/5 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-                            <span class="material-symbols-outlined text-[16px] md:text-[20px]" style="font-variation-settings: 'FILL' 1;">receipt_long</span>
-                        </div>
-                        <span class="text-[9px] md:text-[11px] font-bold text-gray-600 group-hover:text-primary text-center leading-tight">Purchases</span>
-                    </a>
+                    
                     <a href="{{ route('stores.show', $store->slug) }}" target="_blank"
                        class="flex flex-col items-center gap-1 md:gap-1.5 p-2 md:p-3 bg-white rounded-xl md:rounded-2xl border border-gray-100/80 shadow-sm hover:border-primary/30 hover:shadow-md hover:-translate-y-0.5 transition-all group">
                         <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-primary/5 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">

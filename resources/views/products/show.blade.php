@@ -232,7 +232,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                     <span class="text-2xl sm:text-[28px] lg:text-[32px] leading-none font-black text-primary">{{ number_format($product->price) }} FCFA</span>
                     @if($product->old_price)
                     <div class="flex items-center gap-2 mt-1.5">
-                        <span class="text-xs sm:text-sm text-on-surface-variant line-through">{{ number_format($product->old_price) }} FCFA</span>
+                        <span class="text-xs sm:text-sm text-[#f97316] line-through">{{ number_format($product->old_price) }} FCFA</span>
                         <span class="text-[9px] sm:text-[10px] font-bold text-green-700 bg-green-50 px-2 py-0.5 rounded-full">-{{ round((1 - $product->price / $product->old_price) * 100) }}%</span>
                     </div>
                     @endif
@@ -293,26 +293,6 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                                 This is your listing
                             </div>
                         @else
-                        <form action="{{ route('cart.add') }}" method="POST" class="space-y-2.5">
-                            @csrf
-                            <input type="hidden" name="item_type" value="product">
-                            <input type="hidden" name="item_id" value="{{ $product->id }}">
-                            <div class="flex items-center gap-2">
-                                <button type="button" @click="qty = Math.max(1, qty - 1)"
-                                        class="w-9 h-9 rounded-lg border border-outline-variant/30 flex items-center justify-center text-on-surface-variant hover:bg-surface-container transition-all text-sm font-bold">−</button>
-                                <input type="number" name="quantity" x-model="qty" min="1" max="99"
-                                       class="w-14 h-9 text-center rounded-lg border border-outline-variant/30 text-xs font-bold text-on-surface bg-transparent focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
-                                <button type="button" @click="qty = Math.min(99, qty + 1)"
-                                        class="w-9 h-9 rounded-lg border border-outline-variant/30 flex items-center justify-center text-on-surface-variant hover:bg-surface-container transition-all text-sm font-bold">+</button>
-                                <span class="text-[10px] text-on-surface-variant ml-1">{{ $product->inventory > 0 ? max(0, $product->inventory) . ' available' : 'In stock' }}</span>
-                            </div>
-                            <button type="submit"
-                                    class="flex items-center justify-center gap-2 w-full py-3 sm:py-3.5 bg-primary text-on-primary rounded-xl text-xs sm:text-sm font-bold hover:opacity-90 transition-all shadow-lg shadow-primary/20">
-                                <span class="material-symbols-outlined text-[18px] sm:text-[20px]">shopping_cart</span>
-                                Add to Cart
-                            </button>
-                        </form>
-
                         {{-- Contact Seller --}}
                         <div class="border-t border-outline-variant/10 pt-4 mt-4">
                             <p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-3 flex items-center gap-1.5">
@@ -345,11 +325,6 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                         @endif
                     @else
                     <div class="space-y-2">
-                        <a href="{{ route('login') }}"
-                           class="flex items-center justify-center gap-2 w-full py-3 sm:py-3.5 bg-primary text-on-primary rounded-xl text-xs sm:text-sm font-bold hover:opacity-90 transition-all shadow-lg shadow-primary/20">
-                            <span class="material-symbols-outlined text-[18px] sm:text-[20px]">shopping_cart</span>
-                            Login to Buy
-                        </a>
                         @if($store->whatsapp_number)
                         <a href="https://wa.me/{{ wa_url($store->whatsapp_number) }}?text={{ urlencode('Hi, I am interested in ' . $product->name . ' on Izifai.') }}"
                            target="_blank"

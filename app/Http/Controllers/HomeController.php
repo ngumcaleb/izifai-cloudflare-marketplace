@@ -35,7 +35,7 @@ class HomeController extends Controller
         $latestProducts = \App\Models\Product::active()
             ->with(['images', 'store', 'category'])
             ->inRandomOrder()
-            ->take(12)
+            ->take(8)
             ->get();
 
         $services = \App\Models\Service::active()

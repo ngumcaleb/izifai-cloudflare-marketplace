@@ -332,7 +332,7 @@
                                         <td class="px-6 py-4">
                                             <span class="text-[12px] font-bold text-navy-800">XAF {{ number_format($product->price, 2) }}</span>
                                             @if($product->old_price)
-                                            <span class="text-[9px] text-slate-400 line-through ml-1">XAF {{ number_format($product->old_price, 2) }}</span>
+                                            <span class="text-[9px] text-[#f97316] line-through ml-1">XAF {{ number_format($product->old_price, 2) }}</span>
                                             @endif
                                         </td>
                                         <td class="px-6 py-4">
