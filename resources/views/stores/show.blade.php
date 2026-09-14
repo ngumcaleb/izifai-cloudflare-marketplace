@@ -61,7 +61,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 sm:
             @endif
 
             {{-- Bottom fade : merge the cover into the page background --}}
-            <div class="absolute inset-x-0 bottom-0 h-[55%] sm:h-[45%] bg-gradient-to-t from-[#f5f6f5] via-[#f5f6f5]/45 to-transparent pointer-events-none"></div>
+            <div class="absolute inset-x-0 bottom-0 h-[55%] sm:h-[45%] bg-gradient-to-t from-[#f5f6f5] via-[#f5f6f5]/45 to-[#f5f6f5]/0 pointer-events-none"></div>
         </div>
 
         {{-- Identity below the cover : logo first, then text --}}
@@ -194,31 +194,20 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 sm:
     @endif
 
     {{-- ================================================================
-         3. QUICK STATS STRIP (Wall-to-Wall Cards)
+         3. RATING SUMMARY (Only stat kept)
     ================================================================ --}}
     <section class="max-w-7xl mx-auto px-1 sm:px-6 mt-4 sm:mt-6">
-        <div class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-6 gap-2 sm:gap-3">
-            @php
-                $stats = [
-                    ['label' => 'Rating', 'value' => number_format($avgRating, 1), 'icon' => 'fa-star', 'cls' => 'bg-amber-50 text-amber-500'],
-                    ['label' => 'Reviews', 'value' => $totalReviews, 'icon' => 'fa-comment', 'cls' => 'bg-purple-50 text-purple-500'],
-                    ['label' => 'Products', 'value' => $totalProducts, 'icon' => 'fa-boxes-stacked', 'cls' => 'bg-[#f2f9df] text-[#659316]'],
-                    ['label' => 'Services', 'value' => $totalServices, 'icon' => 'fa-bell-concierge', 'cls' => 'bg-blue-50 text-blue-500'],
-                    ['label' => 'Rentals', 'value' => $totalRentals, 'icon' => 'fa-handshake', 'cls' => 'bg-red-50 text-red-500'],
-                    ['label' => 'Followers', 'value' => number_format($store->follower_count ?? 0), 'icon' => 'fa-users', 'cls' => 'bg-cyan-50 text-cyan-500'],
-                ];
-            @endphp
-            @foreach($stats as $stat)
-            <div class="bg-white rounded-xl sm:rounded-2xl border border-[#e8eae8] p-2.5 sm:p-4 shadow-sm flex items-center gap-2.5 sm:gap-3 min-w-0">
-                <span class="grid place-items-center w-8 h-8 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl {{ $stat['cls'] }} shrink-0">
-                    <i class="fa-solid {{ $stat['icon'] }} text-[14px] sm:text-[18px]" style=""></i>
-                </span>
-                <div class="min-w-0">
-                    <p class="text-[7px] sm:text-[10px] font-semibold text-[#9aa19c] uppercase tracking-wider leading-tight">{{ $stat['label'] }}</p>
-                    <p class="text-[12px] sm:text-base font-black text-[#1c201e] tnum leading-tight truncate">{{ $stat['value'] }}</p>
-                </div>
+        <div class="bg-white rounded-xl sm:rounded-2xl border border-[#e8eae8] p-2.5 sm:p-4 shadow-sm flex items-center justify-center gap-2.5 sm:gap-3 min-w-0">
+            <span class="grid place-items-center w-8 h-8 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-amber-50 text-amber-500 shrink-0">
+                <i class="fa-solid fa-star text-[14px] sm:text-[18px]" style=""></i>
+            </span>
+            <div>
+                <p class="text-[7px] sm:text-[10px] font-semibold text-[#9aa19c] uppercase tracking-wider leading-tight">Rating</p>
+                <p class="text-[12px] sm:text-base font-black text-[#1c201e] tnum leading-tight">
+                    {{ number_format($avgRating, 1) }}
+                    <span class="font-semibold text-[#9aa19c] text-[10px] sm:text-xs">({{ $totalReviews }} reviews)</span>
+                </p>
             </div>
-            @endforeach
         </div>
     </section>
 
