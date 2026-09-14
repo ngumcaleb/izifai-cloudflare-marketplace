@@ -25,8 +25,8 @@
     {{-- ================================================================
          1. HERO HEADER BANNER (Consistent with Home Theme)
     ================================================================ --}}
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-4 sm:mt-6">
-        <div class="relative overflow-hidden rounded-3xl bg-[#1c201e] border border-black/5 shadow-[0_14px_44px_-16px_rgba(0,0,0,0.18)] p-6 sm:p-10 lg:p-12 text-white">
+    <section class="max-w-7xl mx-auto px-2 sm:px-6 mt-4 sm:mt-6">
+        <div class="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-[#1c201e] border border-black/5 shadow-[0_14px_44px_-16px_rgba(0,0,0,0.18)] p-5 sm:p-10 lg:p-12 text-white">
             {{-- Ambient glow orbs --}}
             <div class="absolute -top-24 -right-16 w-80 h-80 rounded-full bg-[#9acd32]/15 blur-3xl pointer-events-none"></div>
             <div class="absolute -bottom-28 -left-16 w-72 h-72 rounded-full bg-[#7ca81d]/15 blur-3xl pointer-events-none"></div>
@@ -49,7 +49,7 @@
                 </p>
 
                 {{-- Highlights / Quick Stats --}}
-                <div class="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px] sm:text-xs font-semibold text-white/80">
+                <div class="mt-5 sm:mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-[10.5px] sm:text-xs font-semibold text-white/80">
                     <span class="inline-flex items-center gap-1.5">
                         <i class="fa-solid fa-boxes-stacked text-[14px] text-[#9acd32]" style=""></i>
                         <strong class="text-white">{{ number_format($products->total()) }}</strong> products found
@@ -136,11 +136,11 @@
          2. CATEGORIES HORIZONTAL BAR
     ================================================================ --}}
     @if($categories->isNotEmpty())
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-6">
+    <section class="max-w-7xl mx-auto px-2.5 sm:px-6 mt-5 sm:mt-6">
         <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
             {{-- All Categories chip --}}
             <a href="{{ route('products.index', request()->except(['category', 'page'])) }}"
-               class="shrink-0 px-4 py-2 rounded-xl text-[12px] font-bold transition-all duration-200 flex items-center gap-1.5 {{ !request('category') ? '-skew-x-6 bg-[#1c201e] text-[#9acd32] shadow-sm' : 'bg-white border border-[#e8eae8] text-[#3f453f] hover:border-[#9acd32]/50 hover:text-[#7ca81d]' }}">
+               class="shrink-0 px-3.5 sm:px-4 py-2 rounded-xl text-[11.5px] sm:text-[12px] font-bold transition-all duration-200 flex items-center gap-1.5 {{ !request('category') ? '-skew-x-6 bg-[#1c201e] text-[#9acd32] shadow-sm' : 'bg-white border border-[#e8eae8] text-[#3f453f] hover:border-[#9acd32]/50 hover:text-[#7ca81d]' }}">
                 <span class="{{ !request('category') ? 'skew-x-6' : '' }} flex items-center gap-1.5">
                     <i class="fa-solid fa-table-cells text-[16px]" style=""></i>
                     All Products
@@ -150,7 +150,7 @@
             @foreach($categories as $cat)
                 @php $isActive = request('category') === $cat->slug; @endphp
                 <a href="{{ route('products.index', array_merge(request()->except(['category', 'page']), ['category' => $cat->slug])) }}"
-                   class="shrink-0 px-4 py-2 rounded-xl text-[12px] font-bold transition-all duration-200 flex items-center gap-1.5 {{ $isActive ? '-skew-x-6 bg-[#9acd32] text-[#1c201e] shadow-sm shadow-[#9acd32]/30' : 'bg-white border border-[#e8eae8] text-[#3f453f] hover:border-[#9acd32]/50 hover:text-[#7ca81d]' }}">
+                   class="shrink-0 px-3.5 sm:px-4 py-2 rounded-xl text-[11.5px] sm:text-[12px] font-bold transition-all duration-200 flex items-center gap-1.5 {{ $isActive ? '-skew-x-6 bg-[#9acd32] text-[#1c201e] shadow-sm shadow-[#9acd32]/30' : 'bg-white border border-[#e8eae8] text-[#3f453f] hover:border-[#9acd32]/50 hover:text-[#7ca81d]' }}">
                     <span class="{{ $isActive ? 'skew-x-6' : '' }} flex items-center gap-1.5">
                         {{ $cat->name }}
                         @if(($cat->products_count ?? 0) > 0)
@@ -166,8 +166,8 @@
     {{-- ================================================================
          3. TOOLBAR / FILTER & SORT STRIP
     ================================================================ --}}
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-6">
-        <div class="bg-white rounded-2xl border border-[#e8eae8] p-3 sm:p-4 flex flex-wrap items-center justify-between gap-3 shadow-sm">
+    <section class="max-w-7xl mx-auto px-2.5 sm:px-6 mt-5 sm:mt-6">
+        <div class="bg-white rounded-2xl border border-[#e8eae8] p-2.5 sm:p-4 flex flex-wrap items-center justify-between gap-2.5 sm:gap-3 shadow-sm">
             {{-- Left: Filter button & quick indicators --}}
             <div class="flex items-center gap-2.5">
                 {{-- Mobile Filter Trigger --}}
@@ -232,9 +232,9 @@
     {{-- ================================================================
          4. MAIN PRODUCT GRID (Wall-to-Wall 4 Cards on PC View)
     ================================================================ --}}
-    <section id="products-section" class="max-w-7xl mx-auto px-4 sm:px-6 mt-6">
+    <section id="products-section" class="max-w-7xl mx-auto px-1 sm:px-6 mt-3 sm:mt-6">
         @if($products->count() > 0)
-            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 items-stretch auto-rows-fr gap-3.5 sm:gap-4.5 w-full">
+            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 items-stretch auto-rows-fr gap-2.5 sm:gap-4 w-full">
                 @foreach($products as $product)
                     @include('partials.home-product-card', ['product' => $product, 'savedProductIds' => $savedProductIds])
                 @endforeach
@@ -285,25 +285,25 @@
          5. TRENDING STRIP (Matching Home "Deals of the day" aesthetic)
     ================================================================ --}}
     @if(isset($trendingProducts) && $trendingProducts->count() > 0 && !request('q'))
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-14">
-        <div class="flex items-end justify-between gap-3 mb-5">
-            <div class="flex items-center gap-3">
-                <span class="grid place-items-center w-11 h-11 rounded-2xl bg-[#dc2626] text-white shadow-lg shadow-red-500/20 shrink-0">
-                    <i class="fa-solid fa-fire text-[20px]" style=""></i>
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-10 sm:mt-14">
+        <div class="flex items-end justify-between gap-3 mb-3.5 sm:mb-5">
+            <div class="flex items-center gap-2.5 sm:gap-3">
+                <span class="grid place-items-center w-8 h-8 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-[#dc2626] text-white shadow-md sm:shadow-lg shadow-red-500/20 shrink-0">
+                    <i class="fa-solid fa-fire text-[16px] sm:text-[20px]" style=""></i>
                 </span>
                 <div>
-                    <h2 class="text-lg sm:text-xl font-extrabold tracking-tight text-[#1c201e]">Trending Now</h2>
-                    <p class="text-[12px] text-[#6b716c] -mt-0.5">Most popular items buyers are looking at today</p>
+                    <h2 class="text-sm sm:text-xl font-extrabold tracking-tight text-[#1c201e]">Trending Now</h2>
+                    <p class="text-[10px] sm:text-[12px] text-[#6b716c] -mt-0.5">Most popular items buyers are looking at today</p>
                 </div>
             </div>
         </div>
 
-        <div class="flex gap-3.5 overflow-x-auto no-scrollbar pb-2">
+        <div class="flex gap-2 sm:gap-2.5 overflow-x-auto no-scrollbar pb-2">
             @foreach($trendingProducts as $p)
                 @php
                     $dPct = $p->old_price && $p->old_price > $p->price ? round((1 - $p->price / $p->old_price) * 100) : 0;
                 @endphp
-                <a href="{{ route('products.show', $p->slug) }}" class="group shrink-0 w-[10.5rem] sm:w-48 rounded-2xl bg-white border border-[#e8eae8] overflow-hidden hover:shadow-[0_16px_40px_-12px_rgba(0,0,0,0.14)] hover:-translate-y-1 transition-all duration-300">
+                <a href="{{ route('products.show', $p->slug) }}" class="group shrink-0 w-[8.75rem] sm:w-48 rounded-xl sm:rounded-2xl bg-white border border-[#e8eae8] overflow-hidden hover:shadow-[0_16px_40px_-12px_rgba(0,0,0,0.14)] hover:-translate-y-1 transition-all duration-300">
                     <div class="relative aspect-square bg-[#f5f6f5] overflow-hidden">
                         @if($p->images->first())
                             <img src="{{ $p->images->first()->url }}" alt="{{ $p->name }}" loading="lazy"
@@ -315,16 +315,16 @@
                         @endif
 
                         @if($dPct > 0)
-                            <span class="absolute top-2.5 left-2.5 rounded-lg bg-[#dc2626] text-white text-[11px] font-bold px-2 py-0.5 shadow-sm">-{{ $dPct }}%</span>
+                            <span class="absolute top-2 sm:top-2.5 left-2 sm:left-2.5 rounded-md sm:rounded-lg bg-[#dc2626] text-white text-[9px] sm:text-[11px] font-bold px-1.5 sm:px-2 py-0.5 shadow-sm">-{{ $dPct }}%</span>
                         @endif
                     </div>
-                    <div class="p-3">
-                        <p class="text-[12px] font-bold text-[#1c201e] line-clamp-1 group-hover:text-[#7ca81d] transition-colors">{{ $p->name }}</p>
-                        <p class="text-[10px] text-[#9aa19c] truncate mt-0.5">{{ $p->store->name ?? 'Marketplace' }}</p>
-                        <div class="flex items-baseline gap-1.5 mt-1.5">
-                            <span class="text-[14px] font-black text-[#659316] tnum">{{ number_format($p->price) }} <span class="text-[10px] font-bold">F</span></span>
+                    <div class="p-2.5 sm:p-3">
+                        <p class="text-[10.5px] sm:text-[12px] font-bold text-[#1c201e] line-clamp-1 group-hover:text-[#7ca81d] transition-colors">{{ $p->name }}</p>
+                        <p class="text-[8.5px] sm:text-[10px] text-[#9aa19c] truncate mt-0.5">{{ $p->store->name ?? 'Marketplace' }}</p>
+                        <div class="flex items-baseline gap-1.5 mt-1 sm:mt-1.5">
+                            <span class="text-[12px] sm:text-[14px] font-black text-[#659316] tnum">{{ number_format($p->price) }} <span class="text-[8.5px] sm:text-[10px] font-bold">F</span></span>
                             @if($p->old_price && $p->old_price > $p->price)
-                                <span class="text-[11px] text-[#f97316] line-through tnum font-medium">{{ number_format($p->old_price) }}</span>
+                                <span class="text-[10px] sm:text-[11px] text-[#f97316] line-through tnum font-medium">{{ number_format($p->old_price) }}</span>
                             @endif
                         </div>
                     </div>
@@ -338,47 +338,47 @@
          6. TOP STORES STRIP (Matching Home "Top stores" aesthetic)
     ================================================================ --}}
     @if(isset($topStores) && $topStores->isNotEmpty())
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-14">
-        <div class="flex items-end justify-between gap-3 mb-5">
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-10 sm:mt-14">
+        <div class="flex items-end justify-between gap-3 mb-3.5 sm:mb-5">
             <div>
-                <h2 class="text-lg sm:text-xl font-extrabold tracking-tight text-[#1c201e]">Top Verified Stores</h2>
-                <p class="text-[12px] text-[#6b716c] mt-0.5">Reliable merchants shipping across Cameroon</p>
+                <h2 class="text-sm sm:text-xl font-extrabold tracking-tight text-[#1c201e]">Top Verified Stores</h2>
+                <p class="text-[10px] sm:text-[12px] text-[#6b716c] mt-0.5">Reliable merchants shipping across Cameroon</p>
             </div>
-            <a href="{{ route('stores.index') }}" class="inline-flex items-center gap-1 text-xs font-bold text-[#7ca81d] hover:text-[#659316] transition-colors whitespace-nowrap">
-                View all stores <i class="fa-solid fa-arrow-right text-[15px]" style=""></i>
+            <a href="{{ route('stores.index') }}" class="inline-flex items-center gap-1 text-[11px] sm:text-xs font-bold text-[#7ca81d] hover:text-[#659316] transition-colors whitespace-nowrap">
+                View all stores <i class="fa-solid fa-arrow-right text-[14px] sm:text-[15px]" style=""></i>
             </a>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
             @foreach($topStores as $store)
                 <a href="{{ route('stores.show', $store->slug) }}"
-                   class="group rounded-2xl bg-white border border-[#e8eae8] p-4 hover:border-[#9acd32]/50 hover:shadow-[0_16px_40px_-12px_rgba(0,0,0,0.12)] transition-all duration-300 flex items-center gap-3.5">
-                    <div class="w-13 h-13 rounded-2xl bg-[#eef0ee] overflow-hidden grid place-items-center border border-black/5 shrink-0">
+                   class="group rounded-xl sm:rounded-2xl bg-white border border-[#e8eae8] p-3 sm:p-4 hover:border-[#9acd32]/50 hover:shadow-[0_16px_40px_-12px_rgba(0,0,0,0.12)] transition-all duration-300 flex items-center gap-3 sm:gap-3.5">
+                    <div class="w-11 h-11 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-[#eef0ee] overflow-hidden grid place-items-center border border-black/5 shrink-0">
                         @if($store->logo)
                             <img src="{{ $store->logo_url }}" alt="{{ $store->name }}" class="w-full h-full object-cover">
                         @else
-                            <span class="text-sm font-extrabold text-[#3f4f0e]">{{ strtoupper(substr($store->name, 0, 1)) }}</span>
+                            <span class="text-[11px] sm:text-sm font-extrabold text-[#3f4f0e]">{{ strtoupper(substr($store->name, 0, 1)) }}</span>
                         @endif
                     </div>
                     <div class="min-w-0 flex-1">
-                        <p class="text-[13px] font-bold text-[#1c201e] truncate inline-flex items-center gap-1">
+                        <p class="text-[12px] sm:text-[13px] font-bold text-[#1c201e] truncate inline-flex items-center gap-1">
                             {{ $store->name }}
                             @if($store->is_verified)
-                                <i class="fa-solid fa-circle-check text-[13px] text-[#659316]" style=""></i>
+                                <i class="fa-solid fa-circle-check text-[12px] sm:text-[13px] text-[#659316]" style=""></i>
                             @endif
                         </p>
                         <div class="flex items-center gap-2 mt-0.5">
                             @if(($store->rating ?? 0) > 0)
-                                <span class="inline-flex items-center gap-0.5 text-[11px] font-bold text-[#6b716c]">
-                                    <i class="fa-solid fa-star text-[13px] text-amber-400" style=""></i>
+                                <span class="inline-flex items-center gap-0.5 text-[10px] sm:text-[11px] font-bold text-[#6b716c]">
+                                    <i class="fa-solid fa-star text-[11px] sm:text-[13px] text-amber-400" style=""></i>
                                     {{ number_format($store->rating, 1) }}
                                 </span>
                             @endif
-                            <span class="text-[11px] text-[#9aa19c]">{{ $store->products_count }} products</span>
+                            <span class="text-[10px] sm:text-[11px] text-[#9aa19c]">{{ $store->products_count }} products</span>
                         </div>
                     </div>
-                    <span class="grid place-items-center w-8 h-8 rounded-full bg-[#f2f9df] text-[#7ca81d] group-hover:bg-[#9acd32] group-hover:text-[#1c201e] transition-colors shrink-0">
-                        <i class="fa-solid fa-arrow-right text-[16px]" style=""></i>
+                    <span class="grid place-items-center w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#f2f9df] text-[#7ca81d] group-hover:bg-[#9acd32] group-hover:text-[#1c201e] transition-colors shrink-0">
+                        <i class="fa-solid fa-arrow-right text-[13px] sm:text-[16px]" style=""></i>
                     </span>
                 </a>
             @endforeach

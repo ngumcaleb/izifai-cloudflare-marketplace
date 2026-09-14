@@ -121,6 +121,9 @@
         @keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.8; } }
         @keyframes drawLine { 0% { width: 0; } 100% { width: 100%; } }
         @keyframes cardFadeIn { 0% { opacity: 0; transform: translateY(16px) scale(0.96); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+        @keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+        @keyframes popIn { 0% { opacity:0; transform: scale(0.55); } 60% { transform: scale(1.08); } 100% { opacity:1; transform: scale(1); } }
+        @keyframes featureSlide { 0% { opacity:0; transform: translateY(12px); } 100% { opacity:1; transform: translateY(0); } }
 
         .animate-reveal { animation: reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         .animate-fade-in { animation: fadeIn 0.6s ease forwards; }
@@ -128,6 +131,11 @@
         .animate-scale-in { animation: scaleIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         .animate-shimmer { animation: shimmer 3s infinite; }
         .card-enter { opacity: 0; animation: cardFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .animate-floaty { animation: floaty 3s ease-in-out infinite; }
+        .animate-pop-in { opacity: 0; animation: popIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .animate-feature-1 { opacity: 0; animation: featureSlide 0.5s 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .animate-feature-2 { opacity: 0; animation: featureSlide 0.5s 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .animate-feature-3 { opacity: 0; animation: featureSlide 0.5s 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 
         .header-scrolled { background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(18px) saturate(1.1); -webkit-backdrop-filter: blur(18px) saturate(1.1); border-bottom: 1px solid rgba(0, 0, 0, 0.05); }
         .header-top { background: transparent; border-bottom: 1px solid transparent; }
@@ -146,7 +154,7 @@
     </style>
     @stack('styles')
 </head>
-<body class="text-on-surface overflow-x-hidden antialiased" x-data="{ mobileMenu: false }" :class="mobileMenu ? 'overflow-hidden' : ''">
+<body class="text-on-surface overflow-x-hidden antialiased" x-data="guestLayout()" :class="(mobileMenu || onboarding) ? 'overflow-hidden' : ''">
 
     {{-- ============ FIXED HEADER WRAPPER ============ --}}
     <div class="fixed top-0 left-0 right-0 z-50">
@@ -466,6 +474,28 @@
             {{-- Divider --}}
             <div class="h-px bg-[#f0f2f0] mx-5 shrink-0"></div>
 
+            {{-- ============ INSTALL APP CARD ============ --}}
+            <button x-show="installReady || isIOS"
+                    x-cloak
+                    @click="openOnboarding()"
+                    class="shrink-0 mx-5 mt-3 mb-1 text-left flex items-center gap-3.5 px-4 py-3.5 rounded-2xl border border-[#9acd32]/25 bg-[#f2f9df] group active:scale-[0.98] transition-all"
+                    x-transition:enter="transition ease-out duration-400"
+                    x-transition:enter-start="opacity-0 translate-y-2 scale-95"
+                    x-transition:enter-end="opacity-100 translate-y-0 scale-100">
+                <span class="relative shrink-0 grid place-items-center w-11 h-11 rounded-2xl bg-[#9acd32] text-[#1c201e] shadow-lg shadow-[#9acd32]/30">
+                    <i class="fa-solid fa-download text-[20px] group-hover:animate-bounce" style=""></i>
+                    <span class="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-white grid place-items-center">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#dc2626] animate-pulse"></span>
+                    </span>
+                </span>
+                <span class="min-w-0 flex-1">
+                    <span class="block text-[13px] font-bold text-[#1c201e]">Get the Izifai App</span>
+                    <span class="block text-[10.5px] text-[#6b716c] mt-0.5"
+                          x-text="isIOS ? 'Tap share, then Add to Home Screen' : 'Install &amp; shop instantly'"></span>
+                </span>
+                <i class="fa-solid fa-chevron-right text-[14px] text-[#9acd32] shrink-0 transition-transform group-hover:translate-x-0.5"></i>
+            </button>
+
             {{-- Scrollable nav links --}}
             <div class="flex-1 overflow-y-auto no-scrollbar px-3 py-3">
 
@@ -535,6 +565,119 @@
                 </form>
             </div>
             @endauth
+        </div>
+    </div>
+
+    {{-- ============ PWA INSTALL ONBOARDING ============ --}}
+    <div x-show="onboarding" x-cloak
+         class="fixed inset-0 z-[100] flex items-end sm:items-center justify-center sm:p-6"
+         @keydown.escape.window="closeOnboarding()"
+         x-transition:enter="transition ease-out duration-400"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-300"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0">
+
+        {{-- Backdrop --}}
+        <div class="absolute inset-0 bg-[#1c201e]/70 backdrop-blur-md"
+             @click="closeOnboarding()"
+             x-transition:enter="transition ease-out duration-500"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-300"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"></div>
+
+        {{-- Card --}}
+        <div class="relative w-full max-w-[360px] bg-white sm:rounded-[32px] rounded-t-[32px] shadow-2xl overflow-hidden"
+             x-transition:enter="transition ease-out duration-500 delay-100"
+             x-transition:enter-start="opacity-0 translate-y-12 sm:translate-y-0 sm:scale-90"
+             x-transition:enter-end="opacity-100 translate-y-0 sm:translate-y-0 sm:scale-100"
+             x-transition:leave="transition ease-in duration-250"
+             x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+             x-transition:leave-end="opacity-0 translate-y-12 sm:translate-y-0 sm:scale-90">
+
+            {{-- Top accent bar --}}
+            <div class="h-1 w-full bg-gradient-to-r from-[#9acd32] via-[#659316] to-[#9acd32]"></div>
+
+            <div class="px-6 pt-7 pb-8 sm:p-8 text-center">
+
+                {{-- Logo --}}
+                <div class="mx-auto mb-6 w-24 h-24 rounded-[26px] bg-gradient-to-br from-[#f2f9df] via-white to-[#f2f9df] shadow-lg shadow-[#9acd32]/15 grid place-items-center animate-pop-in">
+                    <div class="animate-floaty">
+                        <x-application-logo class="h-14 w-auto" />
+                    </div>
+                </div>
+
+                <h2 class="text-[17px] font-bold text-[#1c201e] mb-1 animate-pop-in" style="animation-delay:0.15s;">Get the Izifai App</h2>
+                <p class="text-[11.5px] text-[#6b716c] leading-relaxed mb-6 animate-pop-in" style="animation-delay:0.2s;">
+                    Shop, sell & manage your store — all in your pocket.
+                </p>
+
+                {{-- Features --}}
+                <div class="space-y-3 mb-7">
+                    <div class="animate-feature-1 flex items-center gap-3 px-4 py-3 rounded-2xl bg-[#f8f9f8] text-left">
+                        <span class="grid place-items-center w-9 h-9 rounded-xl bg-[#9acd32]/15 shrink-0">
+                            <i class="fa-solid fa-bag-shopping text-[16px] text-[#659316]"></i>
+                        </span>
+                        <span class="text-[12px] font-semibold text-[#2e332f]">Browse & buy from local sellers instantly</span>
+                    </div>
+                    <div class="animate-feature-2 flex items-center gap-3 px-4 py-3 rounded-2xl bg-[#f8f9f8] text-left">
+                        <span class="grid place-items-center w-9 h-9 rounded-xl bg-[#9acd32]/15 shrink-0">
+                            <i class="fa-solid fa-bolt text-[16px] text-[#659316]"></i>
+                        </span>
+                        <span class="text-[12px] font-semibold text-[#2e332f]">Lightning-fast — loads instantly from your home screen</span>
+                    </div>
+                    <div class="animate-feature-3 flex items-center gap-3 px-4 py-3 rounded-2xl bg-[#f8f9f8] text-left">
+                        <span class="grid place-items-center w-9 h-9 rounded-xl bg-[#9acd32]/15 shrink-0">
+                            <i class="fa-solid fa-bell text-[16px] text-[#659316]"></i>
+                        </span>
+                        <span class="text-[12px] font-semibold text-[#2e332f]">Get notified the moment someone orders</span>
+                    </div>
+                </div>
+
+                {{-- iOS instructions (shown only on iOS) --}}
+                <div x-show="isIOS" class="mb-6 animate-feature-2">
+                    <p class="text-[11px] font-semibold text-[#6b716c] uppercase tracking-wider mb-3">How to install</p>
+                    <div class="flex items-center justify-center gap-3">
+                        <div class="flex flex-col items-center gap-1.5">
+                            <span class="w-10 h-10 rounded-xl bg-[#f5f6f5] border border-[#e4e7e4] grid place-items-center">
+                                <i class="fa-solid fa-arrow-up-from-bracket text-[16px] text-[#659316]"></i>
+                            </span>
+                            <span class="text-[10px] font-semibold text-[#3f453f]">Tap Share</span>
+                        </div>
+                        <i class="fa-solid fa-arrow-right text-[12px] text-[#b0b6b1]"></i>
+                        <div class="flex flex-col items-center gap-1.5">
+                            <span class="w-10 h-10 rounded-xl bg-[#f5f6f5] border border-[#e4e7e4] grid place-items-center">
+                                <i class="fa-solid fa-plus text-[16px] text-[#659316]"></i>
+                            </span>
+                            <span class="text-[10px] font-semibold text-[#3f453f]">Add to Home Screen</span>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Install / Got it button --}}
+                <button @click="install()"
+                        class="w-full py-3.5 rounded-2xl text-[13px] font-bold transition-all active:scale-[0.98]"
+                        :class="isIOS ? 'bg-[#1c201e] text-white shadow-lg shadow-[#1c201e]/15' : 'bg-[#9acd32] text-[#1c201e] shadow-lg shadow-[#9acd32]/30'">
+                    <span x-show="!isIOS" class="inline-flex items-center gap-2">
+                        <i class="fa-solid fa-download text-[14px]"></i>
+                        Install Now
+                    </span>
+                    <span x-show="isIOS" class="inline-flex items-center gap-2">
+                        <i class="fa-solid fa-check text-[14px]"></i>
+                        Got It
+                    </span>
+                </button>
+            </div>
+
+            {{-- Close button --}}
+            <button @click="closeOnboarding()"
+                    class="absolute top-4 right-4 w-8 h-8 rounded-full bg-black/5 hover:bg-black/10 grid place-items-center transition-colors"
+                    aria-label="Close">
+                <i class="fa-solid fa-xmark text-[14px] text-[#6b716c]"></i>
+            </button>
         </div>
     </div>
 
@@ -1082,6 +1225,63 @@
                 try { document.execCommand('copy'); done(); } catch (e) {}
                 document.body.removeChild(ta);
             }
+        }
+    </script>
+
+    <script>
+        function guestLayout() {
+            return {
+                mobileMenu: false,
+                onboarding: false,
+                installReady: false,
+                isIOS: false,
+                installed: false,
+                _prompt: null,
+
+                init() {
+                    this.isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+                    this.installed = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+
+                    window.addEventListener('beforeinstallprompt', (e) => {
+                        e.preventDefault();
+                        this._prompt = e;
+                        this.installReady = true;
+                    });
+
+                    window.addEventListener('appinstalled', () => {
+                        this._prompt = null;
+                        this.installReady = false;
+                        this.installed = true;
+                        this.onboarding = false;
+                    });
+
+                    if ('serviceWorker' in navigator) {
+                        window.addEventListener('load', () => {
+                            navigator.serviceWorker.register('/sw.js').catch(() => {});
+                        });
+                    }
+                },
+
+                openOnboarding() {
+                    this.mobileMenu = false;
+                    this.onboarding = true;
+                },
+
+                closeOnboarding() {
+                    this.onboarding = false;
+                },
+
+                install() {
+                    if (this._prompt) {
+                        this._prompt.prompt();
+                        this._prompt.userChoice.then(() => {
+                            this._prompt = null;
+                            this.installReady = false;
+                        });
+                    }
+                    this.onboarding = false;
+                }
+            };
         }
     </script>
 

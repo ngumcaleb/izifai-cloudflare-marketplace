@@ -20,8 +20,8 @@
     {{-- ================================================================
          1. HERO HEADER BANNER (Consistent with Home Theme)
     ================================================================ --}}
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-4 sm:mt-6">
-        <div class="relative overflow-hidden rounded-3xl bg-[#1c201e] border border-black/5 shadow-[0_14px_44px_-16px_rgba(0,0,0,0.18)] p-6 sm:p-10 lg:p-12 text-white">
+    <section class="max-w-7xl mx-auto px-2 sm:px-6 mt-4 sm:mt-6">
+        <div class="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-[#1c201e] border border-black/5 shadow-[0_14px_44px_-16px_rgba(0,0,0,0.18)] p-5 sm:p-10 lg:p-12 text-white">
             {{-- Ambient glow orbs --}}
             <div class="absolute -top-24 -right-16 w-80 h-80 rounded-full bg-[#9acd32]/15 blur-3xl pointer-events-none"></div>
             <div class="absolute -bottom-28 -left-16 w-72 h-72 rounded-full bg-[#7ca81d]/15 blur-3xl pointer-events-none"></div>
@@ -44,7 +44,7 @@
                 </p>
 
                 {{-- Highlights / Quick Stats --}}
-                <div class="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px] sm:text-xs font-semibold text-white/80">
+                <div class="mt-5 sm:mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-[10.5px] sm:text-xs font-semibold text-white/80">
                     <span class="inline-flex items-center gap-1.5">
                         <i class="fa-solid fa-store text-[14px] text-[#9acd32]" style=""></i>
                         <strong class="text-white">{{ number_format($totalStores) }}+</strong> active stores
@@ -114,11 +114,11 @@
          2. CATEGORIES HORIZONTAL BAR
     ================================================================ --}}
     @if($categories->isNotEmpty())
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-6">
+    <section class="max-w-7xl mx-auto px-2.5 sm:px-6 mt-5 sm:mt-6">
         <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
             {{-- All Stores chip --}}
             <a href="{{ route('stores.index', request()->except(['category', 'page'])) }}"
-               class="shrink-0 px-4 py-2 rounded-xl text-[12px] font-bold transition-all duration-200 flex items-center gap-1.5 {{ !request('category') || request('category') === 'all' ? '-skew-x-6 bg-[#1c201e] text-[#9acd32] shadow-sm' : 'bg-white border border-[#e8eae8] text-[#3f453f] hover:border-[#9acd32]/50 hover:text-[#7ca81d]' }}">
+               class="shrink-0 px-3.5 sm:px-4 py-2 rounded-xl text-[11.5px] sm:text-[12px] font-bold transition-all duration-200 flex items-center gap-1.5 {{ !request('category') || request('category') === 'all' ? '-skew-x-6 bg-[#1c201e] text-[#9acd32] shadow-sm' : 'bg-white border border-[#e8eae8] text-[#3f453f] hover:border-[#9acd32]/50 hover:text-[#7ca81d]' }}">
                 <span class="{{ !request('category') || request('category') === 'all' ? 'skew-x-6' : '' }} flex items-center gap-1.5">
                     <i class="fa-solid fa-store text-[16px]" style=""></i>
                     All Stores
@@ -128,7 +128,7 @@
             @foreach($categories as $cat)
                 @php $isActive = request('category') === $cat->slug; @endphp
                 <a href="{{ route('stores.index', array_merge(request()->except(['category', 'page']), ['category' => $cat->slug])) }}"
-                   class="shrink-0 px-4 py-2 rounded-xl text-[12px] font-bold transition-all duration-200 flex items-center gap-1.5 {{ $isActive ? '-skew-x-6 bg-[#9acd32] text-[#1c201e] shadow-sm shadow-[#9acd32]/30' : 'bg-white border border-[#e8eae8] text-[#3f453f] hover:border-[#9acd32]/50 hover:text-[#7ca81d]' }}">
+                   class="shrink-0 px-3.5 sm:px-4 py-2 rounded-xl text-[11.5px] sm:text-[12px] font-bold transition-all duration-200 flex items-center gap-1.5 {{ $isActive ? '-skew-x-6 bg-[#9acd32] text-[#1c201e] shadow-sm shadow-[#9acd32]/30' : 'bg-white border border-[#e8eae8] text-[#3f453f] hover:border-[#9acd32]/50 hover:text-[#7ca81d]' }}">
                     <span class="{{ $isActive ? 'skew-x-6' : '' }} flex items-center gap-1.5">
                         {{ $cat->name }}
                         @if(($cat->products_count ?? 0) > 0)
@@ -144,8 +144,8 @@
     {{-- ================================================================
          3. TOOLBAR / SEARCH & SORT STRIP
     ================================================================ --}}
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-6">
-        <div class="bg-white rounded-2xl border border-[#e8eae8] p-3 sm:p-4 flex flex-wrap items-center justify-between gap-3 shadow-sm">
+    <section class="max-w-7xl mx-auto px-2.5 sm:px-6 mt-5 sm:mt-6">
+        <div class="bg-white rounded-2xl border border-[#e8eae8] p-2.5 sm:p-4 flex flex-wrap items-center justify-between gap-2.5 sm:gap-3 shadow-sm">
             {{-- Left: Search input & indicators --}}
             <div class="flex items-center gap-2.5 flex-1 max-w-md">
                 {{-- Search Store Form --}}
@@ -203,36 +203,36 @@
     {{-- ================================================================
          4. MAIN STORES GRID (4 Cards Per Row on PC View)
     ================================================================ --}}
-    <section id="stores-section" class="max-w-7xl mx-auto px-4 sm:px-6 mt-6">
+    <section id="stores-section" class="max-w-7xl mx-auto px-1 sm:px-6 mt-4 sm:mt-6">
         @if($stores->count() > 0)
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 items-stretch gap-4 sm:gap-5 w-full">
+            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 items-stretch auto-rows-fr gap-2 sm:gap-5 w-full">
                 @foreach($stores as $store)
-                    <div class="group relative w-full bg-white rounded-2xl border border-black/[0.07] overflow-hidden hover:shadow-[0_18px_44px_-14px_rgba(20,27,11,0.18)] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
+                    <div class="group relative w-full min-w-0 bg-white rounded-xl sm:rounded-2xl border border-black/[0.07] overflow-hidden hover:shadow-[0_18px_44px_-14px_rgba(20,27,11,0.18)] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
                         {{-- Top Animated Gradient Line --}}
                         <span class="absolute top-0 left-0 right-0 h-[3px] z-20 bg-gradient-to-r from-[#9acd32] via-[#86b92c] to-transparent origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
 
                         <div>
                             {{-- Store Banner Header --}}
-                            <a href="{{ route('stores.show', $store->slug) }}" class="block relative aspect-[16/9] overflow-hidden bg-[#eef0ee]">
+                            <a href="{{ route('stores.show', $store->slug) }}" class="block relative aspect-[4/3] sm:aspect-[16/9] overflow-hidden bg-[#eef0ee]">
                                 @if($store->banner)
                                     <img src="{{ $store->banner_url }}" alt="{{ $store->name }}" loading="lazy"
                                          class="w-full h-full object-cover transform transition-transform duration-700 ease-out group-hover:scale-105">
                                 @else
                                     <x-store-default-banner :store="$store" variant="card" />
                                 @endif
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent"></div>
 
                                 {{-- Badges on top of banner --}}
-                                <div class="absolute top-2.5 right-2.5 flex items-center gap-1.5 z-10">
+                                <div class="absolute top-2 right-2 sm:top-2.5 sm:right-2.5 flex items-center gap-1 z-10">
                                     @if($store->is_verified)
-                                        <span class="px-2 py-0.5 rounded-md -skew-x-6 bg-[#1c201e]/85 backdrop-blur-sm text-[#9acd32] text-[9px] font-extrabold uppercase tracking-wide shadow-sm flex items-center gap-1">
-                                            <i class="fa-solid fa-circle-check text-[11px]" style=""></i>
+                                        <span class="px-1.5 sm:px-2 py-0.5 sm:py-0.5 rounded-md -skew-x-6 bg-[#1c201e]/85 backdrop-blur-sm text-[#9acd32] text-[8px] sm:text-[9px] font-extrabold uppercase tracking-wide shadow-sm flex items-center gap-0.5 sm:gap-1">
+                                            <i class="fa-solid fa-circle-check text-[9px] sm:text-[11px]" style=""></i>
                                             Verified
                                         </span>
                                     @endif
 
                                     @if($store->created_at && $store->created_at->diffInDays(now()) <= 14)
-                                        <span class="px-2 py-0.5 rounded-md -skew-x-6 bg-[#9acd32] text-[#1c201e] text-[9px] font-extrabold uppercase tracking-wide shadow-sm">
+                                        <span class="px-1.5 sm:px-2 py-0.5 rounded-md -skew-x-6 bg-[#9acd32] text-[#1c201e] text-[8px] sm:text-[9px] font-extrabold uppercase tracking-wide shadow-sm">
                                             New
                                         </span>
                                     @endif
@@ -240,14 +240,14 @@
                             </a>
 
                             {{-- Store Logo Avatar (Floating over banner) --}}
-                            <div class="px-4 relative">
-                                <div class="flex items-end justify-between -mt-7 mb-2 relative z-10">
+                            <div class="px-2.5 sm:px-4 relative">
+                                <div class="flex items-center justify-between -mt-6 sm:-mt-7 mb-1.5 sm:mb-2 relative z-10">
                                     <a href="{{ route('stores.show', $store->slug) }}"
-                                       class="w-14 h-14 rounded-2xl bg-white p-1 ring-2 ring-white shadow-md overflow-hidden shrink-0 block group-hover:ring-[#9acd32]/50 transition-all">
+                                       class="w-11 h-11 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-white p-0.5 sm:p-1 ring-2 ring-white shadow-md overflow-hidden shrink-0 block group-hover:ring-[#9acd32]/50 transition-all">
                                         @if($store->logo)
-                                            <img src="{{ $store->logo_url }}" alt="{{ $store->name }}" class="w-full h-full object-cover rounded-xl">
+                                            <img src="{{ $store->logo_url }}" alt="{{ $store->name }}" class="w-full h-full object-cover rounded-lg sm:rounded-xl">
                                         @else
-                                            <div class="w-full h-full rounded-xl bg-[#eef4d8] text-[#659316] font-extrabold text-lg grid place-items-center">
+                                            <div class="w-full h-full rounded-lg sm:rounded-xl bg-[#eef4d8] text-[#659316] font-extrabold text-sm sm:text-lg grid place-items-center">
                                                 {{ strtoupper(substr($store->name, 0, 1)) }}
                                             </div>
                                         @endif
@@ -255,37 +255,36 @@
 
                                     {{-- Rating badge --}}
                                     @if($store->reviews_avg_rating && $store->reviews_avg_rating > 0)
-                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#fffbeb] border border-amber-200/60 text-amber-700 text-[11px] font-extrabold shadow-sm">
-                                            <i class="fa-solid fa-star text-[13px] text-amber-400" style=""></i>
+                                        <span class="inline-flex items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-md sm:rounded-lg bg-[#fffbeb] border border-amber-200/60 text-amber-700 text-[10px] sm:text-[11px] font-extrabold shadow-sm">
+                                            <i class="fa-solid fa-star text-[10px] sm:text-[13px] text-amber-400" style=""></i>
                                             {{ number_format($store->reviews_avg_rating, 1) }}
-                                            <span class="text-[9px] text-[#9aa19c] font-medium">({{ $store->reviews_count ?? 0 }})</span>
                                         </span>
                                     @else
-                                        <span class="text-[10px] font-bold text-[#9aa19c] bg-[#f5f6f5] px-2 py-0.5 rounded-md">
+                                        <span class="text-[9px] sm:text-[10px] font-bold text-[#9aa19c] bg-[#f5f6f5] px-1.5 sm:px-2 py-0.5 rounded-md">
                                             New Seller
                                         </span>
                                     @endif
                                 </div>
 
                                 {{-- Store Title & Location --}}
-                                <a href="{{ route('stores.show', $store->slug) }}" class="block mt-1">
-                                    <h3 class="text-sm font-extrabold text-[#1c201e] leading-snug truncate group-hover:text-[#7ca81d] transition-colors flex items-center gap-1">
+                                <a href="{{ route('stores.show', $store->slug) }}" class="block mt-0.5 sm:mt-1">
+                                    <h3 class="text-[13px] sm:text-sm font-extrabold text-[#1c201e] leading-snug truncate group-hover:text-[#7ca81d] transition-colors flex items-center gap-1">
                                         {{ $store->name }}
                                         @if($store->is_verified)
-                                            <i class="fa-solid fa-circle-check text-[14px] text-[#659316] shrink-0" style=""></i>
+                                            <i class="fa-solid fa-circle-check text-[12px] sm:text-[14px] text-[#659316] shrink-0" style=""></i>
                                         @endif
                                     </h3>
                                 </a>
 
                                 @if($store->location)
-                                    <p class="text-[11px] text-[#6b716c] truncate mt-0.5 flex items-center gap-1">
-                                        <i class="fa-solid fa-location-dot text-[13px] text-[#9aa19c]"></i>
+                                    <p class="text-[10.5px] sm:text-[11px] text-[#6b716c] truncate mt-0.5 flex items-center gap-1">
+                                        <i class="fa-solid fa-location-dot text-[10px] sm:text-[13px] text-[#9aa19c]"></i>
                                         {{ $store->location }}
                                     </p>
                                 @endif
 
                                 @if($store->description)
-                                    <p class="text-[11px] text-[#9aa19c] line-clamp-2 mt-1.5 leading-relaxed">
+                                    <p class="text-[10.5px] sm:text-[11px] text-[#9aa19c] line-clamp-2 mt-1 leading-relaxed">
                                         {{ $store->description }}
                                     </p>
                                 @endif
@@ -293,18 +292,18 @@
                         </div>
 
                         {{-- Card Footer --}}
-                        <div class="p-4 pt-3 mt-3 border-t border-[#f0f1f0] flex items-center justify-between gap-2">
-                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md -skew-x-6 bg-[#f2f9df] text-[#659316] text-[11px] font-extrabold">
+                        <div class="p-2.5 sm:p-4 pt-2 sm:pt-3 mt-2 sm:mt-3 border-t border-[#f0f1f0] flex items-center justify-between gap-1.5 sm:gap-2">
+                            <span class="inline-flex items-center gap-1 px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-md -skew-x-6 bg-[#f2f9df] text-[#659316] text-[9.5px] sm:text-[11px] font-extrabold">
                                 <span class="skew-x-6">
                                     {{ number_format($store->products_count ?? 0) }} {{ Str::plural('product', $store->products_count ?? 0) }}
                                 </span>
                             </span>
 
                             <a href="{{ route('stores.show', $store->slug) }}"
-                               class="inline-flex items-center gap-1 text-[11px] font-extrabold text-[#1c201e] group-hover:text-[#7ca81d] transition-colors">
-                                Visit Store
-                                <span class="grid place-items-center w-6 h-6 rounded-full bg-[#f2f9df] text-[#7ca81d] group-hover:bg-[#9acd32] group-hover:text-[#1c201e] transition-colors">
-                                    <i class="fa-solid fa-arrow-right text-[13px]"></i>
+                               class="inline-flex items-center gap-1 text-[10px] sm:text-[11px] font-extrabold text-[#1c201e] group-hover:text-[#7ca81d] transition-colors">
+                                Visit
+                                <span class="grid place-items-center w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#f2f9df] text-[#7ca81d] group-hover:bg-[#9acd32] group-hover:text-[#1c201e] transition-colors">
+                                    <i class="fa-solid fa-arrow-right text-[10px] sm:text-[13px]"></i>
                                 </span>
                             </a>
                         </div>
@@ -321,7 +320,7 @@
 
         @else
             {{-- Empty State --}}
-            <div class="bg-white rounded-3xl border border-[#e8eae8] p-10 sm:p-16 text-center shadow-sm">
+            <div class="bg-white rounded-2xl sm:rounded-3xl border border-[#e8eae8] p-8 sm:p-16 text-center shadow-sm">
                 <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-[#f2f9df] text-[#659316] flex items-center justify-center mx-auto mb-4">
                     <i class="fa-solid fa-store text-4xl sm:text-5xl" style=""></i>
                 </div>

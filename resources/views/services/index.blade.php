@@ -20,8 +20,8 @@
     {{-- ================================================================
          1. HERO HEADER BANNER (Consistent with Home Theme)
     ================================================================ --}}
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-4 sm:mt-6">
-        <div class="relative overflow-hidden rounded-3xl bg-[#1c201e] border border-black/5 shadow-[0_14px_44px_-16px_rgba(0,0,0,0.18)] p-6 sm:p-10 lg:p-12 text-white">
+    <section class="max-w-7xl mx-auto px-2 sm:px-6 mt-4 sm:mt-6">
+        <div class="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-[#1c201e] border border-black/5 shadow-[0_14px_44px_-16px_rgba(0,0,0,0.18)] p-5 sm:p-10 lg:p-12 text-white">
             {{-- Ambient glow orbs --}}
             <div class="absolute -top-24 -right-16 w-80 h-80 rounded-full bg-[#9acd32]/15 blur-3xl pointer-events-none"></div>
             <div class="absolute -bottom-28 -left-16 w-72 h-72 rounded-full bg-[#7ca81d]/15 blur-3xl pointer-events-none"></div>
@@ -44,7 +44,7 @@
                 </p>
 
                 {{-- Highlights / Quick Stats --}}
-                <div class="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px] sm:text-xs font-semibold text-white/80">
+                <div class="mt-5 sm:mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-[10.5px] sm:text-xs font-semibold text-white/80">
                     <span class="inline-flex items-center gap-1.5">
                         <i class="fa-solid fa-shield-halved text-[14px] text-[#9acd32]" style=""></i>
                         <strong class="text-white">{{ number_format($services->total()) }}</strong> services available
@@ -131,11 +131,11 @@
          2. CATEGORIES HORIZONTAL BAR
     ================================================================ --}}
     @if($categories->isNotEmpty())
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-6">
+    <section class="max-w-7xl mx-auto px-2.5 sm:px-6 mt-5 sm:mt-6">
         <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
             {{-- All Services chip --}}
             <a href="{{ route('services.index', request()->except(['category', 'page'])) }}"
-               class="shrink-0 px-4 py-2 rounded-xl text-[12px] font-bold transition-all duration-200 flex items-center gap-1.5 {{ !request('category') ? '-skew-x-6 bg-[#1c201e] text-[#9acd32] shadow-sm' : 'bg-white border border-[#e8eae8] text-[#3f453f] hover:border-[#9acd32]/50 hover:text-[#7ca81d]' }}">
+               class="shrink-0 px-3.5 sm:px-4 py-2 rounded-xl text-[11.5px] sm:text-[12px] font-bold transition-all duration-200 flex items-center gap-1.5 {{ !request('category') ? '-skew-x-6 bg-[#1c201e] text-[#9acd32] shadow-sm' : 'bg-white border border-[#e8eae8] text-[#3f453f] hover:border-[#9acd32]/50 hover:text-[#7ca81d]' }}">
                 <span class="{{ !request('category') ? 'skew-x-6' : '' }} flex items-center gap-1.5">
                     <i class="fa-solid fa-table-cells text-[16px]" style=""></i>
                     All Services
@@ -145,7 +145,7 @@
             @foreach($categories as $cat)
                 @php $isActive = request('category') === $cat->slug; @endphp
                 <a href="{{ route('services.index', array_merge(request()->except(['category', 'page']), ['category' => $cat->slug])) }}"
-                   class="shrink-0 px-4 py-2 rounded-xl text-[12px] font-bold transition-all duration-200 flex items-center gap-1.5 {{ $isActive ? '-skew-x-6 bg-[#9acd32] text-[#1c201e] shadow-sm shadow-[#9acd32]/30' : 'bg-white border border-[#e8eae8] text-[#3f453f] hover:border-[#9acd32]/50 hover:text-[#7ca81d]' }}">
+                   class="shrink-0 px-3.5 sm:px-4 py-2 rounded-xl text-[11.5px] sm:text-[12px] font-bold transition-all duration-200 flex items-center gap-1.5 {{ $isActive ? '-skew-x-6 bg-[#9acd32] text-[#1c201e] shadow-sm shadow-[#9acd32]/30' : 'bg-white border border-[#e8eae8] text-[#3f453f] hover:border-[#9acd32]/50 hover:text-[#7ca81d]' }}">
                     <span class="{{ $isActive ? 'skew-x-6' : '' }} flex items-center gap-1.5">
                         {{ $cat->name }}
                         @if(($cat->services_count ?? $cat->services?->count() ?? 0) > 0)
@@ -161,8 +161,8 @@
     {{-- ================================================================
          3. TOOLBAR / SEARCH & SORT STRIP
     ================================================================ --}}
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-6">
-        <div class="bg-white rounded-2xl border border-[#e8eae8] p-3 sm:p-4 flex flex-wrap items-center justify-between gap-3 shadow-sm">
+    <section class="max-w-7xl mx-auto px-2.5 sm:px-6 mt-5 sm:mt-6">
+        <div class="bg-white rounded-2xl border border-[#e8eae8] p-2.5 sm:p-4 flex flex-wrap items-center justify-between gap-2.5 sm:gap-3 shadow-sm">
             {{-- Left: Search & Quick Price inputs --}}
             <div class="flex flex-wrap items-center gap-2.5">
                 {{-- Search Box --}}
@@ -244,11 +244,11 @@
     {{-- ================================================================
          4. MAIN SERVICES GRID (Wall-to-Wall 4 Columns on PC View)
     ================================================================ --}}
-    <section id="services-section" class="max-w-7xl mx-auto px-4 sm:px-6 mt-6">
+    <section id="services-section" class="max-w-7xl mx-auto px-1 sm:px-6 mt-4 sm:mt-6">
         @if($services->count() > 0)
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 items-stretch gap-4 sm:gap-5 w-full">
+            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 items-stretch auto-rows-fr gap-2 sm:gap-5 w-full">
                 @foreach($services as $service)
-                    <div class="group relative w-full bg-white rounded-2xl border border-black/[0.07] overflow-hidden hover:shadow-[0_18px_44px_-14px_rgba(20,27,11,0.18)] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
+                    <div class="group relative w-full min-w-0 bg-white rounded-xl sm:rounded-2xl border border-black/[0.07] overflow-hidden hover:shadow-[0_18px_44px_-14px_rgba(20,27,11,0.18)] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
                         {{-- Top Animated Accent Line --}}
                         <span class="absolute top-0 left-0 right-0 h-[3px] z-20 bg-gradient-to-r from-[#9acd32] via-[#86b92c] to-transparent origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
 
@@ -260,41 +260,41 @@
                                          class="w-full h-full object-cover transform transition-transform duration-700 ease-out group-hover:scale-105">
                                 @else
                                     <div class="w-full h-full grid place-items-center text-[#9aa19c]/30">
-                                        <i class="fa-solid fa-pen-ruler text-5xl"></i>
+                                        <i class="fa-solid fa-pen-ruler text-4xl sm:text-5xl"></i>
                                     </div>
                                 @endif
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent"></div>
 
                                 {{-- Category Badge --}}
                                 @if($service->category)
-                                    <span class="absolute top-3 left-3 z-10 px-2.5 py-1 rounded-md -skew-x-12 bg-white/95 text-[#3f453f] text-[9px] font-extrabold uppercase tracking-[0.12em] shadow-sm">
+                                    <span class="absolute top-2 left-2 sm:top-3 sm:left-3 z-10 px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-md -skew-x-12 bg-white/95 text-[#3f453f] text-[8px] sm:text-[9px] font-extrabold uppercase tracking-[0.12em] shadow-sm">
                                         {{ $service->category->name }}
                                     </span>
                                 @endif
 
                                 {{-- Delivery or Package badge on top right --}}
                                 @if($service->delivery_time)
-                                    <span class="absolute top-3 right-3 z-10 px-2.5 py-1 rounded-md -skew-x-12 bg-[#1c201e]/85 backdrop-blur-sm text-[#9acd32] text-[9px] font-extrabold tracking-wide shadow-sm flex items-center gap-1">
-                                        <i class="fa-solid fa-clock text-[11px]"></i>
+                                    <span class="absolute top-2 right-2 sm:top-3 sm:right-3 z-10 px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-md -skew-x-12 bg-[#1c201e]/85 backdrop-blur-sm text-[#9acd32] text-[8px] sm:text-[9px] font-extrabold tracking-wide shadow-sm flex items-center gap-0.5 sm:gap-1">
+                                        <i class="fa-solid fa-clock text-[9px] sm:text-[11px]"></i>
                                         {{ $service->delivery_time }}
                                     </span>
                                 @endif
                             </a>
 
                             {{-- Service Info --}}
-                            <div class="p-3.5">
+                            <div class="p-2.5 sm:p-3.5">
                                 {{-- Store / Provider Info --}}
                                 <div class="flex items-center justify-between gap-2">
-                                    <p class="text-[10px] font-bold uppercase tracking-[0.12em] text-[#9aa19c] truncate flex items-center gap-1">
+                                    <p class="text-[8.5px] sm:text-[10px] font-bold uppercase tracking-[0.12em] text-[#9aa19c] truncate flex items-center gap-1">
                                         {{ $service->store->name ?? 'Izifai Provider' }}
                                         @if($service->store?->is_verified)
-                                            <i class="fa-solid fa-circle-check text-[11px] text-[#659316] shrink-0" style=""></i>
+                                            <i class="fa-solid fa-circle-check text-[10px] sm:text-[11px] text-[#659316] shrink-0" style=""></i>
                                         @endif
                                     </p>
 
                                     @if(($service->rating ?? 0) > 0)
-                                        <span class="inline-flex items-center gap-0.5 text-[11px] font-extrabold text-[#5c625e] shrink-0">
-                                            <i class="fa-solid fa-star text-[13px] text-amber-400" style=""></i>
+                                        <span class="inline-flex items-center gap-0.5 text-[9.5px] sm:text-[11px] font-extrabold text-[#5c625e] shrink-0">
+                                            <i class="fa-solid fa-star text-[10px] sm:text-[13px] text-amber-400" style=""></i>
                                             {{ number_format($service->rating, 1) }}
                                         </span>
                                     @endif
@@ -302,13 +302,13 @@
 
                                 {{-- Service Title --}}
                                 <a href="{{ route('services.show', $service->slug) }}" class="block mt-1">
-                                    <h3 class="text-[13px] font-bold text-[#1c201e] leading-snug line-clamp-2 group-hover:text-[#7ca81d] transition-colors">
+                                    <h3 class="text-[12px] sm:text-[13px] font-bold text-[#1c201e] leading-snug line-clamp-2 group-hover:text-[#7ca81d] transition-colors">
                                         {{ $service->name }}
                                     </h3>
                                 </a>
 
                                 @if($service->description)
-                                    <p class="text-[11px] text-[#6b716c] line-clamp-2 mt-1 leading-relaxed">
+                                    <p class="text-[10px] sm:text-[11px] text-[#6b716c] line-clamp-2 mt-1 leading-relaxed">
                                         {{ $service->description }}
                                     </p>
                                 @endif
@@ -316,21 +316,21 @@
                         </div>
 
                         {{-- Card Footer --}}
-                        <div class="p-3.5 pt-2.5 border-t border-[#f0f1f0] flex items-center justify-between gap-2">
-                            <div>
-                                <span class="text-[9px] font-bold text-[#9aa19c] uppercase tracking-wider block">Starting at</span>
-                                <span class="inline-flex items-baseline gap-1 mt-0.5 px-2.5 py-1 rounded-md -skew-x-6 bg-[#f2f9df] text-[#659316]">
-                                    <span class="skew-x-6 text-[13px] font-black leading-tight tnum">
-                                        {{ number_format($service->starting_price) }} <span class="text-[10px] font-bold">F</span>
+                        <div class="p-2.5 sm:p-3.5 pt-2 sm:pt-2.5 border-t border-[#f0f1f0] flex items-center justify-between gap-1.5 sm:gap-2">
+                            <div class="min-w-0">
+                                <span class="text-[8px] sm:text-[9px] font-bold text-[#9aa19c] uppercase tracking-wider block">Starting at</span>
+                                <span class="inline-flex items-baseline gap-0.5 sm:gap-1 mt-0.5 sm:mt-0.5 px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-md -skew-x-6 bg-[#f2f9df] text-[#659316]">
+                                    <span class="skew-x-6 text-[12px] sm:text-[13px] font-black leading-tight tnum">
+                                        {{ number_format($service->starting_price) }} <span class="text-[8.5px] sm:text-[10px] font-bold">F</span>
                                     </span>
                                 </span>
                             </div>
 
                             <a href="{{ route('services.show', $service->slug) }}"
-                               class="inline-flex items-center gap-1.5 text-[11px] font-extrabold text-[#1c201e] group-hover:text-[#7ca81d] transition-colors">
+                               class="inline-flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-[11px] font-extrabold text-[#1c201e] group-hover:text-[#7ca81d] transition-colors">
                                 Book Now
-                                <span class="grid place-items-center w-6 h-6 rounded-full bg-[#f2f9df] text-[#7ca81d] group-hover:bg-[#9acd32] group-hover:text-[#1c201e] transition-colors">
-                                    <i class="fa-solid fa-arrow-right text-[13px]"></i>
+                                <span class="grid place-items-center w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-[#f2f9df] text-[#7ca81d] group-hover:bg-[#9acd32] group-hover:text-[#1c201e] transition-colors">
+                                    <i class="fa-solid fa-arrow-right text-[10px] sm:text-[13px]"></i>
                                 </span>
                             </a>
                         </div>
@@ -345,7 +345,7 @@
 
         @else
             {{-- Empty State --}}
-            <div class="bg-white rounded-3xl border border-[#e8eae8] p-10 sm:p-16 text-center shadow-sm">
+            <div class="bg-white rounded-2xl sm:rounded-3xl border border-[#e8eae8] p-8 sm:p-16 text-center shadow-sm">
                 <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-[#f2f9df] text-[#659316] flex items-center justify-center mx-auto mb-4">
                     <i class="fa-solid fa-pen-ruler text-4xl sm:text-5xl" style=""></i>
                 </div>
@@ -383,22 +383,22 @@
          5. FEATURED SERVICES SPOTLIGHT (Matching Home Deals aesthetic)
     ================================================================ --}}
     @if(isset($featuredServices) && $featuredServices->count() > 0 && !request('q'))
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-14">
-        <div class="flex items-end justify-between gap-3 mb-5">
-            <div class="flex items-center gap-3">
-                <span class="grid place-items-center w-11 h-11 rounded-2xl bg-[#9acd32] text-[#1c201e] shadow-lg shadow-[#9acd32]/30 shrink-0">
-                    <i class="fa-solid fa-wand-magic-sparkles text-[20px]" style=""></i>
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-10 sm:mt-14">
+        <div class="flex items-end justify-between gap-3 mb-3.5 sm:mb-5">
+            <div class="flex items-center gap-2.5 sm:gap-3">
+                <span class="grid place-items-center w-8 h-8 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-[#9acd32] text-[#1c201e] shadow-md sm:shadow-lg shadow-[#9acd32]/30 shrink-0">
+                    <i class="fa-solid fa-wand-magic-sparkles text-[16px] sm:text-[20px]" style=""></i>
                 </span>
                 <div>
-                    <h2 class="text-lg sm:text-xl font-extrabold tracking-tight text-[#1c201e]">Featured Pro Services</h2>
-                    <p class="text-[12px] text-[#6b716c] -mt-0.5">Top-rated services recommended by Izifai</p>
+                    <h2 class="text-sm sm:text-xl font-extrabold tracking-tight text-[#1c201e]">Featured Pro Services</h2>
+                    <p class="text-[10px] sm:text-[12px] text-[#6b716c] -mt-0.5">Top-rated services recommended by Izifai</p>
                 </div>
             </div>
         </div>
 
-        <div class="flex gap-3.5 overflow-x-auto no-scrollbar pb-2">
+        <div class="flex gap-2.5 sm:gap-3.5 overflow-x-auto no-scrollbar pb-2">
             @foreach($featuredServices as $s)
-                <a href="{{ route('services.show', $s->slug) }}" class="group shrink-0 w-[11rem] sm:w-52 rounded-2xl bg-white border border-[#e8eae8] overflow-hidden hover:shadow-[0_16px_40px_-12px_rgba(0,0,0,0.14)] hover:-translate-y-1 transition-all duration-300">
+                <a href="{{ route('services.show', $s->slug) }}" class="group shrink-0 w-[8.75rem] sm:w-52 rounded-xl sm:rounded-2xl bg-white border border-[#e8eae8] overflow-hidden hover:shadow-[0_16px_40px_-12px_rgba(0,0,0,0.14)] hover:-translate-y-1 transition-all duration-300">
                     <div class="relative aspect-[4/3] bg-[#f5f6f5] overflow-hidden">
                         @if($s->main_image_url)
                             <img src="{{ $s->main_image_url }}" alt="{{ $s->name }}" loading="lazy"
@@ -409,12 +409,12 @@
                             </div>
                         @endif
                     </div>
-                    <div class="p-3">
-                        <p class="text-[12px] font-bold text-[#1c201e] line-clamp-1 group-hover:text-[#7ca81d] transition-colors">{{ $s->name }}</p>
-                        <p class="text-[10px] text-[#9aa19c] truncate mt-0.5">{{ $s->store->name ?? 'Verified Pro' }}</p>
-                        <div class="flex items-baseline gap-1 mt-2">
-                            <span class="text-[9px] text-[#9aa19c] font-bold">From</span>
-                            <span class="text-[13px] font-black text-[#659316] tnum">{{ number_format($s->starting_price) }} <span class="text-[10px] font-bold">F</span></span>
+                    <div class="p-2.5 sm:p-3">
+                        <p class="text-[10.5px] sm:text-[12px] font-bold text-[#1c201e] line-clamp-1 group-hover:text-[#7ca81d] transition-colors">{{ $s->name }}</p>
+                        <p class="text-[8.5px] sm:text-[10px] text-[#9aa19c] truncate mt-0.5">{{ $s->store->name ?? 'Verified Pro' }}</p>
+                        <div class="flex items-baseline gap-1 mt-1.5 sm:mt-2">
+                            <span class="text-[8.5px] text-[#9aa19c] font-bold">From</span>
+                            <span class="text-[12px] sm:text-[13px] font-black text-[#659316] tnum">{{ number_format($s->starting_price) }} <span class="text-[8.5px] sm:text-[10px] font-bold">F</span></span>
                         </div>
                     </div>
                 </a>
@@ -427,47 +427,47 @@
          6. TOP SERVICE STORES (Matching Home "Top stores" aesthetic)
     ================================================================ --}}
     @if(isset($topStores) && $topStores->isNotEmpty())
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-14">
-        <div class="flex items-end justify-between gap-3 mb-5">
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-10 sm:mt-14">
+        <div class="flex items-end justify-between gap-3 mb-3.5 sm:mb-5">
             <div>
-                <h2 class="text-lg sm:text-xl font-extrabold tracking-tight text-[#1c201e]">Top Verified Providers</h2>
-                <p class="text-[12px] text-[#6b716c] mt-0.5">Reliable agencies and freelance pros on Izifai</p>
+                <h2 class="text-sm sm:text-xl font-extrabold tracking-tight text-[#1c201e]">Top Verified Providers</h2>
+                <p class="text-[10px] sm:text-[12px] text-[#6b716c] mt-0.5">Reliable agencies and freelance pros on Izifai</p>
             </div>
-            <a href="{{ route('stores.index') }}" class="inline-flex items-center gap-1 text-xs font-bold text-[#7ca81d] hover:text-[#659316] transition-colors whitespace-nowrap">
-                View all providers <i class="fa-solid fa-arrow-right text-[15px]" style=""></i>
+            <a href="{{ route('stores.index') }}" class="inline-flex items-center gap-1 text-[11px] sm:text-xs font-bold text-[#7ca81d] hover:text-[#659316] transition-colors whitespace-nowrap">
+                View all providers <i class="fa-solid fa-arrow-right text-[14px] sm:text-[15px]" style=""></i>
             </a>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
             @foreach($topStores as $store)
                 <a href="{{ route('stores.show', $store->slug) }}"
-                   class="group rounded-2xl bg-white border border-[#e8eae8] p-4 hover:border-[#9acd32]/50 hover:shadow-[0_16px_40px_-12px_rgba(0,0,0,0.12)] transition-all duration-300 flex items-center gap-3.5">
-                    <div class="w-13 h-13 rounded-2xl bg-[#eef0ee] overflow-hidden grid place-items-center border border-black/5 shrink-0">
+                   class="group rounded-xl sm:rounded-2xl bg-white border border-[#e8eae8] p-3 sm:p-4 hover:border-[#9acd32]/50 hover:shadow-[0_16px_40px_-12px_rgba(0,0,0,0.12)] transition-all duration-300 flex items-center gap-3 sm:gap-3.5">
+                    <div class="w-11 h-11 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-[#eef0ee] overflow-hidden grid place-items-center border border-black/5 shrink-0">
                         @if($store->logo)
                             <img src="{{ $store->logo_url }}" alt="{{ $store->name }}" class="w-full h-full object-cover">
                         @else
-                            <span class="text-sm font-extrabold text-[#3f4f0e]">{{ strtoupper(substr($store->name, 0, 1)) }}</span>
+                            <span class="text-[11px] sm:text-sm font-extrabold text-[#3f4f0e]">{{ strtoupper(substr($store->name, 0, 1)) }}</span>
                         @endif
                     </div>
                     <div class="min-w-0 flex-1">
-                        <p class="text-[13px] font-bold text-[#1c201e] truncate inline-flex items-center gap-1">
+                        <p class="text-[12px] sm:text-[13px] font-bold text-[#1c201e] truncate inline-flex items-center gap-1">
                             {{ $store->name }}
                             @if($store->is_verified)
-                                <i class="fa-solid fa-circle-check text-[13px] text-[#659316]" style=""></i>
+                                <i class="fa-solid fa-circle-check text-[12px] sm:text-[13px] text-[#659316]" style=""></i>
                             @endif
                         </p>
                         <div class="flex items-center gap-2 mt-0.5">
                             @if(($store->rating ?? 0) > 0)
-                                <span class="inline-flex items-center gap-0.5 text-[11px] font-bold text-[#6b716c]">
-                                    <i class="fa-solid fa-star text-[13px] text-amber-400" style=""></i>
+                                <span class="inline-flex items-center gap-0.5 text-[10px] sm:text-[11px] font-bold text-[#6b716c]">
+                                    <i class="fa-solid fa-star text-[11px] sm:text-[13px] text-amber-400" style=""></i>
                                     {{ number_format($store->rating, 1) }}
                                 </span>
                             @endif
-                            <span class="text-[11px] text-[#9aa19c]">{{ $store->services_count }} services</span>
+                            <span class="text-[10px] sm:text-[11px] text-[#9aa19c]">{{ $store->services_count }} services</span>
                         </div>
                     </div>
-                    <span class="grid place-items-center w-8 h-8 rounded-full bg-[#f2f9df] text-[#7ca81d] group-hover:bg-[#9acd32] group-hover:text-[#1c201e] transition-colors shrink-0">
-                        <i class="fa-solid fa-arrow-right text-[16px]" style=""></i>
+                    <span class="grid place-items-center w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#f2f9df] text-[#7ca81d] group-hover:bg-[#9acd32] group-hover:text-[#1c201e] transition-colors shrink-0">
+                        <i class="fa-solid fa-arrow-right text-[13px] sm:text-[16px]" style=""></i>
                     </span>
                 </a>
             @endforeach
