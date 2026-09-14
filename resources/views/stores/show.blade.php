@@ -61,29 +61,29 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 sm:
             @endif
 
             {{-- Bottom fade : merge the cover into the page background --}}
-            <div class="absolute inset-x-0 bottom-0 h-[55%] sm:h-[45%] bg-gradient-to-t from-[#f5f6f5] via-[#f5f6f5]/45 to-[#f5f6f5]/0 pointer-events-none"></div>
+            <div class="absolute inset-x-0 bottom-0 h-[70%] sm:h-[45%] bg-gradient-to-t from-[#f5f6f5] to-[#f5f6f5]/0 pointer-events-none"></div>
         </div>
 
         {{-- Identity below the cover : logo first, then text --}}
         <div class="max-w-7xl mx-auto px-3 sm:px-6">
-            <div class="relative z-10 -mt-10 sm:-mt-14 flex flex-col sm:flex-row items-center sm:items-end gap-3 sm:gap-5 min-w-0">
-                <div class="w-20 h-20 sm:w-28 sm:h-28 rounded-2xl sm:rounded-3xl bg-white p-1.5 sm:p-2 ring-1 ring-black/5 shadow-[0_14px_36px_-12px_rgba(0,0,0,0.35)] shrink-0 overflow-hidden">
+            <div class="relative z-10 -mt-10 sm:-mt-14 flex flex-col sm:flex-row items-start sm:items-end gap-3 sm:gap-5 min-w-0">
+                <div class="w-20 h-20 sm:w-28 sm:h-28 rounded-full sm:rounded-3xl bg-white p-1.5 sm:p-2 ring-1 ring-black/5 shadow-[0_14px_36px_-12px_rgba(0,0,0,0.35)] shrink-0 overflow-hidden">
                     @if($store->logo)
-                        <img src="{{ $store->logo_url }}" alt="{{ $store->name }}" class="w-full h-full object-cover rounded-xl sm:rounded-2xl">
+                        <img src="{{ $store->logo_url }}" alt="{{ $store->name }}" class="w-full h-full object-cover rounded-full sm:rounded-2xl">
                     @else
                         <x-store-default-logo :store="$store" size="md" class="w-full h-full" />
                     @endif
                 </div>
 
-                <div class="min-w-0 text-center sm:text-left">
-                    <div class="flex items-center justify-center sm:justify-start gap-2 flex-wrap">
-                        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-[#1c201e] leading-tight truncate">{{ $store->name }}</h1>
+                <div class="min-w-0 text-left">
+                    <div class="flex items-center justify-start gap-2 flex-wrap">
+                        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-[#1c201e] leading-tight">{{ $store->name }}</h1>
                         @if($store->is_verified)
                             <i class="fa-solid fa-circle-check text-[18px] sm:text-xl text-[#7ca81d] shrink-0" style=""></i>
                         @endif
                     </div>
 
-                    <div class="mt-1.5 flex flex-wrap items-center justify-center sm:justify-start gap-x-3 gap-y-1 text-[11.5px] sm:text-xs font-semibold text-[#6b716c]">
+                    <div class="mt-1.5 flex flex-wrap items-center justify-start gap-x-3 gap-y-1 text-[11.5px] sm:text-xs font-semibold text-[#6b716c]">
                         <span class="inline-flex items-center gap-1 font-bold text-[#3f453f] tnum">
                             <i class="fa-solid fa-star text-[13px] text-amber-400" style=""></i>
                             {{ number_format($avgRating, 1) }}
@@ -102,11 +102,11 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 sm:
                     </div>
 
                     @if($store->description)
-                        <p class="mt-3 text-xs sm:text-sm text-[#3f453f] leading-relaxed max-w-2xl mx-auto sm:mx-0">{{ $store->description }}</p>
+                        <p class="mt-3 text-xs sm:text-sm text-[#3f453f] leading-relaxed max-w-2xl">{{ $store->description }}</p>
                     @endif
 
                     {{-- Highlights / Quick Stats --}}
-                    <div class="mt-3.5 flex flex-wrap items-center justify-center sm:justify-start gap-x-4 gap-y-2 text-[10.5px] sm:text-xs font-semibold text-[#6b716c]">
+                    <div class="mt-3.5 flex flex-wrap items-center justify-start gap-x-4 gap-y-2 text-[10.5px] sm:text-xs font-semibold text-[#6b716c]">
                         <span class="inline-flex items-center gap-1.5">
                             <i class="fa-solid fa-boxes-stacked text-[14px] text-[#7ca81d]" style=""></i>
                             <strong class="text-[#3f453f] tnum">{{ $totalItems }}</strong> items live
@@ -134,7 +134,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 sm:
                     </div>
 
                     {{-- CTAs --}}
-                    <div class="mt-4 sm:mt-5 flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                    <div class="mt-4 sm:mt-5 flex flex-wrap items-center justify-start gap-2">
                         @if($store->whatsapp_number)
                             <a href="https://wa.me/{{ wa_url($store->whatsapp_number) }}?text={{ urlencode('Hi ' . $store->name . ', I saw your store on Izifai!') }}" target="_blank"
                                class="inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-[#25D366] text-white rounded-xl text-[12px] sm:text-[13px] font-bold hover:bg-[#128C7E] active:scale-[0.97] transition-all duration-200 shadow-md">
@@ -192,24 +192,6 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 sm:
         </div>
     </section>
     @endif
-
-    {{-- ================================================================
-         3. RATING SUMMARY (Only stat kept)
-    ================================================================ --}}
-    <section class="max-w-7xl mx-auto px-1 sm:px-6 mt-4 sm:mt-6">
-        <div class="bg-white rounded-xl sm:rounded-2xl border border-[#e8eae8] p-2.5 sm:p-4 shadow-sm flex items-center justify-center gap-2.5 sm:gap-3 min-w-0">
-            <span class="grid place-items-center w-8 h-8 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-amber-50 text-amber-500 shrink-0">
-                <i class="fa-solid fa-star text-[14px] sm:text-[18px]" style=""></i>
-            </span>
-            <div>
-                <p class="text-[7px] sm:text-[10px] font-semibold text-[#9aa19c] uppercase tracking-wider leading-tight">Rating</p>
-                <p class="text-[12px] sm:text-base font-black text-[#1c201e] tnum leading-tight">
-                    {{ number_format($avgRating, 1) }}
-                    <span class="font-semibold text-[#9aa19c] text-[10px] sm:text-xs">({{ $totalReviews }} reviews)</span>
-                </p>
-            </div>
-        </div>
-    </section>
 
     {{-- ================================================================
          4. FEATURED PRODUCTS STRIP (Matching Catalog Trending Strip)
