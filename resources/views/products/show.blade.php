@@ -1,4 +1,4 @@
-@extends('layouts.guest')
+﻿@extends('layouts.guest')
 
 @section('storeWhatsApp', $product->store->whatsapp_number)
 @php
@@ -219,7 +219,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                 <div class="flex items-center gap-2">
                     <div class="flex text-orange-500">
                         @for($i = 1; $i <= 5; $i++)
-                        <i class="{{ $i <= round($avgRating) ? 1 : 0 ? 'fa-solid' : 'fa-regular' }} fa-star text-[16px] sm:text-[18px]" style=""></i>
+                        <i class="{{ $i <= round($avgRating) ? 'fa-solid' : 'fa-regular' }} fa-star text-[16px] sm:text-[18px]" style=""></i>
                         @endfor
                     </div>
                     <span class="text-xs sm:text-sm font-bold text-on-surface">{{ number_format($avgRating, 1) }}</span>
@@ -419,7 +419,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                         <i class="fa-solid fa-truck-fast text-[18px] sm:text-[20px]" style=""></i>
                     </div>
                     <div class="min-w-0">
-                        <p class="text-xs sm:text-sm font-bold text-on-surface">{{ $store->location ? explode(',', $store->location)[0] . ' Express' : 'Douala & Yaoundé Express' }}</p>
+                        <p class="text-xs sm:text-sm font-bold text-on-surface">{{ $store->location ? explode(',', $store->location)[0] . ' Express' : 'Douala & YaoundÃ© Express' }}</p>
                         <p class="text-[10px] sm:text-xs text-on-surface-variant">Fast delivery across {{ $store->location ? $store->location : "Cameroon's major cities" }}</p>
                     </div>
                 </div>
@@ -530,7 +530,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                 <span class="text-xs sm:text-sm font-bold">{{ number_format($avgRating, 1) }}</span>
                 <div class="flex text-orange-500">
                     @for($i = 1; $i <= 5; $i++)
-                    <i class="{{ $i <= round($avgRating) ? 1 : 0 ? 'fa-solid' : 'fa-regular' }} fa-star text-[14px] sm:text-[16px]" style=""></i>
+                    <i class="{{ $i <= round($avgRating) ? 'fa-solid' : 'fa-regular' }} fa-star text-[14px] sm:text-[16px]" style=""></i>
                     @endfor
                 </div>
             </div>
@@ -567,7 +567,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                 </div>
                 <div class="flex text-amber-500 mb-1.5 sm:mb-2">
                     @for($i = 1; $i <= 5; $i++)
-                    <i class="{{ $i <= $firstReview->rating ? 1 : 0 ? 'fa-solid' : 'fa-regular' }} fa-star text-[14px] sm:text-[16px]" style=""></i>
+                    <i class="{{ $i <= $firstReview->rating ? 'fa-solid' : 'fa-regular' }} fa-star text-[14px] sm:text-[16px]" style=""></i>
                     @endfor
                 </div>
                 @if($firstReview->comment)
@@ -591,7 +591,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                         </div>
                         <div class="flex text-amber-500 mb-1.5 sm:mb-2">
                             @for($i = 1; $i <= 5; $i++)
-                            <i class="{{ $i <= $secondReview->rating ? 1 : 0 ? 'fa-solid' : 'fa-regular' }} fa-star text-[14px] sm:text-[16px]" style=""></i>
+                            <i class="{{ $i <= $secondReview->rating ? 'fa-solid' : 'fa-regular' }} fa-star text-[14px] sm:text-[16px]" style=""></i>
                             @endfor
                         </div>
                         @if($secondReview->comment)
@@ -679,7 +679,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                 <button class="favorite-btn absolute top-1.5 right-1.5 sm:top-2 sm:right-2 w-6 h-6 sm:w-7 sm:h-7 bg-white/80 backdrop-blur rounded-full flex items-center justify-center hover:bg-white transition-colors z-10"
                         data-product="{{ $p->id }}"
                         data-favorited="{{ in_array($p->id, $savedProductIds) ? 'true' : 'false' }}">
-                    <i class="{{ in_array($p->id, $savedProductIds) ? 1 : 0 ? 'fa-solid' : 'fa-regular' }} fa-heart text-[12px] sm:text-[16px]" style=""></i>
+                    <i class="{{ in_array($p->id, $savedProductIds) ? 'fa-solid' : 'fa-regular' }} fa-heart text-[12px] sm:text-[16px]" style=""></i>
                 </button>
             </div>
             @endforeach
@@ -739,7 +739,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
             @endif
         </div>
     @endif
-    <div class="font-bold text-xs lg:text-sm text-on-surface text-center">{{ $store->name }} — IZIFAI Showroom</div>
+    <div class="font-bold text-xs lg:text-sm text-on-surface text-center">{{ $store->name }} â€” IZIFAI Showroom</div>
     @auth
         @php $targetStore = auth()->user()->store; @endphp
         @if(auth()->id() === $store->user_id)

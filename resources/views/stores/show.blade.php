@@ -1,4 +1,4 @@
-@extends('layouts.guest')
+﻿@extends('layouts.guest')
 
 @section('storeWhatsApp', $store->whatsapp_number)
 @section('title', $store->name . ' - Izifai Showroom')
@@ -11,11 +11,11 @@ if (!$ogStoreImage && $store->products->count() > 0) {
 }
 $ogStoreImage = $ogStoreImage ?: asset('images/logo.png');
 @endphp
-@section('og_title', $store->name . ' — Izifai Showroom')
+@section('og_title', $store->name . ' â€” Izifai Showroom')
 @section('og_description', $store->description ? str(strip_tags($store->description))->limit(160) : 'Browse products from ' . $store->name . ' on Izifai. Shop from verified sellers in Cameroon.')
 @section('og_image', $ogStoreImage)
 @section('og_type', 'profile')
-@section('twitter_title', $store->name . ' — Izifai Showroom')
+@section('twitter_title', $store->name . ' â€” Izifai Showroom')
 @section('twitter_description', $store->description ? str(strip_tags($store->description))->limit(160) : 'Browse products from ' . $store->name . ' on Izifai.')
 @section('twitter_image', $ogStoreImage)
 
@@ -438,7 +438,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                             data-product="{{ $product->id }}"
                             data-favorited="{{ in_array($product->id, $savedProductIds) ? 'true' : 'false' }}"
                             onclick="event.stopPropagation(); event.preventDefault();">
-                        <i class="{{ in_array($product->id, $savedProductIds) ? 1 : 0 ? 'fa-solid' : 'fa-regular' }} fa-heart text-[10px]" style=""></i>
+                        <i class="{{ in_array($product->id, $savedProductIds) ? 'fa-solid' : 'fa-regular' }} fa-heart text-[10px]" style=""></i>
                     </button>
                     <div class="absolute bottom-1 left-1 bg-black/50 backdrop-blur rounded-full px-1.5 py-0.5 flex items-center gap-0.5">
                         <i class="fa-solid fa-eye text-[9px] text-white"></i>
@@ -566,7 +566,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                         <button class="favorite-btn absolute top-1.5 right-1.5 sm:top-2 sm:right-2 w-5 h-5 sm:w-7 sm:h-7 bg-white/80 backdrop-blur rounded-full flex items-center justify-center hover:bg-white transition-colors z-10"
                                 data-product="{{ $product->id }}"
                                 data-favorited="{{ in_array($product->id, $savedProductIds) ? 'true' : 'false' }}">
-                            <i class="{{ in_array($product->id, $savedProductIds) ? 1 : 0 ? 'fa-solid' : 'fa-regular' }} fa-heart text-[10px] sm:text-[14px]" style=""></i>
+                            <i class="{{ in_array($product->id, $savedProductIds) ? 'fa-solid' : 'fa-regular' }} fa-heart text-[10px] sm:text-[14px]" style=""></i>
                         </button>
                     </div>
                 @endforeach
@@ -752,7 +752,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
         <div class="flex items-center gap-1.5">
             <div class="flex text-orange-500">
                 @for($i = 1; $i <= 5; $i++)
-                    <i class="{{ $i <= round($avgRating) ? 1 : 0 ? 'fa-solid' : 'fa-regular' }} fa-star text-[14px]" style=""></i>
+                    <i class="{{ $i <= round($avgRating) ? 'fa-solid' : 'fa-regular' }} fa-star text-[14px]" style=""></i>
                 @endfor
             </div>
             <span class="text-xs font-bold text-on-surface">{{ number_format($avgRating, 1) }}</span>
@@ -832,7 +832,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                         </div>
                         <div class="flex text-orange-500 shrink-0">
                             @for($i = 1; $i <= 5; $i++)
-                                <i class="{{ $i <= $review->rating ? 1 : 0 ? 'fa-solid' : 'fa-regular' }} fa-star text-[12px]" style=""></i>
+                                <i class="{{ $i <= $review->rating ? 'fa-solid' : 'fa-regular' }} fa-star text-[12px]" style=""></i>
                             @endfor
                         </div>
                     </div>
@@ -979,7 +979,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
             @endif
         </div>
     @endif
-    <div class="font-bold text-xs lg:text-sm text-on-surface text-center">{{ $store->name }} — IZIFAI Showroom</div>
+    <div class="font-bold text-xs lg:text-sm text-on-surface text-center">{{ $store->name }} â€” IZIFAI Showroom</div>
     @auth
         @if(auth()->id() === $store->user_id)
             <a href="{{ route('seller.dashboard') }}"

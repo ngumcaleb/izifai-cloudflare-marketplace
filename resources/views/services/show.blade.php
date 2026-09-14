@@ -1,4 +1,4 @@
-@extends('layouts.guest')
+﻿@extends('layouts.guest')
 
 @section('storeWhatsApp', $service->store->whatsapp_number)
 @php
@@ -234,7 +234,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                 <div class="flex items-center gap-2">
                     <div class="flex text-amber-500">
                         @for($i = 1; $i <= 5; $i++)
-                        <i class="{{ $i <= round($avgRating) ? 1 : 0 ? 'fa-solid' : 'fa-regular' }} fa-star text-[16px] sm:text-[18px]" style=""></i>
+                        <i class="{{ $i <= round($avgRating) ? 'fa-solid' : 'fa-regular' }} fa-star text-[16px] sm:text-[18px]" style=""></i>
                         @endfor
                     </div>
                     <span class="text-xs sm:text-sm font-bold text-on-surface">{{ number_format($avgRating, 1) }}</span>
@@ -399,7 +399,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                         <i class="fa-solid fa-screwdriver-wrench text-[18px] sm:text-[20px]" style=""></i>
                     </div>
                     <div class="min-w-0">
-                        <p class="text-xs sm:text-sm font-bold text-on-surface">{{ $store->location ? explode(',', $store->location)[0] . ' Professional Services' : 'Douala & Yaoundé Services' }}</p>
+                        <p class="text-xs sm:text-sm font-bold text-on-surface">{{ $store->location ? explode(',', $store->location)[0] . ' Professional Services' : 'Douala & YaoundÃ© Services' }}</p>
                         <p class="text-[10px] sm:text-xs text-on-surface-variant">Professional services delivered in {{ $store->location ? $store->location : "Cameroon's major cities" }}</p>
                     </div>
                 </div>
@@ -419,7 +419,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                 <span class="text-xs sm:text-sm font-bold">{{ number_format($avgRating, 1) }}</span>
                 <div class="flex text-amber-500">
                     @for($i = 1; $i <= 5; $i++)
-                    <i class="{{ $i <= round($avgRating) ? 1 : 0 ? 'fa-solid' : 'fa-regular' }} fa-star text-[14px] sm:text-[16px]" style=""></i>
+                    <i class="{{ $i <= round($avgRating) ? 'fa-solid' : 'fa-regular' }} fa-star text-[14px] sm:text-[16px]" style=""></i>
                     @endfor
                 </div>
             </div>
@@ -456,7 +456,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                 </div>
                 <div class="flex text-amber-500 mb-1.5 sm:mb-2">
                     @for($i = 1; $i <= 5; $i++)
-                    <i class="{{ $i <= $review->rating ? 1 : 0 ? 'fa-solid' : 'fa-regular' }} fa-star text-[14px] sm:text-[16px]" style=""></i>
+                    <i class="{{ $i <= $review->rating ? 'fa-solid' : 'fa-regular' }} fa-star text-[14px] sm:text-[16px]" style=""></i>
                     @endfor
                 </div>
                 @if($review->comment)
@@ -548,7 +548,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
             @endif
         </div>
     @endif
-    <div class="font-bold text-xs lg:text-sm text-on-surface text-center">{{ $store->name }} — IZIFAI Services</div>
+    <div class="font-bold text-xs lg:text-sm text-on-surface text-center">{{ $store->name }} â€” IZIFAI Services</div>
     @auth
         @if(auth()->id() === $store->user_id)
             <a href="{{ route('seller.dashboard') }}"
