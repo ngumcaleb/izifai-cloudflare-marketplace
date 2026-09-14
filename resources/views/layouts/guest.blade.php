@@ -153,8 +153,8 @@
     {{-- ============ FIXED HEADER WRAPPER ============ --}}
     <div class="fixed top-0 left-0 right-0 z-50">
 
-    {{-- ============ TOP BAR ============ --}}
-    <div class="h-9 flex items-center justify-center bg-[#0b3a24] text-white/80 text-[10px] font-medium tracking-wide overflow-hidden">
+    {{-- ============ TOP BAR (desktop only) ============ --}}
+    <div class="hidden sm:flex h-9 items-center justify-center bg-[#0b3a24] text-white/80 text-[10px] font-medium tracking-wide overflow-hidden">
         @auth
             @php $userStore = auth()->user()->store; @endphp
             @if($userStore)
@@ -188,9 +188,10 @@
 
                 {{-- Hamburger + Logo --}}
                 <div class="flex items-center gap-2 shrink-0">
-                    <button @click="mobileMenu = !mobileMenu" class="sm:hidden relative w-9 h-9 flex items-center justify-center rounded-xl text-[#3f453f] hover:text-[#1c201e] hover:bg-black/5 transition-all active:scale-90" aria-label="Menu">
-                        <svg x-show="!mobileMenu" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
-                        <svg x-show="mobileMenu" class="w-5 h-5" x-cloak fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                    {{-- Mobile hamburger triggers bottom sheet --}}
+                    <button @click="mobileMenu = !mobileMenu" class="sm:hidden relative w-9 h-9 flex items-center justify-center rounded-xl text-[#3f453f] hover:bg-black/5 transition-all active:scale-90" aria-label="Menu">
+                        <span x-show="!mobileMenu" class="material-symbols-rounded text-[22px]">menu</span>
+                        <span x-show="mobileMenu" x-cloak class="material-symbols-rounded text-[22px]">close</span>
                     </button>
                     <a href="/" class="shrink-0 transition-opacity hover:opacity-80">
                         <x-application-logo class="h-7 sm:h-8" />
@@ -373,176 +374,169 @@
     </header>
     </div>
 
-    {{-- ============ MOBILE NAV ============ --}}
+    {{-- ============ MOBILE BOTTOM-SHEET MENU ============ --}}
     <div x-show="mobileMenu" x-cloak
          class="fixed inset-0 z-[60] sm:hidden"
          @keydown.escape.window="mobileMenu = false">
-        <div class="absolute inset-0 bg-black/50"
+
+        {{-- Backdrop --}}
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-[2px]"
              @click="mobileMenu = false"
              x-transition:enter="transition ease-out duration-300"
              x-transition:enter-start="opacity-0"
              x-transition:enter-end="opacity-100"
-             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave="transition ease-in duration-250"
              x-transition:leave-start="opacity-100"
              x-transition:leave-end="opacity-0"></div>
-        <div class="absolute left-0 top-0 h-full w-full max-w-sm bg-white shadow-2xl"
+
+        {{-- Bottom sheet panel --}}
+        <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-[28px] shadow-2xl max-h-[88vh] flex flex-col overflow-hidden"
              x-transition:enter="transition ease-out duration-300"
-             x-transition:enter-start="-translate-x-full"
-             x-transition:enter-end="translate-x-0"
-             x-transition:leave="transition ease-in duration-200"
-             x-transition:leave-start="translate-x-0"
-             x-transition:leave-end="-translate-x-full">
-            <div class="flex flex-col h-full">
-                <div class="h-1.5 shrink-0 bg-[#9acd32]"></div>
+             x-transition:enter-start="translate-y-full"
+             x-transition:enter-end="translate-y-0"
+             x-transition:leave="transition ease-in duration-250"
+             x-transition:leave-start="translate-y-0"
+             x-transition:leave-end="translate-y-full">
 
-                {{-- Header --}}
-                <div class="flex items-center justify-between px-5 pt-4 pb-3 shrink-0">
-                    <x-application-logo class="h-6" />
-                    <button @click="mobileMenu = false"
-                            class="w-8 h-8 flex items-center justify-center rounded-lg text-[#9aa19c] hover:text-[#3f453f] hover:bg-[#f5f6f5] transition-all">
-                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-                    </button>
-                </div>
+            {{-- Drag handle --}}
+            <div class="shrink-0 flex justify-center pt-3 pb-1" @click="mobileMenu = false">
+                <div class="w-10 h-1 rounded-full bg-[#d0d4d0]"></div>
+            </div>
 
-                {{-- User / Guest --}}
-                @auth
-                    @php
-                        $user = auth()->user();
-                        $userStore = $user->store;
-                        $isSeller = $user->store !== null;
-                    @endphp
-                    <div class="px-5 py-4 border-b border-[#eff1ef] shrink-0">
-                        <div class="flex items-center gap-3.5">
-                            <div class="w-11 h-11 rounded-xl overflow-hidden bg-[#f5f6f5] ring-2 ring-[#f0f2f0] shrink-0">
-                                @if($userStore && $userStore->logo)
-                                    <img src="{{ $userStore->logo_url }}" class="w-full h-full object-cover">
-                                @elseif($userStore)
-                                    <x-store-default-logo :store="$userStore" size="sm" />
-                                @else
-                                    <div class="w-full h-full flex items-center justify-center bg-[#9acd32]/10 text-[#9acd32] font-bold text-sm">
-                                        {{ substr($user->name ?? $user->email, 0, 1) }}
-                                    </div>
+            {{-- User / Guest hero area --}}
+            @auth
+                @php
+                    $user = auth()->user();
+                    $userStore = $user->store;
+                    $isSeller = $user->store !== null;
+                @endphp
+                <div class="px-5 pt-3 pb-4 shrink-0">
+                    <div class="flex items-center gap-3.5">
+                        <div class="w-12 h-12 rounded-2xl overflow-hidden bg-[#f2f9df] ring-2 ring-[#9acd32]/20 shrink-0 flex items-center justify-center">
+                            @if($userStore && $userStore->logo)
+                                <img src="{{ $userStore->logo_url }}" class="w-full h-full object-cover">
+                            @else
+                                <span class="text-[15px] font-black text-[#9acd32]">{{ strtoupper(substr($user->name ?? $user->email, 0, 1)) }}</span>
+                            @endif
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <div class="flex items-center gap-2">
+                                <p class="text-[14px] font-bold text-[#1c201e] truncate">{{ $user->name ?? 'User' }}</p>
+                                @if($isSeller)
+                                    <span class="shrink-0 text-[8.5px] font-extrabold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded-md border border-amber-200/60">SELLER</span>
                                 @endif
                             </div>
-                            <div class="min-w-0 flex-1">
-                                <div class="flex items-center gap-2">
-                                    <p class="text-sm font-semibold text-[#1c201e] truncate">{{ $user->name ?? 'User' }}</p>
-                                    @if($isSeller)
-                                        <span class="shrink-0 text-[9px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded-md border border-amber-200/50">SELLER</span>
-                                    @endif
-                                </div>
-                                <p class="text-xs text-[#6b716c] truncate mt-0.5">{{ $user->email }}</p>
-                            </div>
+                            <p class="text-[11px] text-[#9aa19c] truncate mt-0.5">{{ $user->email }}</p>
                         </div>
+                        <a href="{{ route('home') }}" @click="mobileMenu = false"
+                           class="shrink-0 w-9 h-9 rounded-xl bg-[#f5f6f5] grid place-items-center text-[#5c625e]">
+                            <span class="material-symbols-rounded text-[18px]">manage_accounts</span>
+                        </a>
                     </div>
-                @else
-                    <div class="px-5 py-5 border-b border-[#eff1ef] shrink-0">
-                        <p class="text-xs font-semibold text-[#9aa19c] uppercase tracking-wider mb-3">Account</p>
+                    @if($isSeller)
+                    <a href="{{ route('seller.dashboard') }}" @click="mobileMenu = false"
+                       class="mt-3 flex items-center justify-center gap-2 w-full py-2.5 rounded-2xl bg-[#9acd32] text-[#1c201e] text-[13px] font-bold active:scale-[0.98] transition-transform">
+                        <span class="material-symbols-rounded text-[16px]" style="font-variation-settings:'FILL' 1;">dashboard</span>
+                        Seller Dashboard
+                    </a>
+                    @else
+                    <a href="{{ route('seller.store.create') }}" @click="mobileMenu = false"
+                       class="mt-3 flex items-center justify-center gap-2 w-full py-2.5 rounded-2xl border-2 border-dashed border-[#9acd32]/40 text-[#7ca81d] text-[13px] font-bold active:scale-[0.98] transition-transform">
+                        <span class="material-symbols-rounded text-[16px]" style="font-variation-settings:'FILL' 1;">storefront</span>
+                        Open Your Store
+                    </a>
+                    @endif
+                </div>
+            @else
+                <div class="px-5 pt-3 pb-4 shrink-0">
+                    <p class="text-[12px] font-semibold text-[#6b716c] mb-3">Join Cameroon's marketplace</p>
+                    <div class="grid grid-cols-2 gap-2.5">
                         <a href="{{ route('register') }}" @click="mobileMenu = false"
-                           class="block w-full text-center py-2.5 bg-[#9acd32] text-white text-sm font-semibold rounded-full hover:bg-[#7ca81d] transition-all active:scale-[0.98]">
+                           class="flex items-center justify-center gap-1.5 py-3 bg-[#9acd32] text-[#1c201e] text-[13px] font-bold rounded-2xl active:scale-[0.98] transition-transform">
+                            <span class="material-symbols-rounded text-[16px]" style="font-variation-settings:'FILL' 1;">person_add</span>
                             Get Started
                         </a>
                         <a href="{{ route('login') }}" @click="mobileMenu = false"
-                           class="block w-full text-center py-2.5 mt-2 text-sm font-semibold text-[#3f453f] border border-[#e4e7e4] rounded-full hover:bg-[#f5f6f5] transition-all active:scale-[0.98]">
-                            Log In
+                           class="flex items-center justify-center gap-1.5 py-3 border border-[#e4e7e4] text-[#3f453f] text-[13px] font-bold rounded-2xl active:scale-[0.98] transition-transform">
+                            <span class="material-symbols-rounded text-[16px]">login</span>
+                            Sign In
                         </a>
                     </div>
-                @endauth
+                </div>
+            @endauth
 
-                {{-- Nav Links --}}
-                <div class="flex-1 overflow-y-auto px-4 py-3">
-                    <p class="text-[10px] font-semibold text-[#9aa19c] uppercase tracking-wider px-3 mb-2">Browse</p>
-                    <div class="space-y-0.5">
-                        <a href="{{ route('home') }}" @click="mobileMenu = false"
-                           class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-[#3f453f] rounded-xl hover:bg-[#f2f9df] hover:text-[#7ca81d] transition-all group">
-                            <span class="material-symbols-outlined text-[20px] text-[#9aa19c] group-hover:text-[#9acd32]" style="font-variation-settings:'FILL' 1;">home</span>
-                            Home
-                        </a>
-                        <a href="{{ route('products.index') }}" @click="mobileMenu = false"
-                           class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-[#3f453f] rounded-xl hover:bg-[#f2f9df] hover:text-[#7ca81d] transition-all group">
-                            <span class="material-symbols-outlined text-[20px] text-[#9aa19c] group-hover:text-[#9acd32]" style="font-variation-settings:'FILL' 1;">shopping_bag</span>
-                            Products
-                        </a>
-                        <a href="{{ route('services.index') }}" @click="mobileMenu = false"
-                           class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-[#3f453f] rounded-xl hover:bg-[#f2f9df] hover:text-[#7ca81d] transition-all group">
-                            <span class="material-symbols-outlined text-[20px] text-[#9aa19c] group-hover:text-[#9acd32]" style="font-variation-settings:'FILL' 1;">handyman</span>
-                            Services
-                        </a>
-                        <a href="{{ route('rentals.index') }}" @click="mobileMenu = false"
-                           class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-[#3f453f] rounded-xl hover:bg-[#f2f9df] hover:text-[#7ca81d] transition-all group">
-                            <span class="material-symbols-outlined text-[20px] text-[#9aa19c] group-hover:text-[#9acd32]" style="font-variation-settings:'FILL' 1;">shelves</span>
-                            Rentals
-                        </a>
-                        <a href="{{ route('stores.index') }}" @click="mobileMenu = false"
-                           class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-[#3f453f] rounded-xl hover:bg-[#f2f9df] hover:text-[#7ca81d] transition-all group">
-                            <span class="material-symbols-outlined text-[20px] text-[#9aa19c] group-hover:text-[#9acd32]" style="font-variation-settings:'FILL' 1;">store</span>
-                            Stores
-                        </a>
-                    </div>
+            {{-- Divider --}}
+            <div class="h-px bg-[#f0f2f0] mx-5 shrink-0"></div>
 
-                    @auth
-                        <div class="mt-4 pt-4 border-t border-[#eff1ef]">
-                            <p class="text-[10px] font-semibold text-[#9aa19c] uppercase tracking-wider px-3 mb-2">My Account</p>
-                            <a href="{{ route('notifications.index') }}" @click="mobileMenu = false"
-                               class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-[#3f453f] rounded-xl hover:bg-[#f2f9df] hover:text-[#7ca81d] transition-all group relative">
-                                <span class="material-symbols-outlined text-[20px] text-[#9aa19c] group-hover:text-[#9acd32]" style="font-variation-settings:'FILL' 1;">notifications</span>
-                                Notifications
-                                <span class="notif-badge hidden ml-auto w-4 h-4 bg-[#dc2626] text-white text-[9px] font-bold rounded-full flex items-center justify-center leading-none">0</span>
-                            </a>
-                            <a href="{{ route('conversations.index') }}" @click="mobileMenu = false"
-                               class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-[#3f453f] rounded-xl hover:bg-[#f2f9df] hover:text-[#7ca81d] transition-all group relative">
-                                <span class="material-symbols-outlined text-[20px] text-[#9aa19c] group-hover:text-[#9acd32]" style="font-variation-settings:'FILL' 1;">chat_bubble</span>
-                                Inbox
-                                <span class="unread-badge hidden ml-auto w-4 h-4 bg-[#dc2626] text-white text-[9px] font-bold rounded-full flex items-center justify-center leading-none">0</span>
-                            </a>
-                        </div>
-                        <div class="mt-4 pt-4 border-t border-[#eff1ef]">
-                            <p class="text-[10px] font-semibold text-[#9aa19c] uppercase tracking-wider px-3 mb-2">Sell{{ $isSeller ? 'ing' : '' }}</p>
-                            @if($isSeller)
-                                <a href="{{ route('seller.dashboard') }}" @click="mobileMenu = false"
-                                   class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-[#3f453f] rounded-xl hover:bg-[#f2f9df] hover:text-[#7ca81d] transition-all group">
-                                    <span class="material-symbols-outlined text-[20px] text-[#9aa19c] group-hover:text-[#9acd32]" style="font-variation-settings:'FILL' 1;">dashboard</span>
-                                    Dashboard
-                                </a>
-                                <a href="{{ route('seller.products.index') }}" @click="mobileMenu = false"
-                                   class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-[#3f453f] rounded-xl hover:bg-[#f2f9df] hover:text-[#7ca81d] transition-all group">
-                                    <span class="material-symbols-outlined text-[20px] text-[#9aa19c] group-hover:text-[#9acd32]" style="font-variation-settings:'FILL' 1;">inventory_2</span>
-                                    Manage Products
-                                </a>
-                            @else
-                                <a href="{{ route('seller.store.create') }}" @click="mobileMenu = false"
-                                   class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-[#7ca81d] rounded-xl hover:bg-[#f2f9df] transition-all group">
-                                    <span class="material-symbols-outlined text-[20px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">storefront</span>
-                                    Open Your Store
-                                </a>
-                            @endif
-                        </div>
-                    @else
-                        <div class="mt-4 pt-4 border-t border-[#eff1ef]">
-                            <p class="text-[10px] font-semibold text-[#9aa19c] uppercase tracking-wider px-3 mb-2">Sell</p>
-                            <a href="{{ route('register') }}" @click="mobileMenu = false"
-                               class="flex items-center gap-3.5 px-3 py-3 text-sm font-medium text-[#7ca81d] rounded-xl hover:bg-[#f2f9df] transition-all group">
-                                <span class="material-symbols-outlined text-[20px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">storefront</span>
-                                Open a Store
-                            </a>
-                        </div>
-                    @endauth
+            {{-- Scrollable nav links --}}
+            <div class="flex-1 overflow-y-auto no-scrollbar px-3 py-3">
+
+                {{-- Browse section --}}
+                <p class="text-[9.5px] font-extrabold uppercase tracking-[0.12em] text-[#b0b6b1] px-3 mb-2">Browse</p>
+                <div class="grid grid-cols-2 gap-1.5 mb-4">
+                    @php
+                        $mobileNavItems = [
+                            ['icon' => 'home', 'label' => 'Home', 'route' => route('home')],
+                            ['icon' => 'shopping_bag', 'label' => 'Products', 'route' => route('products.index')],
+                            ['icon' => 'store', 'label' => 'Stores', 'route' => route('stores.index')],
+                            ['icon' => 'handyman', 'label' => 'Services', 'route' => route('services.index')],
+                            ['icon' => 'shelves', 'label' => 'Rentals', 'route' => route('rentals.index')],
+                        ];
+                    @endphp
+                    @foreach($mobileNavItems as $item)
+                    <a href="{{ $item['route'] }}" @click="mobileMenu = false"
+                       class="flex items-center gap-3 px-3.5 py-3.5 rounded-2xl bg-[#f8f9f8] hover:bg-[#f2f9df] hover:text-[#7ca81d] transition-all active:scale-[0.97] group">
+                        <span class="grid place-items-center w-8 h-8 rounded-xl bg-white shadow-sm shrink-0">
+                            <span class="material-symbols-rounded text-[18px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">{{ $item['icon'] }}</span>
+                        </span>
+                        <span class="text-[13px] font-semibold text-[#2e332f] group-hover:text-[#7ca81d] truncate">{{ $item['label'] }}</span>
+                    </a>
+                    @endforeach
                 </div>
 
-                {{-- Logout --}}
                 @auth
-                    <div class="px-5 py-4 border-t border-[#eff1ef] shrink-0">
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit"
-                                    class="flex items-center gap-3 text-sm font-medium text-[#dc2626] hover:text-[#b91c1c] transition-all group">
-                                <span class="material-symbols-outlined text-[20px]">logout</span>
-                                Log Out
-                            </button>
-                        </form>
-                    </div>
+                {{-- Account section --}}
+                <p class="text-[9.5px] font-extrabold uppercase tracking-[0.12em] text-[#b0b6b1] px-3 mb-2">My Account</p>
+                <div class="space-y-1 mb-3">
+                    <a href="{{ route('favorites.index') }}" @click="mobileMenu = false"
+                       class="flex items-center gap-3 px-3.5 py-3 rounded-2xl hover:bg-[#f2f9df] transition-all active:scale-[0.98] group">
+                        <span class="material-symbols-rounded text-[20px] text-[#9aa19c] group-hover:text-[#9acd32]" style="font-variation-settings:'FILL' 1;">favorite</span>
+                        <span class="text-[13px] font-semibold text-[#3f453f] group-hover:text-[#7ca81d]">Saved Items</span>
+                    </a>
+                    <a href="{{ route('orders.index') }}" @click="mobileMenu = false"
+                       class="flex items-center gap-3 px-3.5 py-3 rounded-2xl hover:bg-[#f2f9df] transition-all active:scale-[0.98] group">
+                        <span class="material-symbols-rounded text-[20px] text-[#9aa19c] group-hover:text-[#9acd32]" style="font-variation-settings:'FILL' 1;">local_shipping</span>
+                        <span class="text-[13px] font-semibold text-[#3f453f] group-hover:text-[#7ca81d]">My Orders</span>
+                    </a>
+                    <a href="{{ route('conversations.index') }}" @click="mobileMenu = false"
+                       class="flex items-center gap-3 px-3.5 py-3 rounded-2xl hover:bg-[#f2f9df] transition-all active:scale-[0.98] group">
+                        <span class="material-symbols-rounded text-[20px] text-[#9aa19c] group-hover:text-[#9acd32]" style="font-variation-settings:'FILL' 1;">chat_bubble</span>
+                        <span class="text-[13px] font-semibold text-[#3f453f] group-hover:text-[#7ca81d]">Messages</span>
+                        <span class="unread-badge hidden ml-auto min-w-[18px] h-[18px] bg-[#dc2626] text-white text-[9px] font-bold rounded-full flex items-center justify-center leading-none px-1">0</span>
+                    </a>
+                    <a href="{{ route('notifications.index') }}" @click="mobileMenu = false"
+                       class="flex items-center gap-3 px-3.5 py-3 rounded-2xl hover:bg-[#f2f9df] transition-all active:scale-[0.98] group">
+                        <span class="material-symbols-rounded text-[20px] text-[#9aa19c] group-hover:text-[#9acd32]" style="font-variation-settings:'FILL' 1;">notifications</span>
+                        <span class="text-[13px] font-semibold text-[#3f453f] group-hover:text-[#7ca81d]">Notifications</span>
+                        <span class="notif-badge hidden ml-auto min-w-[18px] h-[18px] bg-[#dc2626] text-white text-[9px] font-bold rounded-full flex items-center justify-center leading-none px-1">0</span>
+                    </a>
+                </div>
                 @endauth
             </div>
+
+            {{-- Bottom logout / safe area --}}
+            @auth
+            <div class="shrink-0 px-5 pt-3 pb-5 border-t border-[#f0f2f0] safe-area-bottom">
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit"
+                            class="flex items-center gap-2.5 text-[13px] font-semibold text-[#dc2626] hover:opacity-80 transition-opacity">
+                        <span class="material-symbols-rounded text-[18px]">logout</span>
+                        Log Out
+                    </button>
+                </form>
+            </div>
+            @endauth
         </div>
     </div>
 
@@ -552,22 +546,22 @@
          @keydown.escape.window="searchOpen = false"
          x-show="searchOpen"
          x-cloak
-         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter="transition ease-out duration-250"
          x-transition:enter-start="opacity-0"
          x-transition:enter-end="opacity-100"
          x-transition:leave="transition ease-in duration-200"
          x-transition:leave-start="opacity-100"
          x-transition:leave-end="opacity-0"
-         class="fixed inset-0 z-[100] bg-black/50 backdrop-blur-md"
+         class="fixed top-14 sm:top-[144px] inset-x-0 bottom-0 z-40 bg-black/50 backdrop-blur-sm"
          @click="searchOpen = false">
         <div @click.stop
-             class="flex flex-col h-full sm:h-auto sm:max-h-[85vh] sm:mx-auto sm:mt-[8vh] sm:max-w-4xl sm:rounded-3xl sm:shadow-2xl bg-white overflow-hidden"
-             x-transition:enter="sm:transition sm:ease-out sm:duration-300"
-             x-transition:enter-start="sm:opacity-0 sm:scale-[0.96] sm:translate-y-6"
-             x-transition:enter-end="sm:opacity-100 sm:scale-100 sm:translate-y-0"
-             x-transition:leave="sm:transition sm:ease-in sm:duration-200"
-             x-transition:leave-start="sm:opacity-100 sm:scale-100 sm:translate-y-0"
-             x-transition:leave-end="sm:opacity-0 sm:scale-[0.96] sm:translate-y-6">
+             class="flex flex-col h-full sm:h-auto sm:max-h-[82vh] sm:mx-auto sm:mt-4 sm:max-w-4xl sm:rounded-2xl sm:shadow-2xl bg-white overflow-hidden border-t sm:border border-[#e8eae8]"
+             x-transition:enter="transition ease-out duration-250"
+             x-transition:enter-start="opacity-0 -translate-y-3 sm:scale-[0.98]"
+             x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+             x-transition:leave-end="opacity-0 -translate-y-3 sm:scale-[0.98]">
 
             {{-- Header --}}
             <div class="shrink-0 border-b border-[#eff1ef]">
@@ -845,7 +839,7 @@
     </div>
 
     {{-- ============ MAIN CONTENT ============ --}}
-    <main class="min-h-screen bg-[#f5f6f5] pt-[94px] sm:pt-[160px] pb-[72px] sm:pb-0">
+    <main class="min-h-screen bg-[#f5f6f5] pt-[57px] sm:pt-[160px] pb-[72px] sm:pb-0">
         {{-- Left sidebar (store show page) --}}
         @hasSection('store-sidebar')
             <aside class="fixed left-0 top-[100px] sm:top-[108px] h-[calc(100vh-100px)] sm:h-[calc(100vh-108px)] w-[260px] bg-white border-r border-[#eff1ef] shadow-sm z-30 hidden lg:block overflow-y-auto no-scrollbar">
@@ -1128,52 +1122,47 @@
     </script>
 
     {{-- ============ MOBILE BOTTOM TAB BAR ============ --}}
-    <nav class="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-[#eceeec] sm:hidden safe-area-bottom">
-        <div class="flex items-stretch h-[62px]">
+    <nav class="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-[#eceeec] sm:hidden safe-area-bottom shadow-[0_-2px_10px_rgba(0,0,0,0.04)]">
+        <div class="flex items-stretch h-[60px]">
             @php
                 $currentRoute = request()->route()?->getName() ?? '';
                 $isActive = fn($prefix) => str_starts_with($currentRoute, $prefix);
                 $homeOn = $isActive('home') && !$isActive('home.');
-                $productsOn = $isActive('products.') || $isActive('rentals.');
-                $servicesOn = $isActive('services.');
+                $shopOn = $isActive('products.') || $isActive('rentals.') || $isActive('stores.');
                 $chatOn = $isActive('conversations.');
-                $accountOn = $isActive('login') || $isActive('register');
+                $profileOn = $isActive('seller.') || $isActive('login') || $isActive('register');
             @endphp
 
+            {{-- Tab 1: Home --}}
             <a href="{{ route('home') }}"
                class="flex-1 flex flex-col items-center justify-center gap-1 py-1.5 {{ $homeOn ? 'text-[#9acd32]' : 'text-[#a0a6a1] hover:text-[#3f453f]' }} transition-colors">
-                <span class="material-symbols-rounded text-[23px] leading-none" style="font-variation-settings: 'FILL' 1;">home</span>
+                <span class="material-symbols-rounded text-[23px] leading-none" style="font-variation-settings: 'FILL' {{ $homeOn ? '1' : '0' }};">home</span>
                 <span class="text-[9px] {{ $homeOn ? 'font-extrabold' : 'font-medium' }}">Home</span>
             </a>
 
+            {{-- Tab 2: Shop --}}
             <a href="{{ route('products.index') }}"
-               class="flex-1 flex flex-col items-center justify-center gap-1 py-1.5 {{ $productsOn ? 'text-[#9acd32]' : 'text-[#a0a6a1] hover:text-[#3f453f]' }} transition-colors">
-                <span class="material-symbols-rounded text-[23px] leading-none" style="font-variation-settings: 'FILL' 1;">storefront</span>
-                <span class="text-[9px] {{ $productsOn ? 'font-extrabold' : 'font-medium' }}">Shop</span>
+               class="flex-1 flex flex-col items-center justify-center gap-1 py-1.5 {{ $shopOn ? 'text-[#9acd32]' : 'text-[#a0a6a1] hover:text-[#3f453f]' }} transition-colors">
+                <span class="material-symbols-rounded text-[23px] leading-none" style="font-variation-settings: 'FILL' {{ $shopOn ? '1' : '0' }};">storefront</span>
+                <span class="text-[9px] {{ $shopOn ? 'font-extrabold' : 'font-medium' }}">Shop</span>
             </a>
 
-            <a href="{{ route('services.index') }}"
-               class="flex-1 flex flex-col items-center justify-center gap-1 py-1.5 {{ $servicesOn ? 'text-[#9acd32]' : 'text-[#a0a6a1] hover:text-[#3f453f]' }} transition-colors">
-                <span class="material-symbols-rounded text-[23px] leading-none" style="font-variation-settings: 'FILL' 1;">handyman</span>
-                <span class="text-[9px] {{ $servicesOn ? 'font-extrabold' : 'font-medium' }}">Services</span>
+            {{-- Tab 3: Chat --}}
+            <a href="{{ auth()->check() ? route('conversations.index') : route('login') }}"
+               class="flex-1 flex flex-col items-center justify-center gap-1 py-1.5 {{ $chatOn ? 'text-[#9acd32]' : 'text-[#a0a6a1] hover:text-[#3f453f]' }} transition-colors">
+                <span class="relative inline-flex items-center justify-center">
+                    <span class="material-symbols-rounded text-[23px] leading-none" style="font-variation-settings: 'FILL' {{ $chatOn ? '1' : '0' }};">chat_bubble</span>
+                    <span class="unread-badge hidden absolute -top-1 -right-2.5 min-w-[16px] h-[16px] bg-[#dc2626] text-white text-[9px] font-bold rounded-full flex items-center justify-center px-1 leading-none border border-white">0</span>
+                </span>
+                <span class="text-[9px] {{ $chatOn ? 'font-extrabold' : 'font-medium' }}">Chat</span>
             </a>
 
-            @auth
-                <a href="{{ route('conversations.index') }}"
-                   class="flex-1 flex flex-col items-center justify-center gap-1 py-1.5 {{ $chatOn ? 'text-[#9acd32]' : 'text-[#a0a6a1] hover:text-[#3f453f]' }} transition-colors">
-                    <span class="relative">
-                        <span class="material-symbols-rounded text-[23px] leading-none" style="font-variation-settings: 'FILL' 1;">chat_bubble</span>
-                        <span class="unread-badge hidden absolute -top-1 -right-2.5 min-w-[16px] h-[16px] bg-[#dc2626] text-white text-[9px] font-bold rounded-full flex items-center justify-center px-1 leading-none border border-white">0</span>
-                    </span>
-                    <span class="text-[9px] {{ $chatOn ? 'font-extrabold' : 'font-medium' }}">Inbox</span>
-                </a>
-            @else
-                <a href="{{ route('login') }}"
-                   class="flex-1 flex flex-col items-center justify-center gap-1 py-1.5 {{ $accountOn ? 'text-[#9acd32]' : 'text-[#a0a6a1] hover:text-[#3f453f]' }} transition-colors">
-                    <span class="material-symbols-rounded text-[23px] leading-none" style="font-variation-settings: 'FILL' 1;">person</span>
-                    <span class="text-[9px] {{ $accountOn ? 'font-extrabold' : 'font-medium' }}">Account</span>
-                </a>
-            @endauth
+            {{-- Tab 4: Profile (Dashboard) --}}
+            <a href="{{ auth()->check() ? route('seller.dashboard') : route('login') }}"
+               class="flex-1 flex flex-col items-center justify-center gap-1 py-1.5 {{ $profileOn ? 'text-[#9acd32]' : 'text-[#a0a6a1] hover:text-[#3f453f]' }} transition-colors">
+                <span class="material-symbols-rounded text-[23px] leading-none" style="font-variation-settings: 'FILL' {{ $profileOn ? '1' : '0' }};">person</span>
+                <span class="text-[9px] {{ $profileOn ? 'font-extrabold' : 'font-medium' }}">Profile</span>
+            </a>
         </div>
     </nav>
 

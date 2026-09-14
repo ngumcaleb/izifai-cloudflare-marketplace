@@ -85,7 +85,7 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
 {{-- ================================================================
      HERO CAROUSEL  (intelligent: adapts for guests vs signed-in)
 ================================================================ --}}
-<section class="max-w-7xl mx-auto px-2 sm:px-6 mt-0.5 sm:mt-6">
+<section class="max-w-7xl mx-auto px-2 sm:px-6 mt-4 sm:mt-6">
     {{-- ================================================================
          MOBILE HEADER CAROUSEL (longer app-style swipe banner with background image)
     ================================================================ --}}
@@ -98,135 +98,135 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
                  @pointerdown="down($event)" @pointermove="move($event)" @pointerup="up()" @pointercancel="up()">
 
                 {{-- Slide 1: Welcome / Marketplace pitch --}}
-                <div class="w-full shrink-0 relative h-[220px] p-4 sm:p-4 flex flex-col justify-between overflow-hidden">
+                <div class="w-full shrink-0 relative h-[225px] p-4 flex flex-col justify-between overflow-hidden">
                     @if($heroProduct && $heroProduct->images->isNotEmpty())
                         <img src="{{ $heroProduct->images->first()->url }}" alt="" class="absolute inset-0 w-full h-full object-cover opacity-35" loading="lazy" onerror="this.classList.add('hidden')">
-                        <div class="absolute inset-0 bg-gradient-to-r from-[#0d1408]/95 via-[#0d1408]/80 to-[#0d1408]/45"></div>
+                        <div class="absolute inset-0 bg-gradient-to-r from-[#0d1408]/95 via-[#0d1408]/85 to-[#0d1408]/50"></div>
                     @else
                         <div class="absolute inset-0 bg-gradient-to-br from-[#1b2512] to-[#0d1408]"></div>
                     @endif
 
-                    <div class="relative z-10">
+                    <div class="relative z-10 pt-0.5">
                         @auth
-                            <span class="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/15 px-2.5 py-0.5 text-[9px] font-semibold text-white backdrop-blur-sm">
+                            <span class="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/15 px-2.5 py-0.5 text-[9.5px] font-semibold text-white backdrop-blur-sm">
                                 <span class="w-1.5 h-1.5 rounded-full bg-[#9acd32] animate-pulse"></span>
                                 Good to see you, {{ $firstName }}
                             </span>
-                            <h1 class="mt-2 text-[1.3rem] font-black text-white tracking-tight leading-[1.15]">
-                                Let's find your <span class="text-[#9acd32]">next deal</span>
+                            <h1 class="mt-2 text-[1.5rem] font-black text-white tracking-tight leading-[1.12]">
+                                Let's find your <span class="text-[#9acd32]">next deal.</span>
                             </h1>
-                            <p class="mt-1 text-[10.5px] text-white/75 leading-tight line-clamp-2 max-w-[85%]">
+                            <p class="mt-1.5 text-[11.5px] text-white/80 leading-snug line-clamp-2 max-w-[92%]">
                                 @if($savedCount > 0)
-                                    You have {{ $savedCount }} saved item{{ $savedCount === 1 ? '' : 's' }}. Pick up where you left off.
+                                    You have {{ $savedCount }} saved item{{ $savedCount === 1 ? '' : 's' }}. Pick up where you left off or discover new arrivals today.
                                 @else
-                                    Fresh listings from verified merchants landing every minute.
+                                    Fresh listings from verified merchants landing every minute across Cameroon.
                                 @endif
                             </p>
                         @else
-                            <span class="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/15 px-2.5 py-0.5 text-[9px] font-semibold text-white backdrop-blur-sm">
+                            <span class="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/15 px-2.5 py-0.5 text-[9.5px] font-semibold text-white backdrop-blur-sm">
                                 <span class="w-1.5 h-1.5 rounded-full bg-[#9acd32] animate-pulse"></span>
                                 Cameroon's Marketplace
                             </span>
-                            <h1 class="mt-2 text-[1.3rem] font-black text-white tracking-tight leading-[1.15]">
+                            <h1 class="mt-2 text-[1.5rem] font-black text-white tracking-tight leading-[1.12]">
                                 Buy. Sell. <span class="text-[#9acd32]">Discover.</span>
                             </h1>
-                            <p class="mt-1 text-[10.5px] text-white/75 leading-tight line-clamp-2 max-w-[85%]">
-                                Verified sellers, local services & rentals in one simple link.
+                            <p class="mt-1.5 text-[11.5px] text-white/80 leading-snug line-clamp-2 max-w-[92%]">
+                                Connect directly with verified sellers, book trusted services & rent equipment in one simple link.
                             </p>
                         @endauth
                     </div>
 
-                    <div class="relative z-10 flex items-center justify-between gap-2 pt-2 border-t border-white/10">
-                        <div class="flex items-center gap-2.5 text-[9.5px] font-semibold text-white/80">
+                    <div class="relative z-10 flex items-center justify-between gap-2 pt-2.5 border-t border-white/15">
+                        <div class="flex items-center gap-2.5 text-[10px] font-semibold text-white/85">
                             <span class="inline-flex items-center gap-1">
-                                <span class="material-symbols-rounded text-[11px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">verified</span>
+                                <span class="material-symbols-rounded text-[12px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">verified</span>
                                 {{ number_format($verifiedStores) }}+ stores
                             </span>
                             <span class="inline-flex items-center gap-1">
-                                <span class="material-symbols-rounded text-[11px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">inventory_2</span>
+                                <span class="material-symbols-rounded text-[12px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">inventory_2</span>
                                 {{ number_format($totalProducts) }}+ products
                             </span>
                         </div>
-                        <a href="{{ route('products.index') }}" class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#9acd32] text-[#1c201e] text-[10px] font-bold shadow-sm active:scale-95 transition-transform">
-                            Shop now <span class="material-symbols-rounded text-[12px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+                        <a href="{{ route('products.index') }}" class="inline-flex items-center gap-1 px-3.5 py-1.5 rounded-full bg-[#9acd32] text-[#1c201e] text-[10.5px] font-bold shadow-sm active:scale-95 transition-transform">
+                            Shop now <span class="material-symbols-rounded text-[13px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
                         </a>
                     </div>
                 </div>
 
                 {{-- Slide 2: Deals of the day --}}
-                <div class="w-full shrink-0 relative h-[220px] p-4 sm:p-4 flex flex-col justify-between overflow-hidden">
+                <div class="w-full shrink-0 relative h-[225px] p-4 flex flex-col justify-between overflow-hidden">
                     @if($dealFeatured && $dealFeatured->images->isNotEmpty())
                         <img src="{{ $dealFeatured->images->first()->url }}" alt="" class="absolute inset-0 w-full h-full object-cover opacity-35" loading="lazy" onerror="this.classList.add('hidden')">
-                        <div class="absolute inset-0 bg-gradient-to-r from-[#170a08]/95 via-[#170a08]/80 to-[#170a08]/45"></div>
+                        <div class="absolute inset-0 bg-gradient-to-r from-[#0d1408]/95 via-[#0d1408]/85 to-[#0d1408]/50"></div>
                     @else
-                        <div class="absolute inset-0 bg-gradient-to-br from-[#230f0a] to-[#120805]"></div>
+                        <div class="absolute inset-0 bg-gradient-to-br from-[#141f0c] to-[#0a1006]"></div>
                     @endif
 
-                    <div class="relative z-10">
-                        <span class="inline-flex items-center gap-1 rounded-full bg-amber-500/20 border border-amber-400/30 px-2.5 py-0.5 text-[9px] font-bold text-amber-300 backdrop-blur-sm">
-                            <span class="material-symbols-rounded text-[11px]" style="font-variation-settings:'FILL' 1;">local_fire_department</span>
+                    <div class="relative z-10 pt-0.5">
+                        <span class="inline-flex items-center gap-1 rounded-full bg-[#9acd32]/20 border border-[#9acd32]/35 px-2.5 py-0.5 text-[9.5px] font-bold text-[#9acd32] backdrop-blur-sm">
+                            <span class="material-symbols-rounded text-[12px]" style="font-variation-settings:'FILL' 1;">local_fire_department</span>
                             Limited-time prices
                         </span>
-                        <h2 class="mt-2 text-[1.3rem] font-black text-white tracking-tight leading-[1.15]">
+                        <h2 class="mt-2 text-[1.5rem] font-black text-white tracking-tight leading-[1.12]">
                             Deals of the day.<br><span class="text-[#9acd32]">Grab them fast.</span>
                         </h2>
-                        <p class="mt-1 text-[10.5px] text-white/75 leading-tight line-clamp-1 max-w-[85%]">
+                        <p class="mt-1.5 text-[11.5px] text-white/80 leading-snug line-clamp-2 max-w-[92%]">
                             @if($dealFeatured)
-                                {{ $dealFeatured->name }} • {{ number_format($dealFeatured->price) }} F
+                                Featured pick: <span class="font-bold text-white">{{ $dealFeatured->name }}</span> at <span class="text-[#9acd32] font-bold">{{ number_format($dealFeatured->price) }} F</span>. Save before stocks run out.
                             @else
-                                Heavy discounts on verified products daily.
+                                Deep discounts on verified fashion, electronics and home items daily.
                             @endif
                         </p>
                     </div>
 
-                    <div class="relative z-10 flex items-center justify-between gap-2 pt-2 border-t border-white/10">
-                        <div class="flex items-center gap-2 text-[9.5px] font-semibold text-white/80">
+                    <div class="relative z-10 flex items-center justify-between gap-2 pt-2.5 border-t border-white/15">
+                        <div class="flex items-center gap-2 text-[10px] font-semibold text-white/85">
                             <span class="inline-flex items-center gap-1">
-                                <span class="material-symbols-rounded text-[11px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">bolt</span>
+                                <span class="material-symbols-rounded text-[12px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">bolt</span>
                                 {{ $deals->count() }}+ live deals
                             </span>
                         </div>
-                        <a href="#deals" class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#dc2626] text-white text-[10px] font-bold shadow-sm active:scale-95 transition-transform">
-                            See deals <span class="material-symbols-rounded text-[12px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+                        <a href="#deals" class="inline-flex items-center gap-1 px-3.5 py-1.5 rounded-full bg-[#9acd32] text-[#1c201e] text-[10.5px] font-bold shadow-sm active:scale-95 transition-transform">
+                            See deals <span class="material-symbols-rounded text-[13px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
                         </a>
                     </div>
                 </div>
 
                 {{-- Slide 3: Services & rentals --}}
-                <div class="w-full shrink-0 relative h-[220px] p-4 sm:p-4 flex flex-col justify-between overflow-hidden">
+                <div class="w-full shrink-0 relative h-[225px] p-4 flex flex-col justify-between overflow-hidden">
                     @if($exploreImg && $exploreImg->images->isNotEmpty())
                         <img src="{{ $exploreImg->images->first()->url }}" alt="" class="absolute inset-0 w-full h-full object-cover opacity-35" loading="lazy" onerror="this.classList.add('hidden')">
-                        <div class="absolute inset-0 bg-gradient-to-r from-[#0a1215]/95 via-[#0a1215]/80 to-[#0a1215]/45"></div>
+                        <div class="absolute inset-0 bg-gradient-to-r from-[#0a1215]/95 via-[#0a1215]/85 to-[#0a1215]/50"></div>
                     @else
                         <div class="absolute inset-0 bg-gradient-to-br from-[#0e1a1f] to-[#070d10]"></div>
                     @endif
 
-                    <div class="relative z-10">
-                        <span class="inline-flex items-center gap-1 rounded-full bg-[#9acd32]/20 border border-[#9acd32]/30 px-2.5 py-0.5 text-[9px] font-bold text-[#9acd32] backdrop-blur-sm">
-                            <span class="material-symbols-rounded text-[11px]" style="font-variation-settings:'FILL' 1;">handyman</span>
+                    <div class="relative z-10 pt-0.5">
+                        <span class="inline-flex items-center gap-1 rounded-full bg-[#9acd32]/20 border border-[#9acd32]/30 px-2.5 py-0.5 text-[9.5px] font-bold text-[#9acd32] backdrop-blur-sm">
+                            <span class="material-symbols-rounded text-[12px]" style="font-variation-settings:'FILL' 1;">handyman</span>
                             Services & Rentals
                         </span>
-                        <h2 class="mt-2 text-[1.3rem] font-black text-white tracking-tight leading-[1.15]">
+                        <h2 class="mt-2 text-[1.5rem] font-black text-white tracking-tight leading-[1.12]">
                             Book Pros & Rent Gear.<br><span class="text-[#9acd32]">Zero middleman.</span>
                         </h2>
-                        <p class="mt-1 text-[10.5px] text-white/75 leading-tight line-clamp-1 max-w-[85%]">
-                            Find vetted local technicians, photographers, rentals and more.
+                        <p class="mt-1.5 text-[11.5px] text-white/80 leading-snug line-clamp-2 max-w-[92%]">
+                            Find vetted local technicians, photographers, sound systems and rentals ready to book today.
                         </p>
                     </div>
 
-                    <div class="relative z-10 flex items-center justify-between gap-2 pt-2 border-t border-white/10">
-                        <div class="flex items-center gap-2 text-[9.5px] font-semibold text-white/80">
+                    <div class="relative z-10 flex items-center justify-between gap-2 pt-2.5 border-t border-white/15">
+                        <div class="flex items-center gap-2.5 text-[10px] font-semibold text-white/85">
                             <span class="inline-flex items-center gap-1">
-                                <span class="material-symbols-rounded text-[11px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">design_services</span>
+                                <span class="material-symbols-rounded text-[12px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">design_services</span>
                                 {{ number_format($totalServices) }} pros
                             </span>
                             <span class="inline-flex items-center gap-1">
-                                <span class="material-symbols-rounded text-[11px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">shelves</span>
+                                <span class="material-symbols-rounded text-[12px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">shelves</span>
                                 {{ number_format($totalRentals) }} rentals
                             </span>
                         </div>
-                        <a href="{{ route('services.index') }}" class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#9acd32] text-[#1c201e] text-[10px] font-bold shadow-sm active:scale-95 transition-transform">
-                            Explore <span class="material-symbols-rounded text-[12px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+                        <a href="{{ route('services.index') }}" class="inline-flex items-center gap-1 px-3.5 py-1.5 rounded-full bg-[#9acd32] text-[#1c201e] text-[10.5px] font-bold shadow-sm active:scale-95 transition-transform">
+                            Explore <span class="material-symbols-rounded text-[13px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
                         </a>
                     </div>
                 </div>
@@ -638,23 +638,23 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
 {{-- ================================================================
      RECOMMENDED FOR YOU
 =============================================================== --}}
-<section class="max-w-7xl mx-auto px-4 sm:px-6 mt-12">
-    <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-5 mb-7">
+<section class="max-w-7xl mx-auto px-3 sm:px-6 mt-6 sm:mt-12">
+    <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-3 sm:gap-5 mb-4 sm:mb-7">
         <div>
-            <span class="inline-flex items-center gap-2 px-4 py-1.5 -skew-x-6 rounded-md bg-gradient-to-r from-[#9acd32] to-[#86b92c] text-[#1c201e] text-[11px] font-extrabold uppercase tracking-[0.16em] shadow-[0_6px_18px_-6px_rgba(154,205,50,0.55)]">
-                <span class="skew-x-6 inline-flex items-center gap-1.5">
-                    <span class="material-symbols-rounded text-[14px]" style="font-variation-settings:'FILL' 1;">auto_awesome</span>
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 sm:px-4 sm:py-1.5 -skew-x-6 rounded-md bg-gradient-to-r from-[#9acd32] to-[#86b92c] text-[#1c201e] text-[9.5px] sm:text-[11px] font-extrabold uppercase tracking-[0.14em] sm:tracking-[0.16em] shadow-[0_6px_18px_-6px_rgba(154,205,50,0.55)]">
+                <span class="skew-x-6 inline-flex items-center gap-1">
+                    <span class="material-symbols-rounded text-[12px] sm:text-[14px]" style="font-variation-settings:'FILL' 1;">auto_awesome</span>
                     Hand-picked for you
                 </span>
             </span>
-            <h2 class="mt-3 text-xl sm:text-[1.7rem] font-extrabold tracking-tight text-[#1c201e]">Recommended for you</h2>
-            <p class="text-[12px] text-[#6b716c] mt-1">Fresh picks from {{ number_format($verifiedStores) }}+ verified stores</p>
+            <h2 class="mt-2 sm:mt-3 text-[1rem] sm:text-[1.7rem] font-extrabold tracking-tight text-[#1c201e]">Recommended for you</h2>
+            <p class="text-[10px] sm:text-[12px] text-[#6b716c] mt-0.5 sm:mt-1">Fresh picks from {{ number_format($verifiedStores) }}+ verified stores</p>
         </div>
     </div>
 
     @php $recommended = $trendingProducts->merge($latestProducts)->unique('id')->take(8); @endphp
 
-    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 items-stretch auto-rows-fr gap-3.5 sm:gap-4 w-full">
+    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 items-stretch auto-rows-fr gap-2.5 sm:gap-4 w-full">
         @forelse($recommended as $p)
             @include('partials.home-product-card', ['product' => $p, 'savedProductIds' => $savedProductIds])
         @empty
@@ -662,11 +662,11 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
         @endforelse
     </div>
 
-    <div class="mt-9 text-center">
-        <a href="{{ route('products.index') }}" class="inline-flex items-center gap-2 px-8 py-3 rounded-lg -skew-x-6 bg-[#1c201e] text-white text-sm font-bold transition-all hover:bg-[#9acd32] hover:text-[#1c201e] shadow-lg shadow-black/10">
+    <div class="mt-5 sm:mt-9 text-center">
+        <a href="{{ route('products.index') }}" class="inline-flex items-center gap-2 px-6 sm:px-8 py-2.5 sm:py-3 rounded-lg -skew-x-6 bg-[#1c201e] text-white text-[12px] sm:text-sm font-bold transition-all hover:bg-[#9acd32] hover:text-[#1c201e] shadow-lg shadow-black/10">
             <span class="skew-x-6 inline-flex items-center gap-2">
                 View all products
-                <span class="material-symbols-rounded text-[18px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+                <span class="material-symbols-rounded text-[16px] sm:text-[18px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
             </span>
         </a>
     </div>
@@ -676,46 +676,46 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
      TOP STORES
 ================================================================ --}}
 @if($topStores->isNotEmpty())
-<section class="max-w-7xl mx-auto px-4 sm:px-6 mt-10">
-    <div class="flex items-end justify-between gap-3 mb-5">
+<section class="max-w-7xl mx-auto px-3 sm:px-6 mt-6 sm:mt-10">
+    <div class="flex items-end justify-between gap-3 mb-3 sm:mb-5">
         <div>
-            <h2 class="text-lg sm:text-xl font-bold tracking-tight text-[#1c201e]">Top stores</h2>
-            <p class="text-[12px] text-[#6b716c] mt-0.5">The most active sellers on Izifai</p>
+            <h2 class="text-[13px] sm:text-xl font-bold tracking-tight text-[#1c201e]">Top stores</h2>
+            <p class="text-[10px] sm:text-[12px] text-[#6b716c] mt-0.5">The most active sellers on Izifai</p>
         </div>
-        <a href="{{ route('stores.index') }}" class="inline-flex items-center gap-1 text-sm font-bold text-[#9acd32] hover:text-[#7ca81d] transition-colors whitespace-nowrap">
-            See all <span class="material-symbols-rounded text-[16px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+        <a href="{{ route('stores.index') }}" class="inline-flex items-center gap-1 text-[11px] sm:text-sm font-bold text-[#9acd32] hover:text-[#7ca81d] transition-colors whitespace-nowrap">
+            See all <span class="material-symbols-rounded text-[13px] sm:text-[16px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
         </a>
     </div>
     <div x-data="autoScroll()" x-init="init()" class="flex gap-3.5 overflow-x-auto no-scrollbar pb-2">
         @foreach($topStores as $store)
         <a href="{{ route('stores.show', $store->slug) }}"
-           class="group shrink-0 w-[16rem] rounded-2xl bg-white border border-[#e8eae8] p-4 hover:border-[#9acd32]/50 hover:shadow-[0_16px_40px_-12px_rgba(0,0,0,0.12)] transition-all duration-300 flex items-center gap-3.5">
-            <div class="w-14 h-14 rounded-2xl bg-[#eef0ee] overflow-hidden grid place-items-center border border-black/5 shrink-0">
+           class="group shrink-0 w-[13.5rem] sm:w-[16rem] rounded-xl sm:rounded-2xl bg-white border border-[#e8eae8] p-3 sm:p-4 hover:border-[#9acd32]/50 hover:shadow-[0_16px_40px_-12px_rgba(0,0,0,0.12)] transition-all duration-300 flex items-center gap-2.5 sm:gap-3.5">
+            <div class="w-11 h-11 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-[#eef0ee] overflow-hidden grid place-items-center border border-black/5 shrink-0">
                 @if($store->logo)
                     <img src="{{ $store->logo_url }}" alt="{{ $store->name }}" class="w-full h-full object-cover">
                 @else
-                    <span class="text-sm font-extrabold text-[#3f4f0e]">{{ strtoupper(substr($store->name, 0, 1)) }}</span>
+                    <span class="text-[11px] sm:text-sm font-extrabold text-[#3f4f0e]">{{ strtoupper(substr($store->name, 0, 1)) }}</span>
                 @endif
             </div>
             <div class="min-w-0 flex-1">
-                <p class="text-[13px] font-bold text-[#1c201e] truncate inline-flex items-center gap-1">
+                <p class="text-[11px] sm:text-[13px] font-bold text-[#1c201e] truncate inline-flex items-center gap-1">
                     {{ $store->name }}
                     @if($store->is_verified)
-                        <span class="material-symbols-rounded text-[13px] text-[#659316]" style="font-variation-settings:'FILL' 1;">verified</span>
+                        <span class="material-symbols-rounded text-[11px] sm:text-[13px] text-[#659316]" style="font-variation-settings:'FILL' 1;">verified</span>
                     @endif
                 </p>
-                <div class="flex items-center gap-2 mt-0.5">
+                <div class="flex items-center gap-1.5 sm:gap-2 mt-0.5">
                     @if(($store->rating ?? 0) > 0)
-                    <span class="inline-flex items-center gap-0.5 text-[11px] font-bold text-[#6b716c]">
-                        <span class="material-symbols-rounded text-[13px] text-amber-400" style="font-variation-settings:'FILL' 1;">star</span>
+                    <span class="inline-flex items-center gap-0.5 text-[9.5px] sm:text-[11px] font-bold text-[#6b716c]">
+                        <span class="material-symbols-rounded text-[11px] sm:text-[13px] text-amber-400" style="font-variation-settings:'FILL' 1;">star</span>
                         {{ number_format($store->rating, 1) }}
                     </span>
                     @endif
-                    <span class="text-[11px] text-[#9aa19c]">{{ $store->products_count }} products</span>
+                    <span class="text-[9.5px] sm:text-[11px] text-[#9aa19c]">{{ $store->products_count }} items</span>
                 </div>
             </div>
-            <span class="grid place-items-center w-9 h-9 rounded-full bg-[#f2f9df] text-[#7ca81d] group-hover:bg-[#9acd32] group-hover:text-white transition-colors shrink-0">
-                <span class="material-symbols-rounded text-[16px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+            <span class="grid place-items-center w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-[#f2f9df] text-[#7ca81d] group-hover:bg-[#9acd32] group-hover:text-white transition-colors shrink-0">
+                <span class="material-symbols-rounded text-[13px] sm:text-[16px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
             </span>
         </a>
         @endforeach
@@ -727,61 +727,61 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
      FEATURED STORE SPOTLIGHT
 ================================================================ --}}
 @if($featuredStore)
-<section class="max-w-7xl mx-auto px-4 sm:px-6 mt-10">
-    <div class="rounded-3xl bg-[#1c201e] overflow-hidden relative">
+<section class="max-w-7xl mx-auto px-3 sm:px-6 mt-6 sm:mt-10">
+    <div class="rounded-2xl sm:rounded-3xl bg-[#1c201e] overflow-hidden relative">
         <div class="absolute -top-20 -right-10 w-72 h-72 rounded-full bg-[#9acd32]/10 blur-3xl"></div>
-        <div class="grid lg:grid-cols-[1fr_auto] gap-6 p-6 sm:p-10 items-center">
+        <div class="grid lg:grid-cols-[1fr_auto] gap-4 sm:gap-6 p-4 sm:p-10 items-center">
             <div class="relative z-10">
-                <span class="inline-flex items-center gap-2 rounded-full bg-[#9acd32]/15 border border-[#9acd32]/25 px-3.5 py-1.5 text-[11px] font-bold text-[#9acd32]">
-                    <span class="material-symbols-rounded text-[14px]" style="font-variation-settings:'FILL' 1;">workspace_premium</span>
+                <span class="inline-flex items-center gap-1.5 rounded-full bg-[#9acd32]/15 border border-[#9acd32]/25 px-2.5 sm:px-3.5 py-1 sm:py-1.5 text-[9.5px] sm:text-[11px] font-bold text-[#9acd32]">
+                    <span class="material-symbols-rounded text-[12px] sm:text-[14px]" style="font-variation-settings:'FILL' 1;">workspace_premium</span>
                     Store spotlight
                 </span>
-                <div class="mt-4 flex items-center gap-4">
+                <div class="mt-3 sm:mt-4 flex items-center gap-3 sm:gap-4">
                     @if($featuredStore->logo)
-                        <img src="{{ $featuredStore->logo_url }}" alt="" class="w-16 h-16 rounded-2xl object-cover ring-2 ring-white/15">
+                        <img src="{{ $featuredStore->logo_url }}" alt="" class="w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl object-cover ring-2 ring-white/15">
                     @else
-                        <span class="grid place-items-center w-16 h-16 rounded-2xl bg-[#9acd32] text-[#1c201e] text-2xl font-black">{{ strtoupper(substr($featuredStore->name, 0, 1)) }}</span>
+                        <span class="grid place-items-center w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-[#9acd32] text-[#1c201e] text-xl sm:text-2xl font-black">{{ strtoupper(substr($featuredStore->name, 0, 1)) }}</span>
                     @endif
                     <div class="min-w-0">
-                        <h2 class="text-xl sm:text-2xl font-extrabold text-white tracking-tight flex items-center gap-1.5">
+                        <h2 class="text-[14px] sm:text-2xl font-extrabold text-white tracking-tight flex items-center gap-1">
                             {{ $featuredStore->name }}
                             @if($featuredStore->is_verified)
-                                <span class="material-symbols-rounded text-[18px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">verified</span>
+                                <span class="material-symbols-rounded text-[14px] sm:text-[18px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">verified</span>
                             @endif
                         </h2>
-                        <div class="flex items-center gap-3 mt-1 text-[12px] text-white/60">
+                        <div class="flex items-center gap-2 sm:gap-3 mt-0.5 sm:mt-1 text-[10px] sm:text-[12px] text-white/60">
                             @if(($featuredStore->rating ?? 0) > 0)
-                            <span class="inline-flex items-center gap-1 font-bold text-white/80">
-                                <span class="material-symbols-rounded text-[14px] text-amber-400" style="font-variation-settings:'FILL' 1;">star</span>
+                            <span class="inline-flex items-center gap-0.5 sm:gap-1 font-bold text-white/80">
+                                <span class="material-symbols-rounded text-[12px] sm:text-[14px] text-amber-400" style="font-variation-settings:'FILL' 1;">star</span>
                                 {{ number_format($featuredStore->rating, 1) }}
                             </span>
                             @endif
                             <span>{{ $featuredStore->products_count }} products</span>
                             @if($featuredStore->location)
-                                <span class="inline-flex items-center gap-1"><span class="material-symbols-rounded text-[13px]" style="font-variation-settings:'FILL' 1;">location_on</span>{{ $featuredStore->location }}</span>
+                                <span class="inline-flex items-center gap-0.5"><span class="material-symbols-rounded text-[11px] sm:text-[13px]" style="font-variation-settings:'FILL' 1;">location_on</span>{{ $featuredStore->location }}</span>
                             @endif
                         </div>
                     </div>
                 </div>
-                <p class="mt-4 text-sm text-white/65 max-w-md leading-relaxed line-clamp-2">{{ $featuredStore->description }}</p>
-                <a href="{{ route('stores.show', $featuredStore->slug) }}" class="ecom-btn mt-6 h-12 px-7 text-sm bg-[#9acd32] text-white shadow-lg shadow-[#9acd32]/20 hover:bg-[#7ca81d]">
+                <p class="mt-2.5 sm:mt-4 text-[11px] sm:text-sm text-white/65 max-w-md leading-relaxed line-clamp-2">{{ $featuredStore->description }}</p>
+                <a href="{{ route('stores.show', $featuredStore->slug) }}" class="ecom-btn mt-4 sm:mt-6 h-9 sm:h-12 px-5 sm:px-7 text-[11px] sm:text-sm bg-[#9acd32] text-white shadow-lg shadow-[#9acd32]/20 hover:bg-[#7ca81d]">
                     Visit store
-                    <span class="material-symbols-rounded text-[18px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+                    <span class="material-symbols-rounded text-[15px] sm:text-[18px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
                 </a>
             </div>
 
             @if($featuredStore->products->isNotEmpty())
-            <div class="relative z-10 flex gap-3 overflow-x-auto no-scrollbar lg:max-w-md">
+            <div class="relative z-10 flex gap-2.5 sm:gap-3 overflow-x-auto no-scrollbar lg:max-w-md">
                 @foreach($featuredStore->products->take(3) as $fp)
-                <a href="{{ route('products.show', $fp->slug) }}" class="shrink-0 w-36 sm:w-44 rounded-2xl overflow-hidden bg-white group/product hover:shadow-xl transition-shadow">
+                <a href="{{ route('products.show', $fp->slug) }}" class="shrink-0 w-28 sm:w-44 rounded-xl sm:rounded-2xl overflow-hidden bg-white group/product hover:shadow-xl transition-shadow">
                     <div class="relative aspect-square bg-[#f5f6f5]">
                         <img src="{{ $fp->images->first()->url ?? '' }}" alt="{{ $fp->name }}" loading="lazy"
                              class="w-full h-full object-cover group-hover/product:scale-105 transition-transform duration-500"
                              onerror="this.classList.add('hidden')">
                     </div>
-                    <div class="p-2.5">
-                        <p class="text-[11px] font-bold text-[#1c201e] truncate">{{ $fp->name }}</p>
-                        <p class="text-[12px] font-black text-[#659316] tnum">{{ number_format($fp->price) }} <span class="text-[9px]">F</span></p>
+                    <div class="p-2">
+                        <p class="text-[10px] sm:text-[11px] font-bold text-[#1c201e] truncate">{{ $fp->name }}</p>
+                        <p class="text-[10.5px] sm:text-[12px] font-black text-[#659316] tnum">{{ number_format($fp->price) }} <span class="text-[8px] sm:text-[9px]">F</span></p>
                     </div>
                 </a>
                 @endforeach
@@ -796,36 +796,36 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
      POPULAR SERVICES
 ================================================================ --}}
 @if($topRatedServices->isNotEmpty())
-<section class="max-w-7xl mx-auto px-4 sm:px-6 mt-10">
-    <div class="flex items-end justify-between gap-3 mb-5">
+<section class="max-w-7xl mx-auto px-3 sm:px-6 mt-6 sm:mt-10">
+    <div class="flex items-end justify-between gap-3 mb-3 sm:mb-5">
         <div>
-            <h2 class="text-lg sm:text-xl font-bold tracking-tight text-[#1c201e]">Popular services</h2>
-            <p class="text-[12px] text-[#6b716c] mt-0.5">Top-rated professionals near you</p>
+            <h2 class="text-[13px] sm:text-xl font-bold tracking-tight text-[#1c201e]">Popular services</h2>
+            <p class="text-[10px] sm:text-[12px] text-[#6b716c] mt-0.5">Top-rated professionals near you</p>
         </div>
-        <a href="{{ route('services.index') }}" class="inline-flex items-center gap-1 text-sm font-bold text-[#9acd32] hover:text-[#7ca81d] transition-colors whitespace-nowrap">
-            All services <span class="material-symbols-rounded text-[16px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+        <a href="{{ route('services.index') }}" class="inline-flex items-center gap-1 text-[11px] sm:text-sm font-bold text-[#9acd32] hover:text-[#7ca81d] transition-colors whitespace-nowrap">
+            All services <span class="material-symbols-rounded text-[13px] sm:text-[16px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
         </a>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
         @foreach($topRatedServices as $svc)
         <a href="{{ route('services.show', $svc->slug) }}"
-           class="group rounded-2xl bg-white border border-[#e8eae8] p-4 hover:border-[#9acd32]/50 hover:shadow-[0_16px_40px_-12px_rgba(0,0,0,0.12)] hover:-translate-y-1 transition-all duration-300">
-            <div class="flex items-center gap-3">
-                <span class="grid place-items-center w-11 h-11 rounded-xl bg-[#f2f9df] text-[#659316] shrink-0">
-                    <span class="material-symbols-rounded text-[20px]" style="font-variation-settings:'FILL' 1;">handyman</span>
+           class="group rounded-xl sm:rounded-2xl bg-white border border-[#e8eae8] p-3 sm:p-4 hover:border-[#9acd32]/50 hover:shadow-[0_16px_40px_-12px_rgba(0,0,0,0.12)] hover:-translate-y-1 transition-all duration-300">
+            <div class="flex items-center gap-2 sm:gap-3">
+                <span class="grid place-items-center w-8 h-8 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-[#f2f9df] text-[#659316] shrink-0">
+                    <span class="material-symbols-rounded text-[16px] sm:text-[20px]" style="font-variation-settings:'FILL' 1;">handyman</span>
                 </span>
                 <div class="min-w-0">
-                    <p class="text-[13px] font-bold text-[#1c201e] truncate group-hover:text-[#659316] transition-colors">{{ $svc->name }}</p>
-                    <p class="text-[11px] text-[#9aa19c] truncate">{{ $svc->store->name ?? '' }}</p>
+                    <p class="text-[11px] sm:text-[13px] font-bold text-[#1c201e] truncate group-hover:text-[#659316] transition-colors">{{ $svc->name }}</p>
+                    <p class="text-[9.5px] sm:text-[11px] text-[#9aa19c] truncate">{{ $svc->store->name ?? '' }}</p>
                 </div>
             </div>
-            <div class="flex items-center justify-between mt-4">
-                <span class="text-[13px] font-black text-[#659316] tnum">
+            <div class="flex items-center justify-between mt-2.5 sm:mt-4">
+                <span class="text-[11px] sm:text-[13px] font-black text-[#659316] tnum">
                     @if($svc->price > 0){{ number_format($svc->price) }} F @else Request quote @endif
                 </span>
                 @if(($svc->rating ?? 0) > 0)
-                <span class="inline-flex items-center gap-0.5 text-[11px] font-bold text-[#6b716c]">
-                    <span class="material-symbols-rounded text-[13px] text-amber-400" style="font-variation-settings:'FILL' 1;">star</span>
+                <span class="inline-flex items-center gap-0.5 text-[9.5px] sm:text-[11px] font-bold text-[#6b716c]">
+                    <span class="material-symbols-rounded text-[11px] sm:text-[13px] text-amber-400" style="font-variation-settings:'FILL' 1;">star</span>
                     {{ number_format($svc->rating, 1) }}
                 </span>
                 @endif
@@ -839,31 +839,31 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
 {{-- ================================================================
      SELLER CTA
 ================================================================ --}}
-<section class="max-w-7xl mx-auto px-4 sm:px-6 mt-10 mb-4">
-    <div class="rounded-3xl bg-gradient-to-br from-[#1c201e] to-[#0d0f0d] px-6 sm:px-12 py-10 sm:py-12 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-7 relative overflow-hidden">
+<section class="max-w-7xl mx-auto px-3 sm:px-6 mt-6 sm:mt-10 mb-4">
+    <div class="rounded-2xl sm:rounded-3xl bg-gradient-to-br from-[#1c201e] to-[#0d0f0d] px-4 sm:px-12 py-6 sm:py-12 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-7 relative overflow-hidden">
         <div class="absolute -top-16 -right-16 w-56 h-56 rounded-full bg-[#9acd32]/10 blur-3xl"></div>
         <div class="relative z-10">
-            <span class="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/10 px-3.5 py-1.5 text-[11px] font-bold text-[#9acd32]">
-                <span class="material-symbols-rounded text-[14px]" style="font-variation-settings:'FILL' 1;">storefront</span>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/10 px-2.5 sm:px-3.5 py-1 sm:py-1.5 text-[9.5px] sm:text-[11px] font-bold text-[#9acd32]">
+                <span class="material-symbols-rounded text-[12px] sm:text-[14px]" style="font-variation-settings:'FILL' 1;">storefront</span>
                 Free to start
             </span>
-            <h2 class="mt-4 text-xl sm:text-2xl font-extrabold text-white tracking-tight">Sell everything. In one link.</h2>
-            <p class="mt-2 text-sm text-white/65 max-w-md">No app. No complex setup. Share your catalog on WhatsApp and start selling today.</p>
-            <div class="mt-5 flex flex-wrap gap-x-6 gap-y-2 text-[11px] font-semibold text-white/65">
-                <span class="inline-flex items-center gap-1.5"><span class="material-symbols-rounded text-[14px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">check_circle</span> No tech skills needed</span>
-                <span class="inline-flex items-center gap-1.5"><span class="material-symbols-rounded text-[14px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">check_circle</span> Lists in minutes</span>
-                <span class="inline-flex items-center gap-1.5"><span class="material-symbols-rounded text-[14px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">check_circle</span> Shareable in seconds</span>
+            <h2 class="mt-2.5 sm:mt-4 text-[15px] sm:text-2xl font-extrabold text-white tracking-tight">Sell everything. In one link.</h2>
+            <p class="mt-1.5 sm:mt-2 text-[11px] sm:text-sm text-white/65 max-w-md">No app. No complex setup. Share your catalog on WhatsApp and start selling today.</p>
+            <div class="mt-3 sm:mt-5 flex flex-wrap gap-x-4 sm:gap-x-6 gap-y-1.5 sm:gap-y-2 text-[9.5px] sm:text-[11px] font-semibold text-white/65">
+                <span class="inline-flex items-center gap-1"><span class="material-symbols-rounded text-[12px] sm:text-[14px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">check_circle</span> No tech skills needed</span>
+                <span class="inline-flex items-center gap-1"><span class="material-symbols-rounded text-[12px] sm:text-[14px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">check_circle</span> Lists in minutes</span>
+                <span class="inline-flex items-center gap-1"><span class="material-symbols-rounded text-[12px] sm:text-[14px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">check_circle</span> Shareable in seconds</span>
             </div>
         </div>
         @auth
-            <a href="{{ route('seller.dashboard') }}" class="relative z-10 ecom-btn h-12 px-8 text-sm bg-[#9acd32] text-white shadow-lg shadow-[#9acd32]/20 hover:bg-[#7ca81d] shrink-0">
+            <a href="{{ route('seller.dashboard') }}" class="relative z-10 ecom-btn h-9 sm:h-12 px-6 sm:px-8 text-[11px] sm:text-sm bg-[#9acd32] text-white shadow-lg shadow-[#9acd32]/20 hover:bg-[#7ca81d] shrink-0">
                 Open seller dashboard
-                <span class="material-symbols-rounded text-[18px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+                <span class="material-symbols-rounded text-[15px] sm:text-[18px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
             </a>
         @else
-            <a href="{{ route('register') }}" class="relative z-10 ecom-btn h-12 px-8 text-sm bg-[#9acd32] text-white shadow-lg shadow-[#9acd32]/20 hover:bg-[#7ca81d] shrink-0">
+            <a href="{{ route('register') }}" class="relative z-10 ecom-btn h-9 sm:h-12 px-6 sm:px-8 text-[11px] sm:text-sm bg-[#9acd32] text-white shadow-lg shadow-[#9acd32]/20 hover:bg-[#7ca81d] shrink-0">
                 Create your store
-                <span class="material-symbols-rounded text-[18px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+                <span class="material-symbols-rounded text-[15px] sm:text-[18px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
             </a>
         @endauth
     </div>
