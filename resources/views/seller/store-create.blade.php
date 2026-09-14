@@ -4,7 +4,7 @@
     <div class="max-w-2xl mx-auto animate-fade-in">
         <div class="text-center mb-6 md:mb-8">
             <div class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                <span class="material-symbols-outlined text-3xl text-primary">storefront</span>
+                <i class="fa-solid fa-store text-3xl text-primary"></i>
             </div>
             <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Create Your Store</h1>
             <p class="text-sm text-gray-500 mt-1">Set up your storefront to start selling on Izifai</p>
@@ -32,11 +32,11 @@
                             <input type="file" name="logo" class="hidden" accept="image/*" @change="previewLogo">
                             <img x-show="logoPreview" :src="logoPreview" class="w-full h-full object-cover">
                             <div x-show="!logoPreview" class="w-full h-full flex flex-col items-center justify-center text-gray-300">
-                                <span class="material-symbols-outlined text-3xl">add_photo_alternate</span>
+                                <i class="fa-solid fa-images text-3xl"></i>
                                 <span class="text-xs font-semibold mt-1">Logo</span>
                             </div>
                             <div class="absolute inset-0 bg-primary/80 opacity-0 group-hover:opacity-100 transition-all flex flex-col items-center justify-center text-white rounded-2xl">
-                                <span class="material-symbols-outlined text-2xl">camera_alt</span>
+                                <i class="fa-solid fa-camera text-2xl"></i>
                                 <span class="text-xs font-bold mt-1">Upload</span>
                             </div>
                         </label>
@@ -48,11 +48,11 @@
                             <input type="file" name="banner" class="hidden" accept="image/*" @change="previewBanner">
                             <img x-show="bannerPreview" :src="bannerPreview" class="w-full h-full object-cover">
                             <div x-show="!bannerPreview" class="w-full h-full flex flex-col items-center justify-center text-gray-300">
-                                <span class="material-symbols-outlined text-3xl">panorama</span>
+                                <i class="fa-solid fa-image text-3xl"></i>
                                 <span class="text-xs font-semibold mt-1">Banner</span>
                             </div>
                             <div class="absolute inset-0 bg-primary/80 opacity-0 group-hover:opacity-100 transition-all flex flex-col items-center justify-center text-white rounded-2xl">
-                                <span class="material-symbols-outlined text-2xl">camera_alt</span>
+                                <i class="fa-solid fa-camera text-2xl"></i>
                                 <span class="text-xs font-bold mt-1">Upload</span>
                             </div>
                         </label>
@@ -95,7 +95,7 @@
                     </a>
                     <button type="submit"
                             class="w-full sm:w-auto whitespace-nowrap bg-primary text-white px-8 py-2.5 rounded-xl text-sm font-bold hover:opacity-90 active:scale-[0.97] transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2">
-                        <span class="material-symbols-outlined text-[18px]">storefront</span>
+                        <i class="fa-solid fa-store text-[18px]"></i>
                         Create My Store
                     </button>
                 </div>

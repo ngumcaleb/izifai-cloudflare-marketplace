@@ -92,7 +92,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
     </div>
     <div class="flex flex-wrap items-center gap-2 mt-1">
         <span class="flex items-center gap-0.5 text-[11px] text-on-surface-variant">
-            <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+            <i class="fa-solid fa-star text-[14px]" style=""></i>
             {{ number_format($avgRating, 1) }}
         </span>
         <span class="text-[11px] text-on-surface-variant">{{ $totalItems }} items</span>
@@ -100,11 +100,11 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
 </div>
 <nav class="flex-1 py-4 px-3 space-y-0.5 overflow-y-auto">
     <a href="#showroom" class="scroll-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-primary font-semibold bg-primary/5 border-l-[3px] border-primary transition-all text-sm">
-        <span class="material-symbols-outlined text-[20px]">storefront</span>
+        <i class="fa-solid fa-store text-[20px]"></i>
         Showroom
     </a>
     <a href="#catalog" class="scroll-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-gray-50 transition-all text-sm font-medium">
-        <span class="material-symbols-outlined text-[20px]">inventory_2</span>
+        <i class="fa-solid fa-boxes-stacked text-[20px]"></i>
         Products
         @if($totalProducts > 0)
             <span class="ml-auto text-[10px] font-bold bg-gray-100 px-1.5 py-0.5 rounded-full">{{ $totalProducts }}</span>
@@ -112,32 +112,32 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
     </a>
     @if($services->count() > 0)
     <a href="#services" class="scroll-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-gray-50 transition-all text-sm font-medium">
-        <span class="material-symbols-outlined text-[20px]">concierge</span>
+        <i class="fa-solid fa-bell-concierge text-[20px]"></i>
         Services
         <span class="ml-auto text-[10px] font-bold bg-gray-100 px-1.5 py-0.5 rounded-full">{{ $totalServices }}</span>
     </a>
     @endif
     @if($rentals->count() > 0)
     <a href="#rentals" class="scroll-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-gray-50 transition-all text-sm font-medium">
-        <span class="material-symbols-outlined text-[20px]">handshake</span>
+        <i class="fa-solid fa-handshake text-[20px]"></i>
         Rentals
         <span class="ml-auto text-[10px] font-bold bg-gray-100 px-1.5 py-0.5 rounded-full">{{ $totalRentals }}</span>
     </a>
     @endif
     <a href="#reviews" class="scroll-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-gray-50 transition-all text-sm font-medium">
-        <span class="material-symbols-outlined text-[20px]">star</span>
+        <i class="fa-solid fa-star text-[20px]"></i>
         Reviews
         @if($totalReviews > 0)
             <span class="ml-auto text-[10px] font-bold bg-gray-100 px-1.5 py-0.5 rounded-full">{{ $totalReviews }}</span>
         @endif
     </a>
     <a href="#store-info" class="scroll-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-gray-50 transition-all text-sm font-medium">
-        <span class="material-symbols-outlined text-[20px]">info</span>
+        <i class="fa-solid fa-circle-info text-[20px]"></i>
         Store Info
     </a>
     @if($store->location)
         <div class="px-3 py-2 text-[11px] text-on-surface-variant flex items-center gap-2 border-t border-gray-100 pt-3 mt-2">
-            <span class="material-symbols-outlined text-[16px]">location_on</span>
+            <i class="fa-solid fa-location-dot text-[16px]"></i>
             <span class="truncate">{{ $store->location }}</span>
         </div>
     @endif
@@ -153,7 +153,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
             <input type="hidden" name="message" value="Hi, I am interested in {{ $store->name }} on Izifai.">
             <button type="submit"
                     class="w-full py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 text-xs text-primary border border-primary/20 hover:bg-primary/5 transition-all">
-                <span class="material-symbols-outlined text-[16px]">chat_bubble_outline</span>
+                <i class="fa-regular fa-comment text-[16px]"></i>
                 Message
             </button>
         </form>
@@ -168,21 +168,21 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
     @endif
     <a href="https://chat.whatsapp.com/J3of97nRhL5IdTSXpScYLl" target="_blank"
        class="w-full py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 text-xs text-on-surface-variant border border-gray-200 hover:bg-gray-50 transition-all">
-        <span class="material-symbols-outlined text-[16px]">groups</span>
+        <i class="fa-solid fa-users text-[16px]"></i>
         Join WhatsApp Group
     </a>
     @auth
         @if(auth()->id() === $store->user_id)
             <a href="{{ route('seller.dashboard') }}"
                class="w-full bg-primary text-on-primary py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-all text-xs">
-                <span class="material-symbols-outlined text-[16px]">dashboard</span>
+                <i class="fa-solid fa-gauge-high text-[16px]"></i>
                 Dashboard
             </a>
         @else
             @php $hasStoreForLink = auth()->user()->store; @endphp
             <a href="{{ $hasStoreForLink ? route('seller.dashboard') : route('seller.store.create') }}"
                class="w-full py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 text-xs text-primary border border-primary/20 hover:bg-primary/5 transition-all">
-                <span class="material-symbols-outlined text-[16px]">store</span>
+                <i class="fa-solid fa-store text-[16px]"></i>
                 {{ $hasStoreForLink ? 'Seller Dashboard' : 'Start Selling' }}
             </a>
         @endif
@@ -190,7 +190,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
     @guest
         <a href="{{ url('/') }}"
            class="w-full bg-primary/10 text-primary py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-primary/20 transition-all text-xs">
-            <span class="material-symbols-outlined text-[16px]">app_registration</span>
+            <i class="fa-solid fa-id-card text-[16px]"></i>
             Join Izifai
         </a>
     @endguest
@@ -255,7 +255,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                                         @if($p->images->first())
                                             <img src="{{ $p->images->first()->url }}" class="w-full h-full object-cover" alt="">
                                         @else
-                                            <div class="w-full h-full bg-white/30 flex items-center justify-center"><span class="material-symbols-outlined text-[8px] text-white/60">photo</span></div>
+                                            <div class="w-full h-full bg-white/30 flex items-center justify-center"><i class="fa-solid fa-image text-[8px] text-white/60"></i></div>
                                         @endif
                                     </a>
                                 @endforeach
@@ -278,7 +278,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                                 <input type="hidden" name="message" value="Hi, I am interested in {{ $store->name }} on Izifai.">
                                 <button type="submit"
                                         class="inline-flex items-center justify-center gap-1 px-3 sm:px-5 py-2 sm:py-3 bg-white/10 backdrop-blur-sm text-white rounded-full text-[10px] sm:text-[13px] font-bold border border-white/20 hover:bg-white/20 active:scale-[0.97] transition-all duration-200">
-                                    <span class="material-symbols-outlined text-[14px] sm:text-[16px]">chat_bubble_outline</span>
+                                    <i class="fa-regular fa-comment text-[14px] sm:text-[16px]"></i>
                                     <span class="hidden sm:inline">Message</span>
                                 </button>
                             </form>
@@ -293,7 +293,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                         @endif
                         <button onclick="copyToClipboard(window.location.href, this, 'Done!')"
                                 class="inline-flex items-center justify-center gap-1 px-3 sm:px-5 py-2 sm:py-3 bg-white/10 backdrop-blur-sm text-white rounded-full text-[10px] sm:text-[13px] font-bold border border-white/20 hover:bg-white/20 active:scale-[0.97] transition-all duration-200">
-                            <span class="material-symbols-outlined text-[14px] sm:text-[16px] copy-icon">share</span>
+                            <i class="fa-solid fa-share-nodes text-[14px] sm:text-[16px] copy-icon"></i>
                             <span class="hidden sm:inline copy-label">Share</span>
                         </button>
                     </div>
@@ -341,7 +341,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
     <div class="bg-surface-container-lowest rounded-lg sm:rounded-xl p-1.5 sm:p-4 shadow-sm border border-outline-variant/10">
         <div class="flex flex-col items-center gap-0.5 sm:gap-2 text-center sm:text-left">
             <div class="w-5 h-5 sm:w-8 sm:h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                <span class="material-symbols-outlined text-[10px] sm:text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                <i class="fa-solid fa-star text-[10px] sm:text-[16px]" style=""></i>
             </div>
             <div class="min-w-0">
                 <p class="text-[6px] sm:text-[9px] font-semibold text-on-surface-variant uppercase tracking-wider leading-tight">Rating</p>
@@ -352,7 +352,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
     <div class="bg-surface-container-lowest rounded-lg sm:rounded-xl p-1.5 sm:p-4 shadow-sm border border-outline-variant/10">
         <div class="flex flex-col items-center gap-0.5 sm:gap-2 text-center sm:text-left">
             <div class="w-5 h-5 sm:w-8 sm:h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                <span class="material-symbols-outlined text-[10px] sm:text-[16px]" style="font-variation-settings: 'FILL' 1;">reviews</span>
+                <i class="fa-solid fa-star text-[10px] sm:text-[16px]" style=""></i>
             </div>
             <div class="min-w-0">
                 <p class="text-[6px] sm:text-[9px] font-semibold text-on-surface-variant uppercase tracking-wider leading-tight">Reviews</p>
@@ -363,7 +363,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
     <div class="bg-surface-container-lowest rounded-lg sm:rounded-xl p-1.5 sm:p-4 shadow-sm border border-outline-variant/10">
         <div class="flex flex-col items-center gap-0.5 sm:gap-2 text-center sm:text-left">
             <div class="w-5 h-5 sm:w-8 sm:h-8 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600 shrink-0">
-                <span class="material-symbols-outlined text-[10px] sm:text-[16px]" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
+                <i class="fa-solid fa-boxes-stacked text-[10px] sm:text-[16px]" style=""></i>
             </div>
             <div class="min-w-0">
                 <p class="text-[6px] sm:text-[9px] font-semibold text-on-surface-variant uppercase tracking-wider leading-tight">Products</p>
@@ -374,7 +374,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
     <div class="bg-surface-container-lowest rounded-lg sm:rounded-xl p-1.5 sm:p-4 shadow-sm border border-outline-variant/10">
         <div class="flex flex-col items-center gap-0.5 sm:gap-2 text-center sm:text-left">
             <div class="w-5 h-5 sm:w-8 sm:h-8 rounded-lg bg-purple-50 flex items-center justify-center text-purple-600 shrink-0">
-                <span class="material-symbols-outlined text-[10px] sm:text-[16px]">concierge</span>
+                <i class="fa-solid fa-bell-concierge text-[10px] sm:text-[16px]"></i>
             </div>
             <div class="min-w-0">
                 <p class="text-[6px] sm:text-[9px] font-semibold text-on-surface-variant uppercase tracking-wider leading-tight">Services</p>
@@ -385,7 +385,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
     <div class="bg-surface-container-lowest rounded-lg sm:rounded-xl p-1.5 sm:p-4 shadow-sm border border-outline-variant/10">
         <div class="flex flex-col items-center gap-0.5 sm:gap-2 text-center sm:text-left">
             <div class="w-5 h-5 sm:w-8 sm:h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
-                <span class="material-symbols-outlined text-[10px] sm:text-[16px]">handshake</span>
+                <i class="fa-solid fa-handshake text-[10px] sm:text-[16px]"></i>
             </div>
             <div class="min-w-0">
                 <p class="text-[6px] sm:text-[9px] font-semibold text-on-surface-variant uppercase tracking-wider leading-tight">Rentals</p>
@@ -396,7 +396,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
     <div class="bg-surface-container-lowest rounded-lg sm:rounded-xl p-1.5 sm:p-4 shadow-sm border border-outline-variant/10">
         <div class="flex flex-col items-center gap-0.5 sm:gap-2 text-center sm:text-left">
             <div class="w-5 h-5 sm:w-8 sm:h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                <span class="material-symbols-outlined text-[10px] sm:text-[16px]" style="font-variation-settings: 'FILL' 1;">calendar_month</span>
+                <i class="fa-solid fa-calendar-days text-[10px] sm:text-[16px]" style=""></i>
             </div>
             <div class="min-w-0">
                 <p class="text-[6px] sm:text-[9px] font-semibold text-on-surface-variant uppercase tracking-wider leading-tight">Since</p>
@@ -411,7 +411,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
 <section>
     <div class="flex items-center justify-between">
         <h2 class="text-base sm:text-lg font-bold text-on-surface flex items-center gap-2">
-            <span class="material-symbols-outlined text-primary text-[18px]" style="font-variation-settings: 'FILL' 1;">recommend</span>
+            <i class="fa-solid fa-thumbs-up text-primary text-[18px]" style=""></i>
             Featured
         </h2>
         <a href="#catalog" class="scroll-link text-primary text-xs sm:text-sm font-semibold hover:underline shrink-0">
@@ -428,7 +428,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                              src="{{ $product->images->first()->url }}" alt="{{ $product->name }}">
                     @else
                         <div class="w-full h-full flex items-center justify-center text-on-surface-variant/30">
-                            <span class="material-symbols-outlined text-2xl">image</span>
+                            <i class="fa-solid fa-image text-2xl"></i>
                         </div>
                     @endif
                     @if($product->old_price)
@@ -438,11 +438,10 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                             data-product="{{ $product->id }}"
                             data-favorited="{{ in_array($product->id, $savedProductIds) ? 'true' : 'false' }}"
                             onclick="event.stopPropagation(); event.preventDefault();">
-                        <span class="material-symbols-outlined text-[10px]"
-                              style="font-variation-settings: 'FILL' {{ in_array($product->id, $savedProductIds) ? 1 : 0 }};">favorite</span>
+                        <i class="{{ in_array($product->id, $savedProductIds) ? 1 : 0 ? 'fa-solid' : 'fa-regular' }} fa-heart text-[10px]" style=""></i>
                     </button>
                     <div class="absolute bottom-1 left-1 bg-black/50 backdrop-blur rounded-full px-1.5 py-0.5 flex items-center gap-0.5">
-                        <span class="material-symbols-outlined text-[9px] text-white">visibility</span>
+                        <i class="fa-solid fa-eye text-[9px] text-white"></i>
                         <span class="text-[8px] font-bold text-white leading-none">{{ $product->views ?? 0 }}</span>
                     </div>
                 </div>
@@ -476,7 +475,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
             <h2 class="text-base sm:text-lg font-bold text-on-surface">All Products</h2>
             <button @click="showSort = !showSort"
                     class="flex items-center gap-1 px-3 py-1.5 border border-outline-variant/30 rounded-lg hover:bg-surface-container transition-colors text-xs font-semibold text-on-surface-variant">
-                <span class="material-symbols-outlined text-[16px]">sort</span>
+                <i class="fa-solid fa-arrow-down-wide-short text-[16px]"></i>
                 Sort
             </button>
         </div>
@@ -516,7 +515,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
     </div>
 
     <div x-show="loading" x-cloak class="text-center py-12">
-        <span class="material-symbols-outlined text-3xl text-primary animate-spin">refresh</span>
+        <i class="fa-solid fa-arrows-rotate text-3xl text-primary animate-spin"></i>
     </div>
 
     <div id="products-container" x-show="!loading">
@@ -531,7 +530,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                                          src="{{ $product->images->first()->url }}" alt="{{ $product->name }}">
                                 @else
                                     <div class="w-full h-full flex items-center justify-center text-on-surface-variant/30">
-                                        <span class="material-symbols-outlined text-3xl">image</span>
+                                        <i class="fa-solid fa-image text-3xl"></i>
                                     </div>
                                 @endif
                             </div>
@@ -559,7 +558,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                                 <button type="submit"
                                         class="w-5 h-5 sm:w-7 sm:h-7 bg-white/80 backdrop-blur rounded-full flex items-center justify-center hover:bg-primary hover:text-on-primary transition-all"
                                         title="Message seller about this product">
-                                    <span class="material-symbols-outlined text-[10px] sm:text-[14px]">chat_bubble_outline</span>
+                                    <i class="fa-regular fa-comment text-[10px] sm:text-[14px]"></i>
                                 </button>
                             </form>
                             @endif
@@ -567,8 +566,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                         <button class="favorite-btn absolute top-1.5 right-1.5 sm:top-2 sm:right-2 w-5 h-5 sm:w-7 sm:h-7 bg-white/80 backdrop-blur rounded-full flex items-center justify-center hover:bg-white transition-colors z-10"
                                 data-product="{{ $product->id }}"
                                 data-favorited="{{ in_array($product->id, $savedProductIds) ? 'true' : 'false' }}">
-                            <span class="material-symbols-outlined text-[10px] sm:text-[14px]"
-                                  style="font-variation-settings: 'FILL' {{ in_array($product->id, $savedProductIds) ? 1 : 0 }};">favorite</span>
+                            <i class="{{ in_array($product->id, $savedProductIds) ? 1 : 0 ? 'fa-solid' : 'fa-regular' }} fa-heart text-[10px] sm:text-[14px]" style=""></i>
                         </button>
                     </div>
                 @endforeach
@@ -578,7 +576,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
             </div>
         @else
             <div id="products-empty" class="text-center py-10 sm:py-12 bg-surface-container-low rounded-xl border border-outline-variant/10">
-                <span class="material-symbols-outlined text-3xl sm:text-4xl text-outline-variant">inventory_2</span>
+                <i class="fa-solid fa-boxes-stacked text-3xl sm:text-4xl text-outline-variant"></i>
                 <p class="text-sm font-bold text-on-surface-variant mt-3">No products found</p>
                 @if($store->whatsapp_number)
                     <p class="text-xs text-on-surface-variant mt-1">Contact the seller for available items</p>
@@ -598,7 +596,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
 <section id="services" class="scroll-mt-[64px] lg:scroll-mt-[72px] space-y-3 sm:space-y-4">
     <div class="flex items-center justify-between">
         <h2 class="text-base sm:text-lg font-bold text-on-surface flex items-center gap-2">
-            <span class="material-symbols-outlined text-primary text-[18px]">concierge</span>
+            <i class="fa-solid fa-bell-concierge text-primary text-[18px]"></i>
             Services
         </h2>
         <a href="{{ route('services.index', ['store' => $store->slug]) }}"
@@ -616,15 +614,15 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                             <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
                                  src="{{ $svcImg }}"
                                  alt="{{ $service->name }}" loading="lazy"
-                                 onerror="this.parentElement.innerHTML = '<div class=\'w-full h-full flex items-center justify-center text-on-surface-variant/20\'><span class=\'material-symbols-outlined text-4xl\'>image</span></div>'">
+                                 onerror="this.parentElement.innerHTML = '<div class=\'w-full h-full flex items-center justify-center text-on-surface-variant/20\'><span class=\'fa-solid fa-image text-4xl\'></i></div>'">
                         @else
                             <div class="w-full h-full flex items-center justify-center text-on-surface-variant/20">
-                                <span class="material-symbols-outlined text-4xl">image</span>
+                                <i class="fa-solid fa-image text-4xl"></i>
                             </div>
                         @endif
                         @if($service->delivery_time)
                             <span class="absolute top-2.5 left-2.5 bg-white/90 backdrop-blur-sm text-on-surface text-[8px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-sm">
-                                <span class="material-symbols-outlined text-[10px]">schedule</span>
+                                <i class="fa-solid fa-clock text-[10px]"></i>
                                 {{ $service->delivery_time }}
                             </span>
                         @endif
@@ -641,7 +639,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                                 <button type="submit"
                                         class="w-6 h-6 sm:w-7 sm:h-7 bg-white/80 backdrop-blur rounded-full flex items-center justify-center hover:bg-primary hover:text-on-primary transition-all shadow-sm"
                                         title="Message seller about this service">
-                                    <span class="material-symbols-outlined text-[11px] sm:text-[14px]">chat_bubble_outline</span>
+                                    <i class="fa-regular fa-comment text-[11px] sm:text-[14px]"></i>
                                 </button>
                             </form>
                             @endif
@@ -670,7 +668,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
 <section id="rentals" class="scroll-mt-[64px] lg:scroll-mt-[72px] space-y-3 sm:space-y-4">
     <div class="flex items-center justify-between">
         <h2 class="text-base sm:text-lg font-bold text-on-surface flex items-center gap-2">
-            <span class="material-symbols-outlined text-primary text-[18px]">handshake</span>
+            <i class="fa-solid fa-handshake text-primary text-[18px]"></i>
             Rentals
         </h2>
         <a href="{{ route('rentals.index', ['store' => $store->slug]) }}"
@@ -688,10 +686,10 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                             <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
                                  src="{{ $rtlImg }}"
                                  alt="{{ $item->name }}" loading="lazy"
-                                 onerror="this.parentElement.innerHTML = '<div class=\'w-full h-full flex items-center justify-center text-on-surface-variant/20\'><span class=\'material-symbols-outlined text-4xl\'>image</span></div>'">
+                                 onerror="this.parentElement.innerHTML = '<div class=\'w-full h-full flex items-center justify-center text-on-surface-variant/20\'><span class=\'fa-solid fa-image text-4xl\'></i></div>'">
                         @else
                             <div class="w-full h-full flex items-center justify-center text-on-surface-variant/20">
-                                <span class="material-symbols-outlined text-4xl">image</span>
+                                <i class="fa-solid fa-image text-4xl"></i>
                             </div>
                         @endif
                         <span class="rate-pill absolute top-2.5 right-2.5 text-white text-[8px] font-bold px-2 py-0.5 rounded-full shadow-sm z-[1]">
@@ -699,7 +697,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                         </span>
                         @if($item->location)
                             <span class="absolute top-2.5 left-2.5 bg-white/90 backdrop-blur-sm text-on-surface text-[8px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-sm">
-                                <span class="material-symbols-outlined text-[10px]">location_on</span>
+                                <i class="fa-solid fa-location-dot text-[10px]"></i>
                                 {{ $item->location }}
                             </span>
                         @endif
@@ -716,7 +714,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                                 <button type="submit"
                                         class="w-6 h-6 sm:w-7 sm:h-7 bg-white/80 backdrop-blur rounded-full flex items-center justify-center hover:bg-primary hover:text-on-primary transition-all shadow-sm"
                                         title="Message seller about this rental">
-                                    <span class="material-symbols-outlined text-[11px] sm:text-[14px]">chat_bubble_outline</span>
+                                    <i class="fa-regular fa-comment text-[11px] sm:text-[14px]"></i>
                                 </button>
                             </form>
                             @endif
@@ -745,7 +743,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
 <section id="reviews" x-data="{ reviewForm: false, reviewRating: 0 }">
     <div class="flex items-center justify-between">
         <h2 class="text-base sm:text-lg font-bold text-on-surface flex items-center gap-2">
-            <span class="material-symbols-outlined text-primary text-[18px]">reviews</span>
+            <i class="fa-solid fa-star text-primary text-[18px]"></i>
             Reviews
             @if($totalReviews > 0)
                 <span class="text-xs font-normal text-on-surface-variant">({{ $totalReviews }})</span>
@@ -754,8 +752,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
         <div class="flex items-center gap-1.5">
             <div class="flex text-orange-500">
                 @for($i = 1; $i <= 5; $i++)
-                    <span class="material-symbols-outlined text-[14px]"
-                          style="font-variation-settings: 'FILL' {{ $i <= round($avgRating) ? 1 : 0 }};">star</span>
+                    <i class="{{ $i <= round($avgRating) ? 1 : 0 ? 'fa-solid' : 'fa-regular' }} fa-star text-[14px]" style=""></i>
                 @endfor
             </div>
             <span class="text-xs font-bold text-on-surface">{{ number_format($avgRating, 1) }}</span>
@@ -768,7 +765,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
         @foreach($starDistribution as $star => $data)
         <div class="flex items-center gap-2 sm:gap-3 py-1">
             <span class="text-[11px] sm:text-xs font-bold text-on-surface w-3 sm:w-4 text-right">{{ $star }}</span>
-            <span class="material-symbols-outlined text-[14px] sm:text-[16px] text-amber-500" style="font-variation-settings: 'FILL' 1;">star</span>
+            <i class="fa-solid fa-star text-[14px] sm:text-[16px] text-amber-500" style=""></i>
             <div class="flex-1 h-2 sm:h-2.5 rounded-full bg-surface-container-high overflow-hidden">
                 <div class="h-full rounded-full bg-amber-500" style="width: {{ $data['percentage'] }}%"></div>
             </div>
@@ -782,14 +779,14 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
         @if(auth()->id() !== $store->user_id)
             <button @click="reviewForm = !reviewForm"
                     class="flex items-center gap-1.5 px-3 py-1.5 bg-primary text-on-primary rounded-lg text-xs font-bold hover:opacity-90 transition-all">
-                <span class="material-symbols-outlined text-[14px]">edit</span>
+                <i class="fa-solid fa-pen text-[14px]"></i>
                 Write Review
             </button>
         @endif
     @else
         <a href="{{ route('login') }}"
            class="flex items-center gap-1.5 px-3 py-1.5 bg-primary text-on-primary rounded-lg text-xs font-bold hover:opacity-90 transition-all w-fit">
-            <span class="material-symbols-outlined text-[14px]">login</span>
+            <i class="fa-solid fa-right-to-bracket text-[14px]"></i>
             Login to Review
         </a>
     @endauth
@@ -805,11 +802,8 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
             <div class="flex items-center gap-1">
                 <template x-for="star in 5" :key="star">
                     <button type="button" @click="reviewRating = star"
-                            :class="star <= reviewRating ? 'text-orange-500' : 'text-outline-variant'"
-                            class="transition-all hover:scale-110">
-                        <span class="material-symbols-outlined text-2xl"
-                              :style="'font-variation-settings: \\'FILL\\' ' + (star <= reviewRating ? 1 : 0)">star</span>
-                    </button>
+                            :class="star <= reviewRating ? 'fa-solid fa-star text-2xl text-orange-500' : 'fa-regular fa-star text-2xl text-outline-variant'"
+                            class="transition-all hover:scale-110"></button>
                 </template>
                 <input type="hidden" name="rating" :value="reviewRating">
                 <span class="text-xs text-on-surface-variant ml-1" x-show="reviewRating > 0" x-text="reviewRating + ' / 5'"></span>
@@ -838,8 +832,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                         </div>
                         <div class="flex text-orange-500 shrink-0">
                             @for($i = 1; $i <= 5; $i++)
-                                <span class="material-symbols-outlined text-[12px]"
-                                      style="font-variation-settings: 'FILL' {{ $i <= $review->rating ? 1 : 0 }};">star</span>
+                                <i class="{{ $i <= $review->rating ? 1 : 0 ? 'fa-solid' : 'fa-regular' }} fa-star text-[12px]" style=""></i>
                             @endfor
                         </div>
                     </div>
@@ -852,7 +845,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
         </div>
     @else
         <div class="text-center py-8 bg-surface-container-low rounded-xl border border-outline-variant/10">
-            <span class="material-symbols-outlined text-2xl text-outline-variant">reviews</span>
+            <i class="fa-solid fa-star text-2xl text-outline-variant"></i>
             <p class="text-xs font-bold text-on-surface-variant mt-1">No reviews yet</p>
             @auth
                 @if(auth()->id() !== $store->user_id)
@@ -869,11 +862,11 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
     <button @click="showInfo = !showInfo"
             class="w-full flex items-center justify-between p-3 sm:p-4 bg-surface-container-lowest rounded-xl border border-outline-variant/10 hover:shadow-sm transition-all">
         <span class="text-sm font-bold text-on-surface flex items-center gap-2">
-            <span class="material-symbols-outlined text-[18px] text-primary">info</span>
+            <i class="fa-solid fa-circle-info text-[18px] text-primary"></i>
             Store Information
         </span>
-        <span class="material-symbols-outlined text-[18px] text-on-surface-variant transition-transform duration-200"
-              :class="showInfo ? 'rotate-180' : ''">expand_more</span>
+        <i class="fa-solid fa-chevron-down text-[18px] text-on-surface-variant transition-transform duration-200"
+              :class="showInfo ? 'rotate-180' : ''"></i>
     </button>
     <div x-show="showInfo" x-cloak class="p-3 sm:p-4 bg-surface-container-lowest rounded-xl border border-outline-variant/10 space-y-3"
          x-transition:enter="transition ease-out duration-200"
@@ -882,7 +875,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
         @if($store->description)
         <div class="flex items-start gap-2.5">
             <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0 mt-0.5">
-                <span class="material-symbols-outlined text-[16px]">description</span>
+                <i class="fa-solid fa-file-lines text-[16px]"></i>
             </div>
             <div class="min-w-0 flex-1">
                 <p class="text-[9px] font-semibold text-on-surface-variant uppercase tracking-wider">About</p>
@@ -893,7 +886,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
         @if($store->location)
         <div class="flex items-center gap-2.5">
             <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                <span class="material-symbols-outlined text-[16px]">location_on</span>
+                <i class="fa-solid fa-location-dot text-[16px]"></i>
             </div>
             <div class="min-w-0">
                 <p class="text-[9px] font-semibold text-on-surface-variant uppercase tracking-wider">Location</p>
@@ -904,7 +897,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
         @if($store->whatsapp_number)
         <div class="flex items-center gap-2.5">
             <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                <span class="material-symbols-outlined text-[16px]">chat</span>
+                <i class="fa-solid fa-comment text-[16px]"></i>
             </div>
             <div class="min-w-0">
                 <p class="text-[9px] font-semibold text-on-surface-variant uppercase tracking-wider">WhatsApp</p>
@@ -916,7 +909,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
         @if($store->business_email)
         <div class="flex items-center gap-2.5">
             <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                <span class="material-symbols-outlined text-[16px]">mail</span>
+                <i class="fa-solid fa-envelope text-[16px]"></i>
             </div>
             <div class="min-w-0">
                 <p class="text-[9px] font-semibold text-on-surface-variant uppercase tracking-wider">Email</p>
@@ -927,7 +920,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
         @if($store->open_hours)
         <div class="flex items-center gap-2.5">
             <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                <span class="material-symbols-outlined text-[16px]">schedule</span>
+                <i class="fa-solid fa-clock text-[16px]"></i>
             </div>
             <div class="min-w-0">
                 <p class="text-[9px] font-semibold text-on-surface-variant uppercase tracking-wider">Hours</p>
@@ -945,13 +938,16 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
                     @php $url = $social['url'] ?? ''; $platform = $social['platform'] ?? ''; if (!$url) continue; @endphp
                     <a href="{{ $url }}" target="_blank"
                        class="inline-flex items-center gap-1 px-2.5 py-1.5 bg-primary/5 text-primary rounded-lg text-[10px] font-bold hover:bg-primary/10 transition-all">
-                        <span class="material-symbols-outlined text-[14px]">
-                            {{ match($platform) {
-                                'facebook' => 'facebook', 'instagram' => 'instagram', 'twitter' => 'alternate_email',
-                                'linkedin' => 'work', 'tiktok' => 'music_note', 'youtube' => 'play_circle',
-                                'whatsapp_group' => 'groups', default => 'public',
-                            } }}
-                        </span>
+                        <i class="{{ match($platform) {
+                                'facebook' => 'fa-brands fa-facebook',
+                                'instagram' => 'fa-brands fa-instagram',
+                                'twitter' => 'fa-brands fa-x-twitter',
+                                'linkedin' => 'fa-brands fa-linkedin-in',
+                                'tiktok' => 'fa-brands fa-tiktok',
+                                'youtube' => 'fa-brands fa-youtube',
+                                'whatsapp_group' => 'fa-brands fa-whatsapp',
+                                default => 'fa-solid fa-globe',
+                            } }} text-[14px]"></i>
                         {{ ucfirst(str_replace('_', ' ', $platform)) }}
                     </a>
                 @endforeach
@@ -971,13 +967,13 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
         <div class="flex flex-col sm:flex-row items-center gap-2 sm:gap-6 text-xs lg:text-sm text-on-surface-variant">
             @if($store->business_email)
                 <a href="mailto:{{ $store->business_email }}" class="hover:text-primary transition-all flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[14px] lg:text-[16px] align-middle">mail</span>
+                    <i class="fa-solid fa-envelope text-[14px] lg:text-[16px] align-middle"></i>
                     {{ $store->business_email }}
                 </a>
             @endif
             @if($store->location)
                 <span class="flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[14px] lg:text-[16px] align-middle">location_on</span>
+                    <i class="fa-solid fa-location-dot text-[14px] lg:text-[16px] align-middle"></i>
                     {{ $store->location }}
                 </span>
             @endif
@@ -988,7 +984,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
         @if(auth()->id() === $store->user_id)
             <a href="{{ route('seller.dashboard') }}"
                class="inline-flex items-center gap-1.5 text-primary font-semibold text-xs lg:text-sm hover:underline">
-                <span class="material-symbols-outlined text-[14px]">dashboard</span>
+                <i class="fa-solid fa-gauge-high text-[14px]"></i>
                 Go to Dashboard
             </a>
         @else
@@ -1095,12 +1091,12 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
             })
             .then(r => r.json())
             .then(data => {
-                const icon = btn.querySelector('.material-symbols-outlined');
+                const icon = btn.querySelector('i.fa-heart');
                 if (data.favorited) {
-                    icon.style.fontVariationSettings = "'FILL' 1";
+                    icon.classList.add('fa-solid'); icon.classList.remove('fa-regular');
                     btn.dataset.favorited = 'true';
                 } else {
-                    icon.style.fontVariationSettings = "'FILL' 0";
+                    icon.classList.add('fa-regular'); icon.classList.remove('fa-solid');
                     btn.dataset.favorited = 'false';
                 }
             });

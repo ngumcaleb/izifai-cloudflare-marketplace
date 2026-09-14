@@ -264,8 +264,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
     });
 });
 
-// === CONVERSATIONS (authenticated users) ===
+// === CONVERSATIONS & USER (authenticated users) ===
 Route::middleware(['auth'])->group(function () {
+    Route::get('/favorites', [\App\Http\Controllers\SavedProductController::class, 'index'])->name('favorites.index');
     Route::get('/conversations', [\App\Http\Controllers\ConversationController::class, 'index'])->name('conversations.index');
     Route::get('/conversations/{conversation}', [\App\Http\Controllers\ConversationController::class, 'show'])->name('conversations.show');
     Route::post('/conversations', [\App\Http\Controllers\ConversationController::class, 'store'])->name('conversations.store');

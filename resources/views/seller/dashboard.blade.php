@@ -25,28 +25,28 @@
                     <a href="{{ route('seller.products.create') }}"
                        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold text-gray-700 hover:bg-primary/5 hover:text-primary transition-all group active:scale-[0.98]">
                         <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                            <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">add_circle</span>
+                            <i class="fa-solid fa-circle-plus text-[18px]" style=""></i>
                         </div>
                         <span>New Item</span>
                     </a>
                     <a href="{{ route('seller.products.index') }}"
                        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold text-gray-700 hover:bg-primary/5 hover:text-primary transition-all group active:scale-[0.98]">
                         <div class="w-8 h-8 rounded-lg bg-primary/5 flex items-center justify-center text-primary shrink-0">
-                            <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
+                            <i class="fa-solid fa-boxes-stacked text-[18px]" style=""></i>
                         </div>
                         <span>Products</span>
                     </a>
                     <a href="{{ route('seller.services.index') }}"
                        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold text-gray-700 hover:bg-primary/5 hover:text-primary transition-all group active:scale-[0.98]">
                         <div class="w-8 h-8 rounded-lg bg-primary/5 flex items-center justify-center text-primary shrink-0">
-                            <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">handyman</span>
+                            <i class="fa-solid fa-screwdriver-wrench text-[18px]" style=""></i>
                         </div>
                         <span>Services</span>
                     </a>
                     <a href="{{ route('seller.rentals.index') }}"
                        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold text-gray-700 hover:bg-primary/5 hover:text-primary transition-all group active:scale-[0.98]">
                         <div class="w-8 h-8 rounded-lg bg-primary/5 flex items-center justify-center text-primary shrink-0">
-                            <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">shelves</span>
+                            <i class="fa-solid fa-warehouse text-[18px]" style=""></i>
                         </div>
                         <span>Rentals</span>
                     </a>
@@ -55,7 +55,7 @@
                     <a href="{{ route('seller.store-categories.index') }}"
                        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold text-gray-700 hover:bg-primary/5 hover:text-primary transition-all group active:scale-[0.98]">
                         <div class="w-8 h-8 rounded-lg bg-primary/5 flex items-center justify-center text-primary shrink-0">
-                            <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">category</span>
+                            <i class="fa-solid fa-tags text-[18px]" style=""></i>
                         </div>
                         <span>Categories</span>
                     </a>
@@ -63,21 +63,21 @@
                     <a href="{{ route('seller.ads.index') }}"
                        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold text-gray-700 hover:bg-primary/5 hover:text-primary transition-all group active:scale-[0.98]">
                         <div class="w-8 h-8 rounded-lg bg-primary/5 flex items-center justify-center text-primary shrink-0">
-                            <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">campaign</span>
+                            <i class="fa-solid fa-bullhorn text-[18px]" style=""></i>
                         </div>
                         <span>Promotions</span>
                     </a>
                     <a href="{{ route('seller.reviews') }}"
                        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold text-gray-700 hover:bg-primary/5 hover:text-primary transition-all group active:scale-[0.98]">
                         <div class="w-8 h-8 rounded-lg bg-primary/5 flex items-center justify-center text-primary shrink-0">
-                            <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">reviews</span>
+                            <i class="fa-solid fa-star text-[18px]" style=""></i>
                         </div>
                         <span>Reviews</span>
                     </a>
                     <a href="{{ route('seller.store.settings') }}"
                        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold text-gray-700 hover:bg-primary/5 hover:text-primary transition-all group active:scale-[0.98]">
                         <div class="w-8 h-8 rounded-lg bg-primary/5 flex items-center justify-center text-primary shrink-0">
-                            <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">settings</span>
+                            <i class="fa-solid fa-gear text-[18px]" style=""></i>
                         </div>
                         <span>Settings</span>
                     </a>
@@ -85,7 +85,7 @@
                     <a href="{{ route('stores.show', $store->slug) }}" target="_blank"
                        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold text-gray-700 hover:bg-primary/5 hover:text-primary transition-all group active:scale-[0.98]">
                         <div class="w-8 h-8 rounded-lg bg-primary/5 flex items-center justify-center text-primary shrink-0">
-                            <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">storefront</span>
+                            <i class="fa-solid fa-store text-[18px]" style=""></i>
                         </div>
                         <span>My Store</span>
                     </a>
@@ -95,12 +95,12 @@
                 <div class="flex items-center gap-2">
                     <button onclick="copyToClipboard('{{ route('stores.show', $store->slug) }}', this, 'Copied!')"
                             class="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl bg-white border border-gray-200 text-gray-500 hover:text-primary hover:border-primary/30 transition-all text-xs font-bold shadow-sm active:scale-[0.98]">
-                        <span class="material-symbols-outlined text-[16px] copy-icon">link</span>
+                        <i class="fa-solid fa-link text-[16px] copy-icon"></i>
                         <span class="copy-label">Copy Link</span>
                     </button>
                     <a href="{{ route('stores.show', $store->slug) }}" target="_blank"
                        class="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl bg-primary text-white hover:bg-primary/90 transition-all text-xs font-bold shadow-sm active:scale-[0.98]">
-                        <span class="material-symbols-outlined text-[16px]">open_in_new</span>
+                        <i class="fa-solid fa-up-right-from-square text-[16px]"></i>
                         View Store
                     </a>
                 </div>
@@ -128,13 +128,13 @@
                     <button onclick="copyToClipboard('{{ route('stores.show', $store->slug) }}', this, 'Copied!')"
                             class="w-9 h-9 md:w-auto md:px-3 md:h-9 rounded-xl bg-white border border-gray-200 text-gray-500 hover:text-primary hover:border-primary/30 transition-all flex items-center justify-center md:gap-1.5 shadow-sm"
                             title="Copy store link">
-                        <span class="material-symbols-outlined text-[18px] md:text-[16px] copy-icon">link</span>
+                        <i class="fa-solid fa-link text-[18px] md:text-[16px] copy-icon"></i>
                         <span class="hidden md:inline text-xs font-bold copy-label">Copy Link</span>
                     </button>
                     <a href="{{ route('stores.show', $store->slug) }}" target="_blank"
                        class="w-9 h-9 md:w-auto md:px-3 md:h-9 rounded-xl bg-primary text-white hover:bg-primary/90 transition-all flex items-center justify-center md:gap-1.5 shadow-sm"
                        title="View store">
-                        <span class="material-symbols-outlined text-[18px] md:text-[16px]">open_in_new</span>
+                        <i class="fa-solid fa-up-right-from-square text-[18px] md:text-[16px]"></i>
                         <span class="hidden md:inline text-xs font-bold">View Store</span>
                     </a>
                 </div>
@@ -146,13 +146,13 @@
                     <div class="flex items-center justify-between mb-0.5 md:mb-2">
                         <span class="text-[8px] md:text-[11px] font-semibold text-gray-500 uppercase tracking-wider truncate">Views</span>
                         <div class="w-4 h-4 md:w-8 md:h-8 rounded md:rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                            <span class="material-symbols-outlined text-[10px] md:text-[18px]" style="font-variation-settings: 'FILL' 1;">visibility</span>
+                            <i class="fa-solid fa-eye text-[10px] md:text-[18px]" style=""></i>
                         </div>
                     </div>
                     <p class="text-sm md:text-2xl lg:text-3xl font-black text-gray-900 leading-tight truncate">{{ number_format($stats['total_views']) }}</p>
                     <div class="flex items-center gap-0.5 md:gap-1 mt-0.5 md:mt-1">
                         <span class="text-[8px] md:text-[11px] font-semibold text-primary truncate">{{ $stats['daily_views'] ?? 0 }} today</span>
-                        <span class="material-symbols-outlined text-[9px] hidden md:inline text-primary">trending_up</span>
+                        <i class="fa-solid fa-arrow-trend-up text-[9px] hidden md:inline text-primary"></i>
                     </div>
                 </div>
 
@@ -160,13 +160,13 @@
                     <div class="flex items-center justify-between mb-0.5 md:mb-2">
                         <span class="text-[8px] md:text-[11px] font-semibold text-gray-500 uppercase tracking-wider truncate">Contacts</span>
                         <div class="w-4 h-4 md:w-8 md:h-8 rounded md:rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                            <span class="material-symbols-outlined text-[10px] md:text-[18px]" style="font-variation-settings: 'FILL' 1;">chat</span>
+                            <i class="fa-solid fa-comment text-[10px] md:text-[18px]" style=""></i>
                         </div>
                     </div>
                     <p class="text-sm md:text-2xl lg:text-3xl font-black text-gray-900 leading-tight truncate">{{ number_format($stats['total_contacts']) }}</p>
                     <div class="flex items-center gap-0.5 md:gap-1 mt-0.5 md:mt-1">
                         <span class="text-[8px] md:text-[11px] font-semibold text-primary truncate">{{ $stats['daily_contacts'] ?? 0 }} today</span>
-                        <span class="material-symbols-outlined text-[9px] hidden md:inline text-primary">trending_up</span>
+                        <i class="fa-solid fa-arrow-trend-up text-[9px] hidden md:inline text-primary"></i>
                     </div>
                 </div>
 
@@ -174,7 +174,7 @@
                     <div class="flex items-center justify-between mb-0.5 md:mb-2">
                         <span class="text-[8px] md:text-[11px] font-semibold text-gray-500 uppercase tracking-wider truncate">Items</span>
                         <div class="w-4 h-4 md:w-8 md:h-8 rounded md:rounded-lg bg-amber-50 flex items-center justify-center text-amber-600 shrink-0">
-                            <span class="material-symbols-outlined text-[10px] md:text-[18px]" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
+                            <i class="fa-solid fa-boxes-stacked text-[10px] md:text-[18px]" style=""></i>
                         </div>
                     </div>
                     <p class="text-sm md:text-2xl lg:text-3xl font-black text-gray-900 leading-tight truncate">{{ $products->count() }}</p>
@@ -187,7 +187,7 @@
                     <div class="flex items-center justify-between mb-0.5 md:mb-2">
                         <span class="text-[8px] md:text-[11px] font-semibold text-gray-500 uppercase tracking-wider truncate">Saves</span>
                         <div class="w-4 h-4 md:w-8 md:h-8 rounded md:rounded-lg bg-rose-50 flex items-center justify-center text-rose-500 shrink-0">
-                            <span class="material-symbols-outlined text-[10px] md:text-[18px]" style="font-variation-settings: 'FILL' 1;">favorite</span>
+                            <i class="fa-solid fa-heart text-[10px] md:text-[18px]" style=""></i>
                         </div>
                     </div>
                     <p class="text-sm md:text-2xl lg:text-3xl font-black text-gray-900 leading-tight truncate">{{ number_format($stats['saved_count']) }}</p>
@@ -207,28 +207,28 @@
                     <a href="{{ route('seller.products.create') }}"
                        class="flex flex-col items-center gap-1 md:gap-1.5 p-2 md:p-3 bg-white rounded-xl md:rounded-2xl border border-gray-100/80 shadow-sm hover:border-primary/30 hover:shadow-md hover:-translate-y-0.5 transition-all group">
                         <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-                            <span class="material-symbols-outlined text-[16px] md:text-[20px]" style="font-variation-settings: 'FILL' 1;">add_circle</span>
+                            <i class="fa-solid fa-circle-plus text-[16px] md:text-[20px]" style=""></i>
                         </div>
                         <span class="text-[9px] md:text-[11px] font-bold text-gray-600 group-hover:text-primary text-center leading-tight">New Item</span>
                     </a>
                     <a href="{{ route('seller.products.index') }}"
                        class="flex flex-col items-center gap-1 md:gap-1.5 p-2 md:p-3 bg-white rounded-xl md:rounded-2xl border border-gray-100/80 shadow-sm hover:border-primary/30 hover:shadow-md hover:-translate-y-0.5 transition-all group">
                         <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-primary/5 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-                            <span class="material-symbols-outlined text-[16px] md:text-[20px]" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
+                            <i class="fa-solid fa-boxes-stacked text-[16px] md:text-[20px]" style=""></i>
                         </div>
                         <span class="text-[9px] md:text-[11px] font-bold text-gray-600 group-hover:text-primary text-center leading-tight">Products</span>
                     </a>
                     <a href="{{ route('seller.services.index') }}"
                        class="flex flex-col items-center gap-1 md:gap-1.5 p-2 md:p-3 bg-white rounded-xl md:rounded-2xl border border-gray-100/80 shadow-sm hover:border-primary/30 hover:shadow-md hover:-translate-y-0.5 transition-all group">
                         <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-primary/5 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-                            <span class="material-symbols-outlined text-[16px] md:text-[20px]" style="font-variation-settings: 'FILL' 1;">handyman</span>
+                            <i class="fa-solid fa-screwdriver-wrench text-[16px] md:text-[20px]" style=""></i>
                         </div>
                         <span class="text-[9px] md:text-[11px] font-bold text-gray-600 group-hover:text-primary text-center leading-tight">Services</span>
                     </a>
                     <a href="{{ route('seller.rentals.index') }}"
                        class="flex flex-col items-center gap-1 md:gap-1.5 p-2 md:p-3 bg-white rounded-xl md:rounded-2xl border border-gray-100/80 shadow-sm hover:border-primary/30 hover:shadow-md hover:-translate-y-0.5 transition-all group">
                         <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-primary/5 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-                            <span class="material-symbols-outlined text-[16px] md:text-[20px]" style="font-variation-settings: 'FILL' 1;">shelves</span>
+                            <i class="fa-solid fa-warehouse text-[16px] md:text-[20px]" style=""></i>
                         </div>
                         <span class="text-[9px] md:text-[11px] font-bold text-gray-600 group-hover:text-primary text-center leading-tight">Rentals</span>
                     </a>
@@ -237,28 +237,28 @@
                     <a href="{{ route('seller.store-categories.index') }}"
                        class="flex flex-col items-center gap-1 md:gap-1.5 p-2 md:p-3 bg-white rounded-xl md:rounded-2xl border border-gray-100/80 shadow-sm hover:border-primary/30 hover:shadow-md hover:-translate-y-0.5 transition-all group">
                         <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-primary/5 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-                            <span class="material-symbols-outlined text-[16px] md:text-[20px]" style="font-variation-settings: 'FILL' 1;">category</span>
+                            <i class="fa-solid fa-tags text-[16px] md:text-[20px]" style=""></i>
                         </div>
                         <span class="text-[9px] md:text-[11px] font-bold text-gray-600 group-hover:text-primary text-center leading-tight">Categories</span>
                     </a>
                     <a href="{{ route('seller.ads.index') }}"
                        class="flex flex-col items-center gap-1 md:gap-1.5 p-2 md:p-3 bg-white rounded-xl md:rounded-2xl border border-gray-100/80 shadow-sm hover:border-primary/30 hover:shadow-md hover:-translate-y-0.5 transition-all group">
                         <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-primary/5 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-                            <span class="material-symbols-outlined text-[16px] md:text-[20px]" style="font-variation-settings: 'FILL' 1;">campaign</span>
+                            <i class="fa-solid fa-bullhorn text-[16px] md:text-[20px]" style=""></i>
                         </div>
                         <span class="text-[9px] md:text-[11px] font-bold text-gray-600 group-hover:text-primary text-center leading-tight">Promotions</span>
                     </a>
                     <a href="{{ route('seller.reviews') }}"
                        class="flex flex-col items-center gap-1 md:gap-1.5 p-2 md:p-3 bg-white rounded-xl md:rounded-2xl border border-gray-100/80 shadow-sm hover:border-primary/30 hover:shadow-md hover:-translate-y-0.5 transition-all group">
                         <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-primary/5 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-                            <span class="material-symbols-outlined text-[16px] md:text-[20px]" style="font-variation-settings: 'FILL' 1;">reviews</span>
+                            <i class="fa-solid fa-star text-[16px] md:text-[20px]" style=""></i>
                         </div>
                         <span class="text-[9px] md:text-[11px] font-bold text-gray-600 group-hover:text-primary text-center leading-tight">Reviews</span>
                     </a>
                     <a href="{{ route('seller.store.settings') }}"
                        class="flex flex-col items-center gap-1 md:gap-1.5 p-2 md:p-3 bg-white rounded-xl md:rounded-2xl border border-gray-100/80 shadow-sm hover:border-primary/30 hover:shadow-md hover:-translate-y-0.5 transition-all group">
                         <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-primary/5 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-                            <span class="material-symbols-outlined text-[16px] md:text-[20px]" style="font-variation-settings: 'FILL' 1;">settings</span>
+                            <i class="fa-solid fa-gear text-[16px] md:text-[20px]" style=""></i>
                         </div>
                         <span class="text-[9px] md:text-[11px] font-bold text-gray-600 group-hover:text-primary text-center leading-tight">Settings</span>
                     </a>
@@ -266,7 +266,7 @@
                     <a href="{{ route('stores.show', $store->slug) }}" target="_blank"
                        class="flex flex-col items-center gap-1 md:gap-1.5 p-2 md:p-3 bg-white rounded-xl md:rounded-2xl border border-gray-100/80 shadow-sm hover:border-primary/30 hover:shadow-md hover:-translate-y-0.5 transition-all group">
                         <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-primary/5 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-                            <span class="material-symbols-outlined text-[16px] md:text-[20px]" style="font-variation-settings: 'FILL' 1;">storefront</span>
+                            <i class="fa-solid fa-store text-[16px] md:text-[20px]" style=""></i>
                         </div>
                         <span class="text-[9px] md:text-[11px] font-bold text-gray-600 group-hover:text-primary text-center leading-tight">My Store</span>
                     </a>
@@ -280,11 +280,11 @@
                 <button @click="showMore = !showMore"
                         class="w-full lg:hidden flex items-center justify-center gap-2 py-2 md:py-3 text-[11px] md:text-xs font-semibold text-gray-400 hover:text-primary transition-colors">
                     <span x-show="!showMore" class="flex items-center gap-1.5">
-                        <span class="material-symbols-outlined text-[16px]">expand_more</span>
+                        <i class="fa-solid fa-chevron-down text-[16px]"></i>
                         Show more
                     </span>
                     <span x-show="showMore" x-cloak class="flex items-center gap-1.5">
-                        <span class="material-symbols-outlined text-[16px]">expand_less</span>
+                        <i class="fa-solid fa-chevron-up text-[16px]"></i>
                         Show less
                     </span>
                 </button>
@@ -301,14 +301,14 @@
                         <div class="bg-white rounded-2xl p-4 md:p-5 shadow-sm border border-gray-100/80">
                             <div class="flex items-center gap-2 mb-4">
                                 <div class="w-7 h-7 rounded-lg bg-primary/5 flex items-center justify-center text-primary shrink-0">
-                                    <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">store</span>
+                                    <i class="fa-solid fa-store text-[16px]" style=""></i>
                                 </div>
                                 <h3 class="text-xs font-bold text-gray-900">Store Info</h3>
                             </div>
                             <div class="space-y-3">
                                 <div class="flex items-center gap-3">
                                     <div class="w-8 h-8 rounded-lg bg-primary/5 flex items-center justify-center text-primary shrink-0">
-                                        <span class="material-symbols-outlined text-[16px]">location_on</span>
+                                        <i class="fa-solid fa-location-dot text-[16px]"></i>
                                     </div>
                                     <div class="min-w-0">
                                         <p class="text-[9px] font-semibold text-gray-500 uppercase tracking-wider">Location</p>
@@ -317,7 +317,7 @@
                                 </div>
                                 <div class="flex items-center gap-3">
                                     <div class="w-8 h-8 rounded-lg bg-primary/5 flex items-center justify-center text-primary shrink-0">
-                                        <span class="material-symbols-outlined text-[16px]">call</span>
+                                        <i class="fa-solid fa-phone text-[16px]"></i>
                                     </div>
                                     <div class="min-w-0">
                                         <p class="text-[9px] font-semibold text-gray-500 uppercase tracking-wider">WhatsApp</p>
@@ -326,7 +326,7 @@
                                 </div>
                                 <div class="flex items-center gap-3">
                                     <div class="w-8 h-8 rounded-lg bg-primary/5 flex items-center justify-center text-primary shrink-0">
-                                        <span class="material-symbols-outlined text-[16px]">calendar_month</span>
+                                        <i class="fa-solid fa-calendar-days text-[16px]"></i>
                                     </div>
                                     <div class="min-w-0">
                                         <p class="text-[9px] font-semibold text-gray-500 uppercase tracking-wider">Joined</p>
@@ -335,7 +335,7 @@
                                 </div>
                             </div>
                             <a href="{{ route('seller.store.settings') }}" class="mt-3 w-full flex items-center justify-center gap-1.5 py-2 bg-primary/5 text-primary rounded-xl text-[11px] font-bold hover:bg-primary/10 active:scale-[0.98] transition-all">
-                                <span class="material-symbols-outlined text-[14px]">edit</span>
+                                <i class="fa-solid fa-pen text-[14px]"></i>
                                 Edit Store
                             </a>
                         </div>
@@ -346,7 +346,7 @@
                             <div class="bg-white rounded-2xl p-4 md:p-5 shadow-sm border border-gray-100/80">
                                 <div class="flex items-center gap-2 mb-3">
                                     <div class="w-7 h-7 rounded-lg bg-primary/5 flex items-center justify-center text-primary shrink-0">
-                                        <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">visibility</span>
+                                        <i class="fa-solid fa-eye text-[16px]" style=""></i>
                                     </div>
                                     <h3 class="text-[11px] font-bold text-gray-900">Most Viewed</h3>
                                 </div>
@@ -360,7 +360,7 @@
                                                         <img src="{{ $p->images->first()->url }}" class="w-full h-full object-cover">
                                                     @else
                                                         <div class="w-full h-full flex items-center justify-center text-gray-300">
-                                                            <span class="material-symbols-outlined text-[10px]">image</span>
+                                                            <i class="fa-solid fa-image text-[10px]"></i>
                                                         </div>
                                                     @endif
                                                 </div>
@@ -373,7 +373,7 @@
                                     </div>
                                 @else
                                     <div class="text-center py-4">
-                                        <span class="material-symbols-outlined text-xl text-gray-200">visibility</span>
+                                        <i class="fa-solid fa-eye text-xl text-gray-200"></i>
                                         <p class="text-[10px] text-gray-400 mt-0.5">No views yet</p>
                                     </div>
                                 @endif
@@ -383,7 +383,7 @@
                             <div class="bg-white rounded-2xl p-4 md:p-5 shadow-sm border border-gray-100/80">
                                 <div class="flex items-center gap-2 mb-3">
                                     <div class="w-7 h-7 rounded-lg bg-primary/5 flex items-center justify-center text-primary shrink-0">
-                                        <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">chat</span>
+                                        <i class="fa-solid fa-comment text-[16px]" style=""></i>
                                     </div>
                                     <h3 class="text-[11px] font-bold text-gray-900">Most Contacted</h3>
                                 </div>
@@ -398,7 +398,7 @@
                                                         <img src="{{ $event->product->images->first()->url }}" class="w-full h-full object-cover">
                                                     @else
                                                         <div class="w-full h-full flex items-center justify-center text-gray-300">
-                                                            <span class="material-symbols-outlined text-[10px]">image</span>
+                                                            <i class="fa-solid fa-image text-[10px]"></i>
                                                         </div>
                                                     @endif
                                                 </div>
@@ -412,7 +412,7 @@
                                     </div>
                                 @else
                                     <div class="text-center py-4">
-                                        <span class="material-symbols-outlined text-xl text-gray-200">chat</span>
+                                        <i class="fa-solid fa-comment text-xl text-gray-200"></i>
                                         <p class="text-[10px] text-gray-400 mt-0.5">No contacts yet</p>
                                     </div>
                                 @endif
@@ -422,7 +422,7 @@
                             <div class="bg-white rounded-2xl p-4 md:p-5 shadow-sm border border-gray-100/80">
                                 <div class="flex items-center gap-2 mb-3">
                                     <div class="w-7 h-7 rounded-lg bg-rose-50 flex items-center justify-center text-rose-500 shrink-0">
-                                        <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">favorite</span>
+                                        <i class="fa-solid fa-heart text-[16px]" style=""></i>
                                     </div>
                                     <h3 class="text-[11px] font-bold text-gray-900">Most Saved</h3>
                                 </div>
@@ -437,7 +437,7 @@
                                                         <img src="{{ $saved->product->images->first()->url }}" class="w-full h-full object-cover">
                                                     @else
                                                         <div class="w-full h-full flex items-center justify-center text-gray-300">
-                                                            <span class="material-symbols-outlined text-[10px]">image</span>
+                                                            <i class="fa-solid fa-image text-[10px]"></i>
                                                         </div>
                                                     @endif
                                                 </div>
@@ -451,7 +451,7 @@
                                     </div>
                                 @else
                                     <div class="text-center py-4">
-                                        <span class="material-symbols-outlined text-xl text-gray-200">favorite</span>
+                                        <i class="fa-solid fa-heart text-xl text-gray-200"></i>
                                         <p class="text-[10px] text-gray-400 mt-0.5">No saves yet</p>
                                     </div>
                                 @endif
@@ -480,7 +480,7 @@
                                                     <img src="{{ $product->images->first()->url }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                                                 @else
                                                     <div class="w-full h-full flex items-center justify-center text-gray-300">
-                                                        <span class="material-symbols-outlined text-2xl">image</span>
+                                                        <i class="fa-solid fa-image text-2xl"></i>
                                                     </div>
                                                 @endif
                                                 <span class="absolute top-1.5 right-1.5 text-white text-[7px] md:text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase {{ $product->stock_status === 'in_stock' ? 'bg-primary' : 'bg-gray-500' }}">
@@ -494,7 +494,7 @@
                                                 <p class="text-xs md:text-sm font-black text-primary mt-0.5">{{ number_format($product->price) }} XAF</p>
                                                 <button onclick="event.stopPropagation(); copyToClipboard('{{ route('products.show', $product->slug) }}', this)"
                                                         class="mt-1.5 w-full flex items-center justify-center gap-1 py-1.5 bg-primary/5 text-primary rounded-lg text-[9px] md:text-xs font-bold hover:bg-primary/10 transition-all">
-                                                    <span class="material-symbols-outlined text-[12px] md:text-[14px] copy-icon">content_copy</span>
+                                                    <i class="fa-solid fa-copy text-[12px] md:text-[14px] copy-icon"></i>
                                                     <span class="copy-label">Copy Link</span>
                                                 </button>
                                             </div>
@@ -505,11 +505,11 @@
                                     <button @click="showAll = !showAll"
                                             class="mt-2 w-full flex items-center justify-center gap-1.5 py-2 text-[11px] font-semibold text-gray-400 hover:text-primary transition-colors rounded-xl hover:bg-gray-50">
                                         <span x-show="!showAll" class="flex items-center gap-1">
-                                            <span class="material-symbols-outlined text-[16px]">expand_more</span>
+                                            <i class="fa-solid fa-chevron-down text-[16px]"></i>
                                             Show all {{ $products->count() }} products
                                         </span>
                                         <span x-show="showAll" x-cloak class="flex items-center gap-1">
-                                            <span class="material-symbols-outlined text-[16px]">expand_less</span>
+                                            <i class="fa-solid fa-chevron-up text-[16px]"></i>
                                             Show less
                                         </span>
                                     </button>
@@ -518,12 +518,12 @@
                         @else
                             <div class="text-center py-8 bg-white rounded-2xl shadow-sm border border-gray-100/80">
                                 <div class="w-10 h-10 rounded-xl bg-primary/5 flex items-center justify-center mx-auto mb-2">
-                                    <span class="material-symbols-outlined text-xl text-primary" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
+                                    <i class="fa-solid fa-boxes-stacked text-xl text-primary" style=""></i>
                                 </div>
                                 <p class="text-sm font-bold text-gray-900">No products yet</p>
                                 <p class="text-xs text-gray-500 mt-1">Start by adding your first product.</p>
                                 <a href="{{ route('seller.products.create') }}" class="inline-flex items-center gap-1.5 mt-3 px-4 py-2 bg-primary text-white rounded-xl text-xs font-bold hover:opacity-90 active:scale-[0.97] transition-all">
-                                    <span class="material-symbols-outlined text-[16px]">add</span>
+                                    <i class="fa-solid fa-plus text-[16px]"></i>
                                     Add Product
                                 </a>
                             </div>

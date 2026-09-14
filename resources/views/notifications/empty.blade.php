@@ -3,7 +3,7 @@
 @section('content')
 <div class="max-w-md mx-auto px-4 py-20 md:py-28 text-center">
     <div class="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center mx-auto mb-4">
-        <span class="material-symbols-outlined text-4xl text-gray-300">notifications_none</span>
+        <i class="fa-regular fa-bell text-4xl text-gray-300"></i>
     </div>
     <h3 class="text-lg font-bold text-gray-900">No notifications</h3>
     <p class="text-sm text-gray-500 mt-1">You're all caught up!</p>

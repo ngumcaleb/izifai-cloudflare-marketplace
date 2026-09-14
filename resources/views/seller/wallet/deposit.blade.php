@@ -8,7 +8,7 @@
                 <p class="text-[11px] text-gray-500 mt-0.5">Add money to your wallet to pay for ads and other services. After making a transfer, enter the details below.</p>
             </div>
             <a href="{{ route('seller.wallet.index') }}" class="text-xs font-semibold text-gray-500 hover:text-primary flex items-center gap-1.5 transition-colors">
-                <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+                <i class="fa-solid fa-arrow-left text-[16px]"></i>
                 Back to Wallet
             </a>
         </div>
@@ -60,7 +60,7 @@
 
                 <div class="bg-amber-50 rounded-xl p-4 space-y-2">
                     <div class="flex items-start gap-2">
-                        <span class="material-symbols-outlined text-[16px] text-amber-600 shrink-0 mt-0.5">info</span>
+                        <i class="fa-solid fa-circle-info text-[16px] text-amber-600 shrink-0 mt-0.5"></i>
                         <p class="text-xs font-bold text-amber-800">How to deposit</p>
                     </div>
                     <ol class="text-xs text-amber-700 space-y-1 ml-7 list-decimal">
@@ -72,7 +72,7 @@
 
                 <button type="submit"
                         class="w-full h-12 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 active:scale-[0.97] transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2">
-                    <span class="material-symbols-outlined text-[18px]">add_circle</span>
+                    <i class="fa-solid fa-circle-plus text-[18px]"></i>
                     Deposit Funds
                 </button>
             </form>

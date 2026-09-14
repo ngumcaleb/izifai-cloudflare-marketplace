@@ -59,7 +59,7 @@
                     <div>
                         <label class="block text-xs font-bold text-on-surface-variant mb-1.5">Email Address</label>
                         <div class="relative">
-                            <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px] pointer-events-none">mail</span>
+                            <i class="fa-solid fa-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px] pointer-events-none"></i>
                             <input type="email" name="email" value="{{ old('email', $request->email) }}" required autofocus autocomplete="username"
                                    class="w-full pl-11 pr-4 py-3 bg-surface-container-lowest border border-outline-variant/50 rounded-lg text-sm text-on-surface font-medium placeholder:text-on-surface-variant/40 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none">
                         </div>
@@ -69,13 +69,13 @@
                     <div>
                         <label class="block text-xs font-bold text-on-surface-variant mb-1.5">New Password</label>
                         <div class="relative">
-                            <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px] pointer-events-none">lock</span>
+                            <i class="fa-solid fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px] pointer-events-none"></i>
                             <input :type="showPassword ? 'text' : 'password'" name="password" required autocomplete="new-password"
                                    class="w-full pl-11 pr-11 py-3 bg-surface-container-lowest border border-outline-variant/50 rounded-lg text-sm text-on-surface font-medium placeholder:text-on-surface-variant/40 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                    placeholder="Min 8 characters">
                             <button type="button" @click="showPassword = !showPassword"
                                     class="absolute right-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface transition-colors">
-                                <span class="material-symbols-outlined text-[20px]" x-text="showPassword ? 'visibility_off' : 'visibility'"></span>
+                                <i class="text-[20px] fa-solid" :class="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
                             </button>
                         </div>
                         @error('password') <p class="text-xs text-error font-semibold mt-1">{{ $message }}</p> @enderror
@@ -84,13 +84,13 @@
                     <div>
                         <label class="block text-xs font-bold text-on-surface-variant mb-1.5">Confirm Password</label>
                         <div class="relative">
-                            <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px] pointer-events-none">lock</span>
+                            <i class="fa-solid fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px] pointer-events-none"></i>
                             <input :type="showConfirm ? 'text' : 'password'" name="password_confirmation" required autocomplete="new-password"
                                    class="w-full pl-11 pr-11 py-3 bg-surface-container-lowest border border-outline-variant/50 rounded-lg text-sm text-on-surface font-medium placeholder:text-on-surface-variant/40 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                    placeholder="Repeat password">
                             <button type="button" @click="showConfirm = !showConfirm"
                                     class="absolute right-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface transition-colors">
-                                <span class="material-symbols-outlined text-[20px]" x-text="showConfirm ? 'visibility_off' : 'visibility'"></span>
+                                <i class="text-[20px] fa-solid" :class="showConfirm ? 'fa-eye-slash' : 'fa-eye'"></i>
                             </button>
                         </div>
                         @error('password_confirmation') <p class="text-xs text-error font-semibold mt-1">{{ $message }}</p> @enderror
@@ -99,13 +99,13 @@
                     <button type="submit"
                             class="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-primary text-on-primary rounded-lg text-sm font-bold shadow-lg hover:opacity-90 transition-all active:scale-[0.98]">
                         Reset Password
-                        <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+                        <i class="fa-solid fa-arrow-right text-[20px]"></i>
                     </button>
                 </form>
 
                 <div class="mt-6 text-center">
                     <a href="{{ route('login') }}" class="text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors">
-                        <span class="material-symbols-outlined text-[16px] align-text-bottom">arrow_back</span>
+                        <i class="fa-solid fa-arrow-left text-[16px] align-text-bottom"></i>
                         Back to login
                     </a>
                 </div>

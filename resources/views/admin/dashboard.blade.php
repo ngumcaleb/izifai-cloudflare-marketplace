@@ -8,7 +8,7 @@
         <div class="absolute -left-4 -bottom-4 w-32 h-32 bg-[#006d38]/5 rounded-full"></div>
         <div class="relative z-10 h-full p-6 md:p-10 flex flex-col justify-center">
             <div class="inline-flex items-center gap-1.5 text-[#006d38] text-[8px] md:text-[10px] font-bold mb-3 w-fit">
-                <span class="material-symbols-outlined text-[14px]">dashboard</span>
+                <i class="fa-solid fa-gauge-high text-[14px]"></i>
                 Control Center
             </div>
             <h2 class="text-xl md:text-3xl font-bold text-slate-800 leading-tight mb-2 tracking-tight">

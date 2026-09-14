@@ -21,12 +21,12 @@
             <div class="h-full flex items-center justify-center px-6">
                 <div class="text-center">
                     <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-white/70 flex items-center justify-center shadow-sm">
-                        <span class="material-symbols-outlined text-[32px] text-black/20">chat_bubble</span>
+                        <i class="fa-solid fa-comment text-[32px] text-black/20"></i>
                     </div>
                     <h2 class="text-base font-bold text-black/50">No conversations yet</h2>
                     <p class="text-sm text-black/30 mt-1.5 max-w-xs mx-auto">When you message a seller or a buyer messages you, conversations will appear here.</p>
                     <a href="{{ route('products.index') }}" class="inline-flex items-center gap-1.5 mt-6 px-5 py-2.5 bg-primary text-on-primary rounded-xl text-xs font-bold hover:opacity-90 transition-all shadow-sm">
-                        <span class="material-symbols-outlined text-[16px]">shopping_bag</span>
+                        <i class="fa-solid fa-bag-shopping text-[16px]"></i>
                         Browse Products
                     </a>
                 </div>
@@ -98,10 +98,10 @@
                             <button type="submit"
                                     class="w-7 h-7 flex items-center justify-center rounded-lg text-on-surface-variant/30 hover:text-error hover:bg-error/10 transition-all"
                                     title="Delete conversation">
-                                <span class="material-symbols-outlined text-[16px]">delete</span>
+                                <i class="fa-solid fa-trash text-[16px]"></i>
                             </button>
                         </form>
-                        <span class="material-symbols-outlined text-[18px] text-on-surface-variant/20 group-hover:text-on-surface-variant/40 transition-all shrink-0">chevron_right</span>
+                        <i class="fa-solid fa-chevron-right text-[18px] text-on-surface-variant/20 group-hover:text-on-surface-variant/40 transition-all shrink-0"></i>
                     </a>
                 @endforeach
             </div>

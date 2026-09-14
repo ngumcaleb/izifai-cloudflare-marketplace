@@ -8,7 +8,7 @@
                 <p class="text-sm text-gray-500 mt-0.5">Create a new service listing</p>
             </div>
             <a href="{{ route('seller.services.index') }}" class="text-xs font-semibold text-gray-500 hover:text-primary flex items-center gap-1.5 transition-colors">
-                <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+                <i class="fa-solid fa-arrow-left text-[16px]"></i>
                 Back to Services
             </a>
         </div>
@@ -48,7 +48,7 @@
             <div class="bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-gray-100/80 space-y-4 md:space-y-5">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-xl bg-primary/5 text-primary flex items-center justify-center shrink-0">
-                        <span class="material-symbols-outlined">info</span>
+                        <i class="fa-solid fa-circle-info"></i>
                     </div>
                     <h2 class="text-base md:text-lg font-bold text-gray-900">Essential Information</h2>
                 </div>
@@ -118,7 +118,7 @@
             <div class="bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-gray-100/80 space-y-4 md:space-y-5">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-xl bg-primary/5 text-primary flex items-center justify-center shrink-0">
-                        <span class="material-symbols-outlined">photo_library</span>
+                        <i class="fa-solid fa-images"></i>
                     </div>
                     <h2 class="text-base md:text-lg font-bold text-gray-900">Service Media</h2>
                 </div>
@@ -126,7 +126,7 @@
                 <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">
                     <label class="aspect-square rounded-2xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center cursor-pointer hover:border-primary hover:bg-primary/[0.02] transition-all group overflow-hidden bg-gray-50">
                         <input type="file" name="images[]" multiple accept="image/*" class="hidden" @change="handleImageUpload">
-                        <span class="material-symbols-outlined text-2xl md:text-3xl text-gray-300 group-hover:text-primary mb-1">cloud_upload</span>
+                        <i class="fa-solid fa-cloud-arrow-up text-2xl md:text-3xl text-gray-300 group-hover:text-primary mb-1"></i>
                         <span class="text-xs font-semibold text-gray-400">Upload Photos</span>
                     </label>
 
@@ -146,7 +146,7 @@
                 <div class="space-y-4">
                     <div class="flex items-center gap-3">
                         <div class="w-8 h-8 rounded-xl bg-primary/5 text-primary flex items-center justify-center shrink-0">
-                            <span class="material-symbols-outlined">description</span>
+                            <i class="fa-solid fa-file-lines"></i>
                         </div>
                         <h2 class="text-base md:text-lg font-bold text-gray-900">Full Description</h2>
                     </div>
@@ -158,13 +158,13 @@
                     <div class="flex items-center justify-between mb-4">
                         <div class="flex items-center gap-3">
                             <div class="w-8 h-8 rounded-xl bg-primary/5 text-primary flex items-center justify-center shrink-0">
-                                <span class="material-symbols-outlined">package</span>
+                                <i class="fa-solid fa-box"></i>
                             </div>
                             <h2 class="text-base md:text-lg font-bold text-gray-900">Service Packages</h2>
                         </div>
                         <button type="button" @click="addPackage"
                                 class="text-xs font-bold text-primary hover:underline flex items-center gap-1">
-                            <span class="material-symbols-outlined text-[16px]">add</span>
+                            <i class="fa-solid fa-plus text-[16px]"></i>
                             Add Package
                         </button>
                     </div>
@@ -176,7 +176,7 @@
                                     <span class="text-xs font-bold text-gray-400 uppercase tracking-wider" x-text="'Package #' + (index + 1)"></span>
                                     <button type="button" @click="removePackage(index)" x-show="packages.length > 1"
                                             class="text-red-500 hover:bg-red-50 p-1 rounded-lg transition-all">
-                                        <span class="material-symbols-outlined text-[16px]">close</span>
+                                        <i class="fa-solid fa-xmark text-[16px]"></i>
                                     </button>
                                 </div>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -204,7 +204,7 @@
                 </a>
                 <button type="submit"
                         class="w-full sm:w-auto whitespace-nowrap bg-primary text-white px-8 py-3 rounded-xl text-sm font-bold hover:opacity-90 active:scale-[0.97] transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2">
-                    <span class="material-symbols-outlined text-[18px]">publish</span>
+                    <i class="fa-solid fa-cloud-arrow-up text-[18px]"></i>
                     Publish to Marketplace
                 </button>
             </div>

@@ -14,7 +14,9 @@ class SavedProductController extends Controller
             $q->where('user_id', auth()->id());
         })->with(['images', 'store', 'savedUsers'])->paginate(20);
         
-        return view('favorites.index', compact('products'));
+        $savedProductIds = $products->pluck('id')->toArray();
+
+        return view('favorites.index', compact('products', 'savedProductIds'));
     }
 
     public function toggle(Product $product)

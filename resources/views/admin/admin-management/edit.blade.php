@@ -108,7 +108,7 @@
                 </a>
                 <button type="submit"
                         class="px-8 py-3 bg-gold-500 text-navy-900 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-gold-400 transition-all shadow-sm">
-                    <span class="material-symbols-outlined text-[16px] align-middle mr-1">save</span>
+                    <i class="fa-solid fa-floppy-disk text-[16px] align-middle mr-1"></i>
                     Update Admin
                 </button>
             </div>

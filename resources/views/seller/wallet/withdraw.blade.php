@@ -8,7 +8,7 @@
                 <p class="text-[11px] text-gray-500 mt-0.5">Transfer your available balance to your mobile money account. Withdrawals are processed within 1-3 business days.</p>
             </div>
             <a href="{{ route('seller.wallet.index') }}" class="text-xs font-semibold text-gray-500 hover:text-primary flex items-center gap-1.5 transition-colors">
-                <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+                <i class="fa-solid fa-arrow-left text-[16px]"></i>
                 Back to Wallet
             </a>
         </div>
@@ -75,7 +75,7 @@
 
                 <div class="bg-amber-50 rounded-xl p-4 space-y-2">
                     <div class="flex items-start gap-2">
-                        <span class="material-symbols-outlined text-[16px] text-amber-600 shrink-0 mt-0.5">info</span>
+                        <i class="fa-solid fa-circle-info text-[16px] text-amber-600 shrink-0 mt-0.5"></i>
                         <p class="text-xs font-bold text-amber-800">Before you withdraw</p>
                     </div>
                     <ul class="text-xs text-amber-700 space-y-1 ml-7 list-disc">
@@ -88,7 +88,7 @@
                 <button type="submit"
                         @if($wallet->balance <= 0) disabled @endif
                         class="w-full h-12 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 active:scale-[0.97] transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 @if($wallet->balance <= 0) opacity-50 cursor-not-allowed @endif">
-                    <span class="material-symbols-outlined text-[18px]">output</span>
+                    <i class="fa-solid fa-arrow-up-from-bracket text-[18px]"></i>
                     Request Withdrawal
                 </button>
             </form>
@@ -99,7 +99,7 @@
             <div class="bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-gray-100/80 mt-4">
                 <div class="flex items-center gap-3 mb-3">
                     <div class="w-8 h-8 rounded-xl bg-primary/5 flex items-center justify-center text-primary shrink-0">
-                        <span class="material-symbols-outlined">payments</span>
+                        <i class="fa-solid fa-credit-card"></i>
                     </div>
                     <h2 class="text-sm font-bold text-gray-900">Accepted Payment Methods</h2>
                 </div>

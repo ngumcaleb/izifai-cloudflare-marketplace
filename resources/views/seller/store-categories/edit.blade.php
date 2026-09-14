@@ -9,7 +9,7 @@
             </div>
             <a href="{{ route('seller.store-categories.index') }}"
                class="text-xs font-semibold text-gray-500 hover:text-primary flex items-center gap-1.5 transition-colors">
-                <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+                <i class="fa-solid fa-arrow-left text-[16px]"></i>
                 Back
             </a>
         </div>
@@ -44,7 +44,7 @@
                 </a>
                 <button type="submit"
                         class="w-full sm:w-auto whitespace-nowrap bg-primary text-white px-8 py-3 rounded-xl text-sm font-bold hover:opacity-90 active:scale-[0.97] transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2">
-                    <span class="material-symbols-outlined text-[18px]">update</span>
+                    <i class="fa-solid fa-rotate text-[18px]"></i>
                     Update Category
                 </button>
             </div>

@@ -58,7 +58,7 @@
                     <div>
                         <label for="password" class="block text-xs font-bold text-on-surface-variant mb-1.5">Password</label>
                         <div class="relative">
-                            <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px] pointer-events-none">lock</span>
+                            <i class="fa-solid fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px] pointer-events-none"></i>
                             <input id="password" type="password" name="password" required autocomplete="current-password"
                                    class="w-full pl-11 pr-4 py-3 bg-surface-container-lowest border border-outline-variant/50 rounded-lg text-sm text-on-surface font-medium placeholder:text-on-surface-variant/40 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                    placeholder="••••••••">
@@ -69,7 +69,7 @@
                     <button type="submit"
                             class="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-primary text-on-primary rounded-lg text-sm font-bold shadow-lg hover:opacity-90 transition-all active:scale-[0.98]">
                         Confirm Password
-                        <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+                        <i class="fa-solid fa-arrow-right text-[20px]"></i>
                     </button>
                 </form>
 

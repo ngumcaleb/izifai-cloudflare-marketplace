@@ -8,7 +8,7 @@
                 <p class="text-sm text-gray-500 mt-0.5">Create a new rental listing</p>
             </div>
             <a href="{{ route('seller.rentals.index') }}" class="text-xs font-semibold text-gray-500 hover:text-primary flex items-center gap-1.5 transition-colors">
-                <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+                <i class="fa-solid fa-arrow-left text-[16px]"></i>
                 Back to Rentals
             </a>
         </div>
@@ -40,7 +40,7 @@
             <div class="bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-gray-100/80 space-y-4 md:space-y-5">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-xl bg-primary/5 text-primary flex items-center justify-center shrink-0">
-                        <span class="material-symbols-outlined">info</span>
+                        <i class="fa-solid fa-circle-info"></i>
                     </div>
                     <h2 class="text-base md:text-lg font-bold text-gray-900">Essential Information</h2>
                 </div>
@@ -71,7 +71,7 @@
                         <label class="text-xs font-semibold text-gray-500 ml-1">Collection</label>
                         @if($selectedCategory)
                             <div class="h-11 md:h-12 flex items-center gap-2 px-4 bg-primary/5 border border-primary/20 rounded-xl text-sm font-bold text-primary">
-                                <span class="material-symbols-outlined text-[18px]">folder</span>
+                                <i class="fa-solid fa-folder text-[18px]"></i>
                                 {{ $selectedCategory->name }}
                             </div>
                             <input type="hidden" name="store_category_id" value="{{ $selectedCategory->id }}">
@@ -112,10 +112,10 @@
                         </label>
                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                             @foreach([
-                                'hourly' => ['label' => 'Per Hour', 'sub' => 'Hourly billing', 'icon' => 'schedule'],
-                                'daily' => ['label' => 'Per Day', 'sub' => 'Most common', 'icon' => 'calendar_today'],
-                                'weekly' => ['label' => 'Per Week', 'sub' => '7-day rental', 'icon' => 'date_range'],
-                                'monthly' => ['label' => 'Per Month', 'sub' => '30-day lease', 'icon' => 'calendar_month']
+                                'hourly' => ['label' => 'Per Hour', 'sub' => 'Hourly billing', 'icon' => 'fa-clock'],
+                                'daily' => ['label' => 'Per Day', 'sub' => 'Most common', 'icon' => 'fa-calendar-day'],
+                                'weekly' => ['label' => 'Per Week', 'sub' => '7-day rental', 'icon' => 'fa-calendar'],
+                                'monthly' => ['label' => 'Per Month', 'sub' => '30-day lease', 'icon' => 'fa-calendar-days']
                             ] as $val => $opt)
                                 <label class="relative flex flex-col p-3 rounded-xl border-2 cursor-pointer transition-all select-none"
                                        :class="billingUnit === '{{ $val }}' 
@@ -124,10 +124,8 @@
                                     <input type="radio" name="billing_unit" value="{{ $val }}" 
                                            x-model="billingUnit" class="sr-only" required>
                                     <div class="flex items-center justify-between mb-1.5">
-                                        <span class="material-symbols-outlined text-[20px]"
-                                              :class="billingUnit === '{{ $val }}' ? 'text-[#659316]' : 'text-gray-400'">
-                                            {{ $opt['icon'] }}
-                                        </span>
+                                        <i class="fa-solid {{ $opt['icon'] }} text-[20px]"
+                                              :class="billingUnit === '{{ $val }}' ? 'text-[#659316]' : 'text-gray-400'"></i>
                                         <span class="w-4 h-4 rounded-full border flex items-center justify-center transition-all"
                                               :class="billingUnit === '{{ $val }}' ? 'border-[#659316] bg-[#659316]' : 'border-gray-300 bg-white'">
                                             <span class="w-1.5 h-1.5 rounded-full bg-white" x-show="billingUnit === '{{ $val }}'"></span>
@@ -181,7 +179,7 @@
             <div class="bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-gray-100/80 space-y-4 md:space-y-5">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-xl bg-primary/5 text-primary flex items-center justify-center shrink-0">
-                        <span class="material-symbols-outlined">photo_library</span>
+                        <i class="fa-solid fa-images"></i>
                     </div>
                     <h2 class="text-base md:text-lg font-bold text-gray-900">Rental Media</h2>
                 </div>
@@ -189,7 +187,7 @@
                 <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">
                     <label class="aspect-square rounded-2xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center cursor-pointer hover:border-primary hover:bg-primary/[0.02] transition-all group overflow-hidden bg-gray-50">
                         <input type="file" name="images[]" multiple accept="image/*" class="hidden" @change="handleImageUpload">
-                        <span class="material-symbols-outlined text-2xl md:text-3xl text-gray-300 group-hover:text-primary mb-1">cloud_upload</span>
+                        <i class="fa-solid fa-cloud-arrow-up text-2xl md:text-3xl text-gray-300 group-hover:text-primary mb-1"></i>
                         <span class="text-xs font-semibold text-gray-400">Upload Photos</span>
                     </label>
 
@@ -204,7 +202,7 @@
             <div class="bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-gray-100/80 space-y-4 md:space-y-5">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-xl bg-primary/5 text-primary flex items-center justify-center shrink-0">
-                        <span class="material-symbols-outlined">description</span>
+                        <i class="fa-solid fa-file-lines"></i>
                     </div>
                     <h2 class="text-base md:text-lg font-bold text-gray-900">Full Description</h2>
                 </div>
@@ -215,7 +213,7 @@
             <div class="bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-gray-100/80 space-y-4 md:space-y-5">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-xl bg-primary/5 text-primary flex items-center justify-center shrink-0">
-                        <span class="material-symbols-outlined">assignment_return</span>
+                        <i class="fa-solid fa-clipboard-check"></i>
                     </div>
                     <h2 class="text-base md:text-lg font-bold text-gray-900">Rental Policies</h2>
                 </div>
@@ -246,7 +244,7 @@
                 </a>
                 <button type="submit"
                         class="w-full sm:w-auto whitespace-nowrap bg-primary text-white px-8 py-3 rounded-xl text-sm font-bold hover:opacity-90 active:scale-[0.97] transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2">
-                    <span class="material-symbols-outlined text-[18px]">publish</span>
+                    <i class="fa-solid fa-cloud-arrow-up text-[18px]"></i>
                     Publish to Marketplace
                 </button>
             </div>

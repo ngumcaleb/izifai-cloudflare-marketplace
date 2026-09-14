@@ -35,9 +35,7 @@
                 {{-- Skewed Kicker Badge --}}
                 <span class="inline-flex items-center gap-2 px-3.5 py-1.5 -skew-x-6 rounded-md bg-gradient-to-r from-[#9acd32] to-[#86b92c] text-[#1c201e] text-[10px] sm:text-[11px] font-extrabold uppercase tracking-[0.16em] shadow-[0_6px_18px_-6px_rgba(154,205,50,0.55)]">
                     <span class="skew-x-6 inline-flex items-center gap-1.5">
-                        <span class="material-symbols-rounded text-[14px]" style="font-variation-settings:'FILL' 1;">
-                            {{ request('q') ? 'search' : 'storefront' }}
-                        </span>
+                        <i class="fa-solid fa-{{ request('q') ? 'magnifying-glass' : 'store' }} text-[14px]"></i>
                         {{ request('q') ? 'Search Results' : 'Verified Marketplace' }}
                     </span>
                 </span>
@@ -53,15 +51,15 @@
                 {{-- Highlights / Quick Stats --}}
                 <div class="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px] sm:text-xs font-semibold text-white/80">
                     <span class="inline-flex items-center gap-1.5">
-                        <span class="material-symbols-rounded text-[14px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">inventory_2</span>
+                        <i class="fa-solid fa-boxes-stacked text-[14px] text-[#9acd32]" style=""></i>
                         <strong class="text-white">{{ number_format($products->total()) }}</strong> products found
                     </span>
                     <span class="inline-flex items-center gap-1.5">
-                        <span class="material-symbols-rounded text-[14px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">verified</span>
+                        <i class="fa-solid fa-circle-check text-[14px] text-[#9acd32]" style=""></i>
                         Verified sellers
                     </span>
                     <span class="inline-flex items-center gap-1.5">
-                        <span class="material-symbols-rounded text-[14px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">lock</span>
+                        <i class="fa-solid fa-lock text-[14px] text-[#9acd32]" style=""></i>
                         Escrow protection
                     </span>
                 </div>
@@ -79,7 +77,7 @@
                                 <span class="skew-x-6 flex items-center gap-1">
                                     "{{ request('q') }}"
                                     <a href="{{ route('products.index', request()->except(['q', 'page'])) }}" class="hover:text-[#9acd32] transition-colors ml-0.5">
-                                        <span class="material-symbols-rounded text-[13px]">close</span>
+                                        <i class="fa-solid fa-xmark text-[13px]"></i>
                                     </a>
                                 </span>
                             </span>
@@ -91,7 +89,7 @@
                                 <span class="skew-x-6 flex items-center gap-1">
                                     {{ $activeCat->name ?? request('category') }}
                                     <a href="{{ route('products.index', request()->except(['category', 'page'])) }}" class="hover:opacity-75 transition-opacity ml-0.5">
-                                        <span class="material-symbols-rounded text-[13px]">close</span>
+                                        <i class="fa-solid fa-xmark text-[13px]"></i>
                                     </a>
                                 </span>
                             </span>
@@ -108,7 +106,7 @@
                                         Up to {{ number_format((int)request('max_price')) }} F
                                     @endif
                                     <a href="{{ route('products.index', request()->except(['min_price', 'max_price', 'page'])) }}" class="hover:text-[#9acd32] transition-colors ml-0.5">
-                                        <span class="material-symbols-rounded text-[13px]">close</span>
+                                        <i class="fa-solid fa-xmark text-[13px]"></i>
                                     </a>
                                 </span>
                             </span>
@@ -119,7 +117,7 @@
                                 <span class="skew-x-6 flex items-center gap-1">
                                     {{ request('sort') === 'price_low' ? 'Price: Low → High' : 'Price: High → Low' }}
                                     <a href="{{ route('products.index', request()->except(['sort', 'page'])) }}" class="hover:text-[#9acd32] transition-colors ml-0.5">
-                                        <span class="material-symbols-rounded text-[13px]">close</span>
+                                        <i class="fa-solid fa-xmark text-[13px]"></i>
                                     </a>
                                 </span>
                             </span>
@@ -144,7 +142,7 @@
             <a href="{{ route('products.index', request()->except(['category', 'page'])) }}"
                class="shrink-0 px-4 py-2 rounded-xl text-[12px] font-bold transition-all duration-200 flex items-center gap-1.5 {{ !request('category') ? '-skew-x-6 bg-[#1c201e] text-[#9acd32] shadow-sm' : 'bg-white border border-[#e8eae8] text-[#3f453f] hover:border-[#9acd32]/50 hover:text-[#7ca81d]' }}">
                 <span class="{{ !request('category') ? 'skew-x-6' : '' }} flex items-center gap-1.5">
-                    <span class="material-symbols-rounded text-[16px]" style="font-variation-settings:'FILL' 1;">grid_view</span>
+                    <i class="fa-solid fa-table-cells text-[16px]" style=""></i>
                     All Products
                 </span>
             </a>
@@ -175,7 +173,7 @@
                 {{-- Mobile Filter Trigger --}}
                 <button @click="openMobileFilters = true"
                         class="lg:hidden inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-[#f5f6f5] border border-[#e0e3e0] text-[#1c201e] text-[12px] font-bold hover:bg-[#eceeed] transition-all">
-                    <span class="material-symbols-rounded text-[18px]" style="font-variation-settings:'FILL' 1;">tune</span>
+                    <i class="fa-solid fa-sliders text-[18px]" style=""></i>
                     Filters
                     @php $filterCount = collect([request('category'), request('min_price'), request('max_price')])->filter()->count(); @endphp
                     @if($filterCount > 0)
@@ -197,7 +195,7 @@
                         <input type="number" name="max_price" value="{{ request('max_price') }}" placeholder="Max F"
                                class="w-20 bg-transparent text-[12px] font-semibold text-[#1c201e] placeholder:text-[#9aa19c] outline-none">
                         <button type="submit" class="w-6 h-6 rounded-lg bg-[#1c201e] text-white flex items-center justify-center hover:bg-[#9acd32] hover:text-[#1c201e] transition-colors">
-                            <span class="material-symbols-rounded text-[14px]">arrow_forward</span>
+                            <i class="fa-solid fa-arrow-right text-[14px]"></i>
                         </button>
                     </div>
                 </form>
@@ -225,9 +223,7 @@
                             </option>
                         @endforeach
                     </select>
-                    <span class="material-symbols-rounded text-[16px] text-[#6b716c] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none">
-                        expand_more
-                    </span>
+                    <i class="fa-solid fa-chevron-down text-[16px] text-[#6b716c] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
                 </div>
             </div>
         </div>
@@ -253,7 +249,7 @@
             {{-- Empty State --}}
             <div class="bg-white rounded-3xl border border-[#e8eae8] p-10 sm:p-16 text-center shadow-sm">
                 <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-[#f2f9df] text-[#659316] flex items-center justify-center mx-auto mb-4">
-                    <span class="material-symbols-rounded text-4xl sm:text-5xl" style="font-variation-settings:'FILL' 1;">inventory_2</span>
+                    <i class="fa-solid fa-boxes-stacked text-4xl sm:text-5xl" style=""></i>
                 </div>
                 <h3 class="text-lg sm:text-xl font-extrabold text-[#1c201e]">No products found</h3>
                 <p class="text-xs sm:text-sm text-[#6b716c] mt-1.5 max-w-md mx-auto leading-relaxed">
@@ -268,7 +264,7 @@
                         <a href="{{ route('products.index') }}"
                            class="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg -skew-x-6 bg-[#1c201e] text-white text-xs font-bold hover:bg-[#9acd32] hover:text-[#1c201e] transition-all shadow-md">
                             <span class="skew-x-6 flex items-center gap-1.5">
-                                <span class="material-symbols-rounded text-[15px]">refresh</span>
+                                <i class="fa-solid fa-arrows-rotate text-[15px]"></i>
                                 Reset Filters
                             </span>
                         </a>
@@ -276,7 +272,7 @@
                     <a href="{{ route('stores.index') }}"
                        class="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg -skew-x-6 bg-[#f2f9df] text-[#659316] text-xs font-bold hover:bg-[#9acd32] hover:text-[#1c201e] transition-all">
                         <span class="skew-x-6 flex items-center gap-1.5">
-                            <span class="material-symbols-rounded text-[15px]">store</span>
+                            <i class="fa-solid fa-store text-[15px]"></i>
                             Explore Stores
                         </span>
                     </a>
@@ -293,7 +289,7 @@
         <div class="flex items-end justify-between gap-3 mb-5">
             <div class="flex items-center gap-3">
                 <span class="grid place-items-center w-11 h-11 rounded-2xl bg-[#dc2626] text-white shadow-lg shadow-red-500/20 shrink-0">
-                    <span class="material-symbols-rounded text-[20px]" style="font-variation-settings:'FILL' 1;">local_fire_department</span>
+                    <i class="fa-solid fa-fire text-[20px]" style=""></i>
                 </span>
                 <div>
                     <h2 class="text-lg sm:text-xl font-extrabold tracking-tight text-[#1c201e]">Trending Now</h2>
@@ -314,7 +310,7 @@
                                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                         @else
                             <div class="w-full h-full grid place-items-center text-[#9aa19c]/30">
-                                <span class="material-symbols-rounded text-4xl">image</span>
+                                <i class="fa-solid fa-image text-4xl"></i>
                             </div>
                         @endif
 
@@ -349,7 +345,7 @@
                 <p class="text-[12px] text-[#6b716c] mt-0.5">Reliable merchants shipping across Cameroon</p>
             </div>
             <a href="{{ route('stores.index') }}" class="inline-flex items-center gap-1 text-xs font-bold text-[#7ca81d] hover:text-[#659316] transition-colors whitespace-nowrap">
-                View all stores <span class="material-symbols-rounded text-[15px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+                View all stores <i class="fa-solid fa-arrow-right text-[15px]" style=""></i>
             </a>
         </div>
 
@@ -368,13 +364,13 @@
                         <p class="text-[13px] font-bold text-[#1c201e] truncate inline-flex items-center gap-1">
                             {{ $store->name }}
                             @if($store->is_verified)
-                                <span class="material-symbols-rounded text-[13px] text-[#659316]" style="font-variation-settings:'FILL' 1;">verified</span>
+                                <i class="fa-solid fa-circle-check text-[13px] text-[#659316]" style=""></i>
                             @endif
                         </p>
                         <div class="flex items-center gap-2 mt-0.5">
                             @if(($store->rating ?? 0) > 0)
                                 <span class="inline-flex items-center gap-0.5 text-[11px] font-bold text-[#6b716c]">
-                                    <span class="material-symbols-rounded text-[13px] text-amber-400" style="font-variation-settings:'FILL' 1;">star</span>
+                                    <i class="fa-solid fa-star text-[13px] text-amber-400" style=""></i>
                                     {{ number_format($store->rating, 1) }}
                                 </span>
                             @endif
@@ -382,7 +378,7 @@
                         </div>
                     </div>
                     <span class="grid place-items-center w-8 h-8 rounded-full bg-[#f2f9df] text-[#7ca81d] group-hover:bg-[#9acd32] group-hover:text-[#1c201e] transition-colors shrink-0">
-                        <span class="material-symbols-rounded text-[16px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+                        <i class="fa-solid fa-arrow-right text-[16px]" style=""></i>
                     </span>
                 </a>
             @endforeach
@@ -410,7 +406,7 @@
             {{-- Sheet Header --}}
             <div class="sticky top-0 bg-white/95 backdrop-blur-md border-b border-[#eff1ef] px-5 py-4 flex items-center justify-between z-10">
                 <div class="flex items-center gap-2">
-                    <span class="material-symbols-rounded text-[20px] text-[#7ca81d]" style="font-variation-settings:'FILL' 1;">tune</span>
+                    <i class="fa-solid fa-sliders text-[20px] text-[#7ca81d]" style=""></i>
                     <h3 class="text-sm font-extrabold text-[#1c201e]">Filter Products</h3>
                 </div>
                 <div class="flex items-center gap-3">
@@ -418,7 +414,7 @@
                         <a href="{{ route('products.index') }}" class="text-xs font-bold text-[#7ca81d] hover:underline">Reset</a>
                     @endif
                     <button @click="openMobileFilters = false" class="w-8 h-8 rounded-full bg-[#f5f6f5] flex items-center justify-center text-[#1c201e]">
-                        <span class="material-symbols-rounded text-[18px]">close</span>
+                        <i class="fa-solid fa-xmark text-[18px]"></i>
                     </button>
                 </div>
             </div>
@@ -432,7 +428,7 @@
                            class="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold {{ !request('category') ? 'bg-[#f2f9df] text-[#659316]' : 'text-[#3f453f] hover:bg-[#f5f6f5]' }}">
                             All Categories
                             @if(!request('category'))
-                                <span class="material-symbols-rounded text-[16px]">check</span>
+                                <i class="fa-solid fa-check text-[16px]"></i>
                             @endif
                         </a>
                         @foreach($categories as $c)
@@ -441,7 +437,7 @@
                                class="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold {{ $isCActive ? 'bg-[#f2f9df] text-[#659316]' : 'text-[#3f453f] hover:bg-[#f5f6f5]' }}">
                                 <span>{{ $c->name }}</span>
                                 @if($isCActive)
-                                    <span class="material-symbols-rounded text-[16px]">check</span>
+                                    <i class="fa-solid fa-check text-[16px]"></i>
                                 @else
                                     <span class="text-[10px] text-[#9aa19c] font-semibold">{{ $c->products_count }}</span>
                                 @endif
@@ -484,7 +480,7 @@
                                class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold {{ $isSortActive ? 'bg-[#f2f9df] text-[#659316]' : 'text-[#3f453f] hover:bg-[#f5f6f5]' }}">
                                 {{ $sLabel }}
                                 @if($isSortActive)
-                                    <span class="material-symbols-rounded text-[16px]">check</span>
+                                    <i class="fa-solid fa-check text-[16px]"></i>
                                 @endif
                             </a>
                         @endforeach
@@ -537,16 +533,16 @@
                     'Accept': 'application/json'
                 }
             }).then(r => r.json()).then(data => {
-                const icon = btn.querySelector('.material-symbols-outlined') || btn.querySelector('.material-symbols-rounded');
+                const icon = btn.querySelector('i.fa-heart') || btn.querySelector('i.fa-heart');
                 if (!icon) return;
 
                 if (data.favorited) {
-                    icon.style.fontVariationSettings = "'FILL' 1";
+                    icon.classList.add('fa-solid'); icon.classList.remove('fa-regular');
                     icon.classList.add('text-[#dc2626]');
                     icon.classList.remove('text-[#5c625e]');
                     btn.dataset.favorited = 'true';
                 } else {
-                    icon.style.fontVariationSettings = "'FILL' 0";
+                    icon.classList.add('fa-regular'); icon.classList.remove('fa-solid');
                     icon.classList.remove('text-[#dc2626]');
                     icon.classList.add('text-[#5c625e]');
                     btn.dataset.favorited = 'false';

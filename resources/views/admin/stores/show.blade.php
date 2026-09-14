@@ -854,13 +854,13 @@
                                         <img src="{{ $store->logo_url }}" class="w-full h-full object-cover">
                                     @else
                                         <div class="w-full h-full flex flex-col items-center justify-center text-slate-300">
-                                            <span class="material-symbols-outlined text-2xl">add_photo_alternate</span>
+                                            <i class="fa-solid fa-images text-2xl"></i>
                                             <span class="text-[9px] font-bold mt-1">Logo</span>
                                         </div>
                                     @endif
                                 </div>
                                 <div class="absolute inset-0 bg-navy-900/80 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center text-white rounded-xl">
-                                    <span class="material-symbols-outlined text-xl">camera_alt</span>
+                                    <i class="fa-solid fa-camera text-xl"></i>
                                 </div>
                             </label>
                         </div>
@@ -875,13 +875,13 @@
                                         <img src="{{ $store->banner_url }}" class="w-full h-full object-cover">
                                     @else
                                         <div class="w-full h-full flex items-center justify-center text-slate-300">
-                                            <span class="material-symbols-outlined text-lg">panorama</span>
+                                            <i class="fa-solid fa-image text-lg"></i>
                                             <span class="text-[9px] font-bold ml-2">Banner (1200x400)</span>
                                         </div>
                                     @endif
                                 </div>
                                 <div class="absolute inset-0 bg-navy-900/80 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center text-white rounded-xl">
-                                    <span class="material-symbols-outlined text-xl">camera_alt</span>
+                                    <i class="fa-solid fa-camera text-xl"></i>
                                 </div>
                             </label>
                         </div>

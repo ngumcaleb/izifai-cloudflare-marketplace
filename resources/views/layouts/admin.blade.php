@@ -93,13 +93,13 @@
             <nav class="flex-1 px-3 py-5 space-y-0.5 overflow-y-auto no-scrollbar">
                 <a href="{{ route('admin.dashboard') }}" 
                    class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.dashboard') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
-                    <span class="material-symbols-outlined text-[18px]">dashboard</span>
+                    <i class="fa-solid fa-gauge-high text-[18px]"></i>
                     <span class="text-[12px] font-semibold">Overview</span>
                 </a>
 
                 <a href="{{ route('admin.stores.index') }}" 
                    class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.stores.*') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
-                    <span class="material-symbols-outlined text-[18px]">store</span>
+                    <i class="fa-solid fa-store text-[18px]"></i>
                     <span class="text-[12px] font-semibold">Merchant Hub</span>
                 </a>
 
@@ -107,19 +107,19 @@
 
                 <a href="{{ route('admin.products.index') }}" 
                    class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.products.*') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
-                    <span class="material-symbols-outlined text-[18px]">inventory_2</span>
+                    <i class="fa-solid fa-boxes-stacked text-[18px]"></i>
                     <span class="text-[12px] font-semibold">Products</span>
                 </a>
 
                 <a href="{{ route('admin.services.index') }}" 
                    class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.services.*') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
-                    <span class="material-symbols-outlined text-[18px]">handyman</span>
+                    <i class="fa-solid fa-screwdriver-wrench text-[18px]"></i>
                     <span class="text-[12px] font-semibold">Services</span>
                 </a>
 
                 <a href="{{ route('admin.rentals.index') }}" 
                    class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.rentals.*') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
-                    <span class="material-symbols-outlined text-[18px]">shelves</span>
+                    <i class="fa-solid fa-warehouse text-[18px]"></i>
                     <span class="text-[12px] font-semibold">Rentals</span>
                 </a>
 
@@ -127,13 +127,13 @@
 
                 <a href="{{ route('admin.orders.index') }}" 
                    class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.orders.*') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
-                    <span class="material-symbols-outlined text-[18px]">shopping_cart</span>
+                    <i class="fa-solid fa-cart-shopping text-[18px]"></i>
                     <span class="text-[12px] font-semibold">Orders</span>
                 </a>
 
                 <a href="{{ route('admin.rental-transactions.index') }}" 
                    class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.rental-transactions.*') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
-                    <span class="material-symbols-outlined text-[18px]">assignment</span>
+                    <i class="fa-solid fa-clipboard-list text-[18px]"></i>
                     <span class="text-[12px] font-semibold">Rental Txns</span>
                 </a>
 
@@ -141,19 +141,19 @@
 
                 <a href="{{ route('admin.financials') }}" 
                    class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.financials') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
-                    <span class="material-symbols-outlined text-[18px]">account_balance</span>
+                    <i class="fa-solid fa-landmark text-[18px]"></i>
                     <span class="text-[12px] font-semibold">Financials</span>
                 </a>
 
                 <a href="{{ route('admin.withdrawals.index') }}" 
                    class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.withdrawals.*') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
-                    <span class="material-symbols-outlined text-[18px]">money_off</span>
+                    <i class="fa-solid fa-money-bill-wave text-[18px]"></i>
                     <span class="text-[12px] font-semibold">Withdrawals</span>
                 </a>
 
                 <a href="{{ route('admin.payment-methods.index') }}" 
                    class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.payment-methods.*') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
-                    <span class="material-symbols-outlined text-[18px]">payments</span>
+                    <i class="fa-solid fa-credit-card text-[18px]"></i>
                     <span class="text-[12px] font-semibold">Payment Info</span>
                 </a>
 
@@ -161,31 +161,31 @@
 
                 <a href="{{ route('admin.users.index') }}" 
                    class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.users.*') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
-                    <span class="material-symbols-outlined text-[18px]">group</span>
+                    <i class="fa-solid fa-users text-[18px]"></i>
                     <span class="text-[12px] font-semibold">User Base</span>
                 </a>
 
                 <a href="{{ route('admin.reviews.index') }}" 
                    class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.reviews.*') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
-                    <span class="material-symbols-outlined text-[18px]">reviews</span>
+                    <i class="fa-solid fa-star text-[18px]"></i>
                     <span class="text-[12px] font-semibold">Reviews</span>
                 </a>
 
                 <a href="{{ route('admin.reports.index') }}" 
                    class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.reports.*') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
-                    <span class="material-symbols-outlined text-[18px]">flag</span>
+                    <i class="fa-solid fa-flag text-[18px]"></i>
                     <span class="text-[12px] font-semibold">Reports</span>
                 </a>
 
                 <a href="{{ route('admin.categories.index') }}" 
                    class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.categories.*') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
-                    <span class="material-symbols-outlined text-[18px]">category</span>
+                    <i class="fa-solid fa-tags text-[18px]"></i>
                     <span class="text-[12px] font-semibold">Categories</span>
                 </a>
 
                 <a href="{{ route('admin.ads.index') }}" 
                    class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.ads.*') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
-                    <span class="material-symbols-outlined text-[18px]">ads_click</span>
+                    <i class="fa-solid fa-bullseye text-[18px]"></i>
                     <span class="text-[12px] font-semibold">Ad Requests</span>
                 </a>
                 
@@ -193,31 +193,31 @@
                 
                 <a href="{{ route('admin.analytics') }}" 
                    class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.analytics') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
-                    <span class="material-symbols-outlined text-[18px]">bar_chart</span>
+                    <i class="fa-solid fa-chart-column text-[18px]"></i>
                     <span class="text-[12px] font-semibold">Analytics</span>
                 </a>
 
                 <a href="{{ route('admin.notifications.index') }}" 
                    class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.notifications.*') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
-                    <span class="material-symbols-outlined text-[18px]">notifications</span>
+                    <i class="fa-solid fa-bell text-[18px]"></i>
                     <span class="text-[12px] font-semibold">Notifications</span>
                 </a>
 
                 <a href="{{ route('admin.admin-management.index') }}" 
                    class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.admin-management.*') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
-                    <span class="material-symbols-outlined text-[18px]">manage_accounts</span>
+                    <i class="fa-solid fa-user-gear text-[18px]"></i>
                     <span class="text-[12px] font-semibold">Admin Management</span>
                 </a>
 
                 <a href="{{ route('admin.audit-logs.index') }}" 
                    class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.audit-logs.*') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
-                    <span class="material-symbols-outlined text-[18px]">history</span>
+                    <i class="fa-solid fa-clock-rotate-left text-[18px]"></i>
                     <span class="text-[12px] font-semibold">Audit Log</span>
                 </a>
 
                 <a href="{{ route('admin.settings') }}" 
                    class="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.settings') ? 'sidebar-active text-[#006d38] font-bold' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50' }}">
-                    <span class="material-symbols-outlined text-[18px]">settings</span>
+                    <i class="fa-solid fa-gear text-[18px]"></i>
                     <span class="text-[12px] font-semibold">Settings</span>
                 </a>
             </nav>
@@ -227,7 +227,7 @@
                 <form action="{{ route('admin.logout') }}" method="POST">
                     @csrf
                     <button class="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl text-red-500 hover:bg-red-50 transition-all font-semibold text-[12px]">
-                        <span class="material-symbols-outlined text-[18px]">logout</span>
+                        <i class="fa-solid fa-right-from-bracket text-[18px]"></i>
                         Logout
                     </button>
                 </form>
@@ -240,7 +240,7 @@
             <header class="h-16 bg-white border-b border-slate-100 flex items-center justify-between px-4 lg:px-8 lg:h-20 shrink-0 shadow-sm">
                 <div class="flex items-center gap-3">
                     <button @click="sidebarOpen = true" class="lg:hidden p-2 text-slate-500 hover:bg-slate-50 rounded-lg">
-                        <span class="material-symbols-outlined text-[20px]">menu</span>
+                        <i class="fa-solid fa-bars text-[20px]"></i>
                     </button>
                     <div class="lg:hidden flex items-center gap-2">
                         <x-application-logo class="w-6 h-6" />
@@ -253,7 +253,7 @@
                      x-init="fetch('{{ route('admin.notifications.unread-count') }}').then(r=>r.json()).then(d=>unreadCount=d.unread_count)">
                     <div class="relative">
                         <button @click="notifOpen = !notifOpen; if(notifOpen){fetch('{{ route('admin.notifications.unread-count') }}').then(r=>r.json()).then(d=>unreadCount=d.unread_count);fetch('{{ route('admin.notifications.dropdown') }}').then(r=>r.json()).then(d=>notifications=d.notifications)}" class="p-2 text-slate-400 hover:text-slate-700 relative">
-                            <span class="material-symbols-outlined text-[20px]">notifications</span>
+                            <i class="fa-solid fa-bell text-[20px]"></i>
                             <span x-show="unreadCount > 0" x-text="unreadCount" class="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] bg-rose-500 text-white text-[8px] font-bold rounded-full flex items-center justify-center px-1 border-2 border-white"></span>
                         </button>
                         <div x-show="notifOpen" @click.outside="notifOpen = false" x-cloak class="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-slate-100 overflow-hidden z-50">
@@ -268,7 +268,7 @@
                                         <button type="submit" class="w-full text-left p-3 border-b border-slate-50 hover:bg-slate-50 transition-colors flex items-start gap-3">
                                             <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
                                                  :class="{'bg-amber-50 text-amber-500': n.type === 'withdrawal', 'bg-rose-50 text-rose-500': n.type === 'report', 'bg-blue-50 text-blue-500': n.type === 'system'}">
-                                                <span class="material-symbols-outlined text-[16px]" x-text="n.type === 'withdrawal' ? 'account_balance' : (n.type === 'report' ? 'flag' : 'notifications')"></span>
+                                                <i class="text-[16px] fa-solid" :class="n.type === 'withdrawal' ? 'fa-landmark' : (n.type === 'report' ? 'fa-flag' : 'fa-bell')"></i>
                                             </div>
                                             <div class="min-w-0 flex-1">
                                                 <p class="text-[11px] font-bold text-navy-800 truncate" x-text="n.title"></p>
@@ -288,7 +288,7 @@
                         </div>
                     </div>
                     <a href="{{ route('admin.profile') }}" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center border border-slate-200 hover:bg-slate-200 transition-colors">
-                        <span class="material-symbols-outlined text-[16px] text-slate-400">person</span>
+                        <i class="fa-solid fa-user text-[16px] text-slate-400"></i>
                     </a>
                 </div>
             </header>

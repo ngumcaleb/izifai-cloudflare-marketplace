@@ -56,9 +56,7 @@
                         {{ $notification->type === 'report' ? 'bg-rose-50 text-rose-500' : '' }}
                         {{ $notification->type === 'system' ? 'bg-blue-50 text-blue-500' : '' }}
                         {{ !in_array($notification->type, ['withdrawal', 'report', 'system']) ? 'bg-slate-50 text-slate-500' : '' }}">
-                        <span class="material-symbols-outlined text-[20px]">
-                            {{ $notification->type === 'withdrawal' ? 'account_balance' : ($notification->type === 'report' ? 'flag' : 'notifications') }}
-                        </span>
+                        <i class="{{ $notification->type === 'withdrawal' ? 'fa-solid fa-landmark' : ($notification->type === 'report' ? 'fa-solid fa-flag' : 'fa-solid fa-bell') }} text-[20px]"></i>
                     </div>
                     <div class="flex-1 min-w-0">
                         <div class="flex items-start justify-between gap-3">
@@ -74,7 +72,7 @@
                                 <form action="{{ route('admin.notifications.read', $notification->id) }}" method="POST">
                                     @csrf
                                     <button type="submit" class="w-6 h-6 rounded-full bg-gold-400/10 text-gold-500 flex items-center justify-center hover:bg-gold-400/20 transition-colors">
-                                        <span class="material-symbols-outlined text-[14px]">check</span>
+                                        <i class="fa-solid fa-check text-[14px]"></i>
                                     </button>
                                 </form>
                                 @endif
@@ -86,7 +84,7 @@
             @empty
             <div class="admin-card p-12 text-center">
                 <div class="w-16 h-16 mx-auto bg-slate-50 rounded-full flex items-center justify-center mb-4">
-                    <span class="material-symbols-outlined text-[32px] text-slate-300">notifications_off</span>
+                    <i class="fa-solid fa-bell-slash text-[32px] text-slate-300"></i>
                 </div>
                 <h3 class="text-sm font-bold text-navy-800 mb-1">No notifications yet</h3>
                 <p class="text-xs text-slate-400 font-medium">

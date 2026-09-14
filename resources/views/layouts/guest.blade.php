@@ -28,7 +28,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&family=Material+Symbols+Rounded:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script>
         tailwind.config = {
@@ -107,8 +107,6 @@
     <style>
         html { scroll-behavior: smooth; }
         body { font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; background-color: #f5f6f5; }
-        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-        .material-symbols-rounded { font-family: 'Material Symbols Rounded'; font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .touch-none { touch-action: none; }
@@ -190,8 +188,8 @@
                 <div class="flex items-center gap-2 shrink-0">
                     {{-- Mobile hamburger triggers bottom sheet --}}
                     <button @click="mobileMenu = !mobileMenu" class="sm:hidden relative w-9 h-9 flex items-center justify-center rounded-xl text-[#3f453f] hover:bg-black/5 transition-all active:scale-90" aria-label="Menu">
-                        <span x-show="!mobileMenu" class="material-symbols-rounded text-[22px]">menu</span>
-                        <span x-show="mobileMenu" x-cloak class="material-symbols-rounded text-[22px]">close</span>
+        <span x-show="!mobileMenu" class="fa-solid fa-bars text-[22px]"></span>
+                <span x-show="mobileMenu" x-cloak class="fa-solid fa-xmark text-[22px]"></span>
                     </button>
                     <a href="/" class="shrink-0 transition-opacity hover:opacity-80">
                         <x-application-logo class="h-7 sm:h-8" />
@@ -208,13 +206,13 @@
                 <div class="hidden sm:flex flex-1 max-w-xl lg:max-w-2xl mx-4">
                     <div class="group w-full flex items-center rounded-full bg-white border border-[#e4e7e4] focus-within:border-[#9acd32] focus-within:ring-4 focus-within:ring-[#9acd32]/10 hover:border-[#c9cdc9] shadow-sm transition-all duration-200">
                         <span class="grid place-items-center pl-4 pr-1 text-[#9aa19c] group-focus-within:text-[#7ca81d] transition-colors">
-                            <span class="material-symbols-outlined text-[20px]" style="font-variation-settings:'FILL' 1;">search</span>
+                            <i class="fa-solid fa-magnifying-glass text-[20px]" style=""></i>
                         </span>
                         <input type="text" placeholder="What are you looking for?"
                                @click="$dispatch('open-search')"
                                class="w-full h-11 bg-transparent text-[13px] px-2 outline-none text-[#1c201e] placeholder-[#9aa19c] cursor-pointer truncate" readonly>
                         <button @click="$dispatch('open-search')" class="m-1 h-9 shrink-0 rounded-full px-4 bg-[#9acd32] hover:bg-[#7ca81d] text-white text-[13px] font-bold flex items-center gap-1.5 transition-all active:scale-[0.98]">
-                            <span class="material-symbols-outlined text-[18px]" style="font-variation-settings:'FILL' 1;">search</span>
+                            <i class="fa-solid fa-magnifying-glass text-[18px]" style=""></i>
                             Search
                         </button>
                     </div>
@@ -225,7 +223,7 @@
                 <div class="flex items-center gap-1.5 sm:gap-2">
                     <button @click="$dispatch('open-search')" aria-label="Search"
                             class="sm:hidden w-9 h-9 grid place-items-center rounded-xl text-[#3f453f] hover:text-[#1c201e] hover:bg-black/5 transition-all">
-                        <span class="material-symbols-outlined text-[21px]" style="font-variation-settings:'FILL' 1;">search</span>
+                        <i class="fa-solid fa-magnifying-glass text-[21px]" style=""></i>
                     </button>
                     @auth
                         @php
@@ -233,12 +231,12 @@
                         @endphp
                         <a href="{{ route('notifications.index') }}"
                            class="relative w-9 h-9 flex items-center justify-center rounded-xl text-[#5c625e] hover:text-[#1c201e] hover:bg-black/5 transition-all">
-                            <span class="material-symbols-outlined text-[20px]" style="font-variation-settings:'FILL' 1;">notifications</span>
+                            <i class="fa-solid fa-bell text-[20px]" style=""></i>
                             <span class="notif-badge hidden absolute -top-0.5 -right-0.5 w-4 h-4 bg-[#dc2626] text-white text-[8px] font-bold rounded-full flex items-center justify-center">0</span>
                         </a>
                         <a href="{{ route('conversations.index') }}"
                            class="relative w-9 h-9 flex items-center justify-center rounded-xl text-[#5c625e] hover:text-[#1c201e] hover:bg-black/5 transition-all">
-                            <span class="material-symbols-outlined text-[20px]" style="font-variation-settings:'FILL' 1;">chat_bubble</span>
+                            <i class="fa-solid fa-comment text-[20px]" style=""></i>
                             <span class="unread-badge hidden absolute -top-0.5 -right-0.5 w-4 h-4 bg-[#dc2626] text-white text-[8px] font-bold rounded-full flex items-center justify-center">0</span>
                         </a>
                         <div class="w-px h-6 bg-[#e5e7e5] mx-1 hidden sm:block"></div>
@@ -253,18 +251,18 @@
                             <div x-show="open" x-cloak @click="open = false"
                                  class="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-lg border border-[#e8eae8] py-2 z-50">
 <a href="{{ $userStore ? route('seller.dashboard') : route('seller.store.create') }}" class="flex items-center gap-2.5 px-4 py-2 text-[12px] font-medium text-[#3f453f] hover:bg-[#f5f6f5] transition-colors">
-                                    <span class="material-symbols-outlined text-[16px] text-[#9aa19c]">store</span> {{ $userStore ? 'Dashboard' : 'Open a Store' }}
+                                    <i class="fa-solid fa-store text-[16px] text-[#9aa19c]"></i> {{ $userStore ? 'Dashboard' : 'Open a Store' }}
                                 </a>
                                 @if(!$userStore)
                                     <a href="{{ route('seller.store.create') }}" class="flex items-center gap-2.5 px-4 py-2 text-[12px] font-medium text-[#3f453f] hover:bg-[#f5f6f5] transition-colors">
-                                        <span class="material-symbols-outlined text-[16px] text-[#9aa19c]" style="font-variation-settings:'FILL' 1;">add_business</span> Create Your Store
+                                        <i class="fa-solid fa-store text-[16px] text-[#9aa19c]" style=""></i> Create Your Store
                                     </a>
                                 @endif
                                 <hr class="my-1 border-[#e8eae8]">
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
                                     <button type="submit" class="w-full flex items-center gap-2.5 px-4 py-2 text-[12px] font-medium text-[#dc2626] hover:bg-[#dc2626]/5 transition-colors">
-                                        <span class="material-symbols-outlined text-[16px]" style="font-variation-settings:'FILL' 1;">logout</span> Log Out
+                                        <i class="fa-solid fa-right-from-bracket text-[16px]" style=""></i> Log Out
                                     </button>
                                 </form>
                             </div>
@@ -286,9 +284,9 @@
                 {{-- Categories mega menu --}}
                 <div class="relative h-full" x-data="{ catOpen: false }" @mouseenter="catOpen = true" @mouseleave="catOpen = false">
                     <button class="h-full flex items-center gap-2 px-5 text-[12px] font-bold text-white bg-[#9acd32] hover:bg-[#7ca81d] rounded-b-xl transition-colors">
-                        <span class="material-symbols-outlined text-[18px]" style="font-variation-settings:'FILL' 1;">category</span>
+                        <i class="fa-solid fa-tags text-[18px]" style=""></i>
                         All Categories
-                        <span class="material-symbols-outlined text-[14px] opacity-80" :class="catOpen ? 'rotate-180' : ''" style="font-variation-settings:'FILL' 1; transition: transform 0.2s">expand_more</span>
+                        <i class="fa-solid fa-chevron-down text-[14px] opacity-80" :class="catOpen ? 'rotate-180' : ''" style="transition: transform 0.2s"></i>
                     </button>
                     <div x-show="catOpen" x-cloak
                          @click="catOpen = false"
@@ -298,7 +296,7 @@
                                 <span class="text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#9aa19c]">Categories</span>
                                 <a href="{{ route('products.index') }}"
                                    class="text-[11px] font-bold text-[#9acd32] hover:text-[#7ca81d] transition-colors inline-flex items-center gap-0.5">
-                                    Browse all <span class="material-symbols-outlined text-[13px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+                                    Browse all <i class="fa-solid fa-arrow-right text-[13px]" style=""></i>
                                 </a>
                             </div>
                             <div class="grid grid-cols-2 min-[480px]:grid-cols-3 gap-0.5 max-h-[21rem] overflow-y-auto no-scrollbar">
@@ -327,20 +325,20 @@
                         <div class="hidden lg:flex flex-col gap-1 bg-[#f5f6f5] border-l border-[#e8eae8] p-3">
                             <span class="text-[9px] font-bold text-[#9aa19c] uppercase tracking-wider mb-1 px-2">Quick Links</span>
                             <a href="{{ route('stores.index') }}" class="inline-flex items-center gap-2 text-[11px] font-medium text-[#3f453f] hover:text-[#7ca81d] transition-colors px-2 py-1.5 rounded-lg hover:bg-white">
-                                <span class="material-symbols-outlined text-[14px] text-[#9aa19c]">store</span> Top Stores
+                                <i class="fa-solid fa-store text-[14px] text-[#9aa19c]"></i> Top Stores
                             </a>
                             <a href="{{ route('products.index') }}" class="inline-flex items-center gap-2 text-[11px] font-medium text-[#3f453f] hover:text-[#7ca81d] transition-colors px-2 py-1.5 rounded-lg hover:bg-white">
-                                <span class="material-symbols-outlined text-[14px] text-[#9aa19c]">new_releases</span> New Arrivals
+                                <i class="fa-solid fa-certificate text-[14px] text-[#9aa19c]"></i> New Arrivals
                             </a>
                             <a href="{{ route('services.index') }}" class="inline-flex items-center gap-2 text-[11px] font-medium text-[#3f453f] hover:text-[#7ca81d] transition-colors px-2 py-1.5 rounded-lg hover:bg-white">
-                                <span class="material-symbols-outlined text-[14px] text-[#9aa19c]">handyman</span> Services
+                                <i class="fa-solid fa-screwdriver-wrench text-[14px] text-[#9aa19c]"></i> Services
                             </a>
                             <a href="{{ route('rentals.index') }}" class="inline-flex items-center gap-2 text-[11px] font-medium text-[#3f453f] hover:text-[#7ca81d] transition-colors px-2 py-1.5 rounded-lg hover:bg-white">
-                                <span class="material-symbols-outlined text-[14px] text-[#9aa19c]">shelves</span> Rentals
+                                <i class="fa-solid fa-warehouse text-[14px] text-[#9aa19c]"></i> Rentals
                             </a>
                             <a href="{{ route('stores.index') }}" class="mt-auto inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-[#9acd32] text-white text-[11px] font-bold rounded-full hover:bg-[#7ca81d] transition-colors">
                                 Explore stores
-                                <span class="material-symbols-outlined text-[13px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+                                <i class="fa-solid fa-arrow-right text-[13px]" style=""></i>
                             </a>
                         </div>
                     </div>
@@ -365,7 +363,7 @@
                     @else
                         <a href="{{ route('register') }}" class="inline-flex items-center gap-1.5 px-4 py-1.5 bg-[#7ca81d] text-white font-bold rounded-full hover:bg-[#7ca81d] transition-colors">
                             Start Selling
-                            <span class="material-symbols-outlined text-[14px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+                            <i class="fa-solid fa-arrow-right text-[14px]" style=""></i>
                         </a>
                     @endauth
                 </div>
@@ -430,19 +428,19 @@
                         </div>
                         <a href="{{ route('home') }}" @click="mobileMenu = false"
                            class="shrink-0 w-9 h-9 rounded-xl bg-[#f5f6f5] grid place-items-center text-[#5c625e]">
-                            <span class="material-symbols-rounded text-[18px]">manage_accounts</span>
+                            <i class="fa-solid fa-user-gear text-[18px]"></i>
                         </a>
                     </div>
                     @if($isSeller)
                     <a href="{{ route('seller.dashboard') }}" @click="mobileMenu = false"
                        class="mt-3 flex items-center justify-center gap-2 w-full py-2.5 rounded-2xl bg-[#9acd32] text-[#1c201e] text-[13px] font-bold active:scale-[0.98] transition-transform">
-                        <span class="material-symbols-rounded text-[16px]" style="font-variation-settings:'FILL' 1;">dashboard</span>
+                        <i class="fa-solid fa-gauge-high text-[16px]" style=""></i>
                         Seller Dashboard
                     </a>
                     @else
                     <a href="{{ route('seller.store.create') }}" @click="mobileMenu = false"
                        class="mt-3 flex items-center justify-center gap-2 w-full py-2.5 rounded-2xl border-2 border-dashed border-[#9acd32]/40 text-[#7ca81d] text-[13px] font-bold active:scale-[0.98] transition-transform">
-                        <span class="material-symbols-rounded text-[16px]" style="font-variation-settings:'FILL' 1;">storefront</span>
+                        <i class="fa-solid fa-store text-[16px]" style=""></i>
                         Open Your Store
                     </a>
                     @endif
@@ -453,12 +451,12 @@
                     <div class="grid grid-cols-2 gap-2.5">
                         <a href="{{ route('register') }}" @click="mobileMenu = false"
                            class="flex items-center justify-center gap-1.5 py-3 bg-[#9acd32] text-[#1c201e] text-[13px] font-bold rounded-2xl active:scale-[0.98] transition-transform">
-                            <span class="material-symbols-rounded text-[16px]" style="font-variation-settings:'FILL' 1;">person_add</span>
+                            <i class="fa-solid fa-user-plus text-[16px]" style=""></i>
                             Get Started
                         </a>
                         <a href="{{ route('login') }}" @click="mobileMenu = false"
                            class="flex items-center justify-center gap-1.5 py-3 border border-[#e4e7e4] text-[#3f453f] text-[13px] font-bold rounded-2xl active:scale-[0.98] transition-transform">
-                            <span class="material-symbols-rounded text-[16px]">login</span>
+                            <i class="fa-solid fa-right-to-bracket text-[16px]"></i>
                             Sign In
                         </a>
                     </div>
@@ -476,18 +474,18 @@
                 <div class="grid grid-cols-2 gap-1.5 mb-4">
                     @php
                         $mobileNavItems = [
-                            ['icon' => 'home', 'label' => 'Home', 'route' => route('home')],
-                            ['icon' => 'shopping_bag', 'label' => 'Products', 'route' => route('products.index')],
-                            ['icon' => 'store', 'label' => 'Stores', 'route' => route('stores.index')],
-                            ['icon' => 'handyman', 'label' => 'Services', 'route' => route('services.index')],
-                            ['icon' => 'shelves', 'label' => 'Rentals', 'route' => route('rentals.index')],
+                            ['icon' => 'fa-house', 'label' => 'Home', 'route' => route('home')],
+                            ['icon' => 'fa-bag-shopping', 'label' => 'Products', 'route' => route('products.index')],
+                            ['icon' => 'fa-store', 'label' => 'Stores', 'route' => route('stores.index')],
+                            ['icon' => 'fa-screwdriver-wrench', 'label' => 'Services', 'route' => route('services.index')],
+                            ['icon' => 'fa-warehouse', 'label' => 'Rentals', 'route' => route('rentals.index')],
                         ];
                     @endphp
                     @foreach($mobileNavItems as $item)
                     <a href="{{ $item['route'] }}" @click="mobileMenu = false"
                        class="flex items-center gap-3 px-3.5 py-3.5 rounded-2xl bg-[#f8f9f8] hover:bg-[#f2f9df] hover:text-[#7ca81d] transition-all active:scale-[0.97] group">
                         <span class="grid place-items-center w-8 h-8 rounded-xl bg-white shadow-sm shrink-0">
-                            <span class="material-symbols-rounded text-[18px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">{{ $item['icon'] }}</span>
+                            <i class="fa-solid {{ $item['icon'] }} text-[18px] text-[#9acd32]"></i>
                         </span>
                         <span class="text-[13px] font-semibold text-[#2e332f] group-hover:text-[#7ca81d] truncate">{{ $item['label'] }}</span>
                     </a>
@@ -500,23 +498,23 @@
                 <div class="space-y-1 mb-3">
                     <a href="{{ route('favorites.index') }}" @click="mobileMenu = false"
                        class="flex items-center gap-3 px-3.5 py-3 rounded-2xl hover:bg-[#f2f9df] transition-all active:scale-[0.98] group">
-                        <span class="material-symbols-rounded text-[20px] text-[#9aa19c] group-hover:text-[#9acd32]" style="font-variation-settings:'FILL' 1;">favorite</span>
+                        <i class="fa-solid fa-heart text-[20px] text-[#9aa19c] group-hover:text-[#9acd32]" style=""></i>
                         <span class="text-[13px] font-semibold text-[#3f453f] group-hover:text-[#7ca81d]">Saved Items</span>
                     </a>
                     <a href="{{ route('orders.index') }}" @click="mobileMenu = false"
                        class="flex items-center gap-3 px-3.5 py-3 rounded-2xl hover:bg-[#f2f9df] transition-all active:scale-[0.98] group">
-                        <span class="material-symbols-rounded text-[20px] text-[#9aa19c] group-hover:text-[#9acd32]" style="font-variation-settings:'FILL' 1;">local_shipping</span>
+                        <i class="fa-solid fa-truck-fast text-[20px] text-[#9aa19c] group-hover:text-[#9acd32]" style=""></i>
                         <span class="text-[13px] font-semibold text-[#3f453f] group-hover:text-[#7ca81d]">My Orders</span>
                     </a>
                     <a href="{{ route('conversations.index') }}" @click="mobileMenu = false"
                        class="flex items-center gap-3 px-3.5 py-3 rounded-2xl hover:bg-[#f2f9df] transition-all active:scale-[0.98] group">
-                        <span class="material-symbols-rounded text-[20px] text-[#9aa19c] group-hover:text-[#9acd32]" style="font-variation-settings:'FILL' 1;">chat_bubble</span>
+                        <i class="fa-solid fa-comment text-[20px] text-[#9aa19c] group-hover:text-[#9acd32]" style=""></i>
                         <span class="text-[13px] font-semibold text-[#3f453f] group-hover:text-[#7ca81d]">Messages</span>
                         <span class="unread-badge hidden ml-auto min-w-[18px] h-[18px] bg-[#dc2626] text-white text-[9px] font-bold rounded-full flex items-center justify-center leading-none px-1">0</span>
                     </a>
                     <a href="{{ route('notifications.index') }}" @click="mobileMenu = false"
                        class="flex items-center gap-3 px-3.5 py-3 rounded-2xl hover:bg-[#f2f9df] transition-all active:scale-[0.98] group">
-                        <span class="material-symbols-rounded text-[20px] text-[#9aa19c] group-hover:text-[#9acd32]" style="font-variation-settings:'FILL' 1;">notifications</span>
+                        <i class="fa-solid fa-bell text-[20px] text-[#9aa19c] group-hover:text-[#9acd32]" style=""></i>
                         <span class="text-[13px] font-semibold text-[#3f453f] group-hover:text-[#7ca81d]">Notifications</span>
                         <span class="notif-badge hidden ml-auto min-w-[18px] h-[18px] bg-[#dc2626] text-white text-[9px] font-bold rounded-full flex items-center justify-center leading-none px-1">0</span>
                     </a>
@@ -531,7 +529,7 @@
                     @csrf
                     <button type="submit"
                             class="flex items-center gap-2.5 text-[13px] font-semibold text-[#dc2626] hover:opacity-80 transition-opacity">
-                        <span class="material-symbols-rounded text-[18px]">logout</span>
+                        <i class="fa-solid fa-right-from-bracket text-[18px]"></i>
                         Log Out
                     </button>
                 </form>
@@ -567,14 +565,14 @@
             <div class="shrink-0 border-b border-[#eff1ef]">
                 <div class="flex items-center gap-3 px-4 sm:px-6 h-14 sm:h-16">
                     <button @click="searchOpen = false" class="sm:hidden p-1.5 -ml-1.5 text-[#5c625e] hover:text-[#1c201e] rounded-xl hover:bg-[#f5f6f5] transition-all">
-                        <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+                        <i class="fa-solid fa-arrow-left text-[20px]"></i>
                     </button>
                     <div class="hidden sm:flex items-center gap-2.5 shrink-0 mr-1">
                         <x-application-logo class="w-7 h-7" />
                         <span class="text-[11px] font-bold text-[#9acd32] uppercase tracking-[0.12em]">Search</span>
                     </div>
                     <div class="flex-1 relative">
-                        <span class="material-symbols-outlined text-[20px] text-[#9acd32] absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">search</span>
+                        <i class="fa-solid fa-magnifying-glass text-[20px] text-[#9acd32] absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none"></i>
                         <input x-ref="searchInput" x-model="query" @input.debounce.150ms="search()"
                                type="text" x-bind:placeholder="placeholderText"
                                class="w-full h-10 sm:h-11 pl-11 pr-4 text-sm sm:text-[15px] focus:outline-none placeholder:text-[#b9beb9] font-medium text-[#1c201e]"
@@ -586,7 +584,7 @@
                             @click="query = ''; results = { products: [], services: [], rentals: [], stores: [], categories: [], locations: [], users: [] }"
                             x-cloak
                             class="p-1.5 text-[#9aa19c] hover:text-[#3f453f] rounded-full hover:bg-[#f5f6f5] transition-all">
-                        <span class="material-symbols-outlined text-[18px]">close</span>
+                        <i class="fa-solid fa-xmark text-[18px]"></i>
                     </button>
                     <button @click="searchOpen = false; results = { products: [], services: [], rentals: [], stores: [], categories: [], locations: [], users: [] }; query = ''"
                             class="hidden sm:inline-flex text-sm font-semibold text-[#5c625e] hover:text-[#1c201e] px-4 py-1.5 rounded-full hover:bg-[#f5f6f5] transition-all shrink-0">
@@ -633,11 +631,11 @@
                                 <p class="text-[11px] font-bold text-[#9aa19c] uppercase tracking-[0.1em] mb-4">Browse Categories</p>
                                 <div class="space-y-1">
                                     <a :href="scopeRoute" @click="searchOpen = false" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-[#f2f9df] transition-all text-sm font-medium text-[#3f453f] hover:text-[#7ca81d]">
-                                        <span class="material-symbols-outlined text-[18px] text-[#9acd32]">category</span>
+                                        <i class="fa-solid fa-tags text-[18px] text-[#9acd32]"></i>
                                         <span x-text="'All ' + scope.charAt(0).toUpperCase() + scope.slice(1)"></span>
                                     </a>
                                     <a href="{{ route('stores.index') }}" @click="searchOpen = false" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-[#f2f9df] transition-all text-sm font-medium text-[#3f453f] hover:text-[#7ca81d]">
-                                        <span class="material-symbols-outlined text-[18px] text-[#9acd32]">store</span>
+                                        <i class="fa-solid fa-store text-[18px] text-[#9acd32]"></i>
                                         All Stores
                                     </a>
                                 </div>
@@ -672,7 +670,7 @@
                                                     <div class="w-12 h-12 sm:w-10 sm:h-10 rounded-xl bg-[#f0f2f0] overflow-hidden shrink-0 ring-1 ring-black/5">
                                                         <img x-show="product.image" :src="'/r2/' + product.image" class="w-full h-full object-cover group-hover:scale-105 transition-transform" alt="">
                                                         <div x-show="!product.image" class="w-full h-full flex items-center justify-center text-[#c9cdc9]">
-                                                            <span class="material-symbols-outlined text-[18px]">image</span>
+                                                            <i class="fa-solid fa-image text-[18px]"></i>
                                                         </div>
                                                     </div>
                                                     <div class="min-w-0 flex-1">
@@ -700,7 +698,7 @@
                                                     <div class="w-12 h-12 sm:w-10 sm:h-10 rounded-xl bg-[#f0f2f0] overflow-hidden shrink-0 ring-1 ring-black/5">
                                                         <img x-show="service.image" :src="service.image" class="w-full h-full object-cover group-hover:scale-105 transition-transform" alt="">
                                                         <div x-show="!service.image" class="w-full h-full flex items-center justify-center text-[#c9cdc9]">
-                                                            <span class="material-symbols-outlined text-[18px]">image</span>
+                                                            <i class="fa-solid fa-image text-[18px]"></i>
                                                         </div>
                                                     </div>
                                                     <div class="min-w-0 flex-1">
@@ -728,7 +726,7 @@
                                                     <div class="w-12 h-12 sm:w-10 sm:h-10 rounded-xl bg-[#f0f2f0] overflow-hidden shrink-0 ring-1 ring-black/5">
                                                         <img x-show="item.image" :src="item.image" class="w-full h-full object-cover group-hover:scale-105 transition-transform" alt="">
                                                         <div x-show="!item.image" class="w-full h-full flex items-center justify-center text-[#c9cdc9]">
-                                                            <span class="material-symbols-outlined text-[18px]">image</span>
+                                                            <i class="fa-solid fa-image text-[18px]"></i>
                                                         </div>
                                                     </div>
                                                     <div class="min-w-0 flex-1">
@@ -753,7 +751,7 @@
                                                 <a :href="cat.url" @click="searchOpen = false"
                                                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-[#f5f6f5] active:bg-[#ededee] transition-all -mx-2">
                                                     <span class="w-7 h-7 rounded-lg bg-[#9acd32]/10 flex items-center justify-center text-[#9acd32] shrink-0">
-                                                        <span class="material-symbols-outlined text-[14px]">category</span>
+                                                        <i class="fa-solid fa-tags text-[14px]"></i>
                                                     </span>
                                                     <span class="text-sm font-semibold text-[#3f453f]" x-text="cat.name"></span>
                                                 </a>
@@ -777,7 +775,7 @@
                                                         <p class="text-sm font-semibold text-[#3f453f] truncate" x-text="store.name"></p>
                                                     </div>
                                                     <span x-show="store.is_verified" class="text-[#659316] shrink-0">
-                                                        <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+                                                        <i class="fa-solid fa-circle-check text-[14px]" style=""></i>
                                                     </span>
                                                 </a>
                                             </template>
@@ -793,7 +791,7 @@
                                                 <a :href="'/stores?location=' + encodeURIComponent(loc.name)" @click="searchOpen = false"
                                                    class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl hover:bg-[#f5f6f5] active:bg-[#ededee] transition-all -mx-2">
                                                     <span class="w-7 h-7 rounded-lg bg-[#9acd32]/10 flex items-center justify-center text-[#9acd32] shrink-0">
-                                                        <span class="material-symbols-outlined text-[14px]">location_on</span>
+                                                        <i class="fa-solid fa-location-dot text-[14px]"></i>
                                                     </span>
                                                     <span class="text-sm font-semibold text-[#3f453f]" x-text="loc.name"></span>
                                                 </a>
@@ -828,7 +826,7 @@
                     {{-- No results --}}
                     <div x-show="!hasResults" class="px-6 py-16 sm:py-14 text-center">
                         <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-[#f0f2f0] flex items-center justify-center ring-1 ring-black/5">
-                            <span class="material-symbols-outlined text-[24px] text-[#c9cdc9]">search_off</span>
+                            <i class="fa-solid fa-magnifying-glass-minus text-[24px] text-[#c9cdc9]"></i>
                         </div>
                         <p class="text-base font-bold text-[#1c201e]">No results for "<span class="text-[#9acd32]" x-text="query"></span>"</p>
                         <p class="text-sm text-[#6b716c] mt-1.5 max-w-xs mx-auto leading-relaxed">Try different keywords, check your spelling, or browse categories.</p>
@@ -860,7 +858,7 @@
         @if(session('success'))
             <div class="max-w-7xl mx-auto px-5 sm:px-8 mb-4 pt-4">
                 <div class="bg-lime-100 border border-lime-200 rounded-xl p-4 flex items-center gap-3 animate-slide-down">
-                    <span class="material-symbols-outlined text-lime-600">check_circle</span>
+                    <i class="fa-solid fa-circle-check text-lime-600"></i>
                     <p class="text-sm font-semibold text-lime-800">{{ session('success') }}</p>
                 </div>
             </div>
@@ -869,7 +867,7 @@
         @if(session('error'))
             <div class="max-w-7xl mx-auto px-5 sm:px-8 mb-4 pt-4">
                 <div class="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center gap-3 animate-slide-down">
-                    <span class="material-symbols-outlined text-red-600">error</span>
+                    <i class="fa-solid fa-circle-exclamation text-red-600"></i>
                     <p class="text-sm font-semibold text-red-800">{{ session('error') }}</p>
                 </div>
             </div>
@@ -900,12 +898,12 @@
                         @hasSection('storeWhatsApp')
                             <a href="https://wa.me/{{ wa_url(($__env->yieldContent('storeWhatsApp'))) }}?text={{ urlencode('Hi, I saw your store on Izifai.') }}" target="_blank"
                                class="inline-flex items-center gap-1.5 text-[11px] font-bold text-white bg-[#7ca81d] px-3.5 py-2 rounded-full hover:bg-[#7ca81d] transition-colors">
-                                <span class="material-symbols-outlined text-[14px]">chat</span> Contact
+                                <i class="fa-solid fa-comment text-[14px]"></i> Contact
                             </a>
                         @else
                             <a href="https://chat.whatsapp.com/J3of97nRhL5IdTSXpScYLl" target="_blank"
                                class="inline-flex items-center gap-1.5 text-[11px] font-bold text-white bg-[#7ca81d] px-3.5 py-2 rounded-full hover:bg-[#7ca81d] transition-colors">
-                                <span class="material-symbols-outlined text-[14px]">groups</span> Community
+                                <i class="fa-solid fa-users text-[14px]"></i> Community
                             </a>
                         @endif
                     </div>
@@ -945,16 +943,16 @@
                     <p class="text-[11px] font-extrabold uppercase tracking-[0.12em] text-[#9aa19c] mb-4">Payments</p>
                     <div class="flex flex-wrap gap-2">
                         <span class="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#3f453f] bg-[#f5f6f5] border border-[#e8eae8] px-3 py-1.5 rounded-full">
-                            <span class="material-symbols-outlined text-[14px] text-[#9acd32]">smartphone</span> MTN MoMo
+                            <i class="fa-solid fa-mobile-screen-button text-[14px] text-[#9acd32]"></i> MTN MoMo
                         </span>
                         <span class="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#3f453f] bg-[#f5f6f5] border border-[#e8eae8] px-3 py-1.5 rounded-full">
-                            <span class="material-symbols-outlined text-[14px] text-[#9acd32]">smartphone</span> Orange Money
+                            <i class="fa-solid fa-mobile-screen-button text-[14px] text-[#9acd32]"></i> Orange Money
                         </span>
                         <span class="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#3f453f] bg-[#f5f6f5] border border-[#e8eae8] px-3 py-1.5 rounded-full">
-                            <span class="material-symbols-outlined text-[14px] text-[#9acd32]">credit_card</span> Cards
+                            <i class="fa-solid fa-credit-card text-[14px] text-[#9acd32]"></i> Cards
                         </span>
                         <span class="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#3f453f] bg-[#f5f6f5] border border-[#e8eae8] px-3 py-1.5 rounded-full">
-                            <span class="material-symbols-outlined text-[14px] text-[#659316]" style="font-variation-settings:'FILL' 1;">verified</span> Verified sellers
+                            <i class="fa-solid fa-circle-check text-[14px] text-[#659316]" style=""></i> Verified sellers
                         </span>
                     </div>
                     <p class="text-[11px] text-[#6b716c] mt-5 leading-relaxed">
@@ -965,7 +963,7 @@
             <div class="mt-10 pt-6 border-t border-[#eff1ef] flex flex-col sm:flex-row items-center justify-between gap-2">
                 <p class="text-[11px] text-[#9aa19c]">&copy; {{ date('Y') }} Izifai. Simplify Your Shopping.</p>
                 <span class="text-[11px] text-[#9aa19c] inline-flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[13px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">location_on</span>
+                    <i class="fa-solid fa-location-dot text-[13px] text-[#9acd32]" style=""></i>
                     Made in Cameroon
                 </span>
             </div>
@@ -1136,14 +1134,14 @@
             {{-- Tab 1: Home --}}
             <a href="{{ route('home') }}"
                class="flex-1 flex flex-col items-center justify-center gap-1 py-1.5 {{ $homeOn ? 'text-[#9acd32]' : 'text-[#a0a6a1] hover:text-[#3f453f]' }} transition-colors">
-                <span class="material-symbols-rounded text-[23px] leading-none" style="font-variation-settings: 'FILL' {{ $homeOn ? '1' : '0' }};">home</span>
+                <i class="fa-solid fa-house text-[23px] leading-none" style=""></i>
                 <span class="text-[9px] {{ $homeOn ? 'font-extrabold' : 'font-medium' }}">Home</span>
             </a>
 
             {{-- Tab 2: Shop --}}
             <a href="{{ route('products.index') }}"
                class="flex-1 flex flex-col items-center justify-center gap-1 py-1.5 {{ $shopOn ? 'text-[#9acd32]' : 'text-[#a0a6a1] hover:text-[#3f453f]' }} transition-colors">
-                <span class="material-symbols-rounded text-[23px] leading-none" style="font-variation-settings: 'FILL' {{ $shopOn ? '1' : '0' }};">storefront</span>
+                <i class="fa-solid fa-store text-[23px] leading-none" style=""></i>
                 <span class="text-[9px] {{ $shopOn ? 'font-extrabold' : 'font-medium' }}">Shop</span>
             </a>
 
@@ -1151,7 +1149,7 @@
             <a href="{{ auth()->check() ? route('conversations.index') : route('login') }}"
                class="flex-1 flex flex-col items-center justify-center gap-1 py-1.5 {{ $chatOn ? 'text-[#9acd32]' : 'text-[#a0a6a1] hover:text-[#3f453f]' }} transition-colors">
                 <span class="relative inline-flex items-center justify-center">
-                    <span class="material-symbols-rounded text-[23px] leading-none" style="font-variation-settings: 'FILL' {{ $chatOn ? '1' : '0' }};">chat_bubble</span>
+                    <i class="fa-solid fa-comment text-[23px] leading-none" style=""></i>
                     <span class="unread-badge hidden absolute -top-1 -right-2.5 min-w-[16px] h-[16px] bg-[#dc2626] text-white text-[9px] font-bold rounded-full flex items-center justify-center px-1 leading-none border border-white">0</span>
                 </span>
                 <span class="text-[9px] {{ $chatOn ? 'font-extrabold' : 'font-medium' }}">Chat</span>
@@ -1160,7 +1158,7 @@
             {{-- Tab 4: Profile (Dashboard) --}}
             <a href="{{ auth()->check() ? route('seller.dashboard') : route('login') }}"
                class="flex-1 flex flex-col items-center justify-center gap-1 py-1.5 {{ $profileOn ? 'text-[#9acd32]' : 'text-[#a0a6a1] hover:text-[#3f453f]' }} transition-colors">
-                <span class="material-symbols-rounded text-[23px] leading-none" style="font-variation-settings: 'FILL' {{ $profileOn ? '1' : '0' }};">person</span>
+                <i class="fa-solid fa-user text-[23px] leading-none" style=""></i>
                 <span class="text-[9px] {{ $profileOn ? 'font-extrabold' : 'font-medium' }}">Profile</span>
             </a>
         </div>

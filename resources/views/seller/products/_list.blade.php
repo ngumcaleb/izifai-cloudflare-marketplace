@@ -8,7 +8,7 @@
                         <img src="{{ $product->images->first()->url }}" class="w-full h-full object-cover">
                     @else
                         <div class="w-full h-full flex items-center justify-center text-gray-300">
-                            <span class="material-symbols-outlined text-[18px]">image</span>
+                            <i class="fa-solid fa-image text-[18px]"></i>
                         </div>
                     @endif
                 </div>
@@ -27,18 +27,18 @@
             <div class="flex items-center gap-2 pt-1.5 border-t border-gray-100">
                 <a href="{{ route('products.show', $product->slug) }}" target="_blank"
                    class="flex-1 flex items-center justify-center gap-1 py-2 text-gray-500 hover:text-primary hover:bg-gray-50 rounded-lg transition-all text-[11px] font-semibold">
-                    <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+                    <i class="fa-solid fa-up-right-from-square text-[14px]"></i>
                     View
                 </a>
                 <a href="{{ route('seller.products.edit', $product->id) }}"
                    class="flex-1 flex items-center justify-center gap-1 py-2 text-gray-500 hover:text-primary hover:bg-gray-50 rounded-lg transition-all text-[11px] font-semibold">
-                    <span class="material-symbols-outlined text-[14px]">edit</span>
+                    <i class="fa-solid fa-pen text-[14px]"></i>
                     Edit
                 </a>
                 <form action="{{ route('seller.products.destroy', $product->id) }}" method="POST" onsubmit="return confirm('Delete this listing?')" class="flex-1">
                     @csrf @method('DELETE')
                     <button class="w-full flex items-center justify-center gap-1 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-all text-[11px] font-semibold">
-                        <span class="material-symbols-outlined text-[14px]">delete</span>
+                        <i class="fa-solid fa-trash text-[14px]"></i>
                         Delete
                     </button>
                 </form>
@@ -47,12 +47,12 @@
     @empty
         <div class="bg-white rounded-xl shadow-sm border border-gray-100/80 p-6 text-center">
             <div class="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center mx-auto mb-2">
-                <span class="material-symbols-outlined text-2xl text-gray-300">inventory_2</span>
+                <i class="fa-solid fa-boxes-stacked text-2xl text-gray-300"></i>
             </div>
             <p class="text-sm font-bold text-gray-900">No products found</p>
             <p class="text-xs text-gray-500 mt-0.5">This collection is empty.</p>
             <a href="{{ route('seller.products.create', request('collection') ? ['collection' => request('collection')] : []) }}" class="inline-flex items-center gap-1.5 mt-3 px-4 py-2 bg-primary text-white rounded-lg text-xs font-bold hover:opacity-90 active:scale-[0.97] transition-all shadow-sm">
-                <span class="material-symbols-outlined text-[16px]">add</span>
+                <i class="fa-solid fa-plus text-[16px]"></i>
                 Add Product
             </a>
         </div>
@@ -68,7 +68,7 @@
                         <img src="{{ $product->images->first()->url }}" class="w-full h-full object-cover">
                     @else
                         <div class="w-full h-full flex items-center justify-center text-gray-300">
-                            <span class="material-symbols-outlined text-[18px]">image</span>
+                            <i class="fa-solid fa-image text-[18px]"></i>
                         </div>
                     @endif
                 </div>
@@ -86,14 +86,14 @@
             </div>
             <div class="w-20 text-center shrink-0">
                 <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider {{ $product->stock_status === 'in_stock' ? 'bg-primary/5 text-primary' : 'bg-red-50 text-red-600' }}">
-                    <span class="material-symbols-outlined text-[10px]">{{ $product->stock_status === 'in_stock' ? 'check_circle' : 'cancel' }}</span>
+                    <i class="fa-solid text-[10px] {{ $product->stock_status === 'in_stock' ? 'fa-circle-check text-green-500' : 'fa-xmark text-red-500' }}"></i>
                     {{ $product->stock_status === 'in_stock' ? 'Active' : ($product->stock_status === 'out_of_stock' ? 'Sold' : 'Request') }}
                 </span>
             </div>
             <div class="w-10 text-center shrink-0 relative">
                 <button @click="open = !open" @click.outside="open = false"
                         class="p-1.5 text-gray-400 hover:text-primary hover:bg-gray-50 rounded-lg transition-all">
-                    <span class="material-symbols-outlined text-[18px]">more_vert</span>
+                    <i class="fa-solid fa-ellipsis-vertical text-[18px]"></i>
                 </button>
                 <div x-show="open" x-cloak @click.outside="open = false"
                      class="absolute right-0 top-9 w-44 bg-white rounded-xl shadow-lg border border-gray-100 z-50 overflow-hidden"
@@ -105,18 +105,18 @@
                      x-transition:leave-end="opacity-0 scale-95">
                     <a href="{{ route('products.show', $product->slug) }}" target="_blank"
                        class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors">
-                        <span class="material-symbols-outlined text-[18px]">open_in_new</span>
+                        <i class="fa-solid fa-up-right-from-square text-[18px]"></i>
                         View Public Page
                     </a>
                     <a href="{{ route('seller.products.edit', $product->id) }}"
                        class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors">
-                        <span class="material-symbols-outlined text-[18px]">edit</span>
+                        <i class="fa-solid fa-pen text-[18px]"></i>
                         Edit Listing
                     </a>
                     <form action="{{ route('seller.products.destroy', $product->id) }}" method="POST" onsubmit="return confirm('Delete this listing?')">
                         @csrf @method('DELETE')
                         <button class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors">
-                            <span class="material-symbols-outlined text-[18px]">delete</span>
+                            <i class="fa-solid fa-trash text-[18px]"></i>
                             Delete Listing
                         </button>
                     </form>
@@ -126,12 +126,12 @@
     @empty
         <div class="px-5 py-16 text-center">
             <div class="w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center mx-auto mb-3">
-                <span class="material-symbols-outlined text-3xl text-gray-300">inventory_2</span>
+                <i class="fa-solid fa-boxes-stacked text-3xl text-gray-300"></i>
             </div>
             <p class="text-base font-bold text-gray-900">No products found</p>
             <p class="text-sm text-gray-500 mt-1">This collection is empty.</p>
             <a href="{{ route('seller.products.create', request('collection') ? ['collection' => request('collection')] : []) }}" class="inline-flex items-center gap-1.5 mt-4 px-5 py-2.5 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 active:scale-[0.97] transition-all shadow-sm">
-                <span class="material-symbols-outlined text-[18px]">add</span>
+                <i class="fa-solid fa-plus text-[18px]"></i>
                 Add Product
             </a>
         </div>

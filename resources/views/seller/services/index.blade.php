@@ -10,7 +10,7 @@
             <div class="flex items-center gap-2">
                 <a href="{{ route('seller.services.create') }}"
                    class="whitespace-nowrap flex items-center justify-center gap-1.5 bg-primary text-white px-4 py-2 rounded-xl text-sm font-bold hover:opacity-90 active:scale-[0.97] transition-all shadow-sm">
-                    <span class="material-symbols-outlined text-[18px]">add</span>
+                    <i class="fa-solid fa-plus text-[18px]"></i>
                     <span>New Service</span>
                 </a>
             </div>
@@ -31,7 +31,7 @@
                                 <img src="{{ $service->main_image_url }}" class="w-full h-full object-cover">
                             @else
                                 <div class="w-full h-full flex items-center justify-center text-gray-300">
-                                    <span class="material-symbols-outlined text-[18px]">image</span>
+                                    <i class="fa-solid fa-image text-[18px]"></i>
                                 </div>
                             @endif
                         </div>
@@ -55,14 +55,14 @@
                     </div>
                     <div class="w-24 text-center shrink-0">
                         <div class="flex items-center justify-center gap-1 text-gray-400">
-                            <span class="material-symbols-outlined text-[14px]">visibility</span>
+                            <i class="fa-solid fa-eye text-[14px]"></i>
                             <span class="text-xs font-bold">{{ $service->views }}</span>
                         </div>
                     </div>
                     <div class="w-10 text-center shrink-0 relative">
                         <button @click="open = !open" @click.outside="open = false"
                                 class="p-1.5 text-gray-400 hover:text-primary hover:bg-gray-50 rounded-lg transition-all">
-                            <span class="material-symbols-outlined text-[18px]">more_vert</span>
+                            <i class="fa-solid fa-ellipsis-vertical text-[18px]"></i>
                         </button>
                         <div x-show="open" x-cloak
                              @click.outside="open = false"
@@ -75,18 +75,18 @@
                              x-transition:leave-end="opacity-0 scale-95">
                             <a href="{{ route('services.show', $service->slug) }}" target="_blank"
                                class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors">
-                                <span class="material-symbols-outlined text-[18px]">open_in_new</span>
+                                <i class="fa-solid fa-up-right-from-square text-[18px]"></i>
                                 View Public Page
                             </a>
                             <a href="{{ route('seller.services.edit', $service->id) }}"
                                class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors">
-                                <span class="material-symbols-outlined text-[18px]">edit</span>
+                                <i class="fa-solid fa-pen text-[18px]"></i>
                                 Edit Listing
                             </a>
                             <form action="{{ route('seller.services.destroy', $service->id) }}" method="POST" onsubmit="return confirm('Delete this service?')">
                                 @csrf @method('DELETE')
                                 <button class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors">
-                                    <span class="material-symbols-outlined text-[18px]">delete</span>
+                                    <i class="fa-solid fa-trash text-[18px]"></i>
                                     Delete Listing
                                 </button>
                             </form>
@@ -96,12 +96,12 @@
             @empty
                 <div class="px-5 py-16 text-center">
                     <div class="w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center mx-auto mb-3">
-                        <span class="material-symbols-outlined text-3xl text-gray-300">handyman</span>
+                        <i class="fa-solid fa-screwdriver-wrench text-3xl text-gray-300"></i>
                     </div>
                     <p class="text-base font-bold text-gray-900">No services found</p>
                     <p class="text-sm text-gray-500 mt-1">Start by adding your first service to the marketplace.</p>
                     <a href="{{ route('seller.services.create') }}" class="inline-flex items-center gap-1.5 mt-4 px-5 py-2.5 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 active:scale-[0.97] transition-all shadow-sm">
-                        <span class="material-symbols-outlined text-[18px]">add</span>
+                        <i class="fa-solid fa-plus text-[18px]"></i>
                         Start Listing
                     </a>
                 </div>
@@ -117,7 +117,7 @@
                                 <img src="{{ $service->main_image_url }}" class="w-full h-full object-cover">
                             @else
                                 <div class="w-full h-full flex items-center justify-center text-gray-300">
-                                    <span class="material-symbols-outlined">image</span>
+                                    <i class="fa-solid fa-image"></i>
                                 </div>
                             @endif
                         </div>
@@ -132,11 +132,11 @@
                         </div>
                         <div class="flex items-center gap-2">
                             <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider {{ $service->status === 'active' ? 'bg-primary/5 text-primary' : 'bg-red-50 text-red-600' }}">
-                                <span class="material-symbols-outlined text-[10px]">{{ $service->status === 'active' ? 'check_circle' : 'cancel' }}</span>
+<i class="fa-solid text-[10px] {{ $service->status === 'active' ? 'fa-circle-check text-green-500' : 'fa-xmark text-red-500' }}"></i>
                                 {{ $service->status }}
                             </span>
                             <div class="flex items-center gap-1 text-gray-400">
-                                <span class="material-symbols-outlined text-[14px]">visibility</span>
+                                <i class="fa-solid fa-eye text-[14px]"></i>
                                 <span class="text-xs font-bold">{{ $service->views }}</span>
                             </div>
                         </div>
@@ -144,18 +144,18 @@
                     <div class="flex items-center gap-2 pt-2 border-t border-gray-100">
                         <a href="{{ route('services.show', $service->slug) }}" target="_blank"
                            class="flex-1 flex items-center justify-center gap-1.5 py-2 text-gray-500 hover:text-primary hover:bg-gray-50 rounded-xl transition-all text-xs font-semibold">
-                            <span class="material-symbols-outlined text-[16px]">open_in_new</span>
+                            <i class="fa-solid fa-up-right-from-square text-[16px]"></i>
                             View
                         </a>
                         <a href="{{ route('seller.services.edit', $service->id) }}"
                            class="flex-1 flex items-center justify-center gap-1.5 py-2 text-gray-500 hover:text-primary hover:bg-gray-50 rounded-xl transition-all text-xs font-semibold">
-                            <span class="material-symbols-outlined text-[16px]">edit</span>
+                            <i class="fa-solid fa-pen text-[16px]"></i>
                             Edit
                         </a>
                         <form action="{{ route('seller.services.destroy', $service->id) }}" method="POST" onsubmit="return confirm('Delete this service?')" class="flex-1">
                             @csrf @method('DELETE')
                             <button class="w-full flex items-center justify-center gap-1.5 py-2 text-red-600 hover:bg-red-50 rounded-xl transition-all text-xs font-semibold">
-                                <span class="material-symbols-outlined text-[16px]">delete</span>
+                                <i class="fa-solid fa-trash text-[16px]"></i>
                                 Delete
                             </button>
                         </form>
@@ -164,12 +164,12 @@
             @empty
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100/80 p-8 text-center">
                     <div class="w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center mx-auto mb-3">
-                        <span class="material-symbols-outlined text-3xl text-gray-300">handyman</span>
+                        <i class="fa-solid fa-screwdriver-wrench text-3xl text-gray-300"></i>
                     </div>
                     <p class="text-base font-bold text-gray-900">No services found</p>
                     <p class="text-sm text-gray-500 mt-1">Start adding services to your store.</p>
                     <a href="{{ route('seller.services.create') }}" class="inline-flex items-center gap-1.5 mt-4 px-5 py-2.5 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 active:scale-[0.97] transition-all shadow-sm">
-                        <span class="material-symbols-outlined text-[18px]">add</span>
+                        <i class="fa-solid fa-plus text-[18px]"></i>
                         Start Listing
                     </a>
                 </div>

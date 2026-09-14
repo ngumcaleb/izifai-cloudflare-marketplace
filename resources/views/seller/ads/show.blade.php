@@ -9,7 +9,7 @@
             </div>
             <a href="{{ route('seller.ads.index') }}"
                class="text-xs font-semibold text-gray-500 hover:text-primary flex items-center gap-1.5 transition-colors">
-                <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+                <i class="fa-solid fa-arrow-left text-[16px]"></i>
                 All Ads
             </a>
         </div>
@@ -72,7 +72,7 @@
             @if($ad->payment_status === 'processing' || $ad->payment_status === 'pending')
                 <div x-show="!checked" class="bg-amber-50 border border-amber-200 rounded-xl p-4">
                     <div class="flex items-start gap-3">
-                        <span class="material-symbols-outlined text-amber-500 mt-0.5">pending</span>
+                        <i class="fa-solid fa-clock text-amber-500 mt-0.5"></i>
                         <div>
                             <h4 class="text-sm font-bold text-amber-800">Payment pending</h4>
                             <p class="text-xs text-amber-700 mt-0.5">Complete the USSD prompt on your phone ({{ $ad->payer_phone }}).</p>
@@ -85,7 +85,7 @@
                 </div>
                 <div x-show="checked" class="bg-green-50 border border-green-200 rounded-xl p-4">
                     <div class="flex items-center gap-3">
-                        <span class="material-symbols-outlined text-green-600">check_circle</span>
+                        <i class="fa-solid fa-circle-check text-green-600"></i>
                         <div>
                             <h4 class="text-sm font-bold text-green-800">Payment confirmed!</h4>
                             <p class="text-xs text-green-700 mt-0.5">Awaiting admin approval.</p>
@@ -95,7 +95,7 @@
             @elseif($ad->payment_status === 'paid' && $ad->status === 'pending')
                 <div class="bg-blue-50 border border-blue-200 rounded-xl p-4">
                     <div class="flex items-center gap-3">
-                        <span class="material-symbols-outlined text-blue-600">hourglass_top</span>
+                        <i class="fa-solid fa-hourglass-half text-blue-600"></i>
                         <div>
                             <h4 class="text-sm font-bold text-blue-800">Awaiting approval</h4>
                             <p class="text-xs text-blue-700 mt-0.5">Payment received. An admin will review and activate your ad shortly.</p>
@@ -105,7 +105,7 @@
             @elseif($ad->status === 'approved')
                 <div class="bg-green-50 border border-green-200 rounded-xl p-4">
                     <div class="flex items-center gap-3">
-                        <span class="material-symbols-outlined text-green-600">check_circle</span>
+                        <i class="fa-solid fa-circle-check text-green-600"></i>
                         <div>
                             <h4 class="text-sm font-bold text-green-800">Active</h4>
                             <p class="text-xs text-green-700 mt-0.5">
@@ -117,7 +117,7 @@
             @elseif($ad->status === 'rejected')
                 <div class="bg-red-50 border border-red-200 rounded-xl p-4">
                     <div class="flex items-center gap-3">
-                        <span class="material-symbols-outlined text-red-600">cancel</span>
+                        <i class="fa-solid fa-xmark text-red-600"></i>
                         <div>
                             <h4 class="text-sm font-bold text-red-800">Rejected</h4>
                             @if($ad->admin_notes)

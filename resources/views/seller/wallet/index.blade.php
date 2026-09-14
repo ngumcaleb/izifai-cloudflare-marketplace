@@ -13,18 +13,18 @@
         <div class="grid grid-cols-3 gap-2 md:gap-3">
             <a href="{{ route('seller.wallet.deposit') }}"
                class="flex items-center justify-center gap-1.5 md:gap-2 py-2.5 md:py-3.5 bg-white rounded-xl border border-gray-100/80 shadow-sm text-xs md:text-sm font-bold text-gray-700 hover:border-primary/30 hover:text-primary hover:shadow-md active:scale-[0.97] transition-all">
-                <span class="material-symbols-outlined text-[16px] md:text-[18px]">add_circle</span>
+                <i class="fa-solid fa-circle-plus text-[16px] md:text-[18px]"></i>
                 <span class="hidden sm:inline">Deposit</span>
                 <span class="sm:hidden">Add</span>
             </a>
             <a href="{{ route('seller.wallet.withdraw') }}"
                class="flex items-center justify-center gap-1.5 md:gap-2 py-2.5 md:py-3.5 bg-white rounded-xl border border-gray-100/80 shadow-sm text-xs md:text-sm font-bold text-gray-700 hover:border-primary/30 hover:text-primary hover:shadow-md active:scale-[0.97] transition-all">
-                <span class="material-symbols-outlined text-[16px] md:text-[18px]">output</span>
+                <i class="fa-solid fa-arrow-up-from-bracket text-[16px] md:text-[18px]"></i>
                 Withdraw
             </a>
             <a href="{{ route('seller.wallet.transactions') }}"
                class="flex items-center justify-center gap-1.5 md:gap-2 py-2.5 md:py-3.5 bg-white rounded-xl border border-gray-100/80 shadow-sm text-xs md:text-sm font-bold text-gray-700 hover:border-primary/30 hover:text-primary hover:shadow-md active:scale-[0.97] transition-all">
-                <span class="material-symbols-outlined text-[16px] md:text-[18px]">receipt_long</span>
+                <i class="fa-solid fa-receipt text-[16px] md:text-[18px]"></i>
                 <span class="hidden sm:inline">History</span>
                 <span class="sm:hidden">Log</span>
             </a>
@@ -36,7 +36,7 @@
                 <p class="text-[11px] font-semibold uppercase tracking-wider opacity-80">Available for Withdrawal</p>
                 <p class="text-3xl md:text-4xl font-black mt-1">{{ number_format($wallet->balance) }} <span class="text-sm font-bold opacity-80">XAF</span></p>
                 <div class="flex items-center gap-2 mt-2 text-[11px] opacity-80">
-                    <span class="material-symbols-outlined text-[14px]">account_balance_wallet</span>
+                    <i class="fa-solid fa-wallet text-[14px]"></i>
                     <span>{{ $wallet->total_earned ? number_format($wallet->total_earned) . ' XAF total earned' : 'Start earning today' }}</span>
                 </div>
             </div>
@@ -45,7 +45,7 @@
                 <div class="flex items-center justify-between mb-2">
                     <span class="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">In Escrow</span>
                     <div class="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600">
-                        <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">lock</span>
+                        <i class="fa-solid fa-lock text-[18px]" style=""></i>
                     </div>
                 </div>
                 <p class="text-xl md:text-2xl font-black text-gray-900">{{ number_format($wallet->locked_balance ?? 0) }}</p>
@@ -56,7 +56,7 @@
                 <div class="flex items-center justify-between mb-2">
                     <span class="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">Pending Withdrawal</span>
                     <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
-                        <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">hourglass</span>
+                        <i class="fa-solid fa-hourglass text-[18px]" style=""></i>
                     </div>
                 </div>
                 <p class="text-xl md:text-2xl font-black text-gray-900">{{ number_format(abs($pendingAmount)) }}</p>
@@ -67,7 +67,7 @@
                 <div class="flex items-center justify-between mb-2">
                     <span class="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">Total Earned</span>
                     <div class="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center text-green-600">
-                        <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">trending_up</span>
+                        <i class="fa-solid fa-arrow-trend-up text-[18px]" style=""></i>
                     </div>
                 </div>
                 <p class="text-xl md:text-2xl font-black text-gray-900">{{ number_format($wallet->total_earned ?? 0) }}</p>
@@ -79,7 +79,7 @@
         <div class="bg-primary/5 border border-primary/10 rounded-2xl p-4 md:p-5">
             <div class="flex items-start gap-3">
                 <div class="w-8 h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0 mt-0.5">
-                    <span class="material-symbols-outlined text-[18px]">info</span>
+                    <i class="fa-solid fa-circle-info text-[18px]"></i>
                 </div>
                 <div class="text-sm text-gray-600">
                     <p class="font-bold text-gray-900 mb-1">How your wallet works</p>
@@ -103,12 +103,7 @@
                                 {{ $txn->type === 'ad_payment' ? 'bg-purple-50 text-purple-600' : '' }}
                                 {{ $txn->type === 'withdrawal' ? 'bg-red-50 text-red-500' : '' }}
                                 {{ $txn->type === 'deposit' ? 'bg-blue-50 text-blue-600' : '' }}">
-                                <span class="material-symbols-outlined text-[18px]">
-                                    {{ $txn->type === 'escrow_release' ? 'arrow_downward' : '' }}
-                                    {{ $txn->type === 'ad_payment' ? 'campaign' : '' }}
-                                    {{ $txn->type === 'withdrawal' ? 'arrow_upward' : '' }}
-                                    {{ $txn->type === 'deposit' ? 'add' : '' }}
-                                </span>
+                                <i class="fa-solid fa-{{ $txn->type === 'escrow_release' ? 'arrow-down' : ($txn->type === 'ad_payment' ? 'bullhorn' : ($txn->type === 'withdrawal' ? 'arrow-up' : ($txn->type === 'deposit' ? 'plus' : ''))) }} text-[18px]"></i>
                             </div>
                             <div class="min-w-0 flex-1">
                                 <p class="text-sm font-semibold text-gray-900 truncate">{{ $txn->description }}</p>
@@ -138,7 +133,7 @@
                     @empty
                         <div class="md:col-span-2 px-4 py-8 text-center">
                             <div class="w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center mx-auto mb-3">
-                                <span class="material-symbols-outlined text-3xl text-gray-300">account_balance_wallet</span>
+                                <i class="fa-solid fa-wallet text-3xl text-gray-300"></i>
                             </div>
                             <p class="text-sm font-bold text-gray-900">No transactions yet</p>
                             <p class="text-xs text-gray-500 mt-1">When you make sales or pay for ads, they'll appear here.</p>

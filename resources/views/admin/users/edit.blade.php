@@ -54,12 +54,12 @@
                                 <img src="{{ r2_url($user->profile_photo_path) }}" class="w-full h-full object-cover">
                             @else
                                 <div class="w-full h-full flex items-center justify-center text-slate-300">
-                                    <span class="material-symbols-outlined text-3xl">add_photo_alternate</span>
+                                    <i class="fa-solid fa-images text-3xl"></i>
                                 </div>
                             @endif
                         </div>
                         <div class="absolute inset-0 bg-navy-900/80 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center text-white rounded-2xl">
-                            <span class="material-symbols-outlined text-2xl">camera_alt</span>
+                            <i class="fa-solid fa-camera text-2xl"></i>
                         </div>
                     </label>
                     <div>

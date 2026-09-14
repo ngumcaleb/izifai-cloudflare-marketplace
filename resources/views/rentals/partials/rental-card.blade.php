@@ -11,10 +11,10 @@
                 <img src="{{ $item->main_image_url }}"
                      alt="{{ $item->name }}" loading="lazy"
                      class="w-full h-full object-cover transform transition-transform duration-700 ease-out group-hover:scale-[1.05]"
-                     onerror="this.parentElement.innerHTML = '<div class=\'w-full h-full grid place-items-center text-[#9aa19c]/30\'><span class=\'material-symbols-outlined text-5xl\'>inventory_2</span></div>'">
+                     onerror="this.parentElement.innerHTML = '<div class=\'w-full h-full grid place-items-center text-[#9aa19c]/30\'><span class=\'fa-solid fa-boxes-stacked text-5xl\'></i></div>'">
             @else
                 <div class="w-full h-full grid place-items-center text-[#9aa19c]/30">
-                    <span class="material-symbols-outlined text-5xl">inventory_2</span>
+                    <i class="fa-solid fa-boxes-stacked text-5xl"></i>
                 </div>
             @endif
 
@@ -31,7 +31,7 @@
             {{-- Location Badge (Bottom-Left) --}}
             @if($item->location)
                 <span class="absolute bottom-3 left-3 z-20 px-2 py-0.5 rounded-md bg-[#1c201e]/80 text-white text-[9px] font-bold backdrop-blur-sm flex items-center gap-0.5 shadow-sm max-w-[75%] truncate">
-                    <span class="material-symbols-rounded text-[11px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">location_on</span>
+                    <i class="fa-solid fa-location-dot text-[11px] text-[#9acd32]" style=""></i>
                     <span class="truncate">{{ $item->location }}</span>
                 </span>
             @endif
@@ -46,7 +46,7 @@
                         {{ $item->store->name ?? 'Verified Fleet' }}
                     </p>
                     @if($item->store?->is_verified)
-                        <span class="material-symbols-outlined text-[12px] text-[#659316] shrink-0" style="font-variation-settings:'FILL' 1;">verified</span>
+                        <i class="fa-solid fa-circle-check text-[12px] text-[#659316] shrink-0" style=""></i>
                     @endif
                 </div>
 
@@ -59,7 +59,7 @@
                 <div class="mt-1.5 flex items-center gap-1.5">
                     @if($item->deposit > 0)
                         <span class="inline-flex items-center gap-0.5 text-[10px] font-bold text-[#92400e]">
-                            <span class="material-symbols-rounded text-[12px] text-amber-600">shield</span>
+                            <i class="fa-solid fa-shield-halved text-[12px] text-amber-600"></i>
                             Dep: {{ number_format($item->deposit) }} F
                         </span>
                     @else
@@ -83,12 +83,12 @@
 
                 @if(($item->rating ?? 0) > 0)
                     <span class="inline-flex items-center gap-0.5 text-[11px] font-extrabold text-[#5c625e] shrink-0">
-                        <span class="material-symbols-outlined text-[13px] text-amber-400" style="font-variation-settings:'FILL' 1;">star</span>
+                        <i class="fa-solid fa-star text-[13px] text-amber-400" style=""></i>
                         {{ number_format($item->rating, 1) }}
                     </span>
                 @elseif($item->views > 0)
                     <span class="inline-flex items-center gap-0.5 text-[10px] text-[#9aa19c] shrink-0">
-                        <span class="material-symbols-outlined text-[12px]">visibility</span>
+                        <i class="fa-solid fa-eye text-[12px]"></i>
                         {{ number_format($item->views) }}
                     </span>
                 @endif

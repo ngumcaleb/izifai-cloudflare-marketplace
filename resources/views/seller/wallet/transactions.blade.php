@@ -8,7 +8,7 @@
                 <p class="text-[11px] text-gray-500 mt-0.5">View your complete wallet activity. Filter by type to find specific transactions.</p>
             </div>
             <a href="{{ route('seller.wallet.index') }}" class="text-xs font-semibold text-gray-500 hover:text-primary flex items-center gap-1.5 transition-colors">
-                <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+                <i class="fa-solid fa-arrow-left text-[16px]"></i>
                 Back to Wallet
             </a>
         </div>
@@ -40,12 +40,7 @@
                                 {{ $txn->type === 'ad_payment' ? 'bg-purple-50 text-purple-600' : '' }}
                                 {{ $txn->type === 'withdrawal' ? 'bg-red-50 text-red-500' : '' }}
                                 {{ $txn->type === 'deposit' ? 'bg-blue-50 text-blue-600' : '' }}">
-                                <span class="material-symbols-outlined text-[18px]">
-                                    {{ $txn->type === 'escrow_release' ? 'arrow_downward' : '' }}
-                                    {{ $txn->type === 'ad_payment' ? 'campaign' : '' }}
-                                    {{ $txn->type === 'withdrawal' ? 'arrow_upward' : '' }}
-                                    {{ $txn->type === 'deposit' ? 'add' : '' }}
-                                </span>
+                                <i class="fa-solid fa-{{ $txn->type === 'escrow_release' ? 'arrow-down' : ($txn->type === 'ad_payment' ? 'bullhorn' : ($txn->type === 'withdrawal' ? 'arrow-up' : ($txn->type === 'deposit' ? 'plus' : ''))) }} text-[18px]"></i>
                             </div>
                             <div class="min-w-0 flex-1">
                                 <p class="text-sm font-semibold text-gray-900 truncate">{{ $txn->description }}</p>
@@ -80,7 +75,7 @@
                     @empty
                         <div class="md:col-span-2 px-4 py-8 text-center">
                             <div class="w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center mx-auto mb-3">
-                                <span class="material-symbols-outlined text-3xl text-gray-300">receipt_long</span>
+                                <i class="fa-solid fa-receipt text-3xl text-gray-300"></i>
                             </div>
                             <p class="text-sm font-bold text-gray-900">No transactions found</p>
                             <p class="text-xs text-gray-500 mt-1">Try changing your filter.</p>

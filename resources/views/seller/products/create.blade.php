@@ -8,7 +8,7 @@
                 <p class="text-sm text-gray-500 mt-0.5">Create a new product listing</p>
             </div>
             <a href="{{ route('seller.products.index') }}" class="text-xs font-semibold text-gray-500 hover:text-primary flex items-center gap-1.5 transition-colors">
-                <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+                <i class="fa-solid fa-arrow-left text-[16px]"></i>
                 Back to Inventory
             </a>
         </div>
@@ -70,7 +70,7 @@
             <div class="bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-gray-100/80 space-y-4 md:space-y-5">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-xl bg-primary/5 text-primary flex items-center justify-center shrink-0">
-                        <span class="material-symbols-outlined">info</span>
+                        <i class="fa-solid fa-circle-info"></i>
                     </div>
                     <div>
                         <h2 class="text-base md:text-lg font-bold text-gray-900">Essential Information</h2>
@@ -96,7 +96,7 @@
                         <label class="text-xs font-semibold text-gray-500 ml-1">Collection</label>
                         @if($selectedCategory)
                             <div class="h-11 md:h-12 flex items-center gap-2 px-4 bg-primary/5 border border-primary/20 rounded-xl text-sm font-bold text-primary">
-                                <span class="material-symbols-outlined text-[18px]">folder</span>
+                                <i class="fa-solid fa-folder text-[18px]"></i>
                                 {{ $selectedCategory->name }}
                             </div>
                             <input type="hidden" name="store_category_id" value="{{ $selectedCategory->id }}">
@@ -153,7 +153,7 @@
             <div class="bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-gray-100/80 space-y-4 md:space-y-5">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-xl bg-primary/5 text-primary flex items-center justify-center shrink-0">
-                        <span class="material-symbols-outlined">palette</span>
+                        <i class="fa-solid fa-palette"></i>
                     </div>
                     <div>
                         <h2 class="text-base md:text-lg font-bold text-gray-900">Colors & Sizes</h2>
@@ -178,7 +178,7 @@
                                 <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary/5 text-primary rounded-full text-xs font-semibold">
                                     <span x-text="color"></span>
                                     <button type="button" @click="removeColor(i)" class="hover:text-red-600 transition-colors">
-                                        <span class="material-symbols-outlined text-[14px]">close</span>
+                                        <i class="fa-solid fa-xmark text-[14px]"></i>
                                     </button>
                                 </span>
                             </template>
@@ -204,7 +204,7 @@
                                 <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary/5 text-primary rounded-full text-xs font-semibold">
                                     <span x-text="size"></span>
                                     <button type="button" @click="removeSize(i)" class="hover:text-red-600 transition-colors">
-                                        <span class="material-symbols-outlined text-[14px]">close</span>
+                                        <i class="fa-solid fa-xmark text-[14px]"></i>
                                     </button>
                                 </span>
                             </template>
@@ -220,7 +220,7 @@
             <div class="bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-gray-100/80 space-y-4 md:space-y-5">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-xl bg-primary/5 text-primary flex items-center justify-center shrink-0">
-                        <span class="material-symbols-outlined">photo_library</span>
+                        <i class="fa-solid fa-images"></i>
                     </div>
                     <div>
                         <h2 class="text-base md:text-lg font-bold text-gray-900">Product Media</h2>
@@ -231,7 +231,7 @@
                 <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">
                     <label class="aspect-square rounded-2xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center cursor-pointer hover:border-primary hover:bg-primary/[0.02] transition-all group overflow-hidden bg-gray-50">
                         <input type="file" name="images[]" multiple required accept="image/*" class="hidden" @change="handleImageUpload">
-                        <span class="material-symbols-outlined text-2xl md:text-3xl text-gray-300 group-hover:text-primary mb-1">cloud_upload</span>
+                        <i class="fa-solid fa-cloud-arrow-up text-2xl md:text-3xl text-gray-300 group-hover:text-primary mb-1"></i>
                         <span class="text-xs font-semibold text-gray-400">Upload Photos</span>
                     </label>
 
@@ -252,7 +252,7 @@
                 <div class="space-y-4">
                     <div class="flex items-center gap-3">
                         <div class="w-8 h-8 rounded-xl bg-primary/5 text-primary flex items-center justify-center shrink-0">
-                            <span class="material-symbols-outlined">description</span>
+                            <i class="fa-solid fa-file-lines"></i>
                         </div>
                         <div>
                             <h2 class="text-base md:text-lg font-bold text-gray-900">Full Description</h2>
@@ -266,7 +266,7 @@
                 <div class="pt-4 md:pt-5 border-t border-gray-100">
                     <div class="flex items-center gap-3 mb-4">
                         <div class="w-8 h-8 rounded-xl bg-primary/5 text-primary flex items-center justify-center shrink-0">
-                            <span class="material-symbols-outlined">list_alt</span>
+                            <i class="fa-solid fa-list"></i>
                         </div>
                         <div>
                             <h2 class="text-base md:text-lg font-bold text-gray-900">Specifications</h2>
@@ -290,7 +290,7 @@
                                 <span class="font-bold" x-text="spec.name + ':'"></span>
                                 <span x-text="spec.value"></span>
                                 <button type="button" @click="removeSpec(i)" class="hover:text-red-600 transition-colors ml-0.5">
-                                    <span class="material-symbols-outlined text-[14px]">close</span>
+                                    <i class="fa-solid fa-xmark text-[14px]"></i>
                                 </button>
                             </span>
                         </template>
@@ -311,7 +311,7 @@
                 </a>
                 <button type="submit"
                         class="w-full sm:w-auto whitespace-nowrap bg-primary text-white px-8 py-3 rounded-xl text-sm font-bold hover:opacity-90 active:scale-[0.97] transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2">
-                    <span class="material-symbols-outlined text-[18px]">publish</span>
+                    <i class="fa-solid fa-cloud-arrow-up text-[18px]"></i>
                     Publish to Marketplace
                 </button>
             </div>

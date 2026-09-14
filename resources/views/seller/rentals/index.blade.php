@@ -9,7 +9,7 @@
                     <div class="flex items-center gap-3">
                         <a href="{{ route('seller.rentals.index') }}"
                            class="p-1.5 -ml-1.5 text-gray-400 hover:text-primary hover:bg-gray-50 rounded-lg transition-all">
-                            <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+                            <i class="fa-solid fa-arrow-left text-[20px]"></i>
                         </a>
                         <div>
                             <h1 class="text-xl md:text-2xl font-bold text-gray-900">{{ $currentCollection->name }}</h1>
@@ -26,13 +26,13 @@
             <div class="flex items-center gap-2">
                 <a href="{{ route('seller.rentals.create', $currentCollection ? ['collection' => $currentCollection->id] : []) }}"
                    class="whitespace-nowrap flex items-center justify-center gap-1.5 bg-primary text-white px-4 py-2 rounded-xl text-sm font-bold hover:opacity-90 active:scale-[0.97] transition-all shadow-sm">
-                    <span class="material-symbols-outlined text-[18px]">add</span>
+                    <i class="fa-solid fa-plus text-[18px]"></i>
                     <span>Add Rental</span>
                 </a>
                 @unless($currentCollection)
                     <button @click="showCreateCollection = !showCreateCollection"
                             class="whitespace-nowrap flex items-center justify-center gap-1.5 border border-dashed border-gray-300 text-gray-500 px-4 py-2 rounded-xl text-sm font-bold hover:border-primary hover:text-primary hover:bg-primary/5 active:scale-[0.97] transition-all">
-                        <span class="material-symbols-outlined text-[18px]">create_new_folder</span>
+                        <i class="fa-solid fa-folder-plus text-[18px]"></i>
                         <span class="hidden sm:inline">Create Collection</span>
                         <span class="sm:hidden">Collection</span>
                     </button>
@@ -52,7 +52,7 @@
                        class="flex-1 h-10 bg-white border border-gray-200 rounded-xl px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50">
                 <button type="submit"
                         class="h-10 px-5 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 active:scale-[0.97] transition-all flex items-center gap-1.5">
-                    <span class="material-symbols-outlined text-[18px]">check</span>
+                    <i class="fa-solid fa-check text-[18px]"></i>
                     Create
                 </button>
                 <button type="button" @click="showCreateCollection = false; newName = ''"
@@ -73,7 +73,7 @@
                                     <img src="{{ $rental->main_image_url }}" class="w-full h-full object-cover">
                                 @else
                                     <div class="w-full h-full flex items-center justify-center text-gray-300">
-                                        <span class="material-symbols-outlined text-[18px]">image</span>
+                                        <i class="fa-solid fa-image text-[18px]"></i>
                                     </div>
                                 @endif
                             </div>
@@ -101,7 +101,7 @@
                         <div class="w-10 text-center shrink-0 relative">
                             <button @click="open = !open" @click.outside="open = false"
                                     class="p-1.5 text-gray-400 hover:text-primary hover:bg-gray-50 rounded-lg transition-all">
-                                <span class="material-symbols-outlined text-[18px]">more_vert</span>
+                                <i class="fa-solid fa-ellipsis-vertical text-[18px]"></i>
                             </button>
                             <div x-show="open" x-cloak
                                  @click.outside="open = false"
@@ -114,18 +114,18 @@
                                  x-transition:leave-end="opacity-0 scale-95">
                                 <a href="{{ route('rentals.show', $rental->slug) }}" target="_blank"
                                    class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors">
-                                    <span class="material-symbols-outlined text-[18px]">open_in_new</span>
+                                    <i class="fa-solid fa-up-right-from-square text-[18px]"></i>
                                     View Public Page
                                 </a>
                                 <a href="{{ route('seller.rentals.edit', $rental->id) }}"
                                    class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors">
-                                    <span class="material-symbols-outlined text-[18px]">edit</span>
+                                    <i class="fa-solid fa-pen text-[18px]"></i>
                                     Edit Listing
                                 </a>
                                 <form action="{{ route('seller.rentals.destroy', $rental->id) }}" method="POST" onsubmit="return confirm('Delete this rental item?')">
                                     @csrf @method('DELETE')
                                     <button class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors">
-                                        <span class="material-symbols-outlined text-[18px]">delete</span>
+                                        <i class="fa-solid fa-trash text-[18px]"></i>
                                         Delete Listing
                                     </button>
                                 </form>
@@ -135,7 +135,7 @@
                 @empty
                     <div class="px-5 py-16 text-center">
                         <div class="w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center mx-auto mb-3">
-                            <span class="material-symbols-outlined text-3xl text-gray-300">shelves</span>
+                            <i class="fa-solid fa-warehouse text-3xl text-gray-300"></i>
                         </div>
                         <p class="text-base font-bold text-gray-900">No rentals in this collection</p>
                         <p class="text-sm text-gray-500 mt-1">Add a rental to get started.</p>
@@ -156,14 +156,14 @@
                                             <a href="{{ route('seller.rentals.index', ['collection' => $cat->id]) }}"
                                                class="group bg-white rounded-2xl border border-gray-100/80 shadow-sm p-5 text-center hover:border-primary/30 hover:shadow-md active:scale-[0.97] transition-all block">
                                                 <div class="w-14 h-14 rounded-2xl bg-primary/5 text-primary flex items-center justify-center mx-auto mb-3 group-hover:bg-primary group-hover:text-white transition-all">
-                                                    <span class="material-symbols-outlined text-2xl">folder</span>
+                                                    <i class="fa-solid fa-folder text-2xl"></i>
                                                 </div>
                                                 <h3 class="text-sm font-bold text-gray-900 truncate group-hover:text-primary transition-colors">{{ $cat->name }}</h3>
                                                 <p class="text-xs text-gray-400 mt-0.5">{{ $cat->rental_items_count }} rental(s)</p>
                                             </a>
                                             <button @click.stop="open = !open"
                                                     class="absolute top-2 right-2 p-1.5 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-all opacity-0 group-hover:opacity-100">
-                                                <span class="material-symbols-outlined text-[16px]">more_vert</span>
+                                                <i class="fa-solid fa-ellipsis-vertical text-[16px]"></i>
                                             </button>
                                             <div x-show="open" x-cloak @click.outside="open = false"
                                                  class="absolute right-0 top-10 w-40 bg-white rounded-xl shadow-lg border border-gray-100 z-50 overflow-hidden"
@@ -175,13 +175,13 @@
                                                  x-transition:leave-end="opacity-0 scale-95">
                                                 <button @click="rename = true; open = false"
                                                         class="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors">
-                                                    <span class="material-symbols-outlined text-[16px]">edit</span>
+                                                    <i class="fa-solid fa-pen text-[16px]"></i>
                                                     Rename
                                                 </button>
                                                 <form action="{{ route('seller.store-categories.destroy', $cat->id) }}" method="POST" onsubmit="return confirm('Delete this collection? Rentals inside will become uncollected.')">
                                                     @csrf @method('DELETE')
                                                     <button class="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors">
-                                                        <span class="material-symbols-outlined text-[16px]">delete</span>
+                                                        <i class="fa-solid fa-trash text-[16px]"></i>
                                                         Delete
                                                     </button>
                                                 </form>
@@ -193,7 +193,7 @@
                                               class="bg-white rounded-2xl border border-primary/40 shadow-md p-5 text-center">
                                             @csrf @method('PUT')
                                             <div class="w-14 h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mx-auto mb-3">
-                                                <span class="material-symbols-outlined text-2xl">edit</span>
+                                                <i class="fa-solid fa-pen text-2xl"></i>
                                             </div>
                                             <input type="text" name="name" x-model="newName" required
                                                    class="w-full h-10 bg-gray-50 border border-gray-200 rounded-xl px-3 text-sm text-center font-bold focus:outline-none focus:ring-2 focus:ring-primary/30 mb-2">
@@ -231,7 +231,7 @@
                                                 <img src="{{ $rental->main_image_url }}" class="w-full h-full object-cover">
                                             @else
                                                 <div class="w-full h-full flex items-center justify-center text-gray-300">
-                                                    <span class="material-symbols-outlined text-[18px]">image</span>
+                                                    <i class="fa-solid fa-image text-[18px]"></i>
                                                 </div>
                                             @endif
                                         </div>
@@ -247,14 +247,14 @@
                                     <div class="w-20 text-center shrink-0">
                                         <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider
                                             {{ $rental->status === 'published' ? 'bg-primary/5 text-primary' : ($rental->status === 'draft' ? 'bg-amber-50 text-amber-600' : 'bg-red-50 text-red-600') }}">
-                                            <span class="material-symbols-outlined text-[10px]">{{ $rental->status === 'published' ? 'check_circle' : ($rental->status === 'draft' ? 'draft' : 'archive') }}</span>
+<i class="fa-solid text-[10px] {{ $rental->status === 'published' ? 'fa-circle-check text-green-500' : ($rental->status === 'draft' ? 'fa-pen text-amber-500' : 'fa-box-archive text-gray-400') }}"></i>
                                             {{ ucfirst($rental->status) }}
                                         </span>
                                     </div>
                                     <div class="w-10 text-center shrink-0 relative">
                                         <button @click="open = !open" @click.outside="open = false"
                                                 class="p-1.5 text-gray-400 hover:text-primary hover:bg-gray-50 rounded-lg transition-all">
-                                            <span class="material-symbols-outlined text-[18px]">more_vert</span>
+                                            <i class="fa-solid fa-ellipsis-vertical text-[18px]"></i>
                                         </button>
                                         <div x-show="open" x-cloak @click.outside="open = false"
                                              class="absolute right-0 top-9 w-44 bg-white rounded-xl shadow-lg border border-gray-100 z-50 overflow-hidden"
@@ -266,18 +266,18 @@
                                              x-transition:leave-end="opacity-0 scale-95">
                                             <a href="{{ route('rentals.show', $rental->slug) }}" target="_blank"
                                                class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors">
-                                                <span class="material-symbols-outlined text-[18px]">open_in_new</span>
+                                                <i class="fa-solid fa-up-right-from-square text-[18px]"></i>
                                                 View
                                             </a>
                                             <a href="{{ route('seller.rentals.edit', $rental->id) }}"
                                                class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:bg-gray-50 transition-colors">
-                                                <span class="material-symbols-outlined text-[18px]">edit</span>
+                                                <i class="fa-solid fa-pen text-[18px]"></i>
                                                 Edit
                                             </a>
                                             <form action="{{ route('seller.rentals.destroy', $rental->id) }}" method="POST" onsubmit="return confirm('Delete this rental item?')">
                                                 @csrf @method('DELETE')
                                                 <button class="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors">
-                                                    <span class="material-symbols-outlined text-[18px]">delete</span>
+                                                    <i class="fa-solid fa-trash text-[18px]"></i>
                                                     Delete
                                                 </button>
                                             </form>
@@ -292,13 +292,13 @@
                 @if($storeCategories->isEmpty() && $rentals->isEmpty())
                     <div class="bg-white rounded-2xl shadow-sm border border-gray-100/80 p-12 text-center">
                         <div class="w-14 h-14 rounded-2xl bg-gray-50 flex items-center justify-center mx-auto mb-4">
-                            <span class="material-symbols-outlined text-3xl text-gray-300">shelves</span>
+                            <i class="fa-solid fa-warehouse text-3xl text-gray-300"></i>
                         </div>
                         <h3 class="text-lg font-bold text-gray-900">No rentals yet</h3>
                         <p class="text-sm text-gray-500 mt-1 max-w-sm mx-auto">Add your first rental to start earning on the marketplace.</p>
                         <a href="{{ route('seller.rentals.create') }}"
                            class="inline-flex items-center gap-1.5 mt-5 px-6 py-2.5 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 active:scale-[0.97] transition-all shadow-sm">
-                            <span class="material-symbols-outlined text-[18px]">add</span>
+                            <i class="fa-solid fa-plus text-[18px]"></i>
                             Add Rental
                         </a>
                     </div>

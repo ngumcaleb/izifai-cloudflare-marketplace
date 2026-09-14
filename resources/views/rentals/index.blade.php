@@ -28,7 +28,7 @@
                 {{-- Skewed Kicker Badge --}}
                 <span class="inline-flex items-center gap-2 px-3.5 py-1.5 -skew-x-6 rounded-md bg-gradient-to-r from-[#9acd32] to-[#86b92c] text-[#1c201e] text-[10px] sm:text-[11px] font-extrabold uppercase tracking-[0.16em] shadow-[0_6px_18px_-6px_rgba(154,205,50,0.55)]">
                     <span class="skew-x-6 inline-flex items-center gap-1.5">
-                        <span class="material-symbols-rounded text-[14px]" style="font-variation-settings:'FILL' 1;">handyman</span>
+                        <i class="fa-solid fa-screwdriver-wrench text-[14px]" style=""></i>
                         Equipment & Vehicle Rentals
                     </span>
                 </span>
@@ -44,15 +44,15 @@
                 {{-- Highlights / Quick Stats --}}
                 <div class="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px] sm:text-xs font-semibold text-white/80">
                     <span class="inline-flex items-center gap-1.5">
-                        <span class="material-symbols-rounded text-[14px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">inventory_2</span>
+                        <i class="fa-solid fa-boxes-stacked text-[14px] text-[#9acd32]" style=""></i>
                         <strong class="text-white">{{ number_format($rentals->total()) }}</strong> items available
                     </span>
                     <span class="inline-flex items-center gap-1.5">
-                        <span class="material-symbols-rounded text-[14px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">verified</span>
+                        <i class="fa-solid fa-circle-check text-[14px] text-[#9acd32]" style=""></i>
                         Verified owners
                     </span>
                     <span class="inline-flex items-center gap-1.5">
-                        <span class="material-symbols-rounded text-[14px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">shield</span>
+                        <i class="fa-solid fa-shield-halved text-[14px] text-[#9acd32]" style=""></i>
                         Escrow deposit protection
                     </span>
                 </div>
@@ -70,7 +70,7 @@
                                 <span class="skew-x-6 flex items-center gap-1">
                                     "{{ request('q') }}"
                                     <a href="{{ route('rentals.index', request()->except(['q', 'page'])) }}" class="hover:text-[#9acd32] transition-colors ml-0.5">
-                                        <span class="material-symbols-rounded text-[13px]">close</span>
+                                        <i class="fa-solid fa-xmark text-[13px]"></i>
                                     </a>
                                 </span>
                             </span>
@@ -82,7 +82,7 @@
                                 <span class="skew-x-6 flex items-center gap-1">
                                     {{ $activeCat->name ?? request('category') }}
                                     <a href="{{ route('rentals.index', request()->except(['category', 'page'])) }}" class="hover:opacity-75 transition-opacity ml-0.5">
-                                        <span class="material-symbols-rounded text-[13px]">close</span>
+                                        <i class="fa-solid fa-xmark text-[13px]"></i>
                                     </a>
                                 </span>
                             </span>
@@ -93,7 +93,7 @@
                                 <span class="skew-x-6 flex items-center gap-1">
                                     Period: {{ ucfirst(request('billing_unit')) }}
                                     <a href="{{ route('rentals.index', request()->except(['billing_unit', 'page'])) }}" class="hover:text-[#9acd32] transition-colors ml-0.5">
-                                        <span class="material-symbols-rounded text-[13px]">close</span>
+                                        <i class="fa-solid fa-xmark text-[13px]"></i>
                                     </a>
                                 </span>
                             </span>
@@ -104,7 +104,7 @@
                                 <span class="skew-x-6 flex items-center gap-1">
                                     {{ number_format(request('min_price', 0)) }} - {{ request('max_price') ? number_format(request('max_price')) : '∞' }} F
                                     <a href="{{ route('rentals.index', request()->except(['min_price', 'max_price', 'page'])) }}" class="hover:text-[#9acd32] transition-colors ml-0.5">
-                                        <span class="material-symbols-rounded text-[13px]">close</span>
+                                        <i class="fa-solid fa-xmark text-[13px]"></i>
                                     </a>
                                 </span>
                             </span>
@@ -115,7 +115,7 @@
                                 <span class="skew-x-6 flex items-center gap-1">
                                     {{ request('sort') === 'price_low' ? 'Price: Low → High' : (request('sort') === 'price_high' ? 'Price: High → Low' : 'Most Viewed') }}
                                     <a href="{{ route('rentals.index', request()->except(['sort', 'page'])) }}" class="hover:text-[#9acd32] transition-colors ml-0.5">
-                                        <span class="material-symbols-rounded text-[13px]">close</span>
+                                        <i class="fa-solid fa-xmark text-[13px]"></i>
                                     </a>
                                 </span>
                             </span>
@@ -140,7 +140,7 @@
             <a href="{{ route('rentals.index', request()->except(['category', 'page'])) }}"
                class="shrink-0 px-4 py-2 rounded-xl text-[12px] font-bold transition-all duration-200 flex items-center gap-1.5 {{ !request('category') ? '-skew-x-6 bg-[#1c201e] text-[#9acd32] shadow-sm' : 'bg-white border border-[#e8eae8] text-[#3f453f] hover:border-[#9acd32]/50 hover:text-[#7ca81d]' }}">
                 <span class="{{ !request('category') ? 'skew-x-6' : '' }} flex items-center gap-1.5">
-                    <span class="material-symbols-rounded text-[16px]" style="font-variation-settings:'FILL' 1;">grid_view</span>
+                    <i class="fa-solid fa-table-cells text-[16px]" style=""></i>
                     All Gear
                 </span>
             </a>
@@ -171,7 +171,7 @@
                 {{-- Mobile Filter Trigger --}}
                 <button @click="openMobileFilters = true"
                         class="lg:hidden inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-[#f5f6f5] border border-[#e0e3e0] text-[#1c201e] text-[12px] font-bold hover:bg-[#eceeed] transition-all">
-                    <span class="material-symbols-rounded text-[18px]" style="font-variation-settings:'FILL' 1;">tune</span>
+                    <i class="fa-solid fa-sliders text-[18px]" style=""></i>
                     Filters
                     @php $filterCount = collect([request('category'), request('billing_unit'), request('min_price'), request('max_price')])->filter()->count(); @endphp
                     @if($filterCount > 0)
@@ -193,7 +193,7 @@
                         <input type="number" name="max_price" value="{{ request('max_price') }}" placeholder="Max F"
                                class="w-20 bg-transparent text-[12px] font-semibold text-[#1c201e] placeholder:text-[#9aa19c] outline-none">
                         <button type="submit" class="w-6 h-6 rounded-lg bg-[#1c201e] text-white flex items-center justify-center hover:bg-[#9acd32] hover:text-[#1c201e] transition-colors">
-                            <span class="material-symbols-rounded text-[14px]">arrow_forward</span>
+                            <i class="fa-solid fa-arrow-right text-[14px]"></i>
                         </button>
                     </div>
                 </form>
@@ -212,9 +212,7 @@
                             </option>
                         @endforeach
                     </select>
-                    <span class="material-symbols-rounded text-[16px] text-[#6b716c] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none">
-                        expand_more
-                    </span>
+                    <i class="fa-solid fa-chevron-down text-[16px] text-[#6b716c] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
                 </div>
 
                 {{-- Results Count --}}
@@ -241,9 +239,7 @@
                             </option>
                         @endforeach
                     </select>
-                    <span class="material-symbols-rounded text-[16px] text-[#6b716c] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none">
-                        expand_more
-                    </span>
+                    <i class="fa-solid fa-chevron-down text-[16px] text-[#6b716c] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
                 </div>
             </div>
         </div>
@@ -269,7 +265,7 @@
             {{-- Empty State --}}
             <div class="bg-white rounded-3xl border border-[#e8eae8] p-10 sm:p-16 text-center shadow-sm">
                 <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-[#f2f9df] text-[#659316] flex items-center justify-center mx-auto mb-4">
-                    <span class="material-symbols-rounded text-4xl sm:text-5xl" style="font-variation-settings:'FILL' 1;">handyman</span>
+                    <i class="fa-solid fa-screwdriver-wrench text-4xl sm:text-5xl" style=""></i>
                 </div>
                 <h3 class="text-lg sm:text-xl font-extrabold text-[#1c201e]">No rentals found</h3>
                 <p class="text-xs sm:text-sm text-[#6b716c] mt-1.5 max-w-md mx-auto leading-relaxed">
@@ -284,7 +280,7 @@
                         <a href="{{ route('rentals.index') }}"
                            class="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg -skew-x-6 bg-[#1c201e] text-white text-xs font-bold hover:bg-[#9acd32] hover:text-[#1c201e] transition-all shadow-md">
                             <span class="skew-x-6 flex items-center gap-1.5">
-                                <span class="material-symbols-rounded text-[15px]">refresh</span>
+                                <i class="fa-solid fa-arrows-rotate text-[15px]"></i>
                                 Reset Filters
                             </span>
                         </a>
@@ -292,7 +288,7 @@
                     <a href="{{ route('stores.index') }}"
                        class="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg -skew-x-6 bg-[#f2f9df] text-[#659316] text-xs font-bold hover:bg-[#9acd32] hover:text-[#1c201e] transition-all">
                         <span class="skew-x-6 flex items-center gap-1.5">
-                            <span class="material-symbols-rounded text-[15px]">store</span>
+                            <i class="fa-solid fa-store text-[15px]"></i>
                             Explore Stores
                         </span>
                     </a>
@@ -309,7 +305,7 @@
         <div class="flex items-end justify-between gap-3 mb-5">
             <div class="flex items-center gap-3">
                 <span class="grid place-items-center w-11 h-11 rounded-2xl bg-[#dc2626] text-white shadow-lg shadow-red-500/20 shrink-0">
-                    <span class="material-symbols-rounded text-[20px]" style="font-variation-settings:'FILL' 1;">local_fire_department</span>
+                    <i class="fa-solid fa-fire text-[20px]" style=""></i>
                 </span>
                 <div>
                     <h2 class="text-lg sm:text-xl font-extrabold tracking-tight text-[#1c201e]">High-Demand Gear</h2>
@@ -327,7 +323,7 @@
                                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                         @else
                             <div class="w-full h-full grid place-items-center text-[#9aa19c]/30">
-                                <span class="material-symbols-rounded text-4xl">inventory_2</span>
+                                <i class="fa-solid fa-boxes-stacked text-4xl"></i>
                             </div>
                         @endif
 
@@ -359,7 +355,7 @@
                 <p class="text-[12px] text-[#6b716c] mt-0.5">Reliable equipment rental shops across Cameroon</p>
             </div>
             <a href="{{ route('stores.index') }}" class="inline-flex items-center gap-1 text-xs font-bold text-[#7ca81d] hover:text-[#659316] transition-colors whitespace-nowrap">
-                View all stores <span class="material-symbols-rounded text-[15px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+                View all stores <i class="fa-solid fa-arrow-right text-[15px]" style=""></i>
             </a>
         </div>
 
@@ -371,14 +367,14 @@
                         @if($store->logo)
                             <img src="{{ $store->logo_url }}" alt="{{ $store->name }}" class="w-full h-full object-cover">
                         @else
-                            <span class="material-symbols-rounded text-2xl text-[#9aa19c]">storefront</span>
+                            <i class="fa-solid fa-store text-2xl text-[#9aa19c]"></i>
                         @endif
                     </div>
                     <div class="min-w-0 flex-1">
                         <div class="flex items-center gap-1">
                             <h3 class="text-sm font-bold text-[#1c201e] truncate group-hover:text-[#7ca81d] transition-colors">{{ $store->name }}</h3>
                             @if($store->is_verified)
-                                <span class="material-symbols-rounded text-[14px] text-[#659316] shrink-0" style="font-variation-settings:'FILL' 1;">verified</span>
+                                <i class="fa-solid fa-circle-check text-[14px] text-[#659316] shrink-0" style=""></i>
                             @endif
                         </div>
                         <p class="text-[11px] font-bold text-[#659316] mt-0.5">{{ $store->rental_items_count ?? 0 }} rentals</p>
@@ -386,7 +382,7 @@
                             <p class="text-[10px] text-[#9aa19c] truncate mt-0.5">{{ $store->location }}</p>
                         @endif
                     </div>
-                    <span class="material-symbols-rounded text-[18px] text-[#c9cecb] group-hover:text-[#9acd32] group-hover:translate-x-0.5 transition-all">chevron_right</span>
+                    <i class="fa-solid fa-chevron-right text-[18px] text-[#c9cecb] group-hover:text-[#9acd32] group-hover:translate-x-0.5 transition-all"></i>
                 </a>
             @endforeach
         </div>
@@ -422,11 +418,11 @@
             {{-- Header --}}
             <div class="p-4 border-b border-[#e8eae8] flex items-center justify-between shrink-0">
                 <div class="flex items-center gap-2">
-                    <span class="material-symbols-rounded text-lg text-[#1c201e]">tune</span>
+                    <i class="fa-solid fa-sliders text-lg text-[#1c201e]"></i>
                     <h3 class="text-sm font-extrabold text-[#1c201e]">Filter Rentals</h3>
                 </div>
                 <button @click="openMobileFilters = false" class="w-8 h-8 rounded-full bg-black/5 flex items-center justify-center text-black/60">
-                    <span class="material-symbols-rounded text-lg">close</span>
+                    <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
 

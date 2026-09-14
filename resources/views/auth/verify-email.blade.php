@@ -66,7 +66,7 @@
                         <button type="submit"
                                 class="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-primary text-on-primary rounded-lg text-sm font-bold shadow-lg hover:opacity-90 transition-all active:scale-[0.98]">
                             Resend Verification Email
-                            <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+                            <i class="fa-solid fa-arrow-right text-[20px]"></i>
                         </button>
                     </form>
 

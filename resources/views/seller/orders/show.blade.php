@@ -9,21 +9,21 @@
             </div>
             <a href="{{ route('seller.orders.index') }}"
                class="text-xs font-semibold text-gray-500 hover:text-primary flex items-center gap-1.5 transition-colors">
-                <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+                <i class="fa-solid fa-arrow-left text-[16px]"></i>
                 All Orders
             </a>
         </div>
 
         @if(session('success'))
             <div class="bg-green-50 border border-green-200 rounded-xl p-4 mb-4 flex items-center gap-3 animate-slide-down">
-                <span class="material-symbols-outlined text-green-600">check_circle</span>
+                <i class="fa-solid fa-circle-check text-green-600"></i>
                 <p class="text-sm font-semibold text-green-800">{{ session('success') }}</p>
             </div>
         @endif
 
         @if(session('error'))
             <div class="bg-red-50 border border-red-200 rounded-xl p-4 mb-4 flex items-center gap-3 animate-slide-down">
-                <span class="material-symbols-outlined text-red-600">error</span>
+                <i class="fa-solid fa-circle-exclamation text-red-600"></i>
                 <p class="text-sm font-semibold text-red-800">{{ session('error') }}</p>
             </div>
         @endif
@@ -80,7 +80,7 @@
                                         <img src="{{ $item->item->images->first()->url }}" class="w-full h-full object-cover">
                                     @else
                                         <div class="w-full h-full flex items-center justify-center text-gray-300">
-                                            <span class="material-symbols-outlined">inventory_2</span>
+                                            <i class="fa-solid fa-boxes-stacked"></i>
                                         </div>
                                     @endif
                                 </div>
@@ -107,7 +107,7 @@
                     <div class="bg-white rounded-2xl p-4 md:p-5 shadow-sm border border-gray-100/80 space-y-3">
                         <div class="flex items-center gap-2">
                             <div class="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600">
-                                <span class="material-symbols-outlined text-[18px]">local_shipping</span>
+                                <i class="fa-solid fa-truck-fast text-[18px]"></i>
                             </div>
                             <div>
                                 <p class="text-sm font-bold text-gray-900">Ship Order</p>
@@ -119,7 +119,7 @@
                                 @csrf
                                 <button type="submit" onclick="return confirm('Mark this order as shipped?')"
                                         class="w-full bg-primary text-white py-3 rounded-xl text-xs font-bold hover:opacity-90 active:scale-[0.97] transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2">
-                                    <span class="material-symbols-outlined text-[16px]">local_shipping</span>
+                                    <i class="fa-solid fa-truck-fast text-[16px]"></i>
                                     Mark as Shipped
                                 </button>
                             </form>
@@ -129,7 +129,7 @@
                     <div class="bg-white rounded-2xl p-4 md:p-5 shadow-sm border border-gray-100/80">
                         <div class="flex items-start gap-3">
                             <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
-                                <span class="material-symbols-outlined text-[18px]">local_shipping</span>
+                                <i class="fa-solid fa-truck-fast text-[18px]"></i>
                             </div>
                             <div>
                                 <p class="text-sm font-bold text-blue-800">Shipped</p>
@@ -141,7 +141,7 @@
                     <div class="bg-white rounded-2xl p-4 md:p-5 shadow-sm border border-gray-100/80">
                         <div class="flex items-start gap-3">
                             <div class="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center text-green-600 shrink-0">
-                                <span class="material-symbols-outlined text-[18px]">check_circle</span>
+                                <i class="fa-solid fa-circle-check text-[18px]"></i>
                             </div>
                             <div>
                                 <p class="text-sm font-bold text-green-800">Delivered</p>
@@ -153,7 +153,7 @@
                     <div class="bg-white rounded-2xl p-4 md:p-5 shadow-sm border border-gray-100/80">
                         <div class="flex items-start gap-3">
                             <div class="w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center text-red-500 shrink-0">
-                                <span class="material-symbols-outlined text-[18px]">cancel</span>
+                                <i class="fa-solid fa-xmark text-[18px]"></i>
                             </div>
                             <div>
                                 <p class="text-sm font-bold text-red-700">Cancelled</p>
@@ -167,7 +167,7 @@
                 <div class="bg-white rounded-2xl p-4 md:p-5 shadow-sm border border-gray-100/80">
                     <div class="flex items-center gap-2 mb-3">
                         <div class="w-7 h-7 rounded-lg bg-gray-50 flex items-center justify-center text-gray-500">
-                            <span class="material-symbols-outlined text-[14px]">timeline</span>
+                            <i class="fa-solid fa-chart-line text-[14px]"></i>
                         </div>
                         <p class="text-xs font-bold text-gray-900">Order Timeline</p>
                     </div>

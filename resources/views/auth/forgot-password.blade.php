@@ -63,7 +63,7 @@
                     <div>
                         <label class="block text-xs font-bold text-on-surface-variant mb-1.5">Email Address</label>
                         <div class="relative">
-                            <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px] pointer-events-none">mail</span>
+                            <i class="fa-solid fa-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px] pointer-events-none"></i>
                             <input type="email" name="email" value="{{ old('email') }}" required autofocus
                                    class="w-full pl-11 pr-4 py-3 bg-surface-container-lowest border border-outline-variant/50 rounded-lg text-sm text-on-surface font-medium placeholder:text-on-surface-variant/40 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                    placeholder="your@email.com">
@@ -73,13 +73,13 @@
                     <button type="submit"
                             class="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-primary text-on-primary rounded-lg text-sm font-bold shadow-lg hover:opacity-90 transition-all active:scale-[0.98]">
                         Send Recovery Link
-                        <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+                        <i class="fa-solid fa-arrow-right text-[20px]"></i>
                     </button>
                 </form>
 
                 <div class="mt-6 text-center">
                     <a href="{{ route('login') }}" class="text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors">
-                        <span class="material-symbols-outlined text-[16px] align-text-bottom">arrow_back</span>
+                        <i class="fa-solid fa-arrow-left text-[16px] align-text-bottom"></i>
                         Back to login
                     </a>
                 </div>

@@ -11,21 +11,21 @@
 
         @if(session('success'))
             <div class="bg-green-50 border border-green-200 rounded-xl p-4 mb-4 flex items-center gap-3 animate-slide-down">
-                <span class="material-symbols-outlined text-green-600">check_circle</span>
+                <i class="fa-solid fa-circle-check text-green-600"></i>
                 <p class="text-sm font-semibold text-green-800">{{ session('success') }}</p>
             </div>
         @endif
 
         @if(session('error'))
             <div class="bg-red-50 border border-red-200 rounded-xl p-4 mb-4 flex items-center gap-3 animate-slide-down">
-                <span class="material-symbols-outlined text-red-600">error</span>
+                <i class="fa-solid fa-circle-exclamation text-red-600"></i>
                 <p class="text-sm font-semibold text-red-800">{{ session('error') }}</p>
             </div>
         @endif
 
         @if($errors->any())
             <div class="bg-red-50 border border-red-200 rounded-xl p-4 mb-4 flex items-center gap-3 animate-slide-down">
-                <span class="material-symbols-outlined text-red-600">warning</span>
+                <i class="fa-solid fa-triangle-exclamation text-red-600"></i>
                 <div>
                     @foreach($errors->all() as $error)
                         <p class="text-sm font-semibold text-red-800">{{ $error }}</p>
@@ -55,7 +55,7 @@
                             </h3>
                             <div class="flex items-center gap-3 mt-1.5 text-xs text-gray-500">
                                 <span class="flex items-center gap-1">
-                                    <span class="material-symbols-outlined text-[14px]">person</span>
+                                    <i class="fa-solid fa-user text-[14px]"></i>
                                     {{ $order->user->name }}
                                 </span>
                             </div>
@@ -70,7 +70,7 @@
             @empty
                 <div class="md:col-span-2 bg-white rounded-2xl p-12 shadow-sm border border-gray-100/80 text-center">
                     <div class="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center mx-auto mb-4">
-                        <span class="material-symbols-outlined text-4xl text-gray-300">shopping_cart</span>
+                        <i class="fa-solid fa-cart-shopping text-4xl text-gray-300"></i>
                     </div>
                     <h3 class="text-lg font-bold text-gray-900">No orders yet</h3>
                     <p class="text-sm text-gray-500 mt-1">When customers purchase your items, they'll appear here.</p>

@@ -37,7 +37,7 @@
 
     @if(!$q || strlen($q) < 2)
         <div class="text-center py-20">
-            <span class="material-symbols-outlined text-5xl text-on-surface-variant/30">search</span>
+            <i class="fa-solid fa-magnifying-glass text-5xl text-on-surface-variant/30"></i>
             <h2 class="text-lg font-bold text-on-surface mt-4">Search Products, Services & More</h2>
             <p class="text-sm text-on-surface-variant mt-1">Use the search bar above to find what you're looking for.</p>
         </div>
@@ -48,7 +48,7 @@
         <section class="mb-8">
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-base font-bold flex items-center gap-2">
-                    <span class="material-symbols-outlined text-primary text-[18px]">inventory_2</span>
+                    <i class="fa-solid fa-boxes-stacked text-primary text-[18px]"></i>
                     Products
                     <span class="text-xs font-normal text-on-surface-variant">({{ $products->count() }})</span>
                 </h2>
@@ -64,10 +64,10 @@
                             @if($product->images->first())
                             <img src="{{ $product->images->first()->url }}" alt="{{ $product->name }}"
                                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy"
-                                 onerror="this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center text-on-surface-variant/20\'><span class=\'material-symbols-outlined text-3xl\'>image</span></div>'">
+                                 onerror="this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center text-on-surface-variant/20\'><span class=\'fa-solid fa-image text-3xl\'></i></div>'">
                             @else
                             <div class="w-full h-full flex items-center justify-center text-on-surface-variant/20">
-                                <span class="material-symbols-outlined text-3xl">image</span>
+                                <i class="fa-solid fa-image text-3xl"></i>
                             </div>
                             @endif
                         </div>
@@ -95,7 +95,7 @@
         <section class="mb-8">
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-base font-bold flex items-center gap-2">
-                    <span class="material-symbols-outlined text-primary text-[18px]">handyman</span>
+                    <i class="fa-solid fa-screwdriver-wrench text-primary text-[18px]"></i>
                     Services
                     <span class="text-xs font-normal text-on-surface-variant">({{ $services->count() }})</span>
                 </h2>
@@ -112,7 +112,7 @@
                             <img src="{{ $service->images->first()->url }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy">
                             @else
                             <div class="w-full h-full flex items-center justify-center text-on-surface-variant/20">
-                                <span class="material-symbols-outlined text-xl">image</span>
+                                <i class="fa-solid fa-image text-xl"></i>
                             </div>
                             @endif
                         </div>
@@ -137,7 +137,7 @@
         <section class="mb-8">
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-base font-bold flex items-center gap-2">
-                    <span class="material-symbols-outlined text-primary text-[18px]">calendar_month</span>
+                    <i class="fa-solid fa-calendar-days text-primary text-[18px]"></i>
                     Rentals
                     <span class="text-xs font-normal text-on-surface-variant">({{ $rentals->count() }})</span>
                 </h2>
@@ -154,7 +154,7 @@
                             <img src="{{ $rental->images->first()->url }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy">
                             @else
                             <div class="w-full h-full flex items-center justify-center text-on-surface-variant/20">
-                                <span class="material-symbols-outlined text-xl">image</span>
+                                <i class="fa-solid fa-image text-xl"></i>
                             </div>
                             @endif
                         </div>
@@ -179,7 +179,7 @@
         <section class="mb-8">
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-base font-bold flex items-center gap-2">
-                    <span class="material-symbols-outlined text-primary text-[18px]">store</span>
+                    <i class="fa-solid fa-store text-primary text-[18px]"></i>
                     Stores
                     <span class="text-xs font-normal text-on-surface-variant">({{ $stores->count() }})</span>
                 </h2>
@@ -202,7 +202,7 @@
                             <h6 class="font-bold text-sm text-on-surface truncate group-hover:text-primary transition-colors">
                                 {{ $store->name }}
                                 @if($store->is_verified)
-                                <span class="material-symbols-outlined text-[14px] text-primary align-text-bottom" style="font-variation-settings:'FILL' 1">verified</span>
+                                <i class="fa-solid fa-circle-check text-[14px] text-primary align-text-bottom" style=""></i>
                                 @endif
                             </h6>
                             @if($store->location)
@@ -220,7 +220,7 @@
         {{-- No results --}}
         @if($products->isEmpty() && $services->isEmpty() && $rentals->isEmpty() && $stores->isEmpty())
         <div class="text-center py-20">
-            <span class="material-symbols-outlined text-5xl text-on-surface-variant/30">search_off</span>
+            <i class="fa-solid fa-magnifying-glass-minus text-5xl text-on-surface-variant/30"></i>
             <h2 class="text-lg font-bold text-on-surface mt-4">No Results Found</h2>
             <p class="text-sm text-on-surface-variant mt-1">We couldn't find anything matching "<strong>{{ $q }}</strong>".</p>
             <p class="text-xs text-on-surface-variant mt-1">Try different keywords or browse categories.</p>

@@ -19,14 +19,14 @@
 
     @if(session('success'))
         <div class="bg-green-50 border border-green-200 rounded-xl p-4 mb-4 flex items-center gap-3 animate-slide-down">
-            <span class="material-symbols-outlined text-green-600">check_circle</span>
+            <i class="fa-solid fa-circle-check text-green-600"></i>
             <p class="text-sm font-semibold text-green-800">{{ session('success') }}</p>
         </div>
     @endif
 
     @if($cart->items->isEmpty())
         <div class="text-center py-16">
-            <span class="material-symbols-outlined text-5xl text-on-surface-variant/30">shopping_cart</span>
+            <i class="fa-solid fa-cart-shopping text-5xl text-on-surface-variant/30"></i>
             <h2 class="text-lg font-bold text-on-surface mt-4">Your cart is empty</h2>
             <p class="text-sm text-on-surface-variant mt-1">Browse products and add items to get started.</p>
             <a href="{{ route('products.index') }}" class="inline-block mt-6 px-6 py-3 bg-primary text-on-primary rounded-xl text-sm font-bold hover:opacity-90 transition-all">
@@ -55,7 +55,7 @@
                                 <form action="{{ route('cart.remove', $item) }}" method="POST" class="shrink-0">
                                     @csrf @method('DELETE')
                                     <button class="w-8 h-8 flex items-center justify-center rounded-lg text-on-surface-variant/50 hover:text-error hover:bg-error/5 transition-all">
-                                        <span class="material-symbols-outlined text-[18px]">close</span>
+                                        <i class="fa-solid fa-xmark text-[18px]"></i>
                                     </button>
                                 </form>
                             </div>

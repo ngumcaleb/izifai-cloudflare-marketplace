@@ -37,13 +37,13 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
 <div class="hidden sm:flex flex-1 max-w-xl lg:max-w-2xl mx-4">
     <div class="w-full flex rounded-full overflow-hidden bg-white border border-[#e6e8e6] focus-within:border-[#9acd32] focus-within:shadow-[0_0_0_3px_rgba(154,205,50,0.10)] transition-all group h-11">
         <span class="grid place-items-center pl-4 text-[#9aa19c]">
-            <span class="material-symbols-rounded text-[20px]" style="font-variation-settings:'FILL' 1;">search</span>
+            <i class="fa-solid fa-magnifying-glass text-[20px]" style=""></i>
         </span>
         <input type="text" readonly placeholder="What are you looking for?"
                @click="$dispatch('open-search')"
                class="w-full h-full bg-transparent text-[13px] outline-none px-2 text-[#1c201e] placeholder:text-[#9aa19c] cursor-pointer">
         <button class="h-full px-5 bg-[#9acd32] text-white text-sm font-bold hover:bg-[#7ca81d] transition-colors flex items-center gap-1.5" @click="$dispatch('open-search')">
-            <span class="material-symbols-rounded text-[18px]" style="font-variation-settings:'FILL' 1;">search</span>
+            <i class="fa-solid fa-magnifying-glass text-[18px]" style=""></i>
             <span class="hidden lg:inline">Search</span>
         </button>
     </div>
@@ -139,16 +139,16 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
                     <div class="relative z-10 flex items-center justify-between gap-2 pt-2.5 border-t border-white/15">
                         <div class="flex items-center gap-2.5 text-[10px] font-semibold text-white/85">
                             <span class="inline-flex items-center gap-1">
-                                <span class="material-symbols-rounded text-[12px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">verified</span>
+                                <i class="fa-solid fa-circle-check text-[12px] text-[#9acd32]" style=""></i>
                                 {{ number_format($verifiedStores) }}+ stores
                             </span>
                             <span class="inline-flex items-center gap-1">
-                                <span class="material-symbols-rounded text-[12px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">inventory_2</span>
+                                <i class="fa-solid fa-boxes-stacked text-[12px] text-[#9acd32]" style=""></i>
                                 {{ number_format($totalProducts) }}+ products
                             </span>
                         </div>
                         <a href="{{ route('products.index') }}" class="inline-flex items-center gap-1 px-3.5 py-1.5 rounded-full bg-[#9acd32] text-[#1c201e] text-[10.5px] font-bold shadow-sm active:scale-95 transition-transform">
-                            Shop now <span class="material-symbols-rounded text-[13px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+                            Shop now <i class="fa-solid fa-arrow-right text-[13px]" style=""></i>
                         </a>
                     </div>
                 </div>
@@ -164,7 +164,7 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
 
                     <div class="relative z-10 pt-0.5">
                         <span class="inline-flex items-center gap-1 rounded-full bg-[#9acd32]/20 border border-[#9acd32]/35 px-2.5 py-0.5 text-[9.5px] font-bold text-[#9acd32] backdrop-blur-sm">
-                            <span class="material-symbols-rounded text-[12px]" style="font-variation-settings:'FILL' 1;">local_fire_department</span>
+                            <i class="fa-solid fa-fire text-[12px]" style=""></i>
                             Limited-time prices
                         </span>
                         <h2 class="mt-2 text-[1.5rem] font-black text-white tracking-tight leading-[1.12]">
@@ -182,12 +182,12 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
                     <div class="relative z-10 flex items-center justify-between gap-2 pt-2.5 border-t border-white/15">
                         <div class="flex items-center gap-2 text-[10px] font-semibold text-white/85">
                             <span class="inline-flex items-center gap-1">
-                                <span class="material-symbols-rounded text-[12px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">bolt</span>
+                                <i class="fa-solid fa-bolt text-[12px] text-[#9acd32]" style=""></i>
                                 {{ $deals->count() }}+ live deals
                             </span>
                         </div>
                         <a href="#deals" class="inline-flex items-center gap-1 px-3.5 py-1.5 rounded-full bg-[#9acd32] text-[#1c201e] text-[10.5px] font-bold shadow-sm active:scale-95 transition-transform">
-                            See deals <span class="material-symbols-rounded text-[13px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+                            See deals <i class="fa-solid fa-arrow-right text-[13px]" style=""></i>
                         </a>
                     </div>
                 </div>
@@ -203,7 +203,7 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
 
                     <div class="relative z-10 pt-0.5">
                         <span class="inline-flex items-center gap-1 rounded-full bg-[#9acd32]/20 border border-[#9acd32]/30 px-2.5 py-0.5 text-[9.5px] font-bold text-[#9acd32] backdrop-blur-sm">
-                            <span class="material-symbols-rounded text-[12px]" style="font-variation-settings:'FILL' 1;">handyman</span>
+                            <i class="fa-solid fa-screwdriver-wrench text-[12px]" style=""></i>
                             Services & Rentals
                         </span>
                         <h2 class="mt-2 text-[1.5rem] font-black text-white tracking-tight leading-[1.12]">
@@ -217,16 +217,16 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
                     <div class="relative z-10 flex items-center justify-between gap-2 pt-2.5 border-t border-white/15">
                         <div class="flex items-center gap-2.5 text-[10px] font-semibold text-white/85">
                             <span class="inline-flex items-center gap-1">
-                                <span class="material-symbols-rounded text-[12px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">design_services</span>
+                                <i class="fa-solid fa-pen-ruler text-[12px] text-[#9acd32]" style=""></i>
                                 {{ number_format($totalServices) }} pros
                             </span>
                             <span class="inline-flex items-center gap-1">
-                                <span class="material-symbols-rounded text-[12px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">shelves</span>
+                                <i class="fa-solid fa-warehouse text-[12px] text-[#9acd32]" style=""></i>
                                 {{ number_format($totalRentals) }} rentals
                             </span>
                         </div>
                         <a href="{{ route('services.index') }}" class="inline-flex items-center gap-1 px-3.5 py-1.5 rounded-full bg-[#9acd32] text-[#1c201e] text-[10.5px] font-bold shadow-sm active:scale-95 transition-transform">
-                            Explore <span class="material-symbols-rounded text-[13px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+                            Explore <i class="fa-solid fa-arrow-right text-[13px]" style=""></i>
                         </a>
                     </div>
                 </div>
@@ -289,32 +289,32 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
                         <div class="mt-6 flex flex-col sm:flex-row gap-3">
                             <a href="{{ route('products.index') }}" class="ecom-btn h-12 px-7 text-sm bg-white text-[#659316] shadow-lg shadow-black/10 hover:bg-[#f2f9df]">
                                 Resume browsing
-                                <span class="material-symbols-rounded text-[18px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+                                <i class="fa-solid fa-arrow-right text-[18px]" style=""></i>
                             </a>
                             <a href="{{ route('conversations.index') }}" class="ecom-btn h-12 px-7 text-sm text-white border-2 border-white/40 hover:bg-white/10">
-                                <span class="material-symbols-rounded text-[18px]" style="font-variation-settings:'FILL' 1;">chat_bubble</span>
+                                <i class="fa-solid fa-comment text-[18px]" style=""></i>
                                 My inbox
                             </a>
                         </div>
 
                         @if($userStore)
                         <a href="{{ route('seller.dashboard') }}" class="mt-3 inline-flex items-center gap-1.5 self-start text-[12px] font-bold text-[#9acd32] hover:text-white transition-colors">
-                            <span class="material-symbols-rounded text-[15px]" style="font-variation-settings:'FILL' 1;">dashboard</span>
+                            <i class="fa-solid fa-gauge-high text-[15px]" style=""></i>
                             Go to seller dashboard
                         </a>
                         @endif
 
                         <div class="mt-7 flex flex-wrap gap-x-6 gap-y-2 text-[11px] font-semibold text-white/90">
                             <span class="inline-flex items-center gap-1.5">
-                                <span class="material-symbols-rounded text-[14px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">verified</span>
+                                <i class="fa-solid fa-circle-check text-[14px] text-[#9acd32]" style=""></i>
                                 {{ number_format($verifiedStores) }}+ verified sellers
                             </span>
                             <span class="inline-flex items-center gap-1.5">
-                                <span class="material-symbols-rounded text-[14px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">inventory_2</span>
+                                <i class="fa-solid fa-boxes-stacked text-[14px] text-[#9acd32]" style=""></i>
                                 {{ number_format($totalProducts) }}+ products live
                             </span>
                             <span class="inline-flex items-center gap-1.5">
-                                <span class="material-symbols-rounded text-[14px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">link</span>
+                                <i class="fa-solid fa-link text-[14px] text-[#9acd32]" style=""></i>
                                 Share your store in one link
                             </span>
                         </div>
@@ -352,7 +352,7 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
                         <div class="mt-6 flex flex-col sm:flex-row gap-3">
                             <a href="{{ route('products.index') }}" class="ecom-btn h-12 px-7 text-sm bg-white text-[#659316] shadow-lg shadow-black/10 hover:bg-[#f2f9df]">
                                 Start shopping
-                                <span class="material-symbols-rounded text-[18px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+                                <i class="fa-solid fa-arrow-right text-[18px]" style=""></i>
                             </a>
                             <a href="{{ route('register') }}" class="ecom-btn h-12 px-7 text-sm text-white border-2 border-white/40 hover:bg-white/10">
                                 Become a seller
@@ -365,7 +365,7 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
                             <a href="{{ route('products.index', ['category' => $cat->slug]) }}"
                                class="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/15 px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-white/20 transition-colors">
                                 {{ $cat->name }}
-                                <span class="material-symbols-rounded text-[13px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+                                <i class="fa-solid fa-arrow-right text-[13px]" style=""></i>
                             </a>
                             @endforeach
                         </div>
@@ -373,15 +373,15 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
 
                         <div class="mt-7 flex flex-wrap gap-x-6 gap-y-2 text-[11px] font-semibold text-white/90">
                             <span class="inline-flex items-center gap-1.5">
-                                <span class="material-symbols-rounded text-[14px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">verified</span>
+                                <i class="fa-solid fa-circle-check text-[14px] text-[#9acd32]" style=""></i>
                                 {{ number_format($verifiedStores) }}+ verified sellers
                             </span>
                             <span class="inline-flex items-center gap-1.5">
-                                <span class="material-symbols-rounded text-[14px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">inventory_2</span>
+                                <i class="fa-solid fa-boxes-stacked text-[14px] text-[#9acd32]" style=""></i>
                                 {{ number_format($totalProducts) }}+ products live
                             </span>
                             <span class="inline-flex items-center gap-1.5">
-                                <span class="material-symbols-rounded text-[14px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">link</span>
+                                <i class="fa-solid fa-link text-[14px] text-[#9acd32]" style=""></i>
                                 Share your store in one link
                             </span>
                         </div>
@@ -407,7 +407,7 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
 
                     <div class="relative z-10 px-5 sm:px-10 py-9 sm:py-12 lg:py-14 flex flex-col justify-center">
                         <span class="inline-flex items-center gap-2 self-start rounded-full bg-white/10 border border-white/15 backdrop-blur px-3.5 py-1.5 text-[11px] font-semibold text-white">
-                            <span class="material-symbols-rounded text-[14px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">local_fire_department</span>
+                            <i class="fa-solid fa-fire text-[14px] text-[#9acd32]" style=""></i>
                             Limited-time prices
                         </span>
                         <h2 class="mt-4 text-[1.75rem] sm:text-4xl lg:text-[2.6rem] font-extrabold text-white tracking-tight leading-[1.1]">
@@ -428,16 +428,16 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
                         <div class="mt-6">
                             <a href="#deals" class="ecom-btn h-12 px-7 text-sm bg-[#9acd32] text-[#1c201e] shadow-lg shadow-black/20 hover:bg-[#86b92c]">
                                 Shop all deals
-                                <span class="material-symbols-rounded text-[18px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+                                <i class="fa-solid fa-arrow-right text-[18px]" style=""></i>
                             </a>
                         </div>
                         <div class="mt-7 flex flex-wrap gap-x-6 gap-y-2 text-[11px] font-bold text-white/80">
                             <span class="inline-flex items-center gap-1.5">
-                                <span class="material-symbols-rounded text-[14px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">bolt</span>
+                                <i class="fa-solid fa-bolt text-[14px] text-[#9acd32]" style=""></i>
                                 {{ $deals->count() }}+ live deals
                             </span>
                             <span class="inline-flex items-center gap-1.5">
-                                <span class="material-symbols-rounded text-[14px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">verified</span>
+                                <i class="fa-solid fa-circle-check text-[14px] text-[#9acd32]" style=""></i>
                                 Verified sellers only
                             </span>
                         </div>
@@ -462,7 +462,7 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
 
                     <div class="relative z-10 px-5 sm:px-10 py-9 sm:py-12 lg:py-14 flex flex-col justify-center">
                         <span class="inline-flex items-center gap-2 self-start rounded-full bg-white/10 border border-white/15 backdrop-blur px-3.5 py-1.5 text-[11px] font-semibold text-white">
-                            <span class="material-symbols-rounded text-[14px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">compass_calibration</span>
+                            <i class="fa-solid fa-location-crosshairs text-[14px] text-[#9acd32]" style=""></i>
                             Explore everything
                         </span>
                         <h2 class="mt-4 text-[1.75rem] sm:text-4xl lg:text-[2.6rem] font-extrabold text-white tracking-tight leading-[1.1]">
@@ -473,18 +473,18 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
                         </p>
                         <div class="mt-6 flex flex-wrap gap-2">
                             <a href="{{ route('services.index') }}" class="inline-flex items-center gap-1.5 rounded-full bg-[#9acd32] text-[#1c201e] px-4 py-2 text-[12px] font-bold hover:bg-[#86b92c] transition-colors">
-                                <span class="material-symbols-rounded text-[15px]" style="font-variation-settings:'FILL' 1;">design_services</span>
+                                <i class="fa-solid fa-pen-ruler text-[15px]" style=""></i>
                                 {{ number_format($totalServices) }} pros ready
                             </a>
                             <a href="{{ route('rentals.index') }}" class="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/25 text-white px-4 py-2 text-[12px] font-bold hover:bg-white/20 transition-colors">
-                                <span class="material-symbols-rounded text-[15px]" style="font-variation-settings:'FILL' 1;">shelves</span>
+                                <i class="fa-solid fa-warehouse text-[15px]" style=""></i>
                                 {{ number_format($totalRentals) }} items to rent
                             </a>
                         </div>
                         <div class="mt-6 flex flex-col sm:flex-row gap-3">
                             <a href="{{ route('services.index') }}" class="ecom-btn h-12 px-7 text-sm bg-white text-[#659316] shadow-lg shadow-black/10 hover:bg-[#f2f9df]">
                                 Book a service
-                                <span class="material-symbols-rounded text-[18px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+                                <i class="fa-solid fa-arrow-right text-[18px]" style=""></i>
                             </a>
                             <a href="{{ route('register') }}" class="ecom-btn h-12 px-7 text-sm text-white border-2 border-white/40 hover:bg-white/10">
                                 Sell something
@@ -507,11 +507,11 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
         <div class="absolute bottom-3 right-4 z-30 hidden sm:flex items-center gap-2">
             <button @click="go((index + total - 1) % total)"
                     class="w-9 h-9 rounded-full bg-white/15 backdrop-blur border border-white/25 text-white grid place-items-center hover:bg-white/30 transition-colors active:scale-95">
-                <span class="material-symbols-rounded text-[18px]" style="font-variation-settings:'FILL' 1;">chevron_left</span>
+                <i class="fa-solid fa-chevron-left text-[18px]" style=""></i>
             </button>
             <button @click="go((index + 1) % total)"
                     class="w-9 h-9 rounded-full bg-white/15 backdrop-blur border border-white/25 text-white grid place-items-center hover:bg-white/30 transition-colors active:scale-95">
-                <span class="material-symbols-rounded text-[18px]" style="font-variation-settings:'FILL' 1;">chevron_right</span>
+                <i class="fa-solid fa-chevron-right text-[18px]" style=""></i>
             </button>
         </div>
     </div>
@@ -525,25 +525,25 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
     <div class="rounded-2xl bg-white border border-[#e8eae8] px-3 sm:px-6 py-2 sm:py-3.5 flex items-center justify-center flex-wrap gap-x-4 sm:gap-x-7 gap-y-1.5 text-[9.5px] sm:text-[11px] font-semibold text-[#6b716c]">
         <span class="inline-flex items-center gap-1.5 sm:gap-2">
             <span class="grid place-items-center w-6 h-6 sm:w-7 sm:h-7 rounded-md sm:rounded-lg bg-[#f2f9df] text-[#7ca81d]">
-                <span class="material-symbols-rounded text-[13px] sm:text-[15px]" style="font-variation-settings:'FILL' 1;">smartphone</span>
+                <i class="fa-solid fa-mobile-screen-button text-[13px] sm:text-[15px]" style=""></i>
             </span>
             MTN MoMo
         </span>
         <span class="inline-flex items-center gap-1.5 sm:gap-2">
             <span class="grid place-items-center w-6 h-6 sm:w-7 sm:h-7 rounded-md sm:rounded-lg bg-[#f2f9df] text-[#7ca81d]">
-                <span class="material-symbols-rounded text-[13px] sm:text-[15px]" style="font-variation-settings:'FILL' 1;">smartphone</span>
+                <i class="fa-solid fa-mobile-screen-button text-[13px] sm:text-[15px]" style=""></i>
             </span>
             Orange Money
         </span>
         <span class="inline-flex items-center gap-1.5 sm:gap-2">
             <span class="grid place-items-center w-6 h-6 sm:w-7 sm:h-7 rounded-md sm:rounded-lg bg-[#f2f9df] text-[#7ca81d]">
-                <span class="material-symbols-rounded text-[13px] sm:text-[15px]" style="font-variation-settings:'FILL' 1;">credit_card</span>
+                <i class="fa-solid fa-credit-card text-[13px] sm:text-[15px]" style=""></i>
             </span>
             Cards
         </span>
         <span class="inline-flex items-center gap-1.5 sm:gap-2">
             <span class="grid place-items-center w-6 h-6 sm:w-7 sm:h-7 rounded-md sm:rounded-lg bg-[#f2f9df] text-[#659316]">
-                <span class="material-symbols-rounded text-[13px] sm:text-[15px]" style="font-variation-settings:'FILL' 1;">verified_user</span>
+                <i class="fa-solid fa-shield-halved text-[13px] sm:text-[15px]" style=""></i>
             </span>
             Verified stores only
         </span>
@@ -560,7 +560,7 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
             <p class="text-[10px] sm:text-[12px] text-[#6b716c] mt-0.5">Jump straight to what you need</p>
         </div>
         <a href="{{ route('products.index') }}" class="inline-flex items-center gap-1 text-[11px] sm:text-sm font-bold text-[#9acd32] hover:text-[#7ca81d] transition-colors whitespace-nowrap">
-            All products <span class="material-symbols-rounded text-[14px] sm:text-[16px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+            All products <i class="fa-solid fa-arrow-right text-[14px] sm:text-[16px]" style=""></i>
         </a>
     </div>
     <div x-data="autoScroll()" x-init="init()" class="flex gap-2.5 sm:gap-3.5 overflow-x-auto no-scrollbar pb-1">
@@ -582,7 +582,7 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
         @if($categories->isNotEmpty())
         <a href="{{ route('products.index') }}" class="shrink-0 w-16 sm:w-24 text-center group self-start">
             <div class="w-16 sm:w-24 h-16 sm:h-24 rounded-xl sm:rounded-2xl border-2 border-dashed border-[#c9cecb] bg-white grid place-items-center text-[#9aa19c] group-hover:text-[#9acd32] group-hover:border-[#9acd32]/50 transition-colors">
-                <span class="material-symbols-rounded text-[20px] sm:text-[24px]" style="font-variation-settings:'FILL' 1;">grid_view</span>
+                <i class="fa-solid fa-table-cells text-[20px] sm:text-[24px]" style=""></i>
             </div>
             <p class="mt-1.5 text-[9.5px] sm:text-[11px] font-bold text-[#6b716c] group-hover:text-[#7ca81d] transition-colors">Browse all</p>
         </a>
@@ -598,7 +598,7 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
     <div class="flex items-end justify-between gap-3 mb-3.5 sm:mb-5">
         <div class="flex items-center gap-2.5 sm:gap-3">
             <span class="grid place-items-center w-8 h-8 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-[#dc2626] text-white shadow-md sm:shadow-lg shadow-red-500/20 shrink-0">
-                <span class="material-symbols-rounded text-[16px] sm:text-[20px]" style="font-variation-settings:'FILL' 1;">local_fire_department</span>
+                <i class="fa-solid fa-fire text-[16px] sm:text-[20px]" style=""></i>
             </span>
             <div>
                 <h2 class="text-sm sm:text-xl font-bold tracking-tight text-[#1c201e]">Deals of the day</h2>
@@ -606,7 +606,7 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
             </div>
         </div>
         <a href="{{ route('products.index') }}" class="inline-flex items-center gap-1 text-[11px] sm:text-sm font-bold text-[#9acd32] hover:text-[#7ca81d] transition-colors whitespace-nowrap">
-            See all <span class="material-symbols-rounded text-[14px] sm:text-[16px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+            See all <i class="fa-solid fa-arrow-right text-[14px] sm:text-[16px]" style=""></i>
         </a>
     </div>
     <div x-data="autoScroll()" x-init="init()" class="flex gap-2.5 sm:gap-3.5 overflow-x-auto no-scrollbar pb-2">
@@ -615,10 +615,10 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
             <div class="relative aspect-square bg-[#f5f6f5] overflow-hidden">
                 <img src="{{ $p->images->first()->url }}" alt="{{ $p->name }}" loading="lazy"
                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                     onerror="this.parentElement.innerHTML = '<div class=\'w-full h-full grid place-items-center text-[#b8bdb9]\'><span class=\'material-symbols-rounded text-3xl sm:text-4xl\'>image</span></div>'">
+                     onerror="this.parentElement.innerHTML = '<div class=\'w-full h-full grid place-items-center text-[#b8bdb9]\'><span class=\'fa-solid fa-image text-3xl sm:text-4xl\'></i></div>'">
                 <span class="absolute top-2 left-2 rounded-md sm:rounded-lg bg-[#dc2626] text-white text-[9px] sm:text-[11px] font-bold px-1.5 sm:px-2 py-0.5 shadow-sm">-{{ $dealPct($p) }}%</span>
                 <span class="absolute top-2 right-2 grid place-items-center w-6 h-6 sm:w-7 sm:h-7 rounded-md sm:rounded-lg bg-white/95 shadow-sm text-[#7ca81d] opacity-0 group-hover:opacity-100 transition-opacity">
-                    <span class="material-symbols-rounded text-[12px] sm:text-[14px]" style="font-variation-settings:'FILL' 1;">visibility</span>
+                    <i class="fa-solid fa-eye text-[12px] sm:text-[14px]" style=""></i>
                 </span>
             </div>
             <div class="p-2.5 sm:p-3">
@@ -643,7 +643,7 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
         <div>
             <span class="inline-flex items-center gap-1.5 px-3 py-1 sm:px-4 sm:py-1.5 -skew-x-6 rounded-md bg-gradient-to-r from-[#9acd32] to-[#86b92c] text-[#1c201e] text-[9.5px] sm:text-[11px] font-extrabold uppercase tracking-[0.14em] sm:tracking-[0.16em] shadow-[0_6px_18px_-6px_rgba(154,205,50,0.55)]">
                 <span class="skew-x-6 inline-flex items-center gap-1">
-                    <span class="material-symbols-rounded text-[12px] sm:text-[14px]" style="font-variation-settings:'FILL' 1;">auto_awesome</span>
+                    <i class="fa-solid fa-wand-magic-sparkles text-[12px] sm:text-[14px]" style=""></i>
                     Hand-picked for you
                 </span>
             </span>
@@ -666,7 +666,7 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
         <a href="{{ route('products.index') }}" class="inline-flex items-center gap-2 px-6 sm:px-8 py-2.5 sm:py-3 rounded-lg -skew-x-6 bg-[#1c201e] text-white text-[12px] sm:text-sm font-bold transition-all hover:bg-[#9acd32] hover:text-[#1c201e] shadow-lg shadow-black/10">
             <span class="skew-x-6 inline-flex items-center gap-2">
                 View all products
-                <span class="material-symbols-rounded text-[16px] sm:text-[18px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+                <i class="fa-solid fa-arrow-right text-[16px] sm:text-[18px]" style=""></i>
             </span>
         </a>
     </div>
@@ -683,7 +683,7 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
             <p class="text-[10px] sm:text-[12px] text-[#6b716c] mt-0.5">The most active sellers on Izifai</p>
         </div>
         <a href="{{ route('stores.index') }}" class="inline-flex items-center gap-1 text-[11px] sm:text-sm font-bold text-[#9acd32] hover:text-[#7ca81d] transition-colors whitespace-nowrap">
-            See all <span class="material-symbols-rounded text-[13px] sm:text-[16px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+            See all <i class="fa-solid fa-arrow-right text-[13px] sm:text-[16px]" style=""></i>
         </a>
     </div>
     <div x-data="autoScroll()" x-init="init()" class="flex gap-3.5 overflow-x-auto no-scrollbar pb-2">
@@ -701,13 +701,13 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
                 <p class="text-[11px] sm:text-[13px] font-bold text-[#1c201e] truncate inline-flex items-center gap-1">
                     {{ $store->name }}
                     @if($store->is_verified)
-                        <span class="material-symbols-rounded text-[11px] sm:text-[13px] text-[#659316]" style="font-variation-settings:'FILL' 1;">verified</span>
+                        <i class="fa-solid fa-circle-check text-[11px] sm:text-[13px] text-[#659316]" style=""></i>
                     @endif
                 </p>
                 <div class="flex items-center gap-1.5 sm:gap-2 mt-0.5">
                     @if(($store->rating ?? 0) > 0)
                     <span class="inline-flex items-center gap-0.5 text-[9.5px] sm:text-[11px] font-bold text-[#6b716c]">
-                        <span class="material-symbols-rounded text-[11px] sm:text-[13px] text-amber-400" style="font-variation-settings:'FILL' 1;">star</span>
+                        <i class="fa-solid fa-star text-[11px] sm:text-[13px] text-amber-400" style=""></i>
                         {{ number_format($store->rating, 1) }}
                     </span>
                     @endif
@@ -715,7 +715,7 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
                 </div>
             </div>
             <span class="grid place-items-center w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-[#f2f9df] text-[#7ca81d] group-hover:bg-[#9acd32] group-hover:text-white transition-colors shrink-0">
-                <span class="material-symbols-rounded text-[13px] sm:text-[16px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+                <i class="fa-solid fa-arrow-right text-[13px] sm:text-[16px]" style=""></i>
             </span>
         </a>
         @endforeach
@@ -733,7 +733,7 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
         <div class="grid lg:grid-cols-[1fr_auto] gap-4 sm:gap-6 p-4 sm:p-10 items-center">
             <div class="relative z-10">
                 <span class="inline-flex items-center gap-1.5 rounded-full bg-[#9acd32]/15 border border-[#9acd32]/25 px-2.5 sm:px-3.5 py-1 sm:py-1.5 text-[9.5px] sm:text-[11px] font-bold text-[#9acd32]">
-                    <span class="material-symbols-rounded text-[12px] sm:text-[14px]" style="font-variation-settings:'FILL' 1;">workspace_premium</span>
+                    <i class="fa-solid fa-medal text-[12px] sm:text-[14px]" style=""></i>
                     Store spotlight
                 </span>
                 <div class="mt-3 sm:mt-4 flex items-center gap-3 sm:gap-4">
@@ -746,19 +746,19 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
                         <h2 class="text-[14px] sm:text-2xl font-extrabold text-white tracking-tight flex items-center gap-1">
                             {{ $featuredStore->name }}
                             @if($featuredStore->is_verified)
-                                <span class="material-symbols-rounded text-[14px] sm:text-[18px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">verified</span>
+                                <i class="fa-solid fa-circle-check text-[14px] sm:text-[18px] text-[#9acd32]" style=""></i>
                             @endif
                         </h2>
                         <div class="flex items-center gap-2 sm:gap-3 mt-0.5 sm:mt-1 text-[10px] sm:text-[12px] text-white/60">
                             @if(($featuredStore->rating ?? 0) > 0)
                             <span class="inline-flex items-center gap-0.5 sm:gap-1 font-bold text-white/80">
-                                <span class="material-symbols-rounded text-[12px] sm:text-[14px] text-amber-400" style="font-variation-settings:'FILL' 1;">star</span>
+                                <i class="fa-solid fa-star text-[12px] sm:text-[14px] text-amber-400" style=""></i>
                                 {{ number_format($featuredStore->rating, 1) }}
                             </span>
                             @endif
                             <span>{{ $featuredStore->products_count }} products</span>
                             @if($featuredStore->location)
-                                <span class="inline-flex items-center gap-0.5"><span class="material-symbols-rounded text-[11px] sm:text-[13px]" style="font-variation-settings:'FILL' 1;">location_on</span>{{ $featuredStore->location }}</span>
+                                <span class="inline-flex items-center gap-0.5"><i class="fa-solid fa-location-dot text-[11px] sm:text-[13px]" style=""></i>{{ $featuredStore->location }}</span>
                             @endif
                         </div>
                     </div>
@@ -766,7 +766,7 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
                 <p class="mt-2.5 sm:mt-4 text-[11px] sm:text-sm text-white/65 max-w-md leading-relaxed line-clamp-2">{{ $featuredStore->description }}</p>
                 <a href="{{ route('stores.show', $featuredStore->slug) }}" class="ecom-btn mt-4 sm:mt-6 h-9 sm:h-12 px-5 sm:px-7 text-[11px] sm:text-sm bg-[#9acd32] text-white shadow-lg shadow-[#9acd32]/20 hover:bg-[#7ca81d]">
                     Visit store
-                    <span class="material-symbols-rounded text-[15px] sm:text-[18px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+                    <i class="fa-solid fa-arrow-right text-[15px] sm:text-[18px]" style=""></i>
                 </a>
             </div>
 
@@ -803,7 +803,7 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
             <p class="text-[10px] sm:text-[12px] text-[#6b716c] mt-0.5">Top-rated professionals near you</p>
         </div>
         <a href="{{ route('services.index') }}" class="inline-flex items-center gap-1 text-[11px] sm:text-sm font-bold text-[#9acd32] hover:text-[#7ca81d] transition-colors whitespace-nowrap">
-            All services <span class="material-symbols-rounded text-[13px] sm:text-[16px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+            All services <i class="fa-solid fa-arrow-right text-[13px] sm:text-[16px]" style=""></i>
         </a>
     </div>
     <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
@@ -812,7 +812,7 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
            class="group rounded-xl sm:rounded-2xl bg-white border border-[#e8eae8] p-3 sm:p-4 hover:border-[#9acd32]/50 hover:shadow-[0_16px_40px_-12px_rgba(0,0,0,0.12)] hover:-translate-y-1 transition-all duration-300">
             <div class="flex items-center gap-2 sm:gap-3">
                 <span class="grid place-items-center w-8 h-8 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-[#f2f9df] text-[#659316] shrink-0">
-                    <span class="material-symbols-rounded text-[16px] sm:text-[20px]" style="font-variation-settings:'FILL' 1;">handyman</span>
+                    <i class="fa-solid fa-screwdriver-wrench text-[16px] sm:text-[20px]" style=""></i>
                 </span>
                 <div class="min-w-0">
                     <p class="text-[11px] sm:text-[13px] font-bold text-[#1c201e] truncate group-hover:text-[#659316] transition-colors">{{ $svc->name }}</p>
@@ -825,7 +825,7 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
                 </span>
                 @if(($svc->rating ?? 0) > 0)
                 <span class="inline-flex items-center gap-0.5 text-[9.5px] sm:text-[11px] font-bold text-[#6b716c]">
-                    <span class="material-symbols-rounded text-[11px] sm:text-[13px] text-amber-400" style="font-variation-settings:'FILL' 1;">star</span>
+                    <i class="fa-solid fa-star text-[11px] sm:text-[13px] text-amber-400" style=""></i>
                     {{ number_format($svc->rating, 1) }}
                 </span>
                 @endif
@@ -844,26 +844,26 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
         <div class="absolute -top-16 -right-16 w-56 h-56 rounded-full bg-[#9acd32]/10 blur-3xl"></div>
         <div class="relative z-10">
             <span class="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/10 px-2.5 sm:px-3.5 py-1 sm:py-1.5 text-[9.5px] sm:text-[11px] font-bold text-[#9acd32]">
-                <span class="material-symbols-rounded text-[12px] sm:text-[14px]" style="font-variation-settings:'FILL' 1;">storefront</span>
+                <i class="fa-solid fa-store text-[12px] sm:text-[14px]" style=""></i>
                 Free to start
             </span>
             <h2 class="mt-2.5 sm:mt-4 text-[15px] sm:text-2xl font-extrabold text-white tracking-tight">Sell everything. In one link.</h2>
             <p class="mt-1.5 sm:mt-2 text-[11px] sm:text-sm text-white/65 max-w-md">No app. No complex setup. Share your catalog on WhatsApp and start selling today.</p>
             <div class="mt-3 sm:mt-5 flex flex-wrap gap-x-4 sm:gap-x-6 gap-y-1.5 sm:gap-y-2 text-[9.5px] sm:text-[11px] font-semibold text-white/65">
-                <span class="inline-flex items-center gap-1"><span class="material-symbols-rounded text-[12px] sm:text-[14px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">check_circle</span> No tech skills needed</span>
-                <span class="inline-flex items-center gap-1"><span class="material-symbols-rounded text-[12px] sm:text-[14px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">check_circle</span> Lists in minutes</span>
-                <span class="inline-flex items-center gap-1"><span class="material-symbols-rounded text-[12px] sm:text-[14px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">check_circle</span> Shareable in seconds</span>
+                <span class="inline-flex items-center gap-1"><i class="fa-solid fa-circle-check text-[12px] sm:text-[14px] text-[#9acd32]" style=""></i> No tech skills needed</span>
+                <span class="inline-flex items-center gap-1"><i class="fa-solid fa-circle-check text-[12px] sm:text-[14px] text-[#9acd32]" style=""></i> Lists in minutes</span>
+                <span class="inline-flex items-center gap-1"><i class="fa-solid fa-circle-check text-[12px] sm:text-[14px] text-[#9acd32]" style=""></i> Shareable in seconds</span>
             </div>
         </div>
         @auth
             <a href="{{ route('seller.dashboard') }}" class="relative z-10 ecom-btn h-9 sm:h-12 px-6 sm:px-8 text-[11px] sm:text-sm bg-[#9acd32] text-white shadow-lg shadow-[#9acd32]/20 hover:bg-[#7ca81d] shrink-0">
                 Open seller dashboard
-                <span class="material-symbols-rounded text-[15px] sm:text-[18px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+                <i class="fa-solid fa-arrow-right text-[15px] sm:text-[18px]" style=""></i>
             </a>
         @else
             <a href="{{ route('register') }}" class="relative z-10 ecom-btn h-9 sm:h-12 px-6 sm:px-8 text-[11px] sm:text-sm bg-[#9acd32] text-white shadow-lg shadow-[#9acd32]/20 hover:bg-[#7ca81d] shrink-0">
                 Create your store
-                <span class="material-symbols-rounded text-[15px] sm:text-[18px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+                <i class="fa-solid fa-arrow-right text-[15px] sm:text-[18px]" style=""></i>
             </a>
         @endauth
     </div>
@@ -908,7 +908,7 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
             e.preventDefault();
             e.stopPropagation();
             const productId = this.dataset.product;
-            const icon = this.querySelector('.material-symbols-rounded');
+            const icon = this.querySelector('i.fa-heart');
             @auth
                 fetch('/products/' + productId + '/favorite', {
                     method: 'POST',
@@ -924,11 +924,11 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
                     if (data.favorited) {
                         icon.classList.remove('text-on-surface-variant/50');
                         icon.classList.add('text-[#dc2626]');
-                        icon.style.fontVariationSettings = "'FILL' 1";
+                        icon.classList.add('fa-solid'); icon.classList.remove('fa-regular');
                     } else {
                         icon.classList.remove('text-[#dc2626]');
                         icon.classList.add('text-on-surface-variant/50');
-                        icon.style.fontVariationSettings = "'FILL' 0";
+                        icon.classList.add('fa-regular'); icon.classList.remove('fa-solid');
                     }
                 })
                 .catch(() => {});

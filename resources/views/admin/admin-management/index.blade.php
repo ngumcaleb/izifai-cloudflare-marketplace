@@ -52,7 +52,7 @@
         <div class="flex justify-end">
             <a href="{{ route('admin.admin-management.create') }}"
                class="inline-flex items-center gap-2 px-5 py-2.5 bg-gold-500 text-navy-900 rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-gold-400 transition-all shadow-sm">
-                <span class="material-symbols-outlined text-[16px]">add</span>
+                <i class="fa-solid fa-plus text-[16px]"></i>
                 New Admin
             </a>
         </div>
@@ -124,7 +124,7 @@
                                 <div class="flex items-center justify-end gap-2">
                                     <a href="{{ route('admin.admin-management.edit', $admin) }}"
                                        class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 text-slate-600 rounded-lg text-[10px] font-bold hover:bg-slate-200 transition-all">
-                                        <span class="material-symbols-outlined text-[14px]">edit</span>
+                                        <i class="fa-solid fa-pen text-[14px]"></i>
                                         Edit
                                     </a>
                                     @if($admin->id !== auth('admin')->id())
@@ -132,7 +132,7 @@
                                           onsubmit="return confirm('Delete this admin account? This cannot be undone.')">
                                         @csrf @method('DELETE')
                                         <button class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-rose-50 text-rose-600 rounded-lg text-[10px] font-bold hover:bg-rose-100 transition-all">
-                                            <span class="material-symbols-outlined text-[14px]">delete</span>
+                                            <i class="fa-solid fa-trash text-[14px]"></i>
                                             Delete
                                         </button>
                                     </form>
@@ -144,7 +144,7 @@
                         <tr>
                             <td colspan="5" class="px-6 py-12 text-center">
                                 <div class="flex flex-col items-center gap-2">
-                                    <span class="material-symbols-outlined text-3xl text-slate-300">shield_person</span>
+                                    <i class="fa-solid fa-user-shield text-3xl text-slate-300"></i>
                                     <p class="text-sm font-medium text-slate-400">No admin accounts found</p>
                                 </div>
                             </td>
@@ -172,14 +172,14 @@
                     <div class="flex items-center gap-2">
                         <a href="{{ route('admin.admin-management.edit', $admin) }}"
                            class="p-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition-all">
-                            <span class="material-symbols-outlined text-[16px]">edit</span>
+                            <i class="fa-solid fa-pen text-[16px]"></i>
                         </a>
                         @if($admin->id !== auth('admin')->id())
                         <form action="{{ route('admin.admin-management.destroy', $admin) }}" method="POST"
                               onsubmit="return confirm('Delete this admin account?')">
                             @csrf @method('DELETE')
                             <button class="p-2 bg-rose-50 text-rose-600 rounded-lg hover:bg-rose-100 transition-all">
-                                <span class="material-symbols-outlined text-[16px]">delete</span>
+                                <i class="fa-solid fa-trash text-[16px]"></i>
                             </button>
                         </form>
                         @endif
@@ -187,7 +187,7 @@
                 </div>
                 @empty
                 <div class="p-12 text-center">
-                    <span class="material-symbols-outlined text-3xl text-slate-300">shield_person</span>
+                    <i class="fa-solid fa-user-shield text-3xl text-slate-300"></i>
                     <p class="text-sm font-medium text-slate-400 mt-2">No admin accounts found</p>
                 </div>
                 @endforelse

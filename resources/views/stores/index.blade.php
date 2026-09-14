@@ -30,7 +30,7 @@
                 {{-- Skewed Kicker Badge --}}
                 <span class="inline-flex items-center gap-2 px-3.5 py-1.5 -skew-x-6 rounded-md bg-gradient-to-r from-[#9acd32] to-[#86b92c] text-[#1c201e] text-[10px] sm:text-[11px] font-extrabold uppercase tracking-[0.16em] shadow-[0_6px_18px_-6px_rgba(154,205,50,0.55)]">
                     <span class="skew-x-6 inline-flex items-center gap-1.5">
-                        <span class="material-symbols-rounded text-[14px]" style="font-variation-settings:'FILL' 1;">storefront</span>
+                        <i class="fa-solid fa-store text-[14px]" style=""></i>
                         Verified Merchants
                     </span>
                 </span>
@@ -46,15 +46,15 @@
                 {{-- Highlights / Quick Stats --}}
                 <div class="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px] sm:text-xs font-semibold text-white/80">
                     <span class="inline-flex items-center gap-1.5">
-                        <span class="material-symbols-rounded text-[14px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">store</span>
+                        <i class="fa-solid fa-store text-[14px] text-[#9acd32]" style=""></i>
                         <strong class="text-white">{{ number_format($totalStores) }}+</strong> active stores
                     </span>
                     <span class="inline-flex items-center gap-1.5">
-                        <span class="material-symbols-rounded text-[14px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">inventory_2</span>
+                        <i class="fa-solid fa-boxes-stacked text-[14px] text-[#9acd32]" style=""></i>
                         <strong class="text-white">{{ number_format($totalProducts) }}+</strong> products listed
                     </span>
                     <span class="inline-flex items-center gap-1.5">
-                        <span class="material-symbols-rounded text-[14px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">verified</span>
+                        <i class="fa-solid fa-circle-check text-[14px] text-[#9acd32]" style=""></i>
                         Verified badge check
                     </span>
                 </div>
@@ -72,7 +72,7 @@
                                 <span class="skew-x-6 flex items-center gap-1">
                                     "{{ request('search') }}"
                                     <a href="{{ route('stores.index', request()->except(['search', 'page'])) }}" class="hover:text-[#9acd32] transition-colors ml-0.5">
-                                        <span class="material-symbols-rounded text-[13px]">close</span>
+                                        <i class="fa-solid fa-xmark text-[13px]"></i>
                                     </a>
                                 </span>
                             </span>
@@ -84,7 +84,7 @@
                                 <span class="skew-x-6 flex items-center gap-1">
                                     {{ $activeCat->name ?? request('category') }}
                                     <a href="{{ route('stores.index', request()->except(['category', 'page'])) }}" class="hover:opacity-75 transition-opacity ml-0.5">
-                                        <span class="material-symbols-rounded text-[13px]">close</span>
+                                        <i class="fa-solid fa-xmark text-[13px]"></i>
                                     </a>
                                 </span>
                             </span>
@@ -95,7 +95,7 @@
                                 <span class="skew-x-6 flex items-center gap-1">
                                     {{ request('sort') === 'rating' ? 'Top Rated' : 'Most Products' }}
                                     <a href="{{ route('stores.index', request()->except(['sort', 'page'])) }}" class="hover:text-[#9acd32] transition-colors ml-0.5">
-                                        <span class="material-symbols-rounded text-[13px]">close</span>
+                                        <i class="fa-solid fa-xmark text-[13px]"></i>
                                     </a>
                                 </span>
                             </span>
@@ -120,7 +120,7 @@
             <a href="{{ route('stores.index', request()->except(['category', 'page'])) }}"
                class="shrink-0 px-4 py-2 rounded-xl text-[12px] font-bold transition-all duration-200 flex items-center gap-1.5 {{ !request('category') || request('category') === 'all' ? '-skew-x-6 bg-[#1c201e] text-[#9acd32] shadow-sm' : 'bg-white border border-[#e8eae8] text-[#3f453f] hover:border-[#9acd32]/50 hover:text-[#7ca81d]' }}">
                 <span class="{{ !request('category') || request('category') === 'all' ? 'skew-x-6' : '' }} flex items-center gap-1.5">
-                    <span class="material-symbols-rounded text-[16px]" style="font-variation-settings:'FILL' 1;">storefront</span>
+                    <i class="fa-solid fa-store text-[16px]" style=""></i>
                     All Stores
                 </span>
             </a>
@@ -153,12 +153,12 @@
                     @foreach(request()->except(['search', 'page']) as $k => $v)
                         <input type="hidden" name="{{ $k }}" value="{{ $v }}">
                     @endforeach
-                    <span class="material-symbols-rounded text-[18px] text-[#9aa19c]">search</span>
+                    <i class="fa-solid fa-magnifying-glass text-[18px] text-[#9aa19c]"></i>
                     <input type="text" name="search" value="{{ request('search') }}" placeholder="Search store name, city or keyword..."
                            class="w-full bg-transparent text-[12px] font-semibold text-[#1c201e] placeholder:text-[#9aa19c] outline-none">
                     @if(request('search'))
                         <a href="{{ route('stores.index', request()->except(['search', 'page'])) }}" class="text-[#9aa19c] hover:text-[#1c201e]">
-                            <span class="material-symbols-rounded text-[16px]">close</span>
+                            <i class="fa-solid fa-xmark text-[16px]"></i>
                         </a>
                     @endif
                 </form>
@@ -166,7 +166,7 @@
                 {{-- Mobile Filter Drawer Button --}}
                 <button @click="openMobileFilters = true"
                         class="lg:hidden inline-flex items-center gap-1.5 h-10 px-3.5 rounded-xl bg-[#f5f6f5] border border-[#e0e3e0] text-[#1c201e] text-[12px] font-bold hover:bg-[#eceeed] transition-all shrink-0">
-                    <span class="material-symbols-rounded text-[17px]" style="font-variation-settings:'FILL' 1;">tune</span>
+                    <i class="fa-solid fa-sliders text-[17px]" style=""></i>
                     Filters
                 </button>
             </div>
@@ -193,9 +193,7 @@
                                 </option>
                             @endforeach
                         </select>
-                        <span class="material-symbols-rounded text-[16px] text-[#6b716c] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none">
-                            expand_more
-                        </span>
+                        <i class="fa-solid fa-chevron-down text-[16px] text-[#6b716c] absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
                     </div>
                 </div>
             </div>
@@ -228,7 +226,7 @@
                                 <div class="absolute top-2.5 right-2.5 flex items-center gap-1.5 z-10">
                                     @if($store->is_verified)
                                         <span class="px-2 py-0.5 rounded-md -skew-x-6 bg-[#1c201e]/85 backdrop-blur-sm text-[#9acd32] text-[9px] font-extrabold uppercase tracking-wide shadow-sm flex items-center gap-1">
-                                            <span class="material-symbols-rounded text-[11px]" style="font-variation-settings:'FILL' 1;">verified</span>
+                                            <i class="fa-solid fa-circle-check text-[11px]" style=""></i>
                                             Verified
                                         </span>
                                     @endif
@@ -258,7 +256,7 @@
                                     {{-- Rating badge --}}
                                     @if($store->reviews_avg_rating && $store->reviews_avg_rating > 0)
                                         <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#fffbeb] border border-amber-200/60 text-amber-700 text-[11px] font-extrabold shadow-sm">
-                                            <span class="material-symbols-rounded text-[13px] text-amber-400" style="font-variation-settings:'FILL' 1;">star</span>
+                                            <i class="fa-solid fa-star text-[13px] text-amber-400" style=""></i>
                                             {{ number_format($store->reviews_avg_rating, 1) }}
                                             <span class="text-[9px] text-[#9aa19c] font-medium">({{ $store->reviews_count ?? 0 }})</span>
                                         </span>
@@ -274,14 +272,14 @@
                                     <h3 class="text-sm font-extrabold text-[#1c201e] leading-snug truncate group-hover:text-[#7ca81d] transition-colors flex items-center gap-1">
                                         {{ $store->name }}
                                         @if($store->is_verified)
-                                            <span class="material-symbols-rounded text-[14px] text-[#659316] shrink-0" style="font-variation-settings:'FILL' 1;">verified</span>
+                                            <i class="fa-solid fa-circle-check text-[14px] text-[#659316] shrink-0" style=""></i>
                                         @endif
                                     </h3>
                                 </a>
 
                                 @if($store->location)
                                     <p class="text-[11px] text-[#6b716c] truncate mt-0.5 flex items-center gap-1">
-                                        <span class="material-symbols-rounded text-[13px] text-[#9aa19c]">location_on</span>
+                                        <i class="fa-solid fa-location-dot text-[13px] text-[#9aa19c]"></i>
                                         {{ $store->location }}
                                     </p>
                                 @endif
@@ -306,7 +304,7 @@
                                class="inline-flex items-center gap-1 text-[11px] font-extrabold text-[#1c201e] group-hover:text-[#7ca81d] transition-colors">
                                 Visit Store
                                 <span class="grid place-items-center w-6 h-6 rounded-full bg-[#f2f9df] text-[#7ca81d] group-hover:bg-[#9acd32] group-hover:text-[#1c201e] transition-colors">
-                                    <span class="material-symbols-rounded text-[13px]">arrow_forward</span>
+                                    <i class="fa-solid fa-arrow-right text-[13px]"></i>
                                 </span>
                             </a>
                         </div>
@@ -325,7 +323,7 @@
             {{-- Empty State --}}
             <div class="bg-white rounded-3xl border border-[#e8eae8] p-10 sm:p-16 text-center shadow-sm">
                 <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-[#f2f9df] text-[#659316] flex items-center justify-center mx-auto mb-4">
-                    <span class="material-symbols-rounded text-4xl sm:text-5xl" style="font-variation-settings:'FILL' 1;">storefront</span>
+                    <i class="fa-solid fa-store text-4xl sm:text-5xl" style=""></i>
                 </div>
                 <h3 class="text-lg sm:text-xl font-extrabold text-[#1c201e]">No stores found</h3>
                 <p class="text-xs sm:text-sm text-[#6b716c] mt-1.5 max-w-md mx-auto leading-relaxed">
@@ -340,7 +338,7 @@
                         <a href="{{ route('stores.index') }}"
                            class="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg -skew-x-6 bg-[#1c201e] text-white text-xs font-bold hover:bg-[#9acd32] hover:text-[#1c201e] transition-all shadow-md">
                             <span class="skew-x-6 flex items-center gap-1.5">
-                                <span class="material-symbols-rounded text-[15px]">refresh</span>
+                                <i class="fa-solid fa-arrows-rotate text-[15px]"></i>
                                 Reset Filters
                             </span>
                         </a>
@@ -348,7 +346,7 @@
                         <a href="{{ route('register') }}"
                            class="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg -skew-x-6 bg-[#9acd32] text-[#1c201e] text-xs font-bold hover:bg-[#86b92c] transition-all shadow-md">
                             <span class="skew-x-6 flex items-center gap-1.5">
-                                <span class="material-symbols-rounded text-[15px]">storefront</span>
+                                <i class="fa-solid fa-store text-[15px]"></i>
                                 Open Your Store
                             </span>
                         </a>
@@ -378,7 +376,7 @@
             {{-- Sheet Header --}}
             <div class="sticky top-0 bg-white/95 backdrop-blur-md border-b border-[#eff1ef] px-5 py-4 flex items-center justify-between z-10">
                 <div class="flex items-center gap-2">
-                    <span class="material-symbols-rounded text-[20px] text-[#7ca81d]" style="font-variation-settings:'FILL' 1;">tune</span>
+                    <i class="fa-solid fa-sliders text-[20px] text-[#7ca81d]" style=""></i>
                     <h3 class="text-sm font-extrabold text-[#1c201e]">Filter Stores</h3>
                 </div>
                 <div class="flex items-center gap-3">
@@ -386,7 +384,7 @@
                         <a href="{{ route('stores.index') }}" class="text-xs font-bold text-[#7ca81d] hover:underline">Reset</a>
                     @endif
                     <button @click="openMobileFilters = false" class="w-8 h-8 rounded-full bg-[#f5f6f5] flex items-center justify-center text-[#1c201e]">
-                        <span class="material-symbols-rounded text-[18px]">close</span>
+                        <i class="fa-solid fa-xmark text-[18px]"></i>
                     </button>
                 </div>
             </div>
@@ -400,7 +398,7 @@
                            class="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold {{ !request('category') || request('category') === 'all' ? 'bg-[#f2f9df] text-[#659316]' : 'text-[#3f453f] hover:bg-[#f5f6f5]' }}">
                             All Categories
                             @if(!request('category') || request('category') === 'all')
-                                <span class="material-symbols-rounded text-[16px]">check</span>
+                                <i class="fa-solid fa-check text-[16px]"></i>
                             @endif
                         </a>
                         @foreach($categories as $c)
@@ -409,7 +407,7 @@
                                class="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold {{ $isCActive ? 'bg-[#f2f9df] text-[#659316]' : 'text-[#3f453f] hover:bg-[#f5f6f5]' }}">
                                 <span>{{ $c->name }}</span>
                                 @if($isCActive)
-                                    <span class="material-symbols-rounded text-[16px]">check</span>
+                                    <i class="fa-solid fa-check text-[16px]"></i>
                                 @else
                                     <span class="text-[10px] text-[#9aa19c] font-semibold">{{ $c->products_count }}</span>
                                 @endif
@@ -432,7 +430,7 @@
                                class="flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold {{ $isSortActive ? 'bg-[#f2f9df] text-[#659316]' : 'text-[#3f453f] hover:bg-[#f5f6f5]' }}">
                                 {{ $sLabel }}
                                 @if($isSortActive)
-                                    <span class="material-symbols-rounded text-[16px]">check</span>
+                                    <i class="fa-solid fa-check text-[16px]"></i>
                                 @endif
                             </a>
                         @endforeach

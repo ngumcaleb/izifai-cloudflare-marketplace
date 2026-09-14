@@ -127,7 +127,7 @@
             @endif
             <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
             <button @click="sidebarOpen = false" class="lg:hidden absolute top-2 right-2 w-6 h-6 bg-black/30 text-white rounded-full flex items-center justify-center hover:bg-black/50 transition-all">
-                <span class="material-symbols-outlined text-[14px]">close</span>
+                <i class="fa-solid fa-xmark text-[14px]"></i>
             </button>
             <div class="absolute -bottom-6 lg:-bottom-7 left-3 lg:left-4">
                 <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-xl border-2 border-white bg-white shadow-lg overflow-hidden">
@@ -144,7 +144,7 @@
             <h2 class="text-sm font-bold text-gray-900 truncate">{{ $sellerStore ? $sellerStore->name : 'My Store' }}</h2>
             <div class="flex flex-wrap items-center gap-1.5 mt-0.5">
                 <span class="inline-flex items-center gap-0.5 text-[10px] font-bold text-primary bg-primary/5 px-1.5 py-0.5 rounded-full">
-                    <span class="material-symbols-outlined text-[11px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+                    <i class="fa-solid fa-circle-check text-[11px]" style=""></i>
                     Seller
                 </span>
                 <span class="text-[10px] text-gray-500">{{ $sellerStore ? $sellerStore->products()->count() : 0 }} products</span>
@@ -155,32 +155,32 @@
             @php $isDashboard = request()->routeIs('seller.dashboard'); @endphp
             <a href="{{ route('seller.dashboard') }}"
                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isDashboard ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
-                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isDashboard ? '1' : '0' }};">home</span>
+                <i class="fa-solid fa-house text-[20px]" style=""></i>
                 My Shop Home
             </a>
             @php $isProducts = request()->routeIs('seller.products.*'); @endphp
             <a href="{{ route('seller.products.index') }}"
                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isProducts ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
-                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isProducts ? '1' : '0' }};">inventory_2</span>
+                <i class="fa-solid fa-boxes-stacked text-[20px]" style=""></i>
                 All My Items
             </a>
             @php $isServices = request()->routeIs('seller.services.*'); @endphp
             <a href="{{ route('seller.services.index') }}"
                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isServices ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
-                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isServices ? '1' : '0' }};">handyman</span>
+                <i class="fa-solid fa-screwdriver-wrench text-[20px]" style=""></i>
                 My Services
             </a>
             @php $isCategories = request()->routeIs('seller.store-categories.*'); @endphp
             <a href="{{ route('seller.store-categories.index') }}"
                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isCategories ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
-                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isCategories ? '1' : '0' }};">category</span>
+                <i class="fa-solid fa-tags text-[20px]" style=""></i>
                 Store Categories
             </a>
 
             @php $isRentals = request()->routeIs('seller.rentals.*'); @endphp
             <a href="{{ route('seller.rentals.index') }}"
                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isRentals ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
-                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isRentals ? '1' : '0' }};">shelves</span>
+                <i class="fa-solid fa-warehouse text-[20px]" style=""></i>
                 My Rentals
             </a>
             
@@ -189,19 +189,19 @@
             @php $isAds = request()->routeIs('seller.ads.*'); @endphp
             <a href="{{ route('seller.ads.index') }}"
                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isAds ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
-                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isAds ? '1' : '0' }};">campaign</span>
+                <i class="fa-solid fa-bullhorn text-[20px]" style=""></i>
                 Promotions
             </a>
             @php $isReviews = request()->routeIs('seller.reviews'); @endphp
             <a href="{{ route('seller.reviews') }}"
                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isReviews ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
-                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isReviews ? '1' : '0' }};">reviews</span>
+                <i class="fa-solid fa-star text-[20px]" style=""></i>
                 Customer Reviews
             </a>
             @php $isSettings = request()->routeIs('seller.store.settings'); @endphp
             <a href="{{ route('seller.store.settings') }}"
                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isSettings ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
-                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isSettings ? '1' : '0' }};">settings</span>
+                <i class="fa-solid fa-gear text-[20px]" style=""></i>
                 Store Settings
             </a>
         </nav>
@@ -219,14 +219,14 @@
             @if($sellerStore)
                 <a href="{{ route('stores.show', $sellerStore->slug) }}" target="_blank"
                    class="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium text-gray-500 hover:text-primary hover:bg-gray-50 transition-all duration-200">
-                    <span class="material-symbols-outlined text-[18px]">storefront</span>
+                    <i class="fa-solid fa-store text-[18px]"></i>
                     View My Public Store
                 </a>
             @endif
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit" class="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium text-red-600 hover:bg-red-50 transition-all duration-200">
-                    <span class="material-symbols-outlined text-[18px]">logout</span>
+                    <i class="fa-solid fa-right-from-bracket text-[18px]"></i>
                     Logout
                 </button>
             </form>
@@ -257,7 +257,7 @@
             <h2 class="text-sm font-bold text-gray-900 truncate">{{ $sellerStore ? $sellerStore->name : 'My Store' }}</h2>
             <div class="flex flex-wrap items-center gap-1.5 mt-0.5">
                 <span class="inline-flex items-center gap-0.5 text-[10px] font-bold text-primary bg-primary/5 px-1.5 py-0.5 rounded-full">
-                    <span class="material-symbols-outlined text-[11px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+                    <i class="fa-solid fa-circle-check text-[11px]" style=""></i>
                     Seller
                 </span>
                 <span class="text-[10px] text-gray-500">{{ $sellerStore ? $sellerStore->products()->count() : 0 }} products</span>
@@ -268,32 +268,32 @@
             @php $isDashboard = request()->routeIs('seller.dashboard'); @endphp
             <a href="{{ route('seller.dashboard') }}"
                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isDashboard ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
-                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isDashboard ? '1' : '0' }};">home</span>
+                <i class="fa-solid fa-house text-[20px]" style=""></i>
                 My Shop Home
             </a>
             @php $isProducts = request()->routeIs('seller.products.*'); @endphp
             <a href="{{ route('seller.products.index') }}"
                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isProducts ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
-                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isProducts ? '1' : '0' }};">inventory_2</span>
+                <i class="fa-solid fa-boxes-stacked text-[20px]" style=""></i>
                 All My Items
             </a>
             @php $isServices = request()->routeIs('seller.services.*'); @endphp
             <a href="{{ route('seller.services.index') }}"
                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isServices ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
-                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isServices ? '1' : '0' }};">handyman</span>
+                <i class="fa-solid fa-screwdriver-wrench text-[20px]" style=""></i>
                 My Services
             </a>
             @php $isCategories = request()->routeIs('seller.store-categories.*'); @endphp
             <a href="{{ route('seller.store-categories.index') }}"
                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isCategories ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
-                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isCategories ? '1' : '0' }};">category</span>
+                <i class="fa-solid fa-tags text-[20px]" style=""></i>
                 Store Categories
             </a>
 
             @php $isRentals = request()->routeIs('seller.rentals.*'); @endphp
             <a href="{{ route('seller.rentals.index') }}"
                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isRentals ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
-                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isRentals ? '1' : '0' }};">shelves</span>
+                <i class="fa-solid fa-warehouse text-[20px]" style=""></i>
                 My Rentals
             </a>
             
@@ -302,19 +302,19 @@
             @php $isAds = request()->routeIs('seller.ads.*'); @endphp
             <a href="{{ route('seller.ads.index') }}"
                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isAds ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
-                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isAds ? '1' : '0' }};">campaign</span>
+                <i class="fa-solid fa-bullhorn text-[20px]" style=""></i>
                 Promotions
             </a>
             @php $isReviews = request()->routeIs('seller.reviews'); @endphp
             <a href="{{ route('seller.reviews') }}"
                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isReviews ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
-                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isReviews ? '1' : '0' }};">reviews</span>
+                <i class="fa-solid fa-star text-[20px]" style=""></i>
                 Customer Reviews
             </a>
             @php $isSettings = request()->routeIs('seller.store.settings'); @endphp
             <a href="{{ route('seller.store.settings') }}"
                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isSettings ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
-                <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' {{ $isSettings ? '1' : '0' }};">settings</span>
+                <i class="fa-solid fa-gear text-[20px]" style=""></i>
                 Store Settings
             </a>
         </nav>
@@ -332,14 +332,14 @@
             @if($sellerStore)
                 <a href="{{ route('stores.show', $sellerStore->slug) }}" target="_blank"
                    class="flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium text-gray-500 hover:text-primary hover:bg-gray-50 transition-all duration-200">
-                    <span class="material-symbols-outlined text-[18px]">storefront</span>
+                    <i class="fa-solid fa-store text-[18px]"></i>
                     View My Public Store
                 </a>
             @endif
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit" class="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-medium text-red-600 hover:bg-red-50 transition-all duration-200">
-                    <span class="material-symbols-outlined text-[18px]">logout</span>
+                    <i class="fa-solid fa-right-from-bracket text-[18px]"></i>
                     Logout
                 </button>
             </form>
@@ -351,8 +351,8 @@
         <header class="header-scrolled h-16 lg:h-[72px] flex items-center justify-between px-4 md:px-6 sticky top-0 z-30">
             <div class="flex items-center gap-3">
                 <button @click="sidebarOpen = !sidebarOpen" class="lg:hidden w-9 h-9 flex items-center justify-center rounded-xl text-gray-500 hover:text-primary hover:bg-black/5 transition-all active:scale-90">
-                    <span class="material-symbols-outlined text-[20px]" x-show="!sidebarOpen">menu</span>
-                    <span class="material-symbols-outlined text-[20px]" x-show="sidebarOpen" x-cloak>close</span>
+                    <i class="fa-solid fa-bars text-[20px]" x-show="!sidebarOpen"></i>
+                    <i class="fa-solid fa-xmark text-[20px]" x-show="sidebarOpen" x-cloak></i>
                 </button>
                 <a href="/" class="shrink-0 transition-opacity hover:opacity-80">
                     <x-application-logo class="h-7 sm:h-[30px]" />
@@ -365,7 +365,7 @@
             <div class="flex items-center gap-2">
                 <a href="{{ route('seller.products.create') }}"
                    class="bg-primary text-white px-4 md:px-5 py-2 rounded-xl text-[13px] font-bold flex items-center gap-1.5 hover:opacity-90 active:scale-[0.97] transition-all shadow-sm">
-                    <span class="material-symbols-outlined text-[18px]">add</span>
+                    <i class="fa-solid fa-plus text-[18px]"></i>
                     <span class="hidden md:inline">New Product</span>
                 </a>
             </div>
@@ -374,21 +374,21 @@
         <div class="px-4 md:px-6 py-4 md:py-6 max-w-7xl mx-auto space-y-4 md:space-y-6">
             @if(session('success'))
                 <div class="bg-lime-100 border border-lime-200 rounded-xl p-4 flex items-center gap-3 animate-slide-down">
-                    <span class="material-symbols-outlined text-lime-600">check_circle</span>
+                    <i class="fa-solid fa-circle-check text-lime-600"></i>
                     <p class="text-sm font-semibold text-lime-800">{{ session('success') }}</p>
                 </div>
             @endif
 
             @if(session('error'))
                 <div class="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center gap-3 animate-slide-down">
-                    <span class="material-symbols-outlined text-red-600">error</span>
+                    <i class="fa-solid fa-circle-exclamation text-red-600"></i>
                     <p class="text-sm font-semibold text-red-800">{{ session('error') }}</p>
                 </div>
             @endif
 
             @if($errors->any())
                 <div class="bg-red-50 border border-red-200 rounded-xl p-4 flex items-start gap-3 animate-slide-down">
-                    <span class="material-symbols-outlined text-red-600 mt-0.5">warning</span>
+                    <i class="fa-solid fa-triangle-exclamation text-red-600 mt-0.5"></i>
                     <div>
                         @foreach($errors->all() as $error)
                             <p class="text-sm font-semibold text-red-800">{{ $error }}</p>

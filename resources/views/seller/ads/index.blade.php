@@ -22,7 +22,7 @@
                      }">
                     <div class="flex items-center gap-3 pb-3 border-b border-gray-100">
                         <div class="w-8 h-8 rounded-xl bg-primary/5 text-primary flex items-center justify-center shrink-0">
-                            <span class="material-symbols-outlined text-[18px]">campaign</span>
+                            <i class="fa-solid fa-bullhorn text-[18px]"></i>
                         </div>
                         <h2 class="text-base font-bold text-gray-900">Boost an Item</h2>
                     </div>
@@ -36,25 +36,25 @@
                                 <label class="cursor-pointer">
                                     <input type="radio" name="promotable_type" value="product" x-model="type" class="sr-only peer">
                                     <div class="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-bold border-2 transition-all peer-checked:bg-primary peer-checked:text-white peer-checked:border-primary border-gray-200 text-gray-500 bg-gray-50">
-                                        <span class="material-symbols-outlined text-[14px]">inventory_2</span> Product
+                                        <i class="fa-solid fa-boxes-stacked text-[14px]"></i> Product
                                     </div>
                                 </label>
                                 <label class="cursor-pointer">
                                     <input type="radio" name="promotable_type" value="service" x-model="type" class="sr-only peer">
                                     <div class="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-bold border-2 transition-all peer-checked:bg-primary peer-checked:text-white peer-checked:border-primary border-gray-200 text-gray-500 bg-gray-50">
-                                        <span class="material-symbols-outlined text-[14px]">handyman</span> Service
+                                        <i class="fa-solid fa-screwdriver-wrench text-[14px]"></i> Service
                                     </div>
                                 </label>
                                 <label class="cursor-pointer">
                                     <input type="radio" name="promotable_type" value="rental" x-model="type" class="sr-only peer">
                                     <div class="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-bold border-2 transition-all peer-checked:bg-primary peer-checked:text-white peer-checked:border-primary border-gray-200 text-gray-500 bg-gray-50">
-                                        <span class="material-symbols-outlined text-[14px]">shelves</span> Rental
+                                        <i class="fa-solid fa-warehouse text-[14px]"></i> Rental
                                     </div>
                                 </label>
                                 <label class="cursor-pointer">
                                     <input type="radio" name="promotable_type" value="custom" x-model="type" class="sr-only peer">
                                     <div class="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-bold border-2 transition-all peer-checked:bg-primary peer-checked:text-white peer-checked:border-primary border-gray-200 text-gray-500 bg-gray-50">
-                                        <span class="material-symbols-outlined text-[14px]">edit_note</span> Custom
+                                        <i class="fa-solid fa-pen text-[14px]"></i> Custom
                                     </div>
                                 </label>
                             </div>
@@ -128,7 +128,7 @@
 
                         <button type="submit"
                                 class="w-full bg-primary text-white py-3 rounded-xl text-sm font-bold hover:opacity-90 active:scale-[0.97] transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2">
-                            <span class="material-symbols-outlined text-[18px]">payments</span>
+                            <i class="fa-solid fa-credit-card text-[18px]"></i>
                             Pay &amp; Submit
                         </button>
                     </form>
@@ -186,7 +186,7 @@
                                     <tr>
                                         <td colspan="5" class="px-5 py-16 text-center">
                                             <div class="w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center mx-auto mb-3">
-                                                <span class="material-symbols-outlined text-3xl text-gray-300">campaign</span>
+                                                <i class="fa-solid fa-bullhorn text-3xl text-gray-300"></i>
                                             </div>
                                             <p class="text-base font-bold text-gray-900">No ads yet</p>
                                             <p class="text-sm text-gray-500 mt-1">Boost an item to get started.</p>

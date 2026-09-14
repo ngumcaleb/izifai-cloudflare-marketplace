@@ -11,7 +11,7 @@
 
         @if($cart->items->isEmpty())
         <div class="text-center py-16">
-            <span class="material-symbols-outlined text-5xl text-on-surface-variant/30">shopping_cart</span>
+            <i class="fa-solid fa-cart-shopping text-5xl text-on-surface-variant/30"></i>
             <h2 class="text-lg font-bold text-on-surface mt-4">Your cart is empty</h2>
             <a href="{{ route('products.index') }}" class="inline-block mt-6 px-6 py-3 bg-primary text-on-primary rounded-xl text-sm font-bold hover:opacity-90 transition-all">
                 Browse Products

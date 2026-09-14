@@ -11,7 +11,7 @@
             <form action="{{ route('notifications.read-all') }}" method="POST">
                 @csrf
                 <button type="submit" class="text-xs font-bold text-primary hover:underline flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[16px]">done_all</span>
+                    <i class="fa-solid fa-check-double text-[16px]"></i>
                     Mark All Read
                 </button>
             </form>
@@ -20,7 +20,7 @@
 
     @if(session('success'))
         <div class="bg-green-50 border border-green-200 rounded-xl p-4 mb-4 flex items-center gap-3 animate-slide-down">
-            <span class="material-symbols-outlined text-green-600">check_circle</span>
+            <i class="fa-solid fa-circle-check text-green-600"></i>
             <p class="text-sm font-semibold text-green-800">{{ session('success') }}</p>
         </div>
     @endif
@@ -44,9 +44,7 @@
             <div class="bg-white rounded-2xl p-4 shadow-sm border transition-all hover:shadow-md {{ $notification->read ? 'border-gray-100/80' : 'border-primary/10 bg-primary/[0.02]' }}">
                 <div class="flex items-start gap-3">
                     <div class="w-9 h-9 rounded-xl {{ $notification->read ? 'bg-gray-50 text-gray-400' : 'bg-primary/10 text-primary' }} flex items-center justify-center shrink-0">
-                        <span class="material-symbols-outlined text-[18px]">
-                            {{ match($notification->type) { 'order' => 'shopping_bag', 'payment' => 'payments', 'message' => 'chat', 'review' => 'star', 'promotion' => 'campaign', 'withdrawal' => 'account_balance_wallet', default => 'notifications' } }}
-                        </span>
+                        <i class="{{ match($notification->type) { 'order' => 'fa-solid fa-bag-shopping', 'payment' => 'fa-solid fa-credit-card', 'message' => 'fa-solid fa-comment', 'review' => 'fa-solid fa-star', 'promotion' => 'fa-solid fa-bullhorn', 'withdrawal' => 'fa-solid fa-wallet', default => 'fa-solid fa-bell' } }} text-[18px]"></i>
                     </div>
                     <div class="min-w-0 flex-1">
                         <div class="flex items-start justify-between gap-2">
@@ -73,7 +71,7 @@
         @empty
             <div class="bg-white rounded-2xl p-12 shadow-sm border border-gray-100/80 text-center">
                 <div class="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center mx-auto mb-4">
-                    <span class="material-symbols-outlined text-4xl text-gray-300">notifications_none</span>
+                    <i class="fa-regular fa-bell text-4xl text-gray-300"></i>
                 </div>
                 <h3 class="text-lg font-bold text-gray-900">No notifications</h3>
                 <p class="text-sm text-gray-500 mt-1">You're all caught up!</p>

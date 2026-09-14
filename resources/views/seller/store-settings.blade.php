@@ -8,7 +8,7 @@
                 <p class="text-sm text-gray-500 mt-0.5">Manage your store identity and business information</p>
             </div>
             <a href="{{ route('seller.dashboard') }}" class="text-xs font-semibold text-gray-500 hover:text-primary flex items-center gap-1.5 transition-colors">
-                <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+                <i class="fa-solid fa-arrow-left text-[16px]"></i>
                 Back to Dashboard
             </a>
         </div>
@@ -43,13 +43,13 @@
                                     <img src="{{ $store->logo_url }}" class="w-full h-full object-cover">
                                 @else
                                     <div class="w-full h-full flex flex-col items-center justify-center text-gray-300">
-                                        <span class="material-symbols-outlined text-3xl">add_photo_alternate</span>
+                                        <i class="fa-solid fa-images text-3xl"></i>
                                         <span class="text-xs font-semibold mt-1">Logo</span>
                                     </div>
                                 @endif
                             </div>
                             <div class="absolute inset-0 bg-primary/80 opacity-0 group-hover:opacity-100 transition-all flex flex-col items-center justify-center text-white rounded-2xl">
-                                <span class="material-symbols-outlined text-2xl">camera_alt</span>
+                                <i class="fa-solid fa-camera text-2xl"></i>
                                 <span class="text-xs font-bold mt-1">Update</span>
                             </div>
                         </label>
@@ -65,13 +65,13 @@
                                     <img src="{{ $store->banner_url }}" class="w-full h-full object-cover">
                                 @else
                                     <div class="w-full h-full flex flex-col items-center justify-center text-gray-300">
-                                        <span class="material-symbols-outlined text-3xl">panorama</span>
+                                        <i class="fa-solid fa-image text-3xl"></i>
                                         <span class="text-xs font-semibold mt-1">Banner</span>
                                     </div>
                                 @endif
                             </div>
                             <div class="absolute inset-0 bg-primary/80 opacity-0 group-hover:opacity-100 transition-all flex flex-col items-center justify-center text-white rounded-2xl">
-                                <span class="material-symbols-outlined text-2xl">camera_alt</span>
+                                <i class="fa-solid fa-camera text-2xl"></i>
                                 <span class="text-xs font-bold mt-1">Upload Header</span>
                             </div>
                         </label>
@@ -117,7 +117,7 @@
                 <div class="pt-4 md:pt-5 border-t border-gray-100">
                     <div class="flex items-center gap-3 mb-4">
                         <div class="w-8 h-8 rounded-xl bg-primary/5 text-primary flex items-center justify-center shrink-0">
-                            <span class="material-symbols-outlined">schedule</span>
+                            <i class="fa-solid fa-clock"></i>
                         </div>
                         <h2 class="text-base md:text-lg font-bold text-gray-900">Business Hours</h2>
                     </div>
@@ -135,7 +135,7 @@
                 <div class="pt-4 md:pt-5 border-t border-gray-100">
                     <div class="flex items-center gap-3 mb-4">
                         <div class="w-8 h-8 rounded-xl bg-primary/5 text-primary flex items-center justify-center shrink-0">
-                            <span class="material-symbols-outlined">flag</span>
+                            <i class="fa-solid fa-flag"></i>
                         </div>
                         <h2 class="text-base md:text-lg font-bold text-gray-900">Default Landing Page</h2>
                     </div>
@@ -155,13 +155,13 @@
                     <div class="flex items-center justify-between mb-4">
                         <div class="flex items-center gap-3">
                             <div class="w-8 h-8 rounded-xl bg-primary/5 text-primary flex items-center justify-center shrink-0">
-                                <span class="material-symbols-outlined">share</span>
+                                <i class="fa-solid fa-share-nodes"></i>
                             </div>
                             <h2 class="text-base md:text-lg font-bold text-gray-900">Social Media Links</h2>
                         </div>
                         <button type="button" @click="addSocial"
                                 class="text-xs font-bold text-primary hover:underline flex items-center gap-1">
-                            <span class="material-symbols-outlined text-[16px]">add</span>
+                            <i class="fa-solid fa-plus text-[16px]"></i>
                             Add Link
                         </button>
                     </div>
@@ -183,7 +183,7 @@
                                        class="min-w-0 flex-1 h-10 bg-gray-50 border border-gray-200 rounded-xl px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50">
                                 <button type="button" @click="removeSocial(i)" x-show="socialLinks.length > 1"
                                         class="p-2 text-red-600 hover:bg-red-50 rounded-xl transition-all shrink-0">
-                                    <span class="material-symbols-outlined text-[18px]">delete</span>
+                                    <i class="fa-solid fa-trash text-[18px]"></i>
                                 </button>
                             </div>
                         </template>
@@ -197,7 +197,7 @@
                     </a>
                     <button type="submit"
                             class="w-full sm:w-auto whitespace-nowrap bg-primary text-white px-8 py-2.5 rounded-xl text-sm font-bold hover:opacity-90 active:scale-[0.97] transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2">
-                        <span class="material-symbols-outlined text-[18px]">save</span>
+                        <i class="fa-solid fa-floppy-disk text-[18px]"></i>
                         Save Settings
                     </button>
                 </div>

@@ -63,7 +63,7 @@
             @empty
                 <div class="p-8 md:p-6 text-center">
                     <div class="w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center mx-auto mb-3">
-                        <span class="material-symbols-outlined text-3xl text-gray-300">reviews</span>
+                        <i class="fa-solid fa-star text-3xl text-gray-300"></i>
                     </div>
                     <p class="text-base font-bold text-gray-900">No reviews yet</p>
                     <p class="text-sm text-gray-500 mt-1">Reviews from customers will appear here</p>

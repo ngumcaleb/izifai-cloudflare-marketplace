@@ -27,7 +27,7 @@
             <div class="space-y-3">
                 <div class="flex items-start gap-4 p-4 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10">
                     <div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center shrink-0">
-                        <span class="material-symbols-outlined text-on-primary-container text-[22px]" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+                        <i class="fa-solid fa-shield-halved text-on-primary-container text-[22px]" style=""></i>
                     </div>
                     <div>
                         <p class="text-sm font-bold text-on-primary">Secure Access Only</p>
@@ -36,7 +36,7 @@
                 </div>
                 <div class="flex items-start gap-4 p-4 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10">
                     <div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center shrink-0">
-                        <span class="material-symbols-outlined text-on-primary-container text-[22px]" style="font-variation-settings: 'FILL' 1;">store</span>
+                        <i class="fa-solid fa-store text-on-primary-container text-[22px]" style=""></i>
                     </div>
                     <div>
                         <p class="text-sm font-bold text-on-primary">Full Platform Oversight</p>
@@ -45,7 +45,7 @@
                 </div>
                 <div class="flex items-start gap-4 p-4 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10">
                     <div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center shrink-0">
-                        <span class="material-symbols-outlined text-on-primary-container text-[22px]" style="font-variation-settings: 'FILL' 1;">analytics</span>
+                        <i class="fa-solid fa-chart-line text-on-primary-container text-[22px]" style=""></i>
                     </div>
                     <div>
                         <p class="text-sm font-bold text-on-primary">Real-time Analytics</p>
@@ -98,7 +98,7 @@
                     <div>
                         <label class="block text-xs font-bold text-on-surface-variant mb-1.5">Email</label>
                         <div class="relative">
-                            <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px] pointer-events-none">mail</span>
+                            <i class="fa-solid fa-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px] pointer-events-none"></i>
                             <input type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username"
                                    class="w-full pl-11 pr-4 py-3 bg-surface-container-lowest border border-outline-variant/50 rounded-lg text-sm text-on-surface font-medium placeholder:text-on-surface-variant/40 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                    placeholder="admin@izifai.com">
@@ -111,13 +111,13 @@
                             <label class="block text-xs font-bold text-on-surface-variant">Password</label>
                         </div>
                         <div class="relative">
-                            <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px] pointer-events-none">lock</span>
+                            <i class="fa-solid fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px] pointer-events-none"></i>
                             <input :type="showPassword ? 'text' : 'password'" name="password" required autocomplete="current-password"
                                    class="w-full pl-11 pr-11 py-3 bg-surface-container-lowest border border-outline-variant/50 rounded-lg text-sm text-on-surface font-medium placeholder:text-on-surface-variant/40 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                    placeholder="Enter your password">
                             <button type="button" @click="showPassword = !showPassword"
                                     class="absolute right-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface transition-colors">
-                                <span class="material-symbols-outlined text-[20px]" x-text="showPassword ? 'visibility_off' : 'visibility'"></span>
+                                <i class="text-[20px] fa-solid" :class="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
                             </button>
                         </div>
                         <x-input-error :messages="$errors->get('password')" class="mt-1.5" />
@@ -132,17 +132,17 @@
                     <button type="submit"
                             class="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-primary text-on-primary rounded-lg text-sm font-bold shadow-lg hover:opacity-90 transition-all active:scale-[0.98]">
                         Sign In to Admin
-                        <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+                        <i class="fa-solid fa-arrow-right text-[20px]"></i>
                     </button>
                 </form>
 
                 <div class="mt-6 pt-5 border-t border-outline-variant/20 flex items-center justify-center gap-6">
                     <div class="flex items-center gap-1.5 text-xs text-on-surface-variant/60">
-                        <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+                        <i class="fa-solid fa-shield-halved text-[16px]" style=""></i>
                         Encrypted Connection
                     </div>
                     <div class="flex items-center gap-1.5 text-xs text-on-surface-variant/60">
-                        <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">admin_panel_settings</span>
+                        <i class="fa-solid fa-user-gear text-[16px]" style=""></i>
                         Restricted Access
                     </div>
                 </div>

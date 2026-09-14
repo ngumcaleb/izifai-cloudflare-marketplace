@@ -6,10 +6,10 @@
                 <img src="{{ $product->images->first()->url }}"
                      alt="{{ $product->name }}" loading="lazy"
                      class="w-full h-full object-cover transform transition-transform duration-700 ease-out group-hover:scale-[1.05]"
-                     onerror="this.parentElement.innerHTML = '<div class=\'w-full h-full grid place-items-center text-[#9aa19c]/30\'><span class=\'material-symbols-outlined text-4xl sm:text-5xl\'>image</span></div>'">
+                     onerror="this.parentElement.innerHTML = '<div class=\'w-full h-full grid place-items-center text-[#9aa19c]/30\'><i class=\'fa-solid fa-image text-4xl sm:text-5xl\'></i></div>'">
             @else
                 <div class="w-full h-full grid place-items-center text-[#9aa19c]/30">
-                    <span class="material-symbols-outlined text-4xl sm:text-5xl">image</span>
+                    <i class="fa-solid fa-image text-4xl sm:text-5xl"></i>
                 </div>
             @endif
 
@@ -33,8 +33,7 @@
             <button class="favorite-btn absolute bottom-2 sm:bottom-3 right-2 sm:right-3 z-30 w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-white/95 shadow-md grid place-items-center hover:scale-110 active:scale-90 transition-all"
                     data-product="{{ $product->id }}"
                     data-favorited="{{ in_array($product->id, $savedProductIds) ? 'true' : 'false' }}">
-                <span class="material-symbols-outlined text-[15px] sm:text-[18px] {{ in_array($product->id, $savedProductIds) ? 'text-[#dc2626]' : 'text-[#5c625e]' }}"
-                      style="font-variation-settings: 'FILL' {{ in_array($product->id, $savedProductIds) ? 1 : 0 }};">favorite</span>
+                <i class="{{ in_array($product->id, $savedProductIds) ? 'fa-solid' : 'fa-regular' }} fa-heart text-[15px] sm:text-[18px] {{ in_array($product->id, $savedProductIds) ? 'text-[#dc2626]' : 'text-[#5c625e]' }}" style=""></i>
             </button>
 
             @if($product->stock_status === 'out_of_stock')
@@ -57,7 +56,7 @@
             <div class="flex items-center gap-1 mt-0.5 sm:mt-1">
                 <p class="text-[9.5px] sm:text-[11px] text-[#9aa19c] truncate">{{ $product->category->name ?? '' }}</p>
                 @if($product->store?->is_verified)
-                    <span class="material-symbols-outlined text-[10px] sm:text-[11px] text-[#659316] shrink-0" style="font-variation-settings:'FILL' 1;">verified</span>
+                    <i class="fa-solid fa-circle-check text-[10px] sm:text-[11px] text-[#659316] shrink-0" style=""></i>
                 @endif
             </div>
 
@@ -72,7 +71,7 @@
                 </div>
                 @if(($product->rating ?? 0) > 0)
                     <span class="inline-flex items-center gap-0.5 text-[9.5px] sm:text-[11px] font-extrabold text-[#5c625e] shrink-0">
-                        <span class="material-symbols-outlined text-[11px] sm:text-[13px] text-amber-400" style="font-variation-settings:'FILL' 1;">star</span>
+                        <i class="fa-solid fa-star text-[11px] sm:text-[13px] text-amber-400" style=""></i>
                         {{ number_format($product->rating, 1) }}
                     </span>
                 @endif

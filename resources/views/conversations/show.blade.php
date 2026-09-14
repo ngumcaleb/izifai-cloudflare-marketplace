@@ -18,7 +18,7 @@ $whatsappNumber = $store?->whatsapp_number;
     {{-- HEADER --}}
     <div class="shrink-0 bg-white/95 backdrop-blur-md border-b border-black/5 px-4 py-2.5 flex items-center gap-3 z-10">
         <a href="{{ route('conversations.index') }}" class="w-8 h-8 flex items-center justify-center rounded-xl text-on-surface-variant hover:bg-black/5 transition-all -ml-1.5 active:scale-90">
-            <span class="material-symbols-outlined text-[22px]">arrow_back</span>
+            <i class="fa-solid fa-arrow-left text-[22px]"></i>
         </a>
         <div class="w-9 h-9 rounded-full overflow-hidden bg-surface-container-high flex items-center justify-center shrink-0 ring-2 ring-white shadow-sm">
             @if($store && $store->logo)
@@ -35,7 +35,7 @@ $whatsappNumber = $store?->whatsapp_number;
                     <h2 class="text-sm font-bold text-on-surface truncate">{{ $otherUser->name }}</h2>
                 @endif
                 @if($store && $store->is_verified)
-                    <span class="material-symbols-outlined text-[14px] text-primary shrink-0" style="font-variation-settings: 'FILL' 1;">verified</span>
+                    <i class="fa-solid fa-circle-check text-[14px] text-primary shrink-0" style=""></i>
                 @endif
             </div>
             <p class="text-[11px] text-on-surface-variant/50">online</p>
@@ -48,7 +48,7 @@ $whatsappNumber = $store?->whatsapp_number;
             <button type="submit"
                     class="w-9 h-9 flex items-center justify-center rounded-xl text-on-surface-variant/30 hover:text-error hover:bg-error/10 transition-all active:scale-90"
                     title="Delete conversation">
-                <span class="material-symbols-outlined text-[18px]">delete</span>
+                <i class="fa-solid fa-trash text-[18px]"></i>
             </button>
         </form>
         @if($whatsappNumber)
@@ -79,7 +79,7 @@ $whatsappNumber = $store?->whatsapp_number;
                             </template>
                             <template x-if="!msg.metadata.target.image">
                                 <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center shrink-0 shadow-sm">
-                                    <span class="material-symbols-outlined text-[20px] text-primary/40">shopping_bag</span>
+                                    <i class="fa-solid fa-bag-shopping text-[20px] text-primary/40"></i>
                                 </div>
                             </template>
                             <div class="flex-1 min-w-0">
@@ -91,7 +91,7 @@ $whatsappNumber = $store?->whatsapp_number;
                                 </div>
                                 <p class="text-[11px] font-semibold text-on-surface truncate mt-0.5" x-text="msg.metadata.target.name"></p>
                             </div>
-                            <span class="material-symbols-outlined text-[14px] text-on-surface-variant/30 group-hover:text-on-surface-variant/60 shrink-0">open_in_new</span>
+                            <i class="fa-solid fa-up-right-from-square text-[14px] text-on-surface-variant/30 group-hover:text-on-surface-variant/60 shrink-0"></i>
                         </a>
                     </div>
                 </template>
@@ -121,9 +121,8 @@ $whatsappNumber = $store?->whatsapp_number;
                             <span class="text-[9px] text-black/30 font-medium"
                                   x-text="formatTime(msg.created_at)"></span>
                             <template x-if="msg.sender_id === currentUserId">
-                                <span class="material-symbols-outlined text-[11px]"
-                                      :class="msg.read ? 'text-[#53bdeb]' : 'text-black/25'"
-                                      style="font-variation-settings: 'FILL' 1;">done_all</span>
+                                <i class="fa-solid fa-check-double text-[11px]" :class="msg.read ? 'text-[#53bdeb]' : 'text-black/25'"
+                                      style=""></i>
                             </template>
                         </div>
                     </div>
@@ -134,7 +133,7 @@ $whatsappNumber = $store?->whatsapp_number;
             <div class="h-full flex items-center justify-center">
                 <div class="text-center px-6">
                     <div class="w-14 h-14 mx-auto mb-3 rounded-2xl bg-white/70 flex items-center justify-center shadow-sm">
-                        <span class="material-symbols-outlined text-[28px] text-black/20">chat_bubble_outline</span>
+                        <i class="fa-regular fa-comment text-[28px] text-black/20"></i>
                     </div>
                     <p class="text-sm font-semibold text-black/40">Send a message to start</p>
                 </div>
@@ -168,7 +167,7 @@ $whatsappNumber = $store?->whatsapp_number;
                     :class="newMessage.trim()
                         ? 'bg-primary text-on-primary shadow-sm hover:shadow-md active:scale-85'
                         : 'bg-transparent text-black/15'">
-                <span class="material-symbols-outlined text-[17px]" style="font-variation-settings: 'FILL' 1;">send</span>
+                <i class="fa-solid fa-paper-plane text-[17px]" style=""></i>
             </button>
         </form>
     </div>

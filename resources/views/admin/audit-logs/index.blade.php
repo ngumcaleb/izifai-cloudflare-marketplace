@@ -124,7 +124,7 @@
                             <td class="px-6 py-4 text-right">
                                 <a href="{{ route('admin.audit-logs.show', $log) }}"
                                    class="inline-flex items-center gap-1 px-3 py-1.5 bg-slate-100 text-slate-600 rounded-lg text-[10px] font-bold hover:bg-slate-200 transition-all">
-                                    <span class="material-symbols-outlined text-[14px]">visibility</span>
+                                    <i class="fa-solid fa-eye text-[14px]"></i>
                                     View
                                 </a>
                             </td>
@@ -133,7 +133,7 @@
                         <tr>
                             <td colspan="6" class="px-6 py-12 text-center">
                                 <div class="flex flex-col items-center gap-2">
-                                    <span class="material-symbols-outlined text-3xl text-slate-300">history</span>
+                                    <i class="fa-solid fa-clock-rotate-left text-3xl text-slate-300"></i>
                                     <p class="text-sm font-medium text-slate-400">No audit log entries found</p>
                                 </div>
                             </td>
@@ -160,12 +160,12 @@
                             </span>
                             <p class="text-[11px] text-slate-600 font-medium mt-1 truncate">{{ $log->description }}</p>
                         </div>
-                        <span class="material-symbols-outlined text-[16px] text-slate-300 shrink-0">chevron_right</span>
+                        <i class="fa-solid fa-chevron-right text-[16px] text-slate-300 shrink-0"></i>
                     </div>
                 </a>
                 @empty
                 <div class="p-12 text-center">
-                    <span class="material-symbols-outlined text-3xl text-slate-300">history</span>
+                    <i class="fa-solid fa-clock-rotate-left text-3xl text-slate-300"></i>
                     <p class="text-sm font-medium text-slate-400 mt-2">No audit log entries found</p>
                 </div>
                 @endforelse
