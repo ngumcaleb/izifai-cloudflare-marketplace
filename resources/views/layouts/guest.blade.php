@@ -845,7 +845,7 @@
     </div>
 
     {{-- ============ MAIN CONTENT ============ --}}
-    <main class="min-h-screen bg-[#f5f6f5] pt-[108px] sm:pt-[160px] pb-[72px] sm:pb-0">
+    <main class="min-h-screen bg-[#f5f6f5] pt-[94px] sm:pt-[160px] pb-[72px] sm:pb-0">
         {{-- Left sidebar (store show page) --}}
         @hasSection('store-sidebar')
             <aside class="fixed left-0 top-[100px] sm:top-[108px] h-[calc(100vh-100px)] sm:h-[calc(100vh-108px)] w-[260px] bg-white border-r border-[#eff1ef] shadow-sm z-30 hidden lg:block overflow-y-auto no-scrollbar">

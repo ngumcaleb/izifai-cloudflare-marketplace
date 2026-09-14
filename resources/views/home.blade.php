@@ -85,7 +85,167 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
 {{-- ================================================================
      HERO CAROUSEL  (intelligent: adapts for guests vs signed-in)
 ================================================================ --}}
-<section class="max-w-7xl mx-auto px-4 sm:px-6 mt-4 sm:mt-6">
+<section class="max-w-7xl mx-auto px-2 sm:px-6 mt-0.5 sm:mt-6">
+    {{-- ================================================================
+         MOBILE HEADER CAROUSEL (longer app-style swipe banner with background image)
+    ================================================================ --}}
+    <div class="sm:hidden">
+        <div x-data="homeHero(3)"
+             @mouseenter="pause()" @mouseleave="resume()"
+             class="relative overflow-hidden rounded-2xl bg-[#12190c] border border-black/10 shadow-[0_8px_24px_-6px_rgba(0,0,0,0.22)] select-none" style="margin-left:-2px;margin-right:-2px;">
+            <div class="flex touch-pan-y transition-transform duration-500 ease-out"
+                 :style="{ transform: 'translateX(-' + (index * 100) + '%)' }"
+                 @pointerdown="down($event)" @pointermove="move($event)" @pointerup="up()" @pointercancel="up()">
+
+                {{-- Slide 1: Welcome / Marketplace pitch --}}
+                <div class="w-full shrink-0 relative h-[220px] p-4 sm:p-4 flex flex-col justify-between overflow-hidden">
+                    @if($heroProduct && $heroProduct->images->isNotEmpty())
+                        <img src="{{ $heroProduct->images->first()->url }}" alt="" class="absolute inset-0 w-full h-full object-cover opacity-35" loading="lazy" onerror="this.classList.add('hidden')">
+                        <div class="absolute inset-0 bg-gradient-to-r from-[#0d1408]/95 via-[#0d1408]/80 to-[#0d1408]/45"></div>
+                    @else
+                        <div class="absolute inset-0 bg-gradient-to-br from-[#1b2512] to-[#0d1408]"></div>
+                    @endif
+
+                    <div class="relative z-10">
+                        @auth
+                            <span class="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/15 px-2.5 py-0.5 text-[9px] font-semibold text-white backdrop-blur-sm">
+                                <span class="w-1.5 h-1.5 rounded-full bg-[#9acd32] animate-pulse"></span>
+                                Good to see you, {{ $firstName }}
+                            </span>
+                            <h1 class="mt-2 text-[1.3rem] font-black text-white tracking-tight leading-[1.15]">
+                                Let's find your <span class="text-[#9acd32]">next deal</span>
+                            </h1>
+                            <p class="mt-1 text-[10.5px] text-white/75 leading-tight line-clamp-2 max-w-[85%]">
+                                @if($savedCount > 0)
+                                    You have {{ $savedCount }} saved item{{ $savedCount === 1 ? '' : 's' }}. Pick up where you left off.
+                                @else
+                                    Fresh listings from verified merchants landing every minute.
+                                @endif
+                            </p>
+                        @else
+                            <span class="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/15 px-2.5 py-0.5 text-[9px] font-semibold text-white backdrop-blur-sm">
+                                <span class="w-1.5 h-1.5 rounded-full bg-[#9acd32] animate-pulse"></span>
+                                Cameroon's Marketplace
+                            </span>
+                            <h1 class="mt-2 text-[1.3rem] font-black text-white tracking-tight leading-[1.15]">
+                                Buy. Sell. <span class="text-[#9acd32]">Discover.</span>
+                            </h1>
+                            <p class="mt-1 text-[10.5px] text-white/75 leading-tight line-clamp-2 max-w-[85%]">
+                                Verified sellers, local services & rentals in one simple link.
+                            </p>
+                        @endauth
+                    </div>
+
+                    <div class="relative z-10 flex items-center justify-between gap-2 pt-2 border-t border-white/10">
+                        <div class="flex items-center gap-2.5 text-[9.5px] font-semibold text-white/80">
+                            <span class="inline-flex items-center gap-1">
+                                <span class="material-symbols-rounded text-[11px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">verified</span>
+                                {{ number_format($verifiedStores) }}+ stores
+                            </span>
+                            <span class="inline-flex items-center gap-1">
+                                <span class="material-symbols-rounded text-[11px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">inventory_2</span>
+                                {{ number_format($totalProducts) }}+ products
+                            </span>
+                        </div>
+                        <a href="{{ route('products.index') }}" class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#9acd32] text-[#1c201e] text-[10px] font-bold shadow-sm active:scale-95 transition-transform">
+                            Shop now <span class="material-symbols-rounded text-[12px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+                        </a>
+                    </div>
+                </div>
+
+                {{-- Slide 2: Deals of the day --}}
+                <div class="w-full shrink-0 relative h-[220px] p-4 sm:p-4 flex flex-col justify-between overflow-hidden">
+                    @if($dealFeatured && $dealFeatured->images->isNotEmpty())
+                        <img src="{{ $dealFeatured->images->first()->url }}" alt="" class="absolute inset-0 w-full h-full object-cover opacity-35" loading="lazy" onerror="this.classList.add('hidden')">
+                        <div class="absolute inset-0 bg-gradient-to-r from-[#170a08]/95 via-[#170a08]/80 to-[#170a08]/45"></div>
+                    @else
+                        <div class="absolute inset-0 bg-gradient-to-br from-[#230f0a] to-[#120805]"></div>
+                    @endif
+
+                    <div class="relative z-10">
+                        <span class="inline-flex items-center gap-1 rounded-full bg-amber-500/20 border border-amber-400/30 px-2.5 py-0.5 text-[9px] font-bold text-amber-300 backdrop-blur-sm">
+                            <span class="material-symbols-rounded text-[11px]" style="font-variation-settings:'FILL' 1;">local_fire_department</span>
+                            Limited-time prices
+                        </span>
+                        <h2 class="mt-2 text-[1.3rem] font-black text-white tracking-tight leading-[1.15]">
+                            Deals of the day.<br><span class="text-[#9acd32]">Grab them fast.</span>
+                        </h2>
+                        <p class="mt-1 text-[10.5px] text-white/75 leading-tight line-clamp-1 max-w-[85%]">
+                            @if($dealFeatured)
+                                {{ $dealFeatured->name }} • {{ number_format($dealFeatured->price) }} F
+                            @else
+                                Heavy discounts on verified products daily.
+                            @endif
+                        </p>
+                    </div>
+
+                    <div class="relative z-10 flex items-center justify-between gap-2 pt-2 border-t border-white/10">
+                        <div class="flex items-center gap-2 text-[9.5px] font-semibold text-white/80">
+                            <span class="inline-flex items-center gap-1">
+                                <span class="material-symbols-rounded text-[11px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">bolt</span>
+                                {{ $deals->count() }}+ live deals
+                            </span>
+                        </div>
+                        <a href="#deals" class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#dc2626] text-white text-[10px] font-bold shadow-sm active:scale-95 transition-transform">
+                            See deals <span class="material-symbols-rounded text-[12px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+                        </a>
+                    </div>
+                </div>
+
+                {{-- Slide 3: Services & rentals --}}
+                <div class="w-full shrink-0 relative h-[220px] p-4 sm:p-4 flex flex-col justify-between overflow-hidden">
+                    @if($exploreImg && $exploreImg->images->isNotEmpty())
+                        <img src="{{ $exploreImg->images->first()->url }}" alt="" class="absolute inset-0 w-full h-full object-cover opacity-35" loading="lazy" onerror="this.classList.add('hidden')">
+                        <div class="absolute inset-0 bg-gradient-to-r from-[#0a1215]/95 via-[#0a1215]/80 to-[#0a1215]/45"></div>
+                    @else
+                        <div class="absolute inset-0 bg-gradient-to-br from-[#0e1a1f] to-[#070d10]"></div>
+                    @endif
+
+                    <div class="relative z-10">
+                        <span class="inline-flex items-center gap-1 rounded-full bg-[#9acd32]/20 border border-[#9acd32]/30 px-2.5 py-0.5 text-[9px] font-bold text-[#9acd32] backdrop-blur-sm">
+                            <span class="material-symbols-rounded text-[11px]" style="font-variation-settings:'FILL' 1;">handyman</span>
+                            Services & Rentals
+                        </span>
+                        <h2 class="mt-2 text-[1.3rem] font-black text-white tracking-tight leading-[1.15]">
+                            Book Pros & Rent Gear.<br><span class="text-[#9acd32]">Zero middleman.</span>
+                        </h2>
+                        <p class="mt-1 text-[10.5px] text-white/75 leading-tight line-clamp-1 max-w-[85%]">
+                            Find vetted local technicians, photographers, rentals and more.
+                        </p>
+                    </div>
+
+                    <div class="relative z-10 flex items-center justify-between gap-2 pt-2 border-t border-white/10">
+                        <div class="flex items-center gap-2 text-[9.5px] font-semibold text-white/80">
+                            <span class="inline-flex items-center gap-1">
+                                <span class="material-symbols-rounded text-[11px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">design_services</span>
+                                {{ number_format($totalServices) }} pros
+                            </span>
+                            <span class="inline-flex items-center gap-1">
+                                <span class="material-symbols-rounded text-[11px] text-[#9acd32]" style="font-variation-settings:'FILL' 1;">shelves</span>
+                                {{ number_format($totalRentals) }} rentals
+                            </span>
+                        </div>
+                        <a href="{{ route('services.index') }}" class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#9acd32] text-[#1c201e] text-[10px] font-bold shadow-sm active:scale-95 transition-transform">
+                            Explore <span class="material-symbols-rounded text-[12px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            {{-- Indicator dots --}}
+            <div class="absolute top-3.5 right-3.5 z-20 flex items-center gap-1.5">
+                <template x-for="i in total" :key="i">
+                    <button @click="go(i - 1)"
+                            class="h-1 rounded-full transition-all duration-300"
+                            :class="index === i - 1 ? 'w-4 bg-[#9acd32]' : 'w-1.5 bg-white/40'"></button>
+                </template>
+            </div>
+        </div>
+    </div>
+
+    {{-- Desktop Carousel (hidden on mobile) --}}
+    <div class="hidden sm:block">
     <div x-data="homeHero(3)"
          @mouseenter="pause()" @mouseleave="resume()"
          class="relative overflow-hidden rounded-3xl border border-black/5 bg-white shadow-[0_14px_44px_-16px_rgba(0,0,0,0.16)] select-none">
@@ -355,34 +515,35 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
             </button>
         </div>
     </div>
+    </div>
 </section>
 
 {{-- ================================================================
      TRUST STRIP
 ================================================================ --}}
-<section class="max-w-7xl mx-auto px-4 sm:px-6 mt-6">
-    <div class="rounded-2xl bg-white border border-[#e8eae8] px-4 sm:px-6 py-3.5 flex items-center justify-center flex-wrap gap-x-7 gap-y-2 text-[11px] font-semibold text-[#6b716c]">
-        <span class="inline-flex items-center gap-2">
-            <span class="grid place-items-center w-7 h-7 rounded-lg bg-[#f2f9df] text-[#7ca81d]">
-                <span class="material-symbols-rounded text-[15px]" style="font-variation-settings:'FILL' 1;">smartphone</span>
+<section class="max-w-7xl mx-auto px-2.5 sm:px-6 mt-2.5 sm:mt-6">
+    <div class="rounded-2xl bg-white border border-[#e8eae8] px-3 sm:px-6 py-2 sm:py-3.5 flex items-center justify-center flex-wrap gap-x-4 sm:gap-x-7 gap-y-1.5 text-[9.5px] sm:text-[11px] font-semibold text-[#6b716c]">
+        <span class="inline-flex items-center gap-1.5 sm:gap-2">
+            <span class="grid place-items-center w-6 h-6 sm:w-7 sm:h-7 rounded-md sm:rounded-lg bg-[#f2f9df] text-[#7ca81d]">
+                <span class="material-symbols-rounded text-[13px] sm:text-[15px]" style="font-variation-settings:'FILL' 1;">smartphone</span>
             </span>
             MTN MoMo
         </span>
-        <span class="inline-flex items-center gap-2">
-            <span class="grid place-items-center w-7 h-7 rounded-lg bg-[#f2f9df] text-[#7ca81d]">
-                <span class="material-symbols-rounded text-[15px]" style="font-variation-settings:'FILL' 1;">smartphone</span>
+        <span class="inline-flex items-center gap-1.5 sm:gap-2">
+            <span class="grid place-items-center w-6 h-6 sm:w-7 sm:h-7 rounded-md sm:rounded-lg bg-[#f2f9df] text-[#7ca81d]">
+                <span class="material-symbols-rounded text-[13px] sm:text-[15px]" style="font-variation-settings:'FILL' 1;">smartphone</span>
             </span>
             Orange Money
         </span>
-        <span class="inline-flex items-center gap-2">
-            <span class="grid place-items-center w-7 h-7 rounded-lg bg-[#f2f9df] text-[#7ca81d]">
-                <span class="material-symbols-rounded text-[15px]" style="font-variation-settings:'FILL' 1;">credit_card</span>
+        <span class="inline-flex items-center gap-1.5 sm:gap-2">
+            <span class="grid place-items-center w-6 h-6 sm:w-7 sm:h-7 rounded-md sm:rounded-lg bg-[#f2f9df] text-[#7ca81d]">
+                <span class="material-symbols-rounded text-[13px] sm:text-[15px]" style="font-variation-settings:'FILL' 1;">credit_card</span>
             </span>
             Cards
         </span>
-        <span class="inline-flex items-center gap-2">
-            <span class="grid place-items-center w-7 h-7 rounded-lg bg-[#f2f9df] text-[#659316]">
-                <span class="material-symbols-rounded text-[15px]" style="font-variation-settings:'FILL' 1;">verified_user</span>
+        <span class="inline-flex items-center gap-1.5 sm:gap-2">
+            <span class="grid place-items-center w-6 h-6 sm:w-7 sm:h-7 rounded-md sm:rounded-lg bg-[#f2f9df] text-[#659316]">
+                <span class="material-symbols-rounded text-[13px] sm:text-[15px]" style="font-variation-settings:'FILL' 1;">verified_user</span>
             </span>
             Verified stores only
         </span>
@@ -392,38 +553,38 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
 {{-- ================================================================
      SHOP BY CATEGORY
 ================================================================ --}}
-<section class="max-w-7xl mx-auto px-4 sm:px-6 mt-10">
-    <div class="flex items-end justify-between gap-3 mb-5">
+<section class="max-w-7xl mx-auto px-2.5 sm:px-6 mt-5 sm:mt-10">
+    <div class="flex items-end justify-between gap-3 mb-3 sm:mb-5">
         <div>
-            <h2 class="text-lg sm:text-xl font-bold tracking-tight text-[#1c201e]">Shop by category</h2>
-            <p class="text-[12px] text-[#6b716c] mt-0.5">Jump straight to what you need</p>
+            <h2 class="text-sm sm:text-xl font-bold tracking-tight text-[#1c201e]">Shop by category</h2>
+            <p class="text-[10px] sm:text-[12px] text-[#6b716c] mt-0.5">Jump straight to what you need</p>
         </div>
-        <a href="{{ route('products.index') }}" class="inline-flex items-center gap-1 text-sm font-bold text-[#9acd32] hover:text-[#7ca81d] transition-colors whitespace-nowrap">
-            All products <span class="material-symbols-rounded text-[16px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+        <a href="{{ route('products.index') }}" class="inline-flex items-center gap-1 text-[11px] sm:text-sm font-bold text-[#9acd32] hover:text-[#7ca81d] transition-colors whitespace-nowrap">
+            All products <span class="material-symbols-rounded text-[14px] sm:text-[16px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
         </a>
     </div>
-    <div x-data="autoScroll()" x-init="init()" class="flex gap-3.5 overflow-x-auto no-scrollbar pb-1">
+    <div x-data="autoScroll()" x-init="init()" class="flex gap-2.5 sm:gap-3.5 overflow-x-auto no-scrollbar pb-1">
         @foreach($categories as $cat)
             @php $tc = $tileColors[$loop->index % count($tileColors)]; @endphp
             <a href="{{ route('products.index', ['category' => $cat->slug]) }}"
-               class="shrink-0 w-[5.25rem] sm:w-24 text-center group">
-                <div class="w-[5.25rem] sm:w-24 h-[5.25rem] sm:h-24 rounded-2xl overflow-hidden ring-1 ring-black/5 group-hover:ring-[#9acd32]/40 group-hover:shadow-lg transition-all duration-300">
+               class="shrink-0 w-16 sm:w-24 text-center group">
+                <div class="w-16 sm:w-24 h-16 sm:h-24 rounded-xl sm:rounded-2xl overflow-hidden ring-1 ring-black/5 group-hover:ring-[#9acd32]/40 group-hover:shadow-lg transition-all duration-300">
                     @if($cat->image_url)
                         <img src="{{ $cat->image_url }}" alt="{{ $cat->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
                     @else
-                        <span class="grid place-items-center w-full h-full text-xl font-extrabold group-hover:scale-105 transition-transform duration-300" style="background: {{ $tc[0] }}; color: {{ $tc[1] }};">{{ strtoupper(substr($cat->name, 0, 1)) }}</span>
+                        <span class="grid place-items-center w-full h-full text-base sm:text-xl font-extrabold group-hover:scale-105 transition-transform duration-300" style="background: {{ $tc[0] }}; color: {{ $tc[1] }};">{{ strtoupper(substr($cat->name, 0, 1)) }}</span>
                     @endif
                 </div>
-                <p class="mt-2 text-[11px] font-bold text-[#3f453f] leading-tight line-clamp-1 group-hover:text-[#7ca81d] transition-colors">{{ $cat->name }}</p>
-                <p class="text-[10px] text-[#9aa19c]">{{ number_format($cat->products_count) }} items</p>
+                <p class="mt-1.5 text-[9.5px] sm:text-[11px] font-bold text-[#3f453f] leading-tight line-clamp-1 group-hover:text-[#7ca81d] transition-colors">{{ $cat->name }}</p>
+                <p class="text-[8.5px] sm:text-[10px] text-[#9aa19c]">{{ number_format($cat->products_count) }} items</p>
             </a>
         @endforeach
         @if($categories->isNotEmpty())
-        <a href="{{ route('products.index') }}" class="shrink-0 w-[5.25rem] sm:w-24 text-center group self-start">
-            <div class="w-[5.25rem] sm:w-24 h-[5.25rem] sm:h-24 rounded-2xl border-2 border-dashed border-[#c9cecb] bg-white grid place-items-center text-[#9aa19c] group-hover:text-[#9acd32] group-hover:border-[#9acd32]/50 transition-colors">
-                <span class="material-symbols-rounded text-[24px]" style="font-variation-settings:'FILL' 1;">grid_view</span>
+        <a href="{{ route('products.index') }}" class="shrink-0 w-16 sm:w-24 text-center group self-start">
+            <div class="w-16 sm:w-24 h-16 sm:h-24 rounded-xl sm:rounded-2xl border-2 border-dashed border-[#c9cecb] bg-white grid place-items-center text-[#9aa19c] group-hover:text-[#9acd32] group-hover:border-[#9acd32]/50 transition-colors">
+                <span class="material-symbols-rounded text-[20px] sm:text-[24px]" style="font-variation-settings:'FILL' 1;">grid_view</span>
             </div>
-            <p class="mt-2 text-[11px] font-bold text-[#6b716c] group-hover:text-[#7ca81d] transition-colors">Browse all</p>
+            <p class="mt-1.5 text-[9.5px] sm:text-[11px] font-bold text-[#6b716c] group-hover:text-[#7ca81d] transition-colors">Browse all</p>
         </a>
         @endif
     </div>
@@ -433,39 +594,39 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
      DEALS OF THE DAY
 ================================================================ --}}
 @if($deals->isNotEmpty())
-<section id="deals" class="max-w-7xl mx-auto px-4 sm:px-6 mt-10">
-    <div class="flex items-end justify-between gap-3 mb-5">
-        <div class="flex items-center gap-3">
-            <span class="grid place-items-center w-11 h-11 rounded-2xl bg-[#dc2626] text-white shadow-lg shadow-red-500/20 shrink-0">
-                <span class="material-symbols-rounded text-[20px]" style="font-variation-settings:'FILL' 1;">local_fire_department</span>
+<section id="deals" class="max-w-7xl mx-auto px-4 sm:px-6 mt-7 sm:mt-10">
+    <div class="flex items-end justify-between gap-3 mb-3.5 sm:mb-5">
+        <div class="flex items-center gap-2.5 sm:gap-3">
+            <span class="grid place-items-center w-8 h-8 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-[#dc2626] text-white shadow-md sm:shadow-lg shadow-red-500/20 shrink-0">
+                <span class="material-symbols-rounded text-[16px] sm:text-[20px]" style="font-variation-settings:'FILL' 1;">local_fire_department</span>
             </span>
             <div>
-                <h2 class="text-lg sm:text-xl font-bold tracking-tight text-[#1c201e]">Deals of the day</h2>
-                <p class="text-[12px] text-[#6b716c] -mt-0.5">Limited-time prices on verified items</p>
+                <h2 class="text-sm sm:text-xl font-bold tracking-tight text-[#1c201e]">Deals of the day</h2>
+                <p class="text-[10px] sm:text-[12px] text-[#6b716c] -mt-0.5">Limited-time prices on verified items</p>
             </div>
         </div>
-        <a href="{{ route('products.index') }}" class="inline-flex items-center gap-1 text-sm font-bold text-[#9acd32] hover:text-[#7ca81d] transition-colors whitespace-nowrap">
-            See all <span class="material-symbols-rounded text-[16px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+        <a href="{{ route('products.index') }}" class="inline-flex items-center gap-1 text-[11px] sm:text-sm font-bold text-[#9acd32] hover:text-[#7ca81d] transition-colors whitespace-nowrap">
+            See all <span class="material-symbols-rounded text-[14px] sm:text-[16px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
         </a>
     </div>
-    <div x-data="autoScroll()" x-init="init()" class="flex gap-3.5 overflow-x-auto no-scrollbar pb-2">
+    <div x-data="autoScroll()" x-init="init()" class="flex gap-2.5 sm:gap-3.5 overflow-x-auto no-scrollbar pb-2">
         @foreach($deals as $p)
-        <a href="{{ route('products.show', $p->slug) }}" class="group shrink-0 w-[10.5rem] sm:w-48 rounded-2xl bg-white border border-[#e8eae8] overflow-hidden hover:shadow-[0_16px_40px_-12px_rgba(0,0,0,0.14)] hover:-translate-y-1 transition-all duration-300">
+        <a href="{{ route('products.show', $p->slug) }}" class="group shrink-0 w-[8.75rem] sm:w-48 rounded-xl sm:rounded-2xl bg-white border border-[#e8eae8] overflow-hidden hover:shadow-[0_16px_40px_-12px_rgba(0,0,0,0.14)] hover:-translate-y-1 transition-all duration-300">
             <div class="relative aspect-square bg-[#f5f6f5] overflow-hidden">
                 <img src="{{ $p->images->first()->url }}" alt="{{ $p->name }}" loading="lazy"
                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                     onerror="this.parentElement.innerHTML = '<div class=\'w-full h-full grid place-items-center text-[#b8bdb9]\'><span class=\'material-symbols-rounded text-4xl\'>image</span></div>'">
-                <span class="absolute top-2.5 left-2.5 rounded-lg bg-[#dc2626] text-white text-[11px] font-bold px-2 py-0.5 shadow-sm">-{{ $dealPct($p) }}%</span>
-                <span class="absolute top-2.5 right-2.5 grid place-items-center w-7 h-7 rounded-lg bg-white/95 shadow-sm text-[#7ca81d] opacity-0 group-hover:opacity-100 transition-opacity">
-                    <span class="material-symbols-rounded text-[14px]" style="font-variation-settings:'FILL' 1;">visibility</span>
+                     onerror="this.parentElement.innerHTML = '<div class=\'w-full h-full grid place-items-center text-[#b8bdb9]\'><span class=\'material-symbols-rounded text-3xl sm:text-4xl\'>image</span></div>'">
+                <span class="absolute top-2 left-2 rounded-md sm:rounded-lg bg-[#dc2626] text-white text-[9px] sm:text-[11px] font-bold px-1.5 sm:px-2 py-0.5 shadow-sm">-{{ $dealPct($p) }}%</span>
+                <span class="absolute top-2 right-2 grid place-items-center w-6 h-6 sm:w-7 sm:h-7 rounded-md sm:rounded-lg bg-white/95 shadow-sm text-[#7ca81d] opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span class="material-symbols-rounded text-[12px] sm:text-[14px]" style="font-variation-settings:'FILL' 1;">visibility</span>
                 </span>
             </div>
-            <div class="p-3">
-                <p class="text-[12px] font-bold text-[#2e332f] line-clamp-1">{{ $p->name }}</p>
-                <p class="text-[10px] text-[#9aa19c] truncate mt-0.5">{{ $p->store->name ?? '' }}</p>
-                <div class="flex items-baseline gap-1.5 mt-1.5">
-                    <span class="text-[15px] font-extrabold text-[#659316] tnum">{{ number_format($p->price) }} <span class="text-[10px]">F</span></span>
-                    <span class="text-[11px] text-[#f97316] line-through tnum font-medium">{{ number_format($p->old_price) }}</span>
+            <div class="p-2.5 sm:p-3">
+                <p class="text-[10.5px] sm:text-[12px] font-bold text-[#2e332f] line-clamp-1">{{ $p->name }}</p>
+                <p class="text-[8.5px] sm:text-[10px] text-[#9aa19c] truncate mt-0.5">{{ $p->store->name ?? '' }}</p>
+                <div class="flex items-baseline gap-1 mt-1">
+                    <span class="text-[12px] sm:text-[15px] font-extrabold text-[#659316] tnum">{{ number_format($p->price) }} <span class="text-[8.5px] sm:text-[10px]">F</span></span>
+                    <span class="text-[9.5px] sm:text-[11px] text-[#f97316] line-through tnum font-medium">{{ number_format($p->old_price) }}</span>
                 </div>
             </div>
         </a>
