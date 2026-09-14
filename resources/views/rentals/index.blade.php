@@ -18,8 +18,8 @@
     {{-- ================================================================
          1. HERO HEADER BANNER (Strict Izifai Theme)
     ================================================================ --}}
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-4 sm:mt-6">
-        <div class="relative overflow-hidden rounded-3xl bg-[#1c201e] border border-black/5 shadow-[0_14px_44px_-16px_rgba(0,0,0,0.18)] p-6 sm:p-10 lg:p-12 text-white">
+    <section class="max-w-7xl mx-auto px-2 sm:px-6 mt-4 sm:mt-6">
+        <div class="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-[#1c201e] border border-black/5 shadow-[0_14px_44px_-16px_rgba(0,0,0,0.18)] p-5 sm:p-10 lg:p-12 text-white">
             {{-- Ambient glow orbs --}}
             <div class="absolute -top-24 -right-16 w-80 h-80 rounded-full bg-[#9acd32]/15 blur-3xl pointer-events-none"></div>
             <div class="absolute -bottom-28 -left-16 w-72 h-72 rounded-full bg-[#7ca81d]/15 blur-3xl pointer-events-none"></div>
@@ -42,7 +42,7 @@
                 </p>
 
                 {{-- Highlights / Quick Stats --}}
-                <div class="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px] sm:text-xs font-semibold text-white/80">
+                <div class="mt-5 sm:mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-[10.5px] sm:text-xs font-semibold text-white/80">
                     <span class="inline-flex items-center gap-1.5">
                         <i class="fa-solid fa-boxes-stacked text-[14px] text-[#9acd32]" style=""></i>
                         <strong class="text-white">{{ number_format($rentals->total()) }}</strong> items available
@@ -134,11 +134,11 @@
          2. CATEGORIES HORIZONTAL BAR (Exact Products Aesthetic)
     ================================================================ --}}
     @if($categories->isNotEmpty())
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-6">
+    <section class="max-w-7xl mx-auto px-2.5 sm:px-6 mt-5 sm:mt-6">
         <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
             {{-- All Categories chip --}}
             <a href="{{ route('rentals.index', request()->except(['category', 'page'])) }}"
-               class="shrink-0 px-4 py-2 rounded-xl text-[12px] font-bold transition-all duration-200 flex items-center gap-1.5 {{ !request('category') ? '-skew-x-6 bg-[#1c201e] text-[#9acd32] shadow-sm' : 'bg-white border border-[#e8eae8] text-[#3f453f] hover:border-[#9acd32]/50 hover:text-[#7ca81d]' }}">
+               class="shrink-0 px-3.5 sm:px-4 py-2 rounded-xl text-[11.5px] sm:text-[12px] font-bold transition-all duration-200 flex items-center gap-1.5 {{ !request('category') ? '-skew-x-6 bg-[#1c201e] text-[#9acd32] shadow-sm' : 'bg-white border border-[#e8eae8] text-[#3f453f] hover:border-[#9acd32]/50 hover:text-[#7ca81d]' }}">
                 <span class="{{ !request('category') ? 'skew-x-6' : '' }} flex items-center gap-1.5">
                     <i class="fa-solid fa-table-cells text-[16px]" style=""></i>
                     All Gear
@@ -148,7 +148,7 @@
             @foreach($categories as $cat)
                 @php $isActive = request('category') === $cat->slug; @endphp
                 <a href="{{ route('rentals.index', array_merge(request()->except(['category', 'page']), ['category' => $cat->slug])) }}"
-                   class="shrink-0 px-4 py-2 rounded-xl text-[12px] font-bold transition-all duration-200 flex items-center gap-1.5 {{ $isActive ? '-skew-x-6 bg-[#9acd32] text-[#1c201e] shadow-sm shadow-[#9acd32]/30' : 'bg-white border border-[#e8eae8] text-[#3f453f] hover:border-[#9acd32]/50 hover:text-[#7ca81d]' }}">
+                   class="shrink-0 px-3.5 sm:px-4 py-2 rounded-xl text-[11.5px] sm:text-[12px] font-bold transition-all duration-200 flex items-center gap-1.5 {{ $isActive ? '-skew-x-6 bg-[#9acd32] text-[#1c201e] shadow-sm shadow-[#9acd32]/30' : 'bg-white border border-[#e8eae8] text-[#3f453f] hover:border-[#9acd32]/50 hover:text-[#7ca81d]' }}">
                     <span class="{{ $isActive ? 'skew-x-6' : '' }} flex items-center gap-1.5">
                         {{ $cat->name }}
                         @if(($cat->rental_items_count ?? 0) > 0)
@@ -164,8 +164,8 @@
     {{-- ================================================================
          3. TOOLBAR / FILTER & SORT STRIP (Identical to Products)
     ================================================================ --}}
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-6">
-        <div class="bg-white rounded-2xl border border-[#e8eae8] p-3 sm:p-4 flex flex-wrap items-center justify-between gap-3 shadow-sm">
+    <section class="max-w-7xl mx-auto px-2.5 sm:px-6 mt-5 sm:mt-6">
+        <div class="bg-white rounded-2xl border border-[#e8eae8] p-2.5 sm:p-4 flex flex-wrap items-center justify-between gap-2.5 sm:gap-3 shadow-sm">
             {{-- Left: Filter button & quick indicators --}}
             <div class="flex items-center gap-2.5 flex-wrap">
                 {{-- Mobile Filter Trigger --}}
@@ -248,9 +248,9 @@
     {{-- ================================================================
          4. MAIN RENTALS GRID (Wall-to-Wall 4 Cards on PC View, 2 on Mobile)
     ================================================================ --}}
-    <section id="rentals-section" class="max-w-7xl mx-auto px-4 sm:px-6 mt-6">
+    <section id="rentals-section" class="max-w-7xl mx-auto px-1 sm:px-6 mt-3 sm:mt-6">
         @if($rentals->count() > 0)
-            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 items-stretch auto-rows-fr gap-3.5 sm:gap-4.5 w-full">
+            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 items-stretch auto-rows-fr gap-2.5 sm:gap-4 w-full">
                 @foreach($rentals as $item)
                     @include('rentals.partials.rental-card', ['item' => $item])
                 @endforeach
@@ -301,22 +301,22 @@
          5. FEATURED / HIGH DEMAND RENTALS (Matching Products Trending Strip)
     ================================================================ --}}
     @if(isset($featuredRentals) && $featuredRentals->count() > 0 && !request('q'))
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-14">
-        <div class="flex items-end justify-between gap-3 mb-5">
-            <div class="flex items-center gap-3">
-                <span class="grid place-items-center w-11 h-11 rounded-2xl bg-[#dc2626] text-white shadow-lg shadow-red-500/20 shrink-0">
-                    <i class="fa-solid fa-fire text-[20px]" style=""></i>
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-10 sm:mt-14">
+        <div class="flex items-end justify-between gap-3 mb-3.5 sm:mb-5">
+            <div class="flex items-center gap-2.5 sm:gap-3">
+                <span class="grid place-items-center w-8 h-8 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-[#dc2626] text-white shadow-md sm:shadow-lg shadow-red-500/20 shrink-0">
+                    <i class="fa-solid fa-fire text-[16px] sm:text-[20px]" style=""></i>
                 </span>
                 <div>
-                    <h2 class="text-lg sm:text-xl font-extrabold tracking-tight text-[#1c201e]">High-Demand Gear</h2>
-                    <p class="text-[12px] text-[#6b716c] -mt-0.5">Most booked equipment and tools this week</p>
+                    <h2 class="text-sm sm:text-xl font-extrabold tracking-tight text-[#1c201e]">High-Demand Gear</h2>
+                    <p class="text-[10px] sm:text-[12px] text-[#6b716c] -mt-0.5">Most booked equipment and tools this week</p>
                 </div>
             </div>
         </div>
 
-        <div class="flex gap-3.5 overflow-x-auto no-scrollbar pb-2">
+        <div class="flex gap-2 sm:gap-3.5 overflow-x-auto no-scrollbar pb-2">
             @foreach($featuredRentals as $item)
-                <a href="{{ route('rentals.show', $item->slug) }}" class="group shrink-0 w-[10.5rem] sm:w-48 rounded-2xl bg-white border border-[#e8eae8] overflow-hidden hover:shadow-[0_16px_40px_-12px_rgba(0,0,0,0.14)] hover:-translate-y-1 transition-all duration-300">
+                <a href="{{ route('rentals.show', $item->slug) }}" class="group shrink-0 w-[8.75rem] sm:w-48 rounded-xl sm:rounded-2xl bg-white border border-[#e8eae8] overflow-hidden hover:shadow-[0_16px_40px_-12px_rgba(0,0,0,0.14)] hover:-translate-y-1 transition-all duration-300">
                     <div class="relative aspect-square bg-[#f5f6f5] overflow-hidden">
                         @if($item->main_image_url)
                             <img src="{{ $item->main_image_url }}" alt="{{ $item->name }}" loading="lazy"
@@ -327,7 +327,7 @@
                             </div>
                         @endif
 
-                        <span class="absolute top-2.5 left-2.5 rounded-lg bg-[#1c201e] text-[#9acd32] text-[10px] font-extrabold px-2 py-0.5 shadow-sm uppercase">
+                        <span class="absolute top-2 sm:top-2.5 left-2 sm:left-2.5 rounded-md sm:rounded-lg bg-[#1c201e] text-[#9acd32] text-[9px] sm:text-[10px] font-extrabold px-1.5 sm:px-2 py-0.5 shadow-sm uppercase">
                             /{{ $item->billing_unit ?? 'day' }}
                         </span>
                     </div>
@@ -348,7 +348,7 @@
          6. TOP VERIFIED FLEETS / STORES (Matching Products Top Stores Strip)
     ================================================================ --}}
     @if(isset($topStores) && $topStores->isNotEmpty())
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-14">
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-10 sm:mt-14">
         <div class="flex items-end justify-between gap-3 mb-5">
             <div>
                 <h2 class="text-lg sm:text-xl font-extrabold tracking-tight text-[#1c201e]">Top Verified Rental Fleets</h2>
