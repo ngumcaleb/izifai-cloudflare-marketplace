@@ -49,7 +49,11 @@
                     </div>
                     <div class="w-20 text-center shrink-0">
                         <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider {{ $service->status === 'active' ? 'bg-primary/5 text-primary' : 'bg-red-50 text-red-600' }}">
-                            <span class="material-symbols-outlined text-[10px]">{{ $service->status === 'active' ? 'check_circle' : 'cancel' }}</span>
+                            @if($service->status === 'active')
+                                <i class="fa-solid fa-circle-check text-[10px]"></i>
+                            @else
+                                <i class="fa-solid fa-circle-xmark text-[10px]"></i>
+                            @endif
                             {{ $service->status === 'active' ? 'Active' : 'Inactive' }}
                         </span>
                     </div>

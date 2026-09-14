@@ -26,7 +26,7 @@
         <div class="relative z-10 max-w-2xl">
             <span class="inline-flex items-center gap-1.5 px-3 py-1 -skew-x-6 rounded-md bg-gradient-to-r from-[#9acd32] to-[#86b92c] text-[#1c201e] text-[10px] sm:text-[11px] font-extrabold uppercase tracking-[0.14em] shadow-[0_6px_18px_-6px_rgba(154,205,50,0.55)]">
                 <span class="skew-x-6 inline-flex items-center gap-1">
-                    <span class="material-symbols-rounded text-[13px]" style="font-variation-settings:'FILL' 1;">favorite</span>
+                    <i class="fa-solid fa-heart text-[13px]"></i>
                     Wishlist
                 </span>
             </span>
@@ -66,7 +66,7 @@
         {{-- Empty state --}}
         <div class="text-center py-16 sm:py-24 bg-white rounded-2xl sm:rounded-3xl border border-[#e8eae8] p-8 max-w-lg mx-auto shadow-sm">
             <div class="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-4 rounded-full bg-[#f2f9df] text-[#7ca81d] grid place-items-center">
-                <span class="material-symbols-rounded text-3xl sm:text-4xl" style="font-variation-settings:'FILL' 0;">favorite_border</span>
+                <i class="fa-regular fa-heart text-3xl sm:text-4xl"></i>
             </div>
             <h2 class="text-base sm:text-xl font-bold text-[#1c201e]">No saved items yet</h2>
             <p class="text-xs sm:text-sm text-[#6b716c] mt-1.5 leading-relaxed">
@@ -75,7 +75,7 @@
             <div class="mt-6">
                 <a href="{{ route('products.index') }}" class="ecom-btn h-11 px-7 text-xs sm:text-sm bg-[#9acd32] text-[#1c201e] font-bold shadow-lg shadow-[#9acd32]/20 hover:bg-[#86b92c]">
                     Explore Products
-                    <span class="material-symbols-rounded text-[16px]" style="font-variation-settings:'FILL' 1;">arrow_forward</span>
+                    <i class="fa-solid fa-arrow-right text-[16px]"></i>
                 </a>
             </div>
         </div>

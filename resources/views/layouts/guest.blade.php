@@ -1197,15 +1197,15 @@
         function copyToClipboard(text, btn, successMsg, resetDelay) {
             const label = btn.querySelector('.copy-label');
             const icon = btn.querySelector('.copy-icon');
-            const origLabel = label ? label.textContent : icon ? icon.textContent : '';
-            const origIcon = icon ? icon.textContent : '';
+            let origIconClass = icon ? icon.className : '';
+            const origLabel = label ? label.textContent : '';
 
             function done() {
-                if (icon) icon.textContent = 'check';
+                if (icon) icon.className = origIconClass.replace(/(fa-(?:solid|regular|brands))\s+fa-[-a-z]+/, '$1 fa-check');
                 if (label) label.textContent = successMsg || 'Copied!';
                 setTimeout(() => {
+                    if (icon) icon.className = origIconClass;
                     if (label) label.textContent = origLabel;
-                    if (icon) icon.textContent = origIcon;
                 }, resetDelay || 2000);
             }
 

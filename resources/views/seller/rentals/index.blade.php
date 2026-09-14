@@ -94,7 +94,13 @@
                         <div class="w-20 text-center shrink-0">
                             <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider
                                 {{ $rental->status === 'published' ? 'bg-primary/5 text-primary' : ($rental->status === 'draft' ? 'bg-amber-50 text-amber-600' : 'bg-red-50 text-red-600') }}">
-                                <span class="material-symbols-outlined text-[10px]">{{ $rental->status === 'published' ? 'check_circle' : ($rental->status === 'draft' ? 'draft' : 'archive') }}</span>
+                                @if($rental->status === 'published')
+                                    <i class="fa-solid fa-circle-check text-[10px]"></i>
+                                @elseif($rental->status === 'draft')
+                                    <i class="fa-solid fa-pen text-[10px]"></i>
+                                @else
+                                    <i class="fa-solid fa-box-archive text-[10px]"></i>
+                                @endif
                                 {{ ucfirst($rental->status) }}
                             </span>
                         </div>

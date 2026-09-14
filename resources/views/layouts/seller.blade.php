@@ -13,7 +13,6 @@
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 
     <script>
@@ -80,7 +79,6 @@
     <style>
         html { scroll-behavior: smooth; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fafcfa; }
-        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
         [x-cloak] { display: none !important; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -420,14 +418,14 @@
             const label = btn.querySelector('.copy-label') || btn.querySelector('span:last-child');
             const icon = btn.querySelector('.copy-icon') || btn.querySelector('span:first-child');
             const origLabel = label ? label.textContent : '';
-            const origIcon = icon ? icon.textContent : '';
+            const origIconClass = icon ? icon.className : '';
 
             function done() {
+                if (icon) icon.className = origIconClass.replace(/(fa-(?:solid|regular|brands))\s+fa-[-a-z]+/, '$1 fa-check');
                 if (label) label.textContent = successMsg || 'Copied!';
-                if (icon) icon.textContent = 'check';
                 setTimeout(() => {
+                    if (icon) icon.className = origIconClass;
                     if (label) label.textContent = origLabel;
-                    if (icon) icon.textContent = origIcon;
                 }, resetDelay || 2000);
             }
 
