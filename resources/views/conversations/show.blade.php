@@ -16,7 +16,7 @@ $whatsappNumber = $store?->whatsapp_number;
 <div class="fixed inset-x-0 top-[56px] sm:top-[160px] bottom-[60px] sm:bottom-0 bg-[#f5f6f5]">
     <div class="h-full w-full max-w-3xl mx-auto sm:py-5">
         <div class="h-full flex flex-col bg-white sm:border sm:border-[#e8eae8] sm:rounded-2xl sm:shadow-sm sm:overflow-hidden"
-             x-data="chatWindow({{ $conversation->id }}, '{{ csrf_token() }}', {{ $userId }}, '{{ ($store->logo_url ?? '') }}', '{{ $otherUser->name }}')"
+             x-data="chatWindow({{ $conversation->id }}, '{{ csrf_token() }}', {{ $userId }}, '{{ ($store?->logo_url ?: $otherUser->profile_photo_url) }}', '{{ $otherUser->name }}', '{{ (auth()->user()->store?->logo_url ?: auth()->user()->profile_photo_url) }}', '{{ auth()->user()->name }}')"
              x-init="init()">
 
     {{-- HEADER --}}
@@ -178,6 +178,17 @@ $whatsappNumber = $store?->whatsapp_number;
                             </template>
                         </div>
                     </div>
+                    {{-- Avatar for sent messages --}}
+                    <template x-if="msg.sender_id === currentUserId">
+                        <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-full overflow-hidden bg-[#f2f9df] flex items-center justify-center shadow-sm ring-2 ring-white shrink-0 mb-1">
+                            <template x-if="myAvatar">
+                                <img :src="myAvatar" alt="" class="w-full h-full object-cover">
+                            </template>
+                            <template x-if="!myAvatar">
+                                <span class="text-[9px] sm:text-[10px] font-extrabold text-[#659316]" x-text="myName.charAt(0)"></span>
+                            </template>
+                        </div>
+                    </template>
                 </div>
             </div>
         </template>
@@ -208,8 +219,8 @@ $whatsappNumber = $store?->whatsapp_number;
               :class="focused ? 'border-[#9acd32]/70 ring-4 ring-[#9acd32]/15 shadow-[0_6px_20px_rgba(154,205,50,0.18)]' : 'border-[#e8eae8]'">
             <textarea x-model="newMessage"
                       @keydown.enter.prevent="if(!$event.shiftKey) { sendMessage() }"
-                      @focus="focused = true"
-                      @blur="focused = false"
+                      @focus="focused = true; lockScroll()"
+                      @blur="focused = false; unlockScroll()"
                       placeholder="Write a message..."
                       rows="1"
                       class="composer-input flex-1 bg-transparent resize-none focus:outline-none text-[13px] sm:text-[14px] text-[#1c201e] leading-relaxed placeholder:text-[#b0b7b3] min-h-[26px] max-h-[120px] py-1"
@@ -276,13 +287,15 @@ $whatsappNumber = $store?->whatsapp_number;
     }
 </style>
 <script>
-    function chatWindow(conversationId, csrfToken, currentUserId, otherAvatar, otherName) {
+    function chatWindow(conversationId, csrfToken, currentUserId, otherAvatar, otherName, myAvatar, myName) {
         return {
             conversationId,
             csrfToken,
             currentUserId,
             otherAvatar,
             otherName,
+            myAvatar,
+            myName,
             messages: [],
             newMessage: '',
             loading: true,
@@ -299,6 +312,24 @@ $whatsappNumber = $store?->whatsapp_number;
                         this.$nextTick(() => this.scrollToBottom());
                     }
                 });
+            },
+
+            lockScroll() {
+                const docEl = document.documentElement;
+                const body = document.body;
+                docEl.style.overflow = 'hidden';
+                body.style.overflow = 'hidden';
+                docEl.style.overscrollBehavior = 'none';
+                body.style.overscrollBehavior = 'none';
+            },
+
+            unlockScroll() {
+                const docEl = document.documentElement;
+                const body = document.body;
+                docEl.style.overflow = '';
+                body.style.overflow = '';
+                docEl.style.overscrollBehavior = '';
+                body.style.overscrollBehavior = '';
             },
 
             numFormat(n) {
