@@ -127,10 +127,10 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 sm:
                             .finally(() => { this.followBusy = false; });
                         }
                     }">
-                        <div class="flex flex-wrap items-center justify-start gap-2">
+                        <div class="grid grid-cols-3 gap-2 sm:flex sm:flex-wrap sm:items-center sm:justify-start">
                             <button @click="storeSearch = !storeSearch"
-                                    class="inline-flex items-center justify-center gap-2 h-11 px-4 sm:px-5 rounded-xl text-[12px] sm:text-[13px] font-bold border border-[#1c201e]/15 bg-white text-[#3f453f] hover:border-[#1c201e] hover:text-[#1c201e] active:scale-[0.98] transition-all duration-200">
-                                <i class="fa-solid fa-magnifying-glass text-[14px] sm:text-[15px]" style=""></i>
+                                    class="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-10 sm:h-11 px-0 sm:px-5 rounded-xl text-[11px] sm:text-[13px] font-bold border border-[#1c201e]/15 bg-white text-[#3f453f] hover:border-[#1c201e] hover:text-[#1c201e] active:scale-[0.98] transition-all duration-200">
+                                <i class="fa-solid fa-magnifying-glass text-[13px] sm:text-[15px]" style=""></i>
                                 <span>Search</span>
                                 @if(request('search'))
                                     <span class="w-1.5 h-1.5 rounded-full bg-[#659316] animate-pulse"></span>
@@ -138,36 +138,36 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 sm:
                             </button>
                             @if($store->whatsapp_number)
                                 <a href="https://wa.me/{{ wa_url($store->whatsapp_number) }}?text={{ urlencode('Hi ' . $store->name . ', I saw your store on Izifai!') }}" target="_blank"
-                                   class="inline-flex items-center justify-center gap-2 h-11 px-5 sm:px-6 rounded-xl text-[12px] sm:text-[13px] font-bold text-white bg-[#25D366] hover:bg-[#128C7E] active:scale-[0.98] transition-all duration-200 shadow-sm">
+                                   class="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 sm:gap-2 h-10 sm:h-11 px-0 sm:px-6 rounded-xl text-[11px] sm:text-[13px] font-bold text-white bg-[#25D366] hover:bg-[#128C7E] active:scale-[0.98] transition-all duration-200 shadow-sm">
                                     {!! $whatsappIcon !!}
                                     WhatsApp
                                 </a>
                             @endif
                             @auth
                                 @if(auth()->id() !== $store->user_id)
-                                <form action="{{ route('conversations.store') }}" method="POST" class="inline">
+                                <form action="{{ route('conversations.store') }}" method="POST" class="w-full sm:inline">
                                     @csrf
                                     <input type="hidden" name="seller_id" value="{{ $store->user_id }}">
                                     <input type="hidden" name="target_type" value="store">
                                     <input type="hidden" name="target_id" value="{{ $store->id }}">
                                     <input type="hidden" name="message" value="Hi, I am interested in {{ $store->name }} on Izifai.">
                                     <button type="submit"
-                                            class="inline-flex items-center justify-center gap-2 h-11 px-5 sm:px-6 rounded-xl text-[12px] sm:text-[13px] font-bold text-white bg-[#1c201e] hover:bg-[#2a2f2b] active:scale-[0.98] transition-all duration-200">
-                                        <i class="fa-regular fa-comment text-[15px] sm:text-[16px]" style=""></i>
+                                            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-10 sm:h-11 px-0 sm:px-6 rounded-xl text-[11px] sm:text-[13px] font-bold text-white bg-[#1c201e] hover:bg-[#2a2f2b] active:scale-[0.98] transition-all duration-200">
+                                        <i class="fa-regular fa-comment text-[14px] sm:text-[16px]" style=""></i>
                                         Message
                                     </button>
                                 </form>
                                 @endif
                             @endauth
                             <button onclick="copyToClipboard(window.location.href, this, 'Done!')"
-                                    class="inline-flex items-center justify-center gap-2 h-11 px-4 sm:px-5 rounded-xl text-[12px] sm:text-[13px] font-bold border border-[#e8eae8] bg-white text-[#3f453f] hover:border-[#1c201e] active:scale-[0.98] transition-all duration-200">
-                                <i class="fa-solid fa-share-nodes text-[15px] sm:text-[16px] copy-icon" style=""></i>
+                                    class="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-10 sm:h-11 px-0 sm:px-5 rounded-xl text-[11px] sm:text-[13px] font-bold border border-[#e8eae8] bg-white text-[#3f453f] hover:border-[#1c201e] active:scale-[0.98] transition-all duration-200">
+                                <i class="fa-solid fa-share-nodes text-[14px] sm:text-[16px] copy-icon" style=""></i>
                                 <span class="copy-label">Share</span>
                             </button>
                             @auth
                                 @if(auth()->id() !== $store->user_id)
                                 <button @click="toggleFollow()"
-                                        class="inline-flex items-center justify-center gap-2 h-11 px-4 sm:px-5 rounded-xl text-[12px] sm:text-[13px] font-bold transition-all duration-200 active:scale-[0.98]"
+                                        class="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-10 sm:h-11 px-0 sm:px-5 rounded-xl text-[11px] sm:text-[13px] font-bold transition-all duration-200 active:scale-[0.98]"
                                         :class="following ? 'bg-[#1c201e] text-white shadow-sm' : 'bg-[#f2f9df] text-[#659316] border border-[#9acd32]/30 hover:border-[#7ca81d]'">
                                     <i class="fa-solid fa-heart text-[14px]" :class="following ? 'text-[#9acd32]' : 'text-[#659316]'" style=""></i>
                                     <span x-text="following ? 'Following' : 'Follow'"></span>
@@ -175,7 +175,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 sm:
                                 @endif
                             @else
                                 <a href="{{ route('login') }}"
-                                   class="inline-flex items-center justify-center gap-2 h-11 px-4 sm:px-5 rounded-xl text-[12px] sm:text-[13px] font-bold border border-[#9acd32]/30 bg-[#f2f9df] text-[#659316] hover:border-[#7ca81d] transition-all duration-200">
+                                   class="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-10 sm:h-11 px-0 sm:px-5 rounded-xl text-[11px] sm:text-[13px] font-bold border border-[#9acd32]/30 bg-[#f2f9df] text-[#659316] hover:border-[#7ca81d] transition-all duration-200">
                                     <i class="fa-solid fa-heart text-[14px]" style=""></i>
                                     <span>Follow</span>
                                 </a>
