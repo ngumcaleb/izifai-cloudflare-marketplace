@@ -268,21 +268,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 sm:
                     <p class="text-[10px] font-extrabold uppercase tracking-wider text-[#9aa19c] mb-2">Follow us</p>
                     <div class="flex flex-wrap gap-2">
                         @foreach($socialLinks as $social)
-                            @php $url = $social['url'] ?? ''; $platform = $social['platform'] ?? ''; if (!$url) continue; @endphp
-                            <a href="{{ $url }}" target="_blank"
-                               class="inline-flex items-center gap-2 px-3.5 h-10 bg-[#f5f6f5] text-[#3f453f] rounded-xl text-[11px] font-bold hover:bg-[#f2f9df] hover:text-[#659316] hover:border-[#9acd32]/40 transition-all border border-[#e8eae8]">
-                                <i class="{{ match($platform) {
-                                        'facebook' => 'fa-brands fa-facebook',
-                                        'instagram' => 'fa-brands fa-instagram',
-                                        'twitter' => 'fa-brands fa-x-twitter',
-                                        'linkedin' => 'fa-brands fa-linkedin-in',
-                                        'tiktok' => 'fa-brands fa-tiktok',
-                                        'youtube' => 'fa-brands fa-youtube',
-                                        'whatsapp_group' => 'fa-brands fa-whatsapp',
-                                        default => 'fa-solid fa-globe',
-                                    } }} text-[14px]" style=""></i>
-                                {{ ucfirst(str_replace('_', ' ', $platform)) }}
-                            </a>
+                            @include('partials.social-link-badge', ['social' => $social])
                         @endforeach
                     </div>
                 </div>
@@ -290,6 +276,29 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 sm:
             </div>
         </div>
     </div>
+    @endif
+
+    {{-- ================================================================
+         ABOUT THIS STORE (full story, mobile + desktop)
+    ================================================================ --}}
+    @php $aboutText = trim($store->about ?? '') ?: trim($store->description ?? ''); @endphp
+    @if($aboutText)
+    <section class="max-w-7xl mx-auto px-2 sm:px-6 mt-5 sm:mt-6">
+        <div class="rounded-2xl sm:rounded-3xl bg-white border border-[#e8eae8] shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
+            <div class="flex items-center gap-2.5 sm:gap-3 px-4 sm:px-6 pt-4 sm:pt-5 pb-1">
+                <span class="grid place-items-center w-8 h-8 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-[#f2f9df] text-[#659316] shadow-sm shrink-0">
+                    <i class="fa-solid fa-store text-[15px] sm:text-[18px]" style=""></i>
+                </span>
+                <div>
+                    <h2 class="text-sm sm:text-lg font-extrabold tracking-tight text-[#1c201e]">About {{ $store->name }}</h2>
+                    <p class="text-[10px] sm:text-[11px] text-[#6b716c] -mt-0.5">The story behind the store</p>
+                </div>
+            </div>
+            <div class="px-4 sm:px-6 pb-5 sm:pb-6 pt-2">
+                <div class="text-xs sm:text-sm text-[#3f453f] leading-relaxed sm:leading-relaxed whitespace-pre-line break-words">{{ $aboutText }}</div>
+            </div>
+        </div>
+    </section>
     @endif
 
     {{-- ================================================================
@@ -1045,21 +1054,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 sm:
                 <p class="text-[10px] font-extrabold uppercase tracking-wider text-[#9aa19c] mb-2">Follow us</p>
                 <div class="flex flex-wrap gap-2">
                     @foreach($socialLinks as $social)
-                        @php $url = $social['url'] ?? ''; $platform = $social['platform'] ?? ''; if (!$url) continue; @endphp
-                        <a href="{{ $url }}" target="_blank"
-                           class="inline-flex items-center gap-2 px-3.5 h-10 bg-[#f5f6f5] text-[#3f453f] rounded-xl text-[11px] font-bold hover:bg-[#f2f9df] hover:text-[#659316] hover:border-[#9acd32]/40 transition-all border border-[#e8eae8]">
-                            <i class="{{ match($platform) {
-                                    'facebook' => 'fa-brands fa-facebook',
-                                    'instagram' => 'fa-brands fa-instagram',
-                                    'twitter' => 'fa-brands fa-x-twitter',
-                                    'linkedin' => 'fa-brands fa-linkedin-in',
-                                    'tiktok' => 'fa-brands fa-tiktok',
-                                    'youtube' => 'fa-brands fa-youtube',
-                                    'whatsapp_group' => 'fa-brands fa-whatsapp',
-                                    default => 'fa-solid fa-globe',
-                                } }} text-[14px]" style=""></i>
-                            {{ ucfirst(str_replace('_', ' ', $platform)) }}
-                        </a>
+                        @include('partials.social-link-badge', ['social' => $social])
                     @endforeach
                 </div>
             </div>

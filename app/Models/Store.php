@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 class Store extends Model
 {
     protected $fillable = [
-        'user_id', 'name', 'slug', 'description', 'logo', 'banner',
+        'user_id', 'name', 'slug', 'description', 'about', 'logo', 'banner',
         'location', 'whatsapp_number', 'business_email', 'open_hours',
         'social_links', 'is_verified', 'badge', 'status',
         'verification_level', 'trust_score', 'completion_rate', 'follower_count',

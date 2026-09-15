@@ -99,6 +99,7 @@ class StoreController extends Controller
                 'name' => $store->name,
                 'slug' => $store->slug,
                 'description' => $store->description,
+                'about' => $store->about,
                 'logo_url' => $store->logo_url,
                 'banner_url' => $store->banner_url,
                 'location' => $store->location,
@@ -140,6 +141,7 @@ class StoreController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'about' => 'nullable|string',
             'location' => 'required|string|max:255',
             'whatsapp_number' => 'nullable|string|max:20',
             'business_email' => 'nullable|email|max:255',
@@ -178,6 +180,7 @@ class StoreController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'about' => 'nullable|string',
             'location' => 'nullable|string|max:255',
             'whatsapp_number' => 'nullable|string|max:20',
             'business_email' => 'nullable|email|max:255',

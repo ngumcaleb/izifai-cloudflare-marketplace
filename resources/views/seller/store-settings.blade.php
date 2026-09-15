@@ -107,9 +107,16 @@
                                class="w-full h-10 bg-gray-50 border border-gray-200 rounded-xl px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50">
                     </div>
                     <div class="col-span-full space-y-1.5">
-                        <label class="text-xs font-semibold text-gray-500 ml-1">Shop Description</label>
-                        <textarea name="description" rows="4"
+                        <label class="text-xs font-semibold text-gray-500 ml-1">Shop Description <span class="font-normal text-gray-400">(short tagline shown under your store name)</span></label>
+                        <textarea name="description" rows="3"
                                   class="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 resize-none leading-relaxed">{{ $store->description }}</textarea>
+                    </div>
+                    <div class="col-span-full space-y-1.5">
+                        <label class="text-xs font-semibold text-gray-500 ml-1">About Your Store</label>
+                        <textarea name="about" rows="6"
+                                  placeholder="Tell customers your story — who you are, what you sell, why they can trust you..."
+                                  class="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 resize-none leading-relaxed">{{ $store->about }}</textarea>
+                        <p class="text-[11px] text-gray-400 ml-1">This appears on your public store page as your full "About" story.</p>
                     </div>
                 </div>
 
@@ -168,7 +175,7 @@
                     <div class="space-y-2.5">
                         <template x-for="(link, i) in socialLinks" :key="i">
                             <div class="flex gap-2 items-start">
-                                <select name="social_platforms[]" x-model="link.platform"
+                                <select name="social_links[i][platform]" x-model="link.platform"
                                         class="w-28 md:w-36 h-10 bg-gray-50 border border-gray-200 rounded-xl px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50">
                                     <option value="">Select</option>
                                     <option value="facebook">Facebook</option>
@@ -179,7 +186,7 @@
                                     <option value="youtube">YouTube</option>
                                     <option value="whatsapp_group">WhatsApp Group</option>
                                 </select>
-                                <input type="url" name="social_urls[]" x-model="link.url" placeholder="https://..."
+                                <input type="url" name="social_links[i][url]" x-model="link.url" placeholder="https://..."
                                        class="min-w-0 flex-1 h-10 bg-gray-50 border border-gray-200 rounded-xl px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50">
                                 <button type="button" @click="removeSocial(i)" x-show="socialLinks.length > 1"
                                         class="p-2 text-red-600 hover:bg-red-50 rounded-xl transition-all shrink-0">

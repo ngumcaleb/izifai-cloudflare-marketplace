@@ -72,14 +72,29 @@ class SellerController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'about' => 'nullable|string',
             'location' => 'required|string|max:255',
             'whatsapp_number' => 'required|string|max:20',
             'business_email' => 'nullable|email|max:255',
+            'social_links' => 'nullable|array',
+            'social_links.*.platform' => 'nullable|string|max:50',
+            'social_links.*.url' => 'nullable|url|max:500',
             'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'banner' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
 
         $data = $request->only(['name', 'description', 'location', 'whatsapp_number', 'business_email']);
+
+        if ($request->has('about')) {
+            $data['about'] = trim($request->about);
+        }
+
+        if ($request->has('social_links')) {
+            $data['social_links'] = array_values(array_filter(
+                $request->social_links,
+                fn($link) => !empty($link['platform']) || !empty($link['url'])
+            ));
+        }
 
         $slug = Str::slug($request->name);
         $original = $slug;
@@ -126,6 +141,7 @@ class SellerController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'about' => 'nullable|string',
             'location' => 'nullable|string|max:255',
             'whatsapp_number' => 'nullable|string|max:20',
             'business_email' => 'nullable|email|max:255',
@@ -138,6 +154,10 @@ class SellerController extends Controller
         ]);
 
         $data = $request->only(['name', 'description', 'location', 'whatsapp_number', 'business_email', 'open_hours']);
+
+        if ($request->has('about')) {
+            $data['about'] = trim($request->about);
+        }
 
         if ($request->has('social_links')) {
             $data['social_links'] = array_values(array_filter($request->social_links, fn($link) => !empty($link['platform']) || !empty($link['url'])));
