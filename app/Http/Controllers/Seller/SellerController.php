@@ -127,6 +127,8 @@ class SellerController extends Controller
             return redirect()->route('stores.index')->with('error', 'You do not have a store yet.');
         }
 
+        $store->load('teamMembers');
+
         return view('seller.store-settings', compact('store'));
     }
 
@@ -149,6 +151,19 @@ class SellerController extends Controller
             'social_links' => 'nullable|array',
             'social_links.*.platform' => 'nullable|string|max:50',
             'social_links.*.url' => 'nullable|url|max:500',
+            'founded_year' => 'nullable|integer|between:1950,2026',
+            'policies' => 'nullable|array',
+            'policies.*.title' => 'nullable|string|max:255',
+            'policies.*.content' => 'nullable|string',
+            'certifications' => 'nullable|array',
+            'certifications.*' => 'nullable|string|max:255',
+            'map_embed' => 'nullable|url|max:500',
+            'team_members' => 'nullable|array',
+            'team_members.*.id' => 'nullable|exists:store_team_members,id',
+            'team_members.*.name' => 'nullable|string|max:255',
+            'team_members.*.role' => 'nullable|string|max:255',
+            'team_members.*.bio' => 'nullable|string',
+            'team_members.*.photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'banner' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
@@ -162,6 +177,35 @@ class SellerController extends Controller
         if ($request->has('social_links')) {
             $data['social_links'] = array_values(array_filter($request->social_links, fn($link) => !empty($link['platform']) || !empty($link['url'])));
         }
+
+        if ($request->has('founded_year') && $request->founded_year !== null && $request->founded_year !== '') {
+            $data['founded_year'] = (int) $request->founded_year;
+        } else {
+            $data['founded_year'] = null;
+        }
+
+        if ($request->has('policies')) {
+            $data['policies'] = array_values(array_filter(
+                $request->policies,
+                fn($p) => !empty($p['title']) || !empty($p['content'])
+            ));
+        }
+
+        if ($request->has('certifications')) {
+            $data['certifications'] = array_values(array_filter(
+                array_map('trim', $request->certifications),
+                fn($c) => $c !== ''
+            ));
+        }
+
+        if ($request->has('map_embed')) {
+            $data['map_embed'] = trim($request->map_embed) ?: null;
+        }
+
+        $teamMembers = $request->has('team_members') ? array_values(array_filter(
+            $request->team_members,
+            fn($m) => !empty($m['name'])
+        )) : [];
 
         if ($request->hasFile('logo')) {
             if ($store->logo) {
@@ -179,7 +223,41 @@ class SellerController extends Controller
 
         $store->update($data);
 
+        $this->syncTeamMembers($store, $teamMembers);
+
         return redirect()->route('seller.store.settings')->with('success', 'Store updated successfully.');
+    }
+
+    private function syncTeamMembers($store, array $teamMembers): void
+    {
+        $existingIds = $store->teamMembers()->pluck('id')->toArray();
+        $incomingIds = [];
+
+        foreach ($teamMembers as $member) {
+            $memberData = [
+                'name' => $member['name'],
+                'role' => $member['role'] ?? null,
+                'bio' => $member['bio'] ?? null,
+            ];
+
+            if (!empty($member['photo']) && $member['photo'] instanceof \Illuminate\Http\UploadedFile) {
+                $memberData['photo'] = $member['photo']->store('store-team', 'r2');
+            }
+
+            if (!empty($member['id']) && in_array($member['id'], $existingIds)) {
+                $existingIds = array_diff($existingIds, [$member['id']]);
+                \App\Models\StoreTeamMember::find($member['id'])->update($memberData);
+            } else {
+                $store->teamMembers()->create(array_merge($memberData, ['store_id' => $store->id]));
+            }
+
+            $incomingIds[] = (int) ($member['id'] ?? 0);
+        }
+
+        $existingIdsToDelete = array_diff($existingIds, $incomingIds);
+        if (!empty($existingIdsToDelete)) {
+            $store->teamMembers()->whereIn('id', $existingIdsToDelete)->delete();
+        }
     }
 
     public function reviews()

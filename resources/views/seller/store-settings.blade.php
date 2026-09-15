@@ -16,10 +16,19 @@
         <form action="{{ route('seller.store.update') }}" method="POST" enctype="multipart/form-data" class="space-y-4 md:space-y-6"
               x-data="{
                 socialLinks: {{ Js::from($store->social_links ?? []) }}.length ? {{ Js::from($store->social_links ?? []) }} : [{ platform: '', url: '' }],
+                policies: {{ Js::from($store->policies ?? []) }}.length ? {{ Js::from($store->policies ?? []) }} : [],
+                certifications: {{ Js::from($store->certifications ?? []) }}.length ? {{ Js::from($store->certifications ?? []) }} : [''],
+                teamMembers: {{ Js::from($store->team_members->map(fn($m) => ['id' => $m->id, 'name' => $m->name, 'role' => $m->role, 'bio' => $m->bio, 'photo' => $m->photo_url])) }},
                 logoPreview: null,
                 bannerPreview: null,
                 addSocial() { this.socialLinks.push({ platform: '', url: '' }) },
                 removeSocial(i) { this.socialLinks.splice(i, 1) },
+                addPolicy() { this.policies.push({ title: '', content: '' }) },
+                removePolicy(i) { this.policies.splice(i, 1) },
+                addCertification() { this.certifications.push('') },
+                removeCertification(i) { this.certifications.splice(i, 1) },
+                addTeamMember() { this.teamMembers.push({ id: null, name: '', role: '', bio: '', photo: null }) },
+                removeTeamMember(i) { this.teamMembers.splice(i, 1) },
                 previewLogo(event) {
                     const file = event.target.files[0];
                     if (file) { const r = new FileReader(); r.onload = e => this.logoPreview = e.target.result; r.readAsDataURL(file); }
@@ -135,6 +144,130 @@
                                       class="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 resize-none leading-relaxed"
                                       placeholder="e.g.&#10;Mon - Fri: 8:00 AM - 6:00 PM&#10;Sat: 9:00 AM - 2:00 PM&#10;Sun: Closed">{{ $store->open_hours }}</textarea>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Founders / Map / Policies / Certifications -->
+                <div class="pt-4 md:pt-5 border-t border-gray-100 space-y-5">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-8 h-8 rounded-xl bg-primary/5 text-primary flex items-center justify-center shrink-0">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                        <h2 class="text-base md:text-lg font-bold text-gray-900">Business Profile &amp; Credibility</h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-semibold text-gray-500 ml-1">Founded Year</label>
+                            <input type="number" name="founded_year" min="1950" max="2026" value="{{ $store->founded_year }}"
+                                   placeholder="e.g. 2018"
+                                   class="w-full h-10 bg-gray-50 border border-gray-200 rounded-xl px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50">
+                            <p class="text-[11px] text-gray-400 ml-1">Shown on your store page to build trust.</p>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-semibold text-gray-500 ml-1">Google Maps Embed URL</label>
+                            <input type="url" name="map_embed" value="{{ $store->map_embed }}"
+                                   placeholder="https://www.google.com/maps?q=...&amp;output=embed"
+                                   class="w-full h-10 bg-gray-50 border border-gray-200 rounded-xl px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50">
+                            <p class="text-[11px] text-gray-400 ml-1">Open Google Maps, search your location, Share &gt; Embed a map, copy the src URL.</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <div class="flex items-center justify-between mb-1">
+                            <label class="text-xs font-semibold text-gray-500 ml-1">Store Policies</label>
+                            <button type="button" @click="addPolicy" class="text-xs font-bold text-primary hover:underline flex items-center gap-1">
+                                <i class="fa-solid fa-plus text-[14px]"></i> Add Policy
+                            </button>
+                        </div>
+                        <p class="text-[11px] text-gray-400 ml-1 mb-3">e.g. Returns &amp; refunds, delivery, warranty, payment methods.</p>
+                        <div class="space-y-2.5">
+                            <template x-for="(policy, i) in policies" :key="i">
+                                <div class="bg-gray-50 rounded-xl p-3 space-y-2">
+                                    <input :name="'policies[' + i + '][title]'" x-model="policy.title" placeholder="Policy title (e.g. Returns policy)"
+                                           class="w-full h-9 bg-white border border-gray-200 rounded-lg px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50">
+                                    <textarea :name="'policies[' + i + '][content]'" x-model="policy.content" rows="2" placeholder="What customers should know..."
+                                              class="w-full bg-white border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 resize-none"></textarea>
+                                    <button type="button" @click="removePolicy(i)"
+                                            class="text-xs font-semibold text-red-600 hover:bg-red-50 rounded-lg px-2 py-1 transition-colors flex items-center gap-1">
+                                        <i class="fa-solid fa-trash text-[12px]"></i> Remove
+                                    </button>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <div class="flex items-center justify-between mb-1">
+                            <label class="text-xs font-semibold text-gray-500 ml-1">Certifications &amp; Awards</label>
+                            <button type="button" @click="addCertification" class="text-xs font-bold text-primary hover:underline flex items-center gap-1">
+                                <i class="fa-solid fa-plus text-[14px]"></i> Add Badge
+                            </button>
+                        </div>
+                        <p class="text-[11px] text-gray-400 ml-1 mb-3">Short titles like "Certified Electronics Dealer 2024".</p>
+                        <div class="space-y-2">
+                            <template x-for="(cert, i) in certifications" :key="i">
+                                <div class="flex gap-2 items-center">
+                                    <input :name="'certifications[' + i + ']'" x-model="certifications[i]" placeholder="e.g. Certified by the Ministry of Commerce"
+                                           class="w-full h-9 bg-gray-50 border border-gray-200 rounded-lg px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50">
+                                    <button type="button" @click="removeCertification(i)"
+                                            class="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-all shrink-0">
+                                        <i class="fa-solid fa-trash text-[14px]"></i>
+                                    </button>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Team Members -->
+                <div class="pt-4 md:pt-5 border-t border-gray-100">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-xl bg-primary/5 text-primary flex items-center justify-center shrink-0">
+                                <i class="fa-solid fa-people-group"></i>
+                            </div>
+                            <h2 class="text-base md:text-lg font-bold text-gray-900">Team Members</h2>
+                        </div>
+                        <button type="button" @click="addTeamMember"
+                                class="text-xs font-bold text-primary hover:underline flex items-center gap-1">
+                            <i class="fa-solid fa-plus text-[16px]"></i>
+                            Add Member
+                        </button>
+                    </div>
+                    <div class="space-y-2.5">
+                        <template x-for="(member, i) in teamMembers" :key="i">
+                            <div class="bg-gray-50 rounded-xl p-3 space-y-2">
+                                <input type="hidden" :name="'team_members[' + i + '][id]'" x-model="member.id">
+                                <div class="flex gap-2 items-center">
+                                    <img x-show="member.photo" :src="member.photo"
+                                         class="w-9 h-9 rounded-lg object-cover bg-gray-200 shrink-0">
+                                    <div x-show="!member.photo"
+                                         class="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                                        <i class="fa-solid fa-user text-[16px]"></i>
+                                    </div>
+                                    <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-2">
+                                        <input :name="'team_members[' + i + '][name]'" x-model="member.name" required placeholder="Full name"
+                                               class="w-full h-9 bg-white border border-gray-200 rounded-lg px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50">
+                                        <input :name="'team_members[' + i + '][role]'" x-model="member.role" placeholder="Role (e.g. Founder, Head of Sales)"
+                                               class="w-full h-9 bg-white border border-gray-200 rounded-lg px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50">
+                                    </div>
+                                    <button type="button" @click="removeTeamMember(i)"
+                                            class="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-all shrink-0">
+                                        <i class="fa-solid fa-trash text-[14px]"></i>
+                                    </button>
+                                </div>
+                                <div class="flex gap-2 items-start">
+                                    <textarea :name="'team_members[' + i + '][bio]'" x-model="member.bio" rows="2" placeholder="Short bio — experience, specialty, years in the field"
+                                              class="w-full bg-white border border-gray-200 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 resize-none"></textarea>
+                                    <label class="shrink-0 h-9 px-3 bg-white border border-dashed border-gray-300 rounded-lg flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-primary hover:border-primary cursor-pointer transition-all">
+                                        <i class="fa-solid fa-camera text-[14px]"></i>
+                                        Photo
+                                        <input type="file" accept="image/*" :name="'team_members[' + i + '][photo]'" class="hidden">
+                                    </label>
+                                </div>
+                            </div>
+                        </template>
                     </div>
                 </div>
 

@@ -83,9 +83,9 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 sm:
                                 <i class="fa-solid fa-location-dot text-[12px] text-[#7ca81d]" style=""></i>{{ $store->location }}
                             </span>
                         @endif
-                        @if($joinedDate)
+                        @if($store->founded_year || $joinedDate)
                             <span class="inline-flex items-center gap-1">
-                                <i class="fa-solid fa-calendar-days text-[12px] text-[#7ca81d]" style=""></i>Since {{ date('Y', strtotime($joinedDate)) }}
+                                <i class="fa-solid fa-calendar-days text-[12px] text-[#7ca81d]" style=""></i>Since {{ $store->founded_year ?? date('Y', strtotime($joinedDate)) }}
                             </span>
                         @endif
                     </div>
@@ -300,6 +300,125 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 sm:
         </div>
     </section>
     @endif
+
+    {{-- ================================================================
+         STORE PORTFOLIO — Stats, Policies, Certifications, Team, Map
+    ================================================================ --}}
+    @php
+        $storePolicies = $store->policies ?: [];
+        $storeCerts = $store->certifications ?: [];
+        $hasPortfolioExtras = count($storePolicies) > 0 || count($storeCerts) > 0 || $teamMembers->count() > 0 || $store->map_embed;
+    @endphp
+    <section class="max-w-7xl mx-auto px-2 sm:px-6 mt-5 sm:mt-6">
+        <div class="rounded-2xl sm:rounded-3xl bg-white border border-[#e8eae8] shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
+
+            {{-- Stats strip --}}
+            <div class="grid grid-cols-2 sm:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#eef1ef]">
+                <div class="px-4 sm:px-6 py-4 sm:py-5 text-center">
+                    <p class="text-xl sm:text-2xl font-black tracking-tight text-[#1c201e] tnum">{{ number_format($totalItems) }}</p>
+                    <p class="text-[9.5px] sm:text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#9aa19c] mt-0.5">Items Live</p>
+                </div>
+                <div class="px-4 sm:px-6 py-4 sm:py-5 text-center sm:border-l">
+                    <p class="text-xl sm:text-2xl font-black tracking-tight text-[#1c201e] tnum">{{ number_format($followers) }}</p>
+                    <p class="text-[9.5px] sm:text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#9aa19c] mt-0.5">Followers</p>
+                </div>
+                <div class="px-4 sm:px-6 py-4 sm:py-5 text-center border-t sm:border-t-0">
+                    <p class="text-xl sm:text-2xl font-black tracking-tight text-[#1c201e] tnum">{{ number_format($ordersServed) }}</p>
+                    <p class="text-[9.5px] sm:text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#9aa19c] mt-0.5">Orders Served</p>
+                </div>
+                <div class="px-4 sm:px-6 py-4 sm:py-5 text-center border-t sm:border-t-0 sm:border-l">
+                    <p class="text-xl sm:text-2xl font-black tracking-tight text-[#1c201e] tnum">{{ number_format($totalReviews) }}</p>
+                    <p class="text-[9.5px] sm:text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#9aa19c] mt-0.5">Reviews</p>
+                </div>
+            </div>
+
+            @if($hasPortfolioExtras)
+            <div class="border-t border-[#eef1ef] p-4 sm:p-6 space-y-4 sm:space-y-5">
+                @if(count($storeCerts) > 0)
+                <div>
+                    <div class="flex items-center gap-2 mb-2.5">
+                        <span class="grid place-items-center w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#f2f9df] text-[#659316] shrink-0">
+                            <i class="fa-solid fa-award text-[14px] sm:text-[16px]" style=""></i>
+                        </span>
+                        <h3 class="text-xs sm:text-sm font-extrabold tracking-tight text-[#1c201e]">Certifications</h3>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        @foreach($storeCerts as $cert)
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#f2f9df] text-[#4e6f12] text-[10.5px] sm:text-xs font-bold ring-1 ring-[#d9e9b4]">
+                                <i class="fa-solid fa-circle-check text-[12px] text-[#659316]" style=""></i>
+                                {{ $cert }}
+                            </span>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+
+                @if(count($storePolicies) > 0)
+                <div>
+                    <div class="flex items-center gap-2 mb-2.5">
+                        <span class="grid place-items-center w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#f2f9df] text-[#659316] shrink-0">
+                            <i class="fa-solid fa-shield-heart text-[14px] sm:text-[16px]" style=""></i>
+                        </span>
+                        <h3 class="text-xs sm:text-sm font-extrabold tracking-tight text-[#1c201e]">Store Policies</h3>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        @foreach($storePolicies as $policy)
+                            <div class="rounded-xl border border-[#e8eae8] bg-[#fafbfa] p-3.5">
+                                <p class="text-[11px] sm:text-xs font-extrabold text-[#1c201e]">{{ $policy['title'] ?? 'Policy' }}</p>
+                                <p class="text-[10.5px] sm:text-[11.5px] text-[#6b716c] leading-relaxed mt-1 whitespace-pre-line break-words">{{ $policy['content'] ?? '' }}</p>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+
+                @if($teamMembers->count() > 0)
+                <div>
+                    <div class="flex items-center gap-2 mb-2.5">
+                        <span class="grid place-items-center w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#f2f9df] text-[#659316] shrink-0">
+                            <i class="fa-solid fa-people-group text-[14px] sm:text-[16px]" style=""></i>
+                        </span>
+                        <h3 class="text-xs sm:text-sm font-extrabold tracking-tight text-[#1c201e]">Meet the Team</h3>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5">
+                        @foreach($teamMembers as $member)
+                            <div class="rounded-xl border border-[#e8eae8] p-3.5 text-center">
+                                <div class="w-12 h-12 rounded-full overflow-hidden bg-[#f2f9df] ring-2 ring-[#e0edc4] mx-auto mb-2">
+                                    @if($member->photo_url)
+                                        <img src="{{ $member->photo_url }}" alt="{{ $member->name }}" loading="lazy" class="w-full h-full object-cover">
+                                    @else
+                                        <span class="grid place-items-center w-full h-full text-[#659316] font-black text-sm">{{ strtoupper(substr($member->name, 0, 1)) }}</span>
+                                    @endif
+                                </div>
+                                <p class="text-[11px] sm:text-xs font-extrabold text-[#1c201e] leading-tight">{{ $member->name }}</p>
+                                <p class="text-[9.5px] sm:text-[10.5px] font-semibold text-[#659316] mt-0.5">{{ $member->role }}</p>
+                                @if($member->bio)
+                                    <p class="text-[9.5px] sm:text-[10.5px] text-[#9aa19c] leading-snug mt-1 line-clamp-2">{{ $member->bio }}</p>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+
+                @if($store->map_embed)
+                <div>
+                    <div class="flex items-center gap-2 mb-2.5">
+                        <span class="grid place-items-center w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#f2f9df] text-[#659316] shrink-0">
+                            <i class="fa-solid fa-location-dot text-[14px] sm:text-[16px]" style=""></i>
+                        </span>
+                        <h3 class="text-xs sm:text-sm font-extrabold tracking-tight text-[#1c201e]">Find Us</h3>
+                    </div>
+                    <div class="rounded-xl overflow-hidden border border-[#e8eae8] bg-[#fafbfa]">
+                        <iframe src="{{ $store->map_embed }}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                                class="w-full h-56 sm:h-72" style="border:0"></iframe>
+                    </div>
+                </div>
+                @endif
+            </div>
+            @endif
+        </div>
+    </section>
 
     {{-- ================================================================
          CATALOG TABS (Products | Services | Rentals)

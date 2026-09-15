@@ -16,10 +16,14 @@ class Store extends Model
         'social_links', 'is_verified', 'badge', 'status',
         'verification_level', 'trust_score', 'completion_rate', 'follower_count',
         'contact_info', 'rating', 'product_count', 'service_count',
+        'founded_year', 'policies', 'certifications', 'map_embed',
     ];
 
     protected $casts = [
         'social_links' => 'array',
+        'policies' => 'array',
+        'certifications' => 'array',
+        'founded_year' => 'integer',
         'is_verified' => 'boolean',
     ];
 
@@ -64,6 +68,11 @@ class Store extends Model
     public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function teamMembers(): HasMany
+    {
+        return $this->hasMany(StoreTeamMember::class)->orderBy('id');
     }
 
     public function follows(): MorphMany

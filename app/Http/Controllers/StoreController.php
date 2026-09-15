@@ -203,13 +203,21 @@ class StoreController extends Controller
                 ->exists();
         }
 
+        $teamMembers = $store->teamMembers()->get();
+        $followers = $store->follows()->count();
+        $ordersServed = \App\Models\OrderItem::where('store_id', $store->id)
+            ->whereHas('order', fn($q) => $q->where('status', '!=', 'cancelled'))
+            ->distinct()
+            ->count('order_id');
+
         return view('stores.show', compact(
             'store', 'products', 'categories', 'reviews',
             'starDistribution', 'avgRating', 'totalReviews',
             'totalProducts', 'topProducts', 'joinedDate',
             'savedProductIds', 'services', 'totalServices',
             'rentals', 'totalRentals', 'allCategories', 'totalItems',
-            'suggestedProducts', 'suggestedSavedIds', 'isFollowing'
+            'suggestedProducts', 'suggestedSavedIds', 'isFollowing',
+            'teamMembers', 'followers', 'ordersServed'
         ));
     }
 
