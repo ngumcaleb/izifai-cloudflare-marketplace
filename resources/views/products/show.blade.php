@@ -57,8 +57,8 @@ $cover = $productImages->first()?->url ?? '';
 <div x-data="productPage()">
 
     {{-- ============ MOBILE: product card ============ --}}
-    <section class="lg:hidden max-w-7xl mx-auto px-2 sm:px-6 pt-3">
-        <div class="rounded-2xl bg-white border border-[#e8eae8] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+    <section class="lg:hidden">
+        <div>
 
             {{-- image (slide-track) --}}
             <div class="relative aspect-square bg-[#f5f6f5] overflow-hidden">
@@ -89,9 +89,18 @@ $cover = $productImages->first()?->url ?? '';
                     <i class="fa-solid fa-image text-[56px]"></i>
                 </div>
                 @endif
+                @if($product->is_featured)
+                <span class="absolute top-[52px] left-3 -rotate-3 inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#9acd32] text-white text-[10px] font-black backdrop-blur-sm shadow-sm border border-white/20">
+                    <i class="fa-solid fa-bolt text-[9px]" style=""></i> Featured
+                </span>
+                @endif
+                <span class="absolute top-3 left-3 -rotate-3 inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#1c201e]/85 text-white text-[10px] font-bold backdrop-blur-sm shadow-sm border border-white/10">
+                    <i class="fa-solid fa-tag text-[9px] text-[#9acd32]" style=""></i>
+                    {{ $product->category?->name ?? 'Product' }}
+                </span>
             </div>
             @if($productImages->count() > 1)
-            <div class="flex gap-2 pt-3 px-4 pb-1 overflow-x-auto no-scrollbar">
+            <div class="flex gap-2 pt-3 px-2 pb-1 overflow-x-auto no-scrollbar">
                 @foreach($productImages as $i => $img)
                 <button @click="go({{ $i }})"
                         class="shrink-0 w-14 h-14 rounded-xl overflow-hidden border-2 transition-all duration-300"
@@ -103,7 +112,7 @@ $cover = $productImages->first()?->url ?? '';
             @endif
 
             {{-- info --}}
-            <div class="p-4 sm:p-5 pt-3">
+            <div class="px-2 pt-3 pb-4">
                 {{-- badges --}}
                 <div class="flex items-center gap-1.5 flex-wrap mb-2">
                     @if($product->is_featured)
@@ -250,6 +259,15 @@ $cover = $productImages->first()?->url ?? '';
                         <span x-text="imageIndex + 1"></span>/{{ $productImages->count() }}
                     </span>
                     @endif
+                    @if($product->is_featured)
+                    <span class="absolute bottom-[52px] left-4 -rotate-3 inline-flex items-center gap-1 px-3 py-1 rounded-md bg-[#9acd32] text-white text-[11px] font-black backdrop-blur-sm shadow-sm border border-white/20">
+                        <i class="fa-solid fa-bolt text-[10px]" style=""></i> Featured
+                    </span>
+                    @endif
+                    <span class="absolute bottom-4 left-4 -rotate-3 inline-flex items-center gap-1 px-3 py-1 rounded-md bg-[#1c201e]/85 text-white text-[11px] font-bold backdrop-blur-sm shadow-sm border border-white/10">
+                        <i class="fa-solid fa-tag text-[10px] text-[#9acd32]" style=""></i>
+                        {{ $product->category?->name ?? 'Product' }}
+                    </span>
                 </div>
                 @if($productImages->count() > 1)
                 <div class="flex gap-3 mt-3">

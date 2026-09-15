@@ -55,8 +55,8 @@ $cover = $rental->main_image_url ?: ($rentalImages[0] ?? '');
 <div x-data="rentalPage()">
 
     {{-- ============ MOBILE: rental card ============ --}}
-    <section class="lg:hidden max-w-7xl mx-auto px-2 sm:px-6 pt-3">
-        <div class="rounded-2xl bg-white border border-[#e8eae8] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+    <section class="lg:hidden">
+        <div>
 
             {{-- image (slide-track) --}}
             <div class="relative aspect-[4/3] bg-[#f5f6f5] overflow-hidden">
@@ -87,9 +87,13 @@ $cover = $rental->main_image_url ?: ($rentalImages[0] ?? '');
                     <i class="fa-solid fa-image text-[56px]"></i>
                 </div>
                 @endif
+                <span class="absolute top-3 left-3 -rotate-3 inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#1c201e]/85 text-white text-[10px] font-bold backdrop-blur-sm shadow-sm border border-white/10">
+                    <i class="fa-solid fa-tag text-[9px] text-[#9acd32]" style=""></i>
+                    {{ $rental->category?->name ?? 'Rental' }}
+                </span>
             </div>
             @if(count($rentalImages) > 1)
-            <div class="flex gap-2 pt-3 px-4 pb-1 overflow-x-auto no-scrollbar">
+            <div class="flex gap-2 pt-3 px-2 pb-1 overflow-x-auto no-scrollbar">
                 @foreach($rentalImages as $i => $imgUrl)
                 <button @click="go({{ $i }})"
                         class="shrink-0 w-14 h-14 rounded-xl overflow-hidden border-2 transition-all duration-300"
@@ -101,7 +105,7 @@ $cover = $rental->main_image_url ?: ($rentalImages[0] ?? '');
             @endif
 
             {{-- info --}}
-            <div class="p-4 sm:p-5 pt-3">
+            <div class="px-2 pt-3 pb-4">
                 {{-- badges --}}
                 <div class="flex items-center gap-1.5 flex-wrap mb-2">
                     @if($store->is_verified)
@@ -258,6 +262,10 @@ $cover = $rental->main_image_url ?: ($rentalImages[0] ?? '');
                         <span x-text="imageIndex + 1"></span>/{{ count($rentalImages) }}
                     </span>
                     @endif
+                    <span class="absolute bottom-4 left-4 -rotate-3 inline-flex items-center gap-1 px-3 py-1 rounded-md bg-[#1c201e]/85 text-white text-[11px] font-bold backdrop-blur-sm shadow-sm border border-white/10">
+                        <i class="fa-solid fa-tag text-[10px] text-[#9acd32]" style=""></i>
+                        {{ $rental->category?->name ?? 'Rental' }}
+                    </span>
                 </div>
                 @if(count($rentalImages) > 1)
                 <div class="flex gap-3 mt-3">
