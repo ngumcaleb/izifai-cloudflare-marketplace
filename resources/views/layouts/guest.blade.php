@@ -998,23 +998,7 @@
             </div>
         @endif
 
-        @if(session('success'))
-            <div class="max-w-7xl mx-auto px-5 sm:px-8 mb-4 pt-4">
-                <div class="bg-lime-100 border border-lime-200 rounded-xl p-4 flex items-center gap-3 animate-slide-down">
-                    <i class="fa-solid fa-circle-check text-lime-600"></i>
-                    <p class="text-sm font-semibold text-lime-800">{{ session('success') }}</p>
-                </div>
-            </div>
-        @endif
-
-        @if(session('error'))
-            <div class="max-w-7xl mx-auto px-5 sm:px-8 mb-4 pt-4">
-                <div class="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center gap-3 animate-slide-down">
-                    <i class="fa-solid fa-circle-exclamation text-red-600"></i>
-                    <p class="text-sm font-semibold text-red-800">{{ session('error') }}</p>
-                </div>
-            </div>
-        @endif
+        @include('partials.toasts')
 
         @yield('content')
 

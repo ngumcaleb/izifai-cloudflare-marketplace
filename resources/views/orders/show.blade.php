@@ -16,20 +16,6 @@
         </a>
     </div>
 
-    @if(session('success'))
-        <div class="bg-green-50 border border-green-200 rounded-xl p-4 mb-4 flex items-center gap-3 animate-slide-down">
-            <i class="fa-solid fa-circle-check text-green-600"></i>
-            <p class="text-sm font-semibold text-green-800">{{ session('success') }}</p>
-        </div>
-    @endif
-
-    @if(session('error'))
-        <div class="bg-red-50 border border-red-200 rounded-xl p-4 mb-4 flex items-center gap-3 animate-slide-down">
-            <i class="fa-solid fa-circle-exclamation text-red-600"></i>
-            <p class="text-sm font-semibold text-red-800">{{ session('error') }}</p>
-        </div>
-    @endif
-
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
         {{-- Left: Order Details --}}
         <div class="md:col-span-2 space-y-4">

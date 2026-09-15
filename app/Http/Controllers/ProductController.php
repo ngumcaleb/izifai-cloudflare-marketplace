@@ -271,6 +271,29 @@ class ProductController extends Controller
                 ->get();
         }
 
+        // Related products from other stores (same category preferred)
+        $relatedProducts = \App\Models\Product::active()
+            ->where('id', '!=', $product->id)
+            ->where('store_id', '!=', $store->id)
+            ->with('images', 'store')
+            ->when($product->category_id, fn($q) => $q->where('category_id', $product->category_id))
+            ->latest()
+            ->take(8)
+            ->get();
+
+        if ($relatedProducts->count() < 8) {
+            $excludeIds = $relatedProducts->pluck('id');
+            $relatedFallback = \App\Models\Product::active()
+                ->where('id', '!=', $product->id)
+                ->where('store_id', '!=', $store->id)
+                ->whereNotIn('id', $excludeIds)
+                ->with('images', 'store')
+                ->latest()
+                ->take(8 - $relatedProducts->count())
+                ->get();
+            $relatedProducts = $relatedProducts->concat($relatedFallback);
+        }
+
         // Saved product IDs
         $savedProductIds = [];
         if (auth()->check()) {
@@ -282,7 +305,7 @@ class ProductController extends Controller
 
         return view('products.show', compact(
             'product', 'store', 'reviews', 'avgRating', 'totalReviews', 'totalProducts',
-            'storeProducts', 'topProducts', 'savedProductIds', 'starDistribution'
+            'storeProducts', 'topProducts', 'relatedProducts', 'savedProductIds', 'starDistribution'
         ));
     }
 

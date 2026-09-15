@@ -1,714 +1,577 @@
 ﻿@extends('layouts.guest')
 
-@section('storeWhatsApp', $product->store->whatsapp_number)
+@push('styles')
+<style>
+    body { font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif !important; background-color: #f5f6f5; }
+
+    .tnum { font-variant-numeric: tabular-nums; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+    .reviews-scroll { scrollbar-width: thin; scrollbar-color: #d6d9d6 transparent; -webkit-mask-image: linear-gradient(to bottom, black calc(100% - 24px), transparent 100%); mask-image: linear-gradient(to bottom, black calc(100% - 24px), transparent 100%); }
+    .reviews-scroll::-webkit-scrollbar { width: 4px; }
+    .reviews-scroll::-webkit-scrollbar-thumb { background: #d8dbd8; border-radius: 9999px; }
+    .reviews-scroll::-webkit-scrollbar-track { background: transparent; }
+</style>
+@endpush
+
 @php
 $store = $product->store;
 $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c 0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>';
+$discountPct = $product->old_price && $product->old_price > $product->price ? round((1 - $product->price / $product->old_price) * 100) : 0;
+$isInStock = $product->stock_status === 'in_stock';
+$productImages = $product->images;
+$cover = $productImages->first()?->url ?? '';
 @endphp
 
-@section('title', $product->name . ' - ' . $store->name . ' Showroom')
-@section('description', strip_tags($product->description) ?: $product->name . ' on Izifai')
+@section('title', $product->name . ' - ' . $store->name . ' | Izifai')
+@section('description', (strip_tags($product->description ?? '') ?: $product->name . ' on Izifai'))
 @section('og_title', $product->name . ' - ' . $store->name)
-@section('og_description', str($product->description ? strip_tags($product->description) : $product->name . ' on Izifai')->limit(160))
-@section('og_image', $product->images->first()?->url ?: asset('images/logo.png'))
+@section('og_description', str(strip_tags($product->description ?? '') ?: $product->name . ' on Izifai')->limit(160))
+@section('og_image', $cover ?: asset('images/logo.png'))
 @section('og_type', 'product')
 @section('twitter_title', $product->name . ' - ' . $store->name)
-@section('twitter_description', str($product->description ? strip_tags($product->description) : $product->name . ' on Izifai')->limit(160))
-@section('twitter_image', $product->images->first()?->url ?: asset('images/logo.png'))
+@section('twitter_description', str(strip_tags($product->description ?? '') ?: $product->name . ' on Izifai')->limit(160))
+@section('twitter_image', $cover ?: asset('images/logo.png'))
 
-{{-- ==================== STORE NAV ==================== --}}
-@section('store-nav')
-<div class="flex items-center gap-3 py-2.5 overflow-x-auto no-scrollbar">
-    <a href="{{ route('stores.show', $store->slug) }}" class="flex items-center gap-1 text-xs font-semibold text-primary hover:underline shrink-0">
-        <i class="fa-solid fa-arrow-left text-[16px]"></i>
-        <span class="hidden sm:inline">Back to Store</span>
-    </a>
-    <span class="w-px h-5 bg-gray-200 shrink-0"></span>
-    <a href="{{ route('stores.show', $store->slug) }}" class="flex items-center gap-2.5 shrink-0 group">
-        <div class="w-8 h-8 rounded-lg overflow-hidden ring-2 ring-primary/10 bg-white shrink-0">
-            @if($store->logo)
-                <img src="{{ $store->logo_url }}" class="w-full h-full object-cover">
-            @else
-                <x-store-default-logo :store="$store" size="sm" />
-            @endif
-        </div>
-        <div class="min-w-0">
-            <p class="text-sm font-bold text-on-surface truncate max-w-[120px] lg:max-w-none group-hover:text-primary transition-colors">{{ $store->name }}</p>
-        </div>
-    </a>
-    <nav class="flex items-center gap-1 shrink-0">
-        <a href="{{ route('stores.show', $store->slug) }}" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-primary text-on-primary whitespace-nowrap">Showroom</a>
-        <a href="{{ route('stores.show', $store->slug) }}#catalog" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-on-surface-variant hover:bg-gray-100 whitespace-nowrap transition-colors">Collections</a>
-        <a href="{{ route('stores.show', $store->slug) }}#reviews" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-on-surface-variant hover:bg-gray-100 whitespace-nowrap transition-colors">Reviews</a>
-        <a href="{{ route('stores.show', $store->slug) }}#store-info" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-on-surface-variant hover:bg-gray-100 whitespace-nowrap transition-colors">Store Info</a>
-    </nav>
-</div>
-@endsection
-
-{{-- ==================== STORE SIDEBAR (DESKTOP) ==================== --}}
-@section('store-sidebar')
-<div class="relative h-28 shrink-0">
-    @if($store->banner)
-        <img src="{{ $store->banner_url }}" class="w-full h-full object-cover">
-    @else
-        <x-store-default-banner :store="$store" variant="sidebar" />
-    @endif
-    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-    <div class="absolute -bottom-8 left-4 flex items-end gap-3">
-        <div class="w-14 h-14 rounded-xl border-2 border-white bg-white shadow-lg overflow-hidden">
-            @if($store->logo)
-                <img src="{{ $store->logo_url }}" class="w-full h-full object-cover">
-            @else
-                <x-store-default-logo :store="$store" size="lg" />
-            @endif
-        </div>
-    </div>
-</div>
-<div class="pt-10 px-4 pb-4 border-b border-gray-100">
-    <div class="flex items-center gap-1.5 min-w-0">
-        <h2 class="text-base font-bold text-on-surface truncate min-w-0 shrink">{{ $store->name }}</h2>
-        <x-store-badge :store="$store" size="sm" />
-    </div>
-    <div class="flex flex-wrap items-center gap-2 mt-1">
-        <span class="flex items-center gap-0.5 text-[11px] text-on-surface-variant">
-            <i class="fa-solid fa-star text-[14px]" style=""></i>
-            {{ number_format($avgRating, 1) }}
+@section('header-search')
+<div class="hidden sm:flex flex-1 max-w-xl lg:max-w-2xl mx-4">
+    <div class="w-full flex rounded-full overflow-hidden bg-white border border-[#e6e8e6] focus-within:border-[#9acd32] focus-within:shadow-[0_0_0_3px_rgba(154,205,50,0.10)] transition-all h-11">
+        <span class="grid place-items-center pl-4 text-[#9aa19c]">
+            <i class="fa-solid fa-magnifying-glass text-[20px]" style=""></i>
         </span>
-        <span class="text-[11px] text-on-surface-variant">{{ $store->products()->count() }} products</span>
+        <input type="text" readonly placeholder="What are you looking for?"
+               @click="$dispatch('open-search')"
+               class="w-full h-full bg-transparent text-[13px] outline-none px-2 text-[#1c201e] placeholder:text-[#9aa19c] cursor-pointer">
+        <button class="h-full px-5 bg-[#9acd32] text-white text-sm font-bold hover:bg-[#7ca81d] transition-colors flex items-center gap-1.5" @click="$dispatch('open-search')">
+            <i class="fa-solid fa-magnifying-glass text-[18px]" style=""></i>
+            <span class="hidden lg:inline">Search</span>
+        </button>
     </div>
-</div>
-<nav class="flex-1 py-4 px-3 space-y-0.5 overflow-y-auto">
-    <a href="{{ route('stores.show', $store->slug) }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-primary font-semibold bg-primary/5 border-l-[3px] border-primary transition-all text-sm">
-        <i class="fa-solid fa-store text-[20px]"></i>
-        Showroom
-    </a>
-    <a href="{{ route('stores.show', $store->slug) }}#catalog" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-gray-50 transition-all text-sm font-medium">
-        <i class="fa-solid fa-table-cells text-[20px]"></i>
-        Collections
-    </a>
-    <a href="{{ route('stores.show', $store->slug) }}#reviews" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-gray-50 transition-all text-sm font-medium">
-        <i class="fa-solid fa-star text-[20px]"></i>
-        Reviews
-        @if($totalReviews > 0)
-            <span class="ml-auto text-[10px] font-bold bg-gray-100 px-1.5 py-0.5 rounded-full">{{ $totalReviews }}</span>
-        @endif
-    </a>
-    <a href="{{ route('stores.show', $store->slug) }}#store-info" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-gray-50 transition-all text-sm font-medium">
-        <i class="fa-solid fa-circle-info text-[20px]"></i>
-        Store Info
-    </a>
-    @if($store->location)
-        <div class="px-3 py-2 text-[11px] text-on-surface-variant flex items-center gap-2 border-t border-gray-100 pt-3 mt-2">
-            <i class="fa-solid fa-location-dot text-[16px]"></i>
-            <span class="truncate">{{ $store->location }}</span>
-        </div>
-    @endif
-</nav>
-<div class="px-4 py-4 border-t border-gray-100 space-y-2">
-    @if($store->whatsapp_number)
-        <a href="https://wa.me/{{ wa_url($store->whatsapp_number) }}?text={{ urlencode('Hi, I am interested in ' . $product->name . ' on Izifai.') }}" target="_blank"
-           class="w-full py-2 rounded-xl font-semibold flex items-center justify-center gap-2 text-xs text-on-surface-variant border border-gray-200 hover:bg-gray-50 transition-all">
-            {!! $whatsappIcon !!}
-            Contact Seller
-        </a>
-    @endif
-    <a href="https://chat.whatsapp.com/J3of97nRhL5IdTSXpScYLl" target="_blank"
-       class="w-full py-2 rounded-xl font-semibold flex items-center justify-center gap-2 text-xs text-on-surface-variant border border-gray-200 hover:bg-gray-50 transition-all">
-        <i class="fa-solid fa-users text-[16px]"></i>
-        Join WhatsApp Group
-    </a>
-    @auth
-        @if(auth()->id() === $store->user_id)
-            <a href="{{ route('seller.dashboard') }}"
-               class="w-full bg-primary text-on-primary py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-all text-xs">
-                <i class="fa-solid fa-gauge-high text-[16px]"></i>
-                Dashboard
-            </a>
-        @else
-            @php $hasStore = auth()->user()->store; @endphp
-            <a href="{{ $hasStore ? route('seller.dashboard') : route('seller.store.create') }}"
-               class="w-full py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 text-xs text-primary border border-primary/20 hover:bg-primary/5 transition-all">
-                <i class="fa-solid fa-store text-[16px]"></i>
-                {{ $hasStore ? 'Seller Dashboard' : 'Start Selling' }}
-            </a>
-        @endif
-    @endauth
-    @guest
-        <a href="{{ url('/') }}"
-           class="w-full bg-primary/10 text-primary py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-primary/20 transition-all text-xs">
-            <i class="fa-solid fa-id-card text-[16px]"></i>
-            Join Izifai
-        </a>
-    @endguest
 </div>
 @endsection
 
-{{-- ==================== CONTENT ==================== --}}
 @section('content')
-<div class="px-4 sm:px-6 lg:px-8 pt-14 lg:pt-4 pb-4 sm:pb-6">
-<div x-data="productPage()" class="space-y-6 sm:space-y-8 lg:space-y-12">
+<div x-data="productPage()">
 
-    {{-- Breadcrumb --}}
-    <div class="flex items-center gap-1.5 text-xs sm:text-sm text-on-surface-variant min-w-0">
-        <a href="{{ route('stores.show', $store->slug) }}" class="hover:text-primary transition-colors font-semibold truncate whitespace-nowrap">{{ $store->name }}</a>
-        <i class="fa-solid fa-chevron-right text-[14px] sm:text-[16px] shrink-0"></i>
-        <span class="text-on-surface font-bold truncate whitespace-nowrap">{{ $product->name }}</span>
-    </div>
+    {{-- ============ MOBILE: product card ============ --}}
+    <section class="lg:hidden max-w-7xl mx-auto px-2 sm:px-6 pt-3">
+        <div class="rounded-2xl bg-white border border-[#e8eae8] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
 
-    {{-- PRODUCT HERO --}}
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 lg:gap-8">
-
-        {{-- LEFT: Gallery --}}
-        <div class="lg:col-span-7 space-y-3 sm:space-y-4">
-            <div class="relative bg-surface-container-lowest rounded-xl sm:rounded-2xl overflow-hidden shadow-sm border border-outline-variant/10 aspect-[4/3]">
-                <template x-if="selectedImage">
-                    <img :src="selectedImage" class="w-full h-full object-cover">
-                </template>
-                <template x-if="!selectedImage">
-                    <div class="w-full h-full flex items-center justify-center text-on-surface-variant/30">
-                        <i class="fa-solid fa-image text-5xl sm:text-6xl"></i>
-                    </div>
-                </template>
-                <button onclick="copyToClipboard(window.location.href, this)"
-                        class="absolute top-3 right-3 w-8 h-8 bg-white/80 backdrop-blur rounded-full flex items-center justify-center hover:bg-white transition-all shadow-sm z-10">
-                    <i class="fa-solid fa-share-nodes text-[16px] copy-icon text-on-surface-variant"></i>
+            {{-- image (slide-track) --}}
+            <div class="relative aspect-square bg-[#f5f6f5] overflow-hidden">
+                @if($productImages->isNotEmpty())
+                <div class="flex h-full transition-transform duration-500 ease-out"
+                     :style="'transform: translateX(-' + (imageIndex * 100) + '%)'">
+                    @foreach($productImages as $i => $img)
+                    <img src="{{ $img->url }}" alt="{{ $product->name }} {{ $i + 1 }}" class="w-full h-full shrink-0 object-cover select-none">
+                    @endforeach
+                </div>
+                <span class="absolute top-3 right-3 inline-flex items-center gap-1 px-2 py-1 rounded-full bg-black/60 text-white text-[10px] font-bold tnum backdrop-blur-sm">
+                    <span x-text="imageIndex + 1"></span>/{{ $productImages->count() }}
+                </span>
+                @if($productImages->count() > 1)
+                <button @click="prev()"
+                        class="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/95 shadow-md grid place-items-center text-[#1c201e] hover:scale-105 transition-transform active:scale-95"
+                        aria-label="Previous image">
+                    <i class="fa-solid fa-chevron-left text-[15px]" style=""></i>
                 </button>
+                <button @click="next()"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/95 shadow-md grid place-items-center text-[#1c201e] hover:scale-105 transition-transform active:scale-95"
+                        aria-label="Next image">
+                    <i class="fa-solid fa-chevron-right text-[15px]" style=""></i>
+                </button>
+                @endif
+                @else
+                <div class="w-full h-full flex items-center justify-center text-[#c6cac6]">
+                    <i class="fa-solid fa-image text-[56px]"></i>
+                </div>
+                @endif
             </div>
-
-            @if($product->images->count() > 0)
-            <div class="flex gap-2 sm:gap-3 overflow-x-auto no-scrollbar pb-0.5">
-                @foreach($product->images as $idx => $img)
-                <button @click="selectedImage = '{{ $img->url }}'"
-                        class="shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-lg sm:rounded-xl overflow-hidden border-2 transition-all relative"
-                        :class="selectedImage === '{{ $img->url }}' ? 'border-primary ring-2 ring-primary/20' : 'border-outline-variant/20 hover:border-outline-variant/50'">
-                    <img src="{{ $img->url }}" class="w-full h-full object-cover">
-                    @if($loop->iteration === 4 && $product->images->count() > 4)
-                    <div class="absolute inset-0 bg-black/50 flex items-center justify-center rounded-[inherit]">
-                        <span class="text-white font-bold text-xs sm:text-sm">+{{ $product->images->count() - 4 }}</span>
-                    </div>
-                    @endif
+            @if($productImages->count() > 1)
+            <div class="flex gap-2 pt-3 px-4 pb-1 overflow-x-auto no-scrollbar">
+                @foreach($productImages as $i => $img)
+                <button @click="go({{ $i }})"
+                        class="shrink-0 w-14 h-14 rounded-xl overflow-hidden border-2 transition-all duration-300"
+                        :class="imageIndex === {{ $i }} ? 'border-[#9acd32] ring-2 ring-[#9acd32]/30' : 'border-transparent hover:border-[#c6cac6]'">
+                    <img src="{{ $img->url }}" class="w-full h-full object-cover" loading="lazy" alt="Thumbnail {{ $i + 1 }}">
                 </button>
                 @endforeach
             </div>
             @endif
-        </div>
 
-        {{-- RIGHT: Product Info --}}
-        <div class="lg:col-span-5">
-            <div class="bg-surface-container-lowest rounded-xl sm:rounded-2xl p-5 sm:p-6 lg:p-8 shadow-sm border border-outline-variant/10 space-y-4 sm:space-y-5 sticky top-[80px] lg:top-[100px]">
-
-                {{-- Badges --}}
-                <div class="flex flex-wrap gap-1.5 sm:gap-2">
+            {{-- info --}}
+            <div class="p-4 sm:p-5 pt-3">
+                {{-- badges --}}
+                <div class="flex items-center gap-1.5 flex-wrap mb-2">
+                    @if($product->is_featured)
+                    <span class="inline-flex items-center px-1.5 py-0.5 rounded-full bg-[#f2f9df] text-[#659316] text-[9px] font-black uppercase tracking-wide">
+                        <i class="fa-solid fa-bolt text-[10px] mr-1" style=""></i> Featured
+                    </span>
+                    @endif
                     @if($store->is_verified)
-                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] sm:text-[10px] font-bold bg-primary/10 text-primary uppercase tracking-wider">
-                        <i class="fa-solid fa-circle-check text-[12px] sm:text-[14px]" style=""></i>
-                        Verified Authentic
+                    <span class="inline-flex items-center text-[9px] font-black uppercase tracking-wide text-[#659316]">
+                        <i class="fa-solid fa-circle-check text-[11px] mr-0.5" style=""></i> Verified seller
                     </span>
                     @endif
-                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-wider
-                        {{ $product->stock_status === 'in_stock' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700' }}">
-                        <span class="w-1.5 h-1.5 rounded-full bg-current"></span>
-                        {{ str_replace('_', ' ', $product->stock_status) }}
+                    <span class="text-[9px] font-bold uppercase tracking-wide {{ $isInStock ? 'text-[#659316]' : 'text-[#dc2626]' }}">
+                        <span class="w-1.5 h-1.5 rounded-full bg-current inline-block mr-1 align-middle"></span>{{ str_replace('_', ' ', $product->stock_status) }}
                     </span>
                 </div>
 
-                {{-- Title --}}
-                <h1 class="text-xl sm:text-2xl lg:text-[28px] leading-tight font-bold text-on-surface">{{ $product->name }}</h1>
+                <h1 class="text-[19px] sm:text-[22px] font-bold leading-snug text-[#1c201e]">{{ $product->name }}</h1>
 
-                {{-- Star Rating --}}
-                <div class="flex items-center gap-2">
-                    <div class="flex text-orange-500">
-                        @for($i = 1; $i <= 5; $i++)
-                        <i class="{{ $i <= round($avgRating) ? 'fa-solid' : 'fa-regular' }} fa-star text-[16px] sm:text-[18px]" style=""></i>
-                        @endfor
-                    </div>
-                    <span class="text-xs sm:text-sm font-bold text-on-surface">{{ number_format($avgRating, 1) }}</span>
-                    <a href="{{ route('stores.show', $store->slug) }}#reviews" class="text-xs sm:text-sm text-primary font-semibold hover:underline">({{ $totalReviews }} reviews)</a>
+                {{-- store + rating --}}
+                <div class="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5">
+                    <a href="{{ route('stores.show', $store->slug) }}" class="text-[11px] font-semibold text-[#659316]">
+                        <i class="fa-solid fa-store text-[11px] mr-0.5" style=""></i>{{ $store->name }}
+                    </a>
+                    <span class="inline-flex items-center gap-1 text-[11px] text-[#6b716c]">
+                        <i class="fa-solid fa-star text-[11px] text-amber-400" style=""></i>
+                        <strong class="text-[#1c201e] tnum">{{ number_format($avgRating, 1) }}</strong>
+                        <span class="text-[#9aa19c]">({{ $totalReviews }})</span>
+                    </span>
+                    <span class="inline-flex items-center gap-1 text-[11px] text-[#9aa19c]">
+                        <i class="fa-regular fa-eye text-[11px]" style=""></i>
+                        <span class="tnum">{{ number_format($product->views ?? 0) }}</span>
+                    </span>
                 </div>
 
-                {{-- Price --}}
-                <div class="pb-2 border-b border-outline-variant/10">
-                    <span class="text-2xl sm:text-[28px] lg:text-[32px] leading-none font-black text-primary">{{ number_format($product->price) }} FCFA</span>
-                    @if($product->old_price)
-                    <div class="flex items-center gap-2 mt-1.5">
-                        <span class="text-xs sm:text-sm text-[#f97316] line-through">{{ number_format($product->old_price) }} FCFA</span>
-                        <span class="text-[9px] sm:text-[10px] font-bold text-green-700 bg-green-50 px-2 py-0.5 rounded-full">-{{ round((1 - $product->price / $product->old_price) * 100) }}%</span>
-                    </div>
+                {{-- price --}}
+                <div class="flex items-end gap-2 mt-3 pb-1">
+                    <span class="text-[24px] sm:text-[28px] font-black text-[#1c201e] tnum tracking-tight">{{ number_format($product->price) }} <span class="text-[12px] font-bold text-[#6b716c]">F</span></span>
+                    @if($discountPct > 0)
+                    <span class="text-[13px] font-semibold text-[#f97316] line-through tnum mb-1">{{ number_format($product->old_price) }}</span>
+                    <span class="text-[9px] font-black px-1.5 py-0.5 rounded bg-[#dc2626] text-white tnum mb-1">-{{ $discountPct }}%</span>
                     @endif
-                    <p class="text-[10px] sm:text-xs text-on-surface-variant mt-1">Inclusive of all taxes</p>
                 </div>
 
-                {{-- Colors --}}
-                @if($product->colors && count($product->colors) > 0)
-                <div>
-                    <p class="text-[10px] sm:text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-2 sm:mb-3">Colors</p>
-                    <div class="flex flex-wrap gap-2 sm:gap-3">
-                        <template x-for="color in {{ json_encode($product->colors) }}" :key="color">
-                            <button @click="selectedColor = color"
-                                    class="w-8 h-8 sm:w-9 sm:h-9 rounded-full transition-all flex items-center justify-center shadow-sm"
-                                    :class="selectedColor === color ? 'ring-2 ring-primary ring-offset-2' : 'ring-1 ring-black/10 hover:ring-black/30'"
-                                    :style="'background-color: ' + color.toLowerCase()"
-                                    :title="color">
-                                <template x-if="selectedColor === color">
-                                    <i class="fa-solid fa-check text-[12px] sm:text-[14px]" :style="'color: ' + (['white','#fff','#ffffff','whitesmoke','#f5f5f5','#eee','#e0e0e0','#ddd'].includes(color.toLowerCase().replace(/\s/g,'')) ? '#000' : '#fff')" style=""></i>
-                                </template>
-                            </button>
-                        </template>
-                    </div>
+                @if(count($product->colors ?? []) > 0)
+                <div class="flex items-center gap-1.5 mt-2.5">
+                    <template x-for="c in colors" :key="c">
+                        <button @click="selectedColor = c" type="button"
+                                class="w-7 h-7 rounded-full border transition-all"
+                                :class="selectedColor === c ? 'border-[#1c201e] ring-2 ring-[#1c201e]/15' : 'border-[#e0e3e0]'"
+                                :title="c">
+                            <span class="w-full h-full rounded-full border border-black/5 block" :style="'background-color:' + c"></span>
+                        </button>
+                    </template>
                 </div>
                 @endif
 
-                {{-- Key Specifications --}}
-                @if($product->specifications && $product->specifications->count() > 0)
-                <div>
-                    <p class="text-[10px] sm:text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-2 sm:mb-3">Key Specifications</p>
-                    <div class="grid grid-cols-2 gap-x-3 sm:gap-x-4 gap-y-1.5 sm:gap-y-2">
-                        @foreach($product->specifications->take(6) as $spec)
-                        <div class="flex items-start gap-1.5 sm:gap-2">
-                            <i class="fa-solid fa-circle-check text-[14px] sm:text-[16px] text-primary shrink-0 mt-0.5" style=""></i>
-                            <div class="min-w-0">
-                                <p class="text-[9px] sm:text-[10px] text-on-surface-variant font-semibold uppercase truncate">{{ $spec->key }}</p>
-                                <p class="text-[11px] sm:text-xs font-bold text-on-surface truncate">{{ $spec->value }}</p>
+                {{-- CTA --}}
+                <div class="mt-4">
+                    @auth
+                        @if(auth()->id() === $store->user_id)
+                        <div class="flex items-center gap-2 text-[12px] font-semibold text-[#659316] bg-[#f2f9df] border border-[#9acd32]/25 rounded-xl px-4 py-3">
+                            <i class="fa-regular fa-circle-check text-[16px]" style=""></i>
+                            This is your own listing.
+                        </div>
+                        @else
+                        <form action="{{ route('conversations.store') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="seller_id" value="{{ $store->user_id }}">
+                            <input type="hidden" name="target_type" value="product">
+                            <input type="hidden" name="target_id" value="{{ $product->id }}">
+                            <input type="hidden" name="message" value="Hi, I'm interested in {{ $product->name }}. Is it still available?">
+                            <button type="submit"
+                                    class="w-full h-12 bg-[#1c201e] text-white text-[12.5px] font-bold rounded-xl hover:bg-black active:scale-[0.99] transition-all flex items-center justify-center gap-2">
+                                <i class="fa-regular fa-comment text-[15px]" style=""></i>
+                                Message seller
+                            </button>
+                        </form>
+                        @if($store->whatsapp_number)
+                        <a href="https://wa.me/{{ wa_url($store->whatsapp_number) }}?text={{ urlencode('Hi, I\'m interested in ' . $product->name . ' on Izifai.') }}"
+                           target="_blank"
+                           class="mt-2 w-full h-12 bg-[#25D366] text-white text-[12.5px] font-bold rounded-xl hover:bg-[#128C7E] active:scale-[0.99] transition-all flex items-center justify-center gap-2">
+                            {!! str_replace('w-5 h-5', 'w-[18px] h-[18px]', $whatsappIcon) !!}
+                            Chat on WhatsApp
+                        </a>
+                        @endif
+                        @endif
+                    @else
+                        @if($store->whatsapp_number)
+                        <a href="https://wa.me/{{ wa_url($store->whatsapp_number) }}?text={{ urlencode('Hi, I\'m interested in ' . $product->name . ' on Izifai.') }}"
+                           target="_blank"
+                           class="w-full h-12 bg-[#25D366] text-white text-[12.5px] font-bold rounded-xl hover:bg-[#128C7E] active:scale-[0.99] transition-all flex items-center justify-center gap-2">
+                            {!! str_replace('w-5 h-5', 'w-[18px] h-[18px]', $whatsappIcon) !!}
+                            Chat on WhatsApp
+                        </a>
+                        @endif
+                    @endauth
+
+                    <button onclick="copyToClipboard(window.location.href, this)"
+                            class="mt-2 w-full h-10 rounded-xl border border-[#e8eae8] text-[#3f453f] text-[11.5px] font-semibold hover:bg-[#f5f6f5] transition-colors flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-share-nodes text-[13px]" style=""></i>
+                        Share link
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{-- ============ DESKTOP: breadcrumb + gallery + info ============ --}}
+    <section class="hidden lg:block max-w-7xl mx-auto px-2 sm:px-6 pt-8">
+        <div class="flex items-center gap-1.5 text-[12px] text-[#9aa19c] mb-6">
+            <a href="{{ route('home') }}" class="hover:text-[#659316] transition-colors">Home</a>
+            <i class="fa-solid fa-chevron-right text-[10px] text-[#c6cac6]" style=""></i>
+            <a href="{{ route('products.index') }}" class="hover:text-[#659316] transition-colors">Products</a>
+            <i class="fa-solid fa-chevron-right text-[10px] text-[#c6cac6]" style=""></i>
+            <span class="text-[#1c201e] font-semibold truncate">{{ $product->name }}</span>
+        </div>
+
+        <div class="grid grid-cols-12 gap-8 items-start">
+            {{-- gallery --}}
+            <div class="col-span-7">
+                <div class="relative bg-white rounded-2xl border border-[#e8eae8] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+                    @if($productImages->isNotEmpty())
+                    <div class="flex transition-transform duration-500 ease-out"
+                         :style="'transform: translateX(-' + (imageIndex * 100) + '%)'">
+                        @foreach($productImages as $i => $img)
+                        <img src="{{ $img->url }}" alt="{{ $product->name }} {{ $i + 1 }}" class="w-full aspect-square object-cover shrink-0 select-none">
+                        @endforeach
+                    </div>
+                    @else
+                    <div class="w-full aspect-square flex items-center justify-center text-[#c6cac6]">
+                        <i class="fa-solid fa-image text-[72px]"></i>
+                    </div>
+                    @endif
+                    <button onclick="copyToClipboard(window.location.href, this)"
+                            class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/95 shadow-sm grid place-items-center text-[#3f453f] hover:text-[#1c201e] border border-[#e8eae8] hover:scale-105 transition-all">
+                        <i class="fa-solid fa-share-nodes text-[15px] copy-icon" style=""></i>
+                    </button>
+                    @if($discountPct > 0)
+                    <span class="absolute top-4 left-4 px-2 py-1 rounded-lg bg-[#dc2626] text-white text-[12px] font-black tnum">-{{ $discountPct }}%</span>
+                    @endif
+                    @if($productImages->count() > 1)
+                    <span class="absolute bottom-4 right-4 px-2 py-1 rounded-full bg-black/60 backdrop-blur-sm text-white text-[11px] font-bold tnum">
+                        <span x-text="imageIndex + 1"></span>/{{ $productImages->count() }}
+                    </span>
+                    @endif
+                </div>
+                @if($productImages->count() > 1)
+                <div class="flex gap-3 mt-3">
+                    @foreach($productImages as $i => $img)
+                    <button @click="go({{ $i }})"
+                            class="w-16 h-16 rounded-xl overflow-hidden border-2 transition-all"
+                            :class="imageIndex === {{ $i }} ? 'border-[#9acd32]' : 'border-transparent hover:border-[#c6cac6]'">
+                        <img src="{{ $img->url }}" class="w-full h-full object-cover" loading="lazy">
+                    </button>
+                    @endforeach
+                </div>
+                @endif
+            </div>
+
+            {{-- info --}}
+            <div class="col-span-5">
+                <div class="sticky top-[100px] bg-white rounded-2xl border border-[#e8eae8] p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+                    <div class="flex items-center gap-2 mb-2">
+                        @if($product->is_featured)
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-[#f2f9df] text-[#659316] text-[10px] font-black uppercase tracking-wide">
+                            <i class="fa-solid fa-bolt text-[11px] mr-1" style=""></i> Featured
+                        </span>
+                        @endif
+                        @if($store->is_verified)
+                        <span class="inline-flex items-center text-[10px] font-black uppercase tracking-wide text-[#659316]">
+                            <i class="fa-solid fa-circle-check text-[12px] mr-0.5" style=""></i> Verified seller
+                        </span>
+                        @endif
+                    </div>
+
+                    <h1 class="text-[22px] font-bold leading-snug text-[#1c201e]">{{ $product->name }}</h1>
+
+                    <div class="flex flex-wrap items-center gap-x-4 gap-y-1.5 mt-2 text-[12.5px]">
+                        <a href="{{ route('stores.show', $store->slug) }}" class="font-semibold text-[#659316] hover:underline">
+                            <i class="fa-solid fa-store text-[12px] mr-0.5" style=""></i>{{ $store->name }}
+                        </a>
+                        <span class="inline-flex items-center gap-1 text-[#6b716c]">
+                            <i class="fa-solid fa-star text-[12px] text-amber-400" style=""></i>
+                            <strong class="text-[#1c201e] tnum">{{ number_format($avgRating, 1) }}</strong>
+                            <span class="text-[#9aa19c]">({{ $totalReviews }} reviews)</span>
+                        </span>
+                        <span class="inline-flex items-center gap-1 text-[#9aa19c]">
+                            <i class="fa-regular fa-eye text-[13px]" style=""></i>
+                            <span class="tnum">{{ number_format($product->views ?? 0) }}</span>
+                        </span>
+                    </div>
+
+                    <div class="flex items-end gap-2.5 mt-4 pb-1 border-b border-[#f2f3f2]">
+                        <span class="text-[28px] font-black text-[#1c201e] tnum tracking-tight">{{ number_format($product->price) }} <span class="text-[13px] font-bold text-[#6b716c]">F</span></span>
+                        @if($discountPct > 0)
+                        <span class="text-[14px] font-semibold text-[#f97316] line-through tnum mb-1">{{ number_format($product->old_price) }}</span>
+                        <span class="text-[10px] font-black px-1.5 py-0.5 rounded bg-[#dc2626] text-white tnum mb-1">-{{ $discountPct }}%</span>
+                        @endif
+                    </div>
+
+                    {{-- availability --}}
+                    <div class="flex items-center gap-2 mt-4 text-[12.5px]">
+                        <span class="w-2 h-2 rounded-full {{ $isInStock ? 'bg-[#659316]' : 'bg-[#dc2626]' }}"></span>
+                        <span class="font-semibold {{ $isInStock ? 'text-[#659316]' : 'text-[#dc2626]' }} text-[11px] uppercase tracking-wide">{{ str_replace('_', ' ', $product->stock_status) }}</span>
+                        <span class="text-[#c6cac6]">·</span>
+                        <span class="text-[#6b716c] text-[11.5px]">{{ $product->category->name ?? '' }}</span>
+                    </div>
+
+                    @if(count($product->colors ?? []) > 0)
+                    <div class="mt-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-[#9aa19c]">Color</span>
+                            <span class="text-[12px] font-semibold text-[#1c201e]" x-text="selectedColor || 'Select an option'"></span>
+                        </div>
+                        <div class="flex gap-2">
+                            <template x-for="c in colors" :key="c">
+                                <button @click="selectedColor = c" type="button"
+                                        class="w-8 h-8 rounded-full border-2 transition-all"
+                                        :class="selectedColor === c ? 'border-[#1c201e] ring-2 ring-[#1c201e]/15' : 'border-[#e8eae8] hover:border-[#c6cac6]'">
+                                    <span class="w-full h-full rounded-full border border-black/5 block" :style="'background-color:' + c"></span>
+                                </button>
+                            </template>
+                        </div>
+                    </div>
+                    @endif
+
+                    @if($product->specifications && $product->specifications->count() > 0)
+                    <div class="mt-5">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-[#9aa19c]">Key specifications</span>
+                        <div class="mt-2 space-y-2">
+                            @foreach($product->specifications->take(5) as $spec)
+                            <div class="flex items-baseline justify-between gap-4 text-[12.5px]">
+                                <span class="text-[#6b716c]">{{ $spec->key }}</span>
+                                <span class="font-semibold text-[#1c201e] text-right tnum">{{ $spec->value }}</span>
                             </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    @endif
+
+                    {{-- CTA --}}
+                    <div class="mt-6">
+                        @auth
+                            @if(auth()->id() === $store->user_id)
+                            <div class="flex items-center gap-2 text-[12px] font-semibold text-[#659316] bg-[#f2f9df] border border-[#9acd32]/25 rounded-xl px-4 py-3">
+                                <i class="fa-regular fa-circle-check text-[16px]" style=""></i>
+                                This is your own listing.
+                            </div>
+                            @else
+                            <form action="{{ route('conversations.store') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="seller_id" value="{{ $store->user_id }}">
+                                <input type="hidden" name="target_type" value="product">
+                                <input type="hidden" name="target_id" value="{{ $product->id }}">
+                                <input type="hidden" name="message" value="Hi, I'm interested in {{ $product->name }}. Is it still available?">
+                                <button type="submit"
+                                        class="w-full h-12 bg-[#1c201e] text-white text-[13px] font-bold rounded-xl hover:bg-black active:scale-[0.99] transition-all flex items-center justify-center gap-2">
+                                    <i class="fa-regular fa-comment text-[16px]" style=""></i>
+                                    Message seller
+                                </button>
+                            </form>
+                            @if($store->whatsapp_number)
+                            <a href="https://wa.me/{{ wa_url($store->whatsapp_number) }}?text={{ urlencode('Hi, I\'m interested in ' . $product->name . ' on Izifai.') }}"
+                               target="_blank"
+                               class="mt-2 w-full h-12 bg-[#25D366] text-white text-[13px] font-bold rounded-xl hover:bg-[#128C7E] active:scale-[0.99] transition-all flex items-center justify-center gap-2">
+                                {!! str_replace('w-5 h-5', 'w-[18px] h-[18px]', $whatsappIcon) !!}
+                                Chat on WhatsApp
+                            </a>
+                            @endif
+                            @endif
+                        @else
+                            @if($store->whatsapp_number)
+                            <a href="https://wa.me/{{ wa_url($store->whatsapp_number) }}?text={{ urlencode('Hi, I\'m interested in ' . $product->name . ' on Izifai.') }}"
+                               target="_blank"
+                               class="w-full h-12 bg-[#25D366] text-white text-[13px] font-bold rounded-xl hover:bg-[#128C7E] active:scale-[0.99] transition-all flex items-center justify-center gap-2">
+                                {!! str_replace('w-5 h-5', 'w-[18px] h-[18px]', $whatsappIcon) !!}
+                                Chat on WhatsApp
+                            </a>
+                            @endif
+                        @endauth
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{-- ============ MOBILE: specifications ============ --}}
+    @if($product->specifications && $product->specifications->count() > 0)
+    <section class="lg:hidden max-w-7xl mx-auto px-2 sm:px-6 mt-3">
+        <div class="rounded-2xl bg-white border border-[#e8eae8] p-4">
+            <h2 class="text-[13px] font-bold text-[#1c201e] mb-3">Specifications</h2>
+            <div class="divide-y divide-[#f2f3f2]">
+                @foreach($product->specifications as $spec)
+                <div class="flex items-baseline justify-between gap-4 py-2 text-[12px]">
+                    <span class="text-[#6b716c]">{{ $spec->key }}</span>
+                    <span class="font-semibold text-[#1c201e] text-right tnum">{{ $spec->value }}</span>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+    @endif
+
+    {{-- ============ ABOUT ============ --}}
+    <section class="max-w-7xl mx-auto px-2 sm:px-6 mt-6">
+        <div class="rounded-2xl bg-white border border-[#e8eae8] p-4 sm:p-6">
+            <h2 class="text-[15px] sm:text-base font-bold text-[#1c201e] mb-2.5">About this product</h2>
+            <div class="text-[12.5px] sm:text-[13.5px] text-[#3f453f] leading-relaxed whitespace-pre-line break-words">{{ $product->description }}</div>
+        </div>
+    </section>
+
+    {{-- ============ SELLER ============ --}}
+    <section class="max-w-7xl mx-auto px-2 sm:px-6 mt-3">
+        <div class="rounded-2xl bg-white border border-[#e8eae8] p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-4">
+            @if($store->logo_url)
+            <img src="{{ $store->logo_url }}" alt="{{ $store->name }}" class="w-14 h-14 rounded-xl object-cover border border-[#e8eae8] bg-[#f5f6f5] shrink-0">
+            @else
+            <div class="w-14 h-14 rounded-xl bg-[#f2f9df] border border-[#9acd32]/25 grid place-items-center text-[#659316] shrink-0">
+                <i class="fa-solid fa-store text-[22px]" style=""></i>
+            </div>
+            @endif
+            <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                    <p class="text-[14px] sm:text-[15px] font-bold text-[#1c201e] truncate">{{ $store->name }}</p>
+                    @if($store->is_verified)
+                    <i class="fa-solid fa-circle-check text-[15px] text-[#659316]" style=""></i>
+                    @endif
+                </div>
+                <div class="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-1 text-[11.5px] text-[#6b716c]">
+                    @if($store->location)
+                    <span><i class="fa-solid fa-location-dot text-[11px]" style=""></i> {{ $store->location }}</span>
+                    @endif
+                    <span>{{ $totalProducts }} product{{ $totalProducts === 1 ? '' : 's' }}</span>
+                    @if($store->business_email)
+                    <span class="truncate">{{ $store->business_email }}</span>
+                    @endif
+                </div>
+            </div>
+            <a href="{{ route('stores.show', $store->slug) }}"
+               class="shrink-0 h-11 px-5 rounded-xl bg-[#1c201e] text-white text-[12px] font-bold hover:bg-black transition-colors flex items-center justify-center gap-1.5">
+                Visit store
+                <i class="fa-solid fa-arrow-right text-[14px]" style=""></i>
+            </a>
+        </div>
+        <p class="mt-2 px-1 text-[11px] text-[#9aa19c]">
+            <i class="fa-regular fa-shield-check text-[12px] mr-1 text-[#659316]" style=""></i>
+            Meet in a safe public place · Pay only on pickup · Inspect the item before paying.
+        </p>
+    </section>
+
+    {{-- ============ REVIEWS ============ --}}
+    <section class="max-w-7xl mx-auto px-2 sm:px-6 mt-3">
+        <div class="rounded-2xl bg-white border border-[#e8eae8] p-4 sm:p-6">
+            <div class="flex flex-col lg:flex-row lg:items-start lg:gap-8">
+                <div class="lg:w-56 lg:text-center shrink-0 flex items-center lg:block gap-4 lg:gap-0">
+                    <div>
+                        <span class="text-[36px] sm:text-[44px] font-black text-[#1c201e] tnum leading-none">{{ number_format($avgRating, 1) }}</span>
+                        <div class="flex items-center gap-0.5 mt-1.5 justify-start lg:justify-center">
+                            @for($i = 1; $i <= 5; $i++)
+                            <i class="fa-solid fa-star text-[14px] {{ $i <= round($avgRating) ? 'text-amber-400' : 'text-[#e0e3e0]' }}" style=""></i>
+                            @endfor
+                        </div>
+                        <p class="text-[11px] text-[#9aa19c] mt-1">{{ $totalReviews }} review{{ $totalReviews === 1 ? '' : 's' }}</p>
+                    </div>
+                    @if($totalReviews > 0)
+                    <div class="flex-1 lg:hidden"></div>
+                    <div class="lg:mt-5 space-y-1.5 w-full max-w-[180px] lg:mx-auto">
+                        @foreach([5, 4, 3, 2, 1] as $star)
+                        @php $count = $starDistribution[$star]['count'] ?? 0; $pct = $totalReviews > 0 ? ($count / $totalReviews) * 100 : 0; @endphp
+                        <div class="flex items-center gap-2">
+                            <span class="w-4 text-[10px] font-bold text-[#9aa19c] tnum shrink-0">{{ $star }}</span>
+                            <div class="flex-1 h-1.5 bg-[#eef0ee] rounded-full overflow-hidden">
+                                <div class="h-full rounded-full bg-gradient-to-r from-[#7ca81d] to-[#9acd32]" style="width: {{ $pct }}%"></div>
+                            </div>
+                            <span class="w-5 text-right text-[10px] text-[#9aa19c] font-semibold tnum shrink-0">{{ $count }}</span>
                         </div>
                         @endforeach
                     </div>
-                </div>
-                @endif
-
-                {{-- Views --}}
-                <div class="flex items-center gap-2 text-xs text-on-surface-variant">
-                    <i class="fa-solid fa-eye text-[16px] text-outline"></i>
-                    <span class="font-semibold">{{ number_format($product->views ?? 0) }}</span>
-                    <span class="text-outline">views</span>
+                    @endif
                 </div>
 
-                {{-- Action Buttons --}}
-                <div class="space-y-2.5 sm:space-y-3 pt-1 sm:pt-2">
+                <div class="flex-1 min-w-0 mt-5 lg:mt-0">
                     @auth
-                        @if(auth()->id() === $store->user_id)
-                            <div class="flex items-center gap-2 w-full py-3 sm:py-3.5 px-4 bg-surface-container-high text-on-surface-variant rounded-xl text-xs sm:text-sm font-medium">
-                                <i class="fa-solid fa-circle-info text-[18px] sm:text-[20px]"></i>
-                                This is your listing
-                            </div>
-                        @else
-                        {{-- Contact Seller --}}
-                        <div class="border-t border-outline-variant/10 pt-4 mt-4">
-                            <p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-3 flex items-center gap-1.5">
-                                <i class="fa-solid fa-headset text-[14px]"></i>
-                                Contact Seller
-                            </p>
-                            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-                                <form action="{{ route('conversations.store') }}" method="POST" class="min-w-0 sm:flex-1">
-                                    @csrf
-                                    <input type="hidden" name="seller_id" value="{{ $store->user_id }}">
-                                    <input type="hidden" name="target_type" value="product">
-                                    <input type="hidden" name="target_id" value="{{ $product->id }}">
-                                    <input type="hidden" name="message" value="Hi, I am interested in {{ $product->name }}. Is it still available?">
-                                    <button type="submit"
-                                            class="flex items-center justify-center gap-2 w-full py-2.5 sm:py-2.5 bg-primary/5 text-primary rounded-xl text-[11px] sm:text-xs font-bold border border-primary/20 hover:bg-primary hover:text-white transition-all">
-                                        <i class="fa-regular fa-comment text-[16px] sm:text-[18px]"></i>
-                                        Message Seller
-                                    </button>
-                                </form>
-                                @if($store->whatsapp_number)
-                                <a href="#"
-                                   onclick="logContact('whatsapp'); return false;"
-                                   class="flex items-center justify-center gap-2 w-full sm:w-auto py-2.5 sm:py-2.5 px-4 border border-outline-variant/30 text-[#25D366] rounded-xl text-[11px] sm:text-xs font-bold hover:bg-[#25D366] hover:text-white transition-all whitespace-nowrap">
-                                    {!! $whatsappIcon !!}
-                                    WhatsApp
-                                </a>
-                                @endif
-                            </div>
+                    @if(auth()->id() !== $store->user_id)
+                    <div class="lg:max-w-[480px] px-0 lg:pr-10">
+                        <p class="text-[12px] font-bold text-[#1c201e] mb-2">Share your thoughts</p>
+                        <div class="flex items-center gap-1 mb-2">
+                            <template x-for="i in 5" :key="i">
+                                <button type="button" @mouseenter="reviewHover = i" @mouseleave="reviewHover = 0" @click="reviewStar = i" class="text-[22px] leading-none">
+                                    <i class="fa-solid fa-star transition-colors" :class="(i <= (reviewHover || reviewStar)) ? 'text-amber-400' : 'text-[#e0e3e0]'"></i>
+                                </button>
+                            </template>
+                            <span class="ml-1 text-[12px] font-semibold text-[#6b716c]" x-text="reviewStar ? reviewStar + '/5' : ''"></span>
                         </div>
-                        @endif
+                        <form action="{{ route('products.review', $product->id) }}" method="POST" class="flex gap-2 items-end">
+                            @csrf
+                            <input type="hidden" name="rating" :value="reviewStar">
+                            <textarea name="comment" rows="2" placeholder="What did you think?"
+                                      class="flex-1 rounded-xl border border-[#e8eae8] bg-[#f5f6f5] text-[12.5px] px-3 py-2 outline-none focus:border-[#9acd32] focus:ring-2 focus:ring-[#9acd32]/15 transition-all placeholder:text-[#9aa19c] resize-none"></textarea>
+                            <button type="submit"
+                                    class="shrink-0 h-[42px] px-4 rounded-xl bg-[#1c201e] text-white text-[12px] font-bold hover:bg-black transition-colors">Post</button>
+                        </form>
+                    </div>
+                    <div class="h-px bg-[#eef0ee] my-5 lg:my-6"></div>
+                    @endif
                     @else
-                    <div class="space-y-2">
-                        @if($store->whatsapp_number)
-                        <a href="https://wa.me/{{ wa_url($store->whatsapp_number) }}?text={{ urlencode('Hi, I am interested in ' . $product->name . ' on Izifai.') }}"
-                           target="_blank"
-                           class="flex items-center justify-center gap-1.5 w-full py-2.5 sm:py-3 border border-outline-variant/30 text-[#25D366] rounded-xl text-xs sm:text-sm font-bold hover:bg-[#25D366] hover:text-white transition-all group">
-                            {!! $whatsappIcon !!}
-                            Contact via WhatsApp
-                        </a>
-                        @endif
+                    <div class="lg:max-w-[480px] rounded-xl bg-[#f5f6f5] border border-dashed border-[#e0e3e0] px-4 py-3.5 flex items-center justify-between">
+                        <p class="text-[12px] text-[#6b716c]">Sign in to rate this product</p>
+                        <a href="{{ route('login') }}" class="text-[12px] font-black text-[#659316]">Log in →</a>
                     </div>
+                    <div class="h-px bg-[#eef0ee] my-5"></div>
                     @endauth
-                    <a href="{{ route('stores.show', $store->slug) }}"
-                       class="flex items-center justify-center gap-2 w-full py-2.5 sm:py-3 bg-surface-container-high text-on-surface rounded-xl text-xs sm:text-sm font-bold hover:bg-surface-container-highest transition-all">
-                        <i class="fa-solid fa-store text-[16px] sm:text-[18px]"></i>
-                        Browse Store
-                    </a>
-                    <button onclick="copyToClipboard(window.location.href, this)"
-                            class="flex items-center justify-center gap-2 w-full py-2 sm:py-2.5 border border-outline-variant/30 text-on-surface-variant rounded-xl text-[11px] sm:text-xs font-bold hover:bg-surface-container transition-all">
-                        <i class="fa-solid fa-share-nodes text-[16px] sm:text-[18px] copy-icon"></i>
-                        <span class="copy-label">Share Link</span>
-                    </button>
-                    <button @click="openReport()"
-                            class="flex items-center justify-center gap-2 w-full py-2.5 sm:py-3 border border-outline-variant/30 text-on-surface-variant rounded-xl text-xs sm:text-sm font-bold hover:bg-surface-container transition-all">
-                        <i class="fa-solid fa-flag text-[16px] sm:text-[18px]"></i>
-                        Report Listing
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    {{-- DESCRIPTION BANNER --}}
-    @if($product->description)
-    <div class="bg-surface-container-lowest rounded-xl sm:rounded-2xl p-5 sm:p-6 lg:p-8 shadow-sm border border-outline-variant/10">
-        <div class="flex items-center gap-2 mb-3 sm:mb-4">
-            <i class="fa-solid fa-file-lines text-primary text-[18px] sm:text-[20px]"></i>
-            <h2 class="text-sm sm:text-base font-bold text-on-surface">Description</h2>
-        </div>
-        <div class="text-xs sm:text-sm text-on-surface-variant leading-relaxed sm:leading-relaxed whitespace-pre-wrap">{{ $product->description }}</div>
-    </div>
-    @endif
-
-    {{-- TRUST & SOCIAL ROW --}}
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4">
-        @php $socialLinks = $store->social_links ?: []; @endphp
-
-        <div class="lg:col-span-4 bg-surface-container-lowest rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-sm border border-outline-variant/10 flex flex-col items-center justify-center gap-2 sm:gap-3">
-            <p class="text-[10px] sm:text-xs font-bold text-on-surface-variant uppercase tracking-wider">Connect With Us</p>
-            <div class="flex flex-wrap justify-center gap-1.5 sm:gap-2">
-                @if($store->whatsapp_number)
-                <a href="https://wa.me/{{ wa_url($store->whatsapp_number) }}?text={{ urlencode('Hello, I found you on Izifai.') }}" target="_blank"
-                   class="w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white transition-all" title="WhatsApp">
-                    <svg viewBox="0 0 24 24" fill="currentColor" class="w-[14px] h-[14px] sm:w-[18px] sm:h-[18px]" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c 0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                </a>
-                @endif
-                @foreach($socialLinks as $social)
-                    @php
-                        $url = $social['url'] ?? '';
-                        $platform = $social['platform'] ?? '';
-                        if (!$url) continue;
-                        $icon = match($platform) {
-                            'facebook' => ['icon' => 'fa-brands fa-facebook', 'bg' => 'bg-blue-50', 'color' => 'text-blue-600', 'hover' => 'hover:bg-blue-600 hover:text-white'],
-                            'instagram' => ['icon' => 'fa-brands fa-instagram', 'bg' => 'bg-pink-50', 'color' => 'text-pink-600', 'hover' => 'hover:bg-pink-600 hover:text-white'],
-                            'twitter' => ['icon' => 'fa-brands fa-x-twitter', 'bg' => 'bg-sky-50', 'color' => 'text-sky-600', 'hover' => 'hover:bg-sky-600 hover:text-white'],
-                            'linkedin' => ['icon' => 'fa-brands fa-linkedin-in', 'bg' => 'bg-blue-50', 'color' => 'text-blue-700', 'hover' => 'hover:bg-blue-700 hover:text-white'],
-                            'tiktok' => ['icon' => 'fa-brands fa-tiktok', 'bg' => 'bg-gray-50', 'color' => 'text-gray-800', 'hover' => 'hover:bg-gray-800 hover:text-white'],
-                            'youtube' => ['icon' => 'fa-brands fa-youtube', 'bg' => 'bg-red-50', 'color' => 'text-red-600', 'hover' => 'hover:bg-red-600 hover:text-white'],
-                            'whatsapp_group' => ['icon' => 'fa-brands fa-whatsapp', 'bg' => 'bg-green-50', 'color' => 'text-green-600', 'hover' => 'hover:bg-green-600 hover:text-white'],
-                            default => ['icon' => 'fa-solid fa-globe', 'bg' => 'bg-surface-container', 'color' => 'text-on-surface-variant', 'hover' => 'hover:bg-primary/10 hover:text-primary'],
-                        };
-                    @endphp
-                    <a href="{{ $url }}" target="_blank"
-                       class="w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center {{ $icon['bg'] }} {{ $icon['color'] }} {{ $icon['hover'] }} transition-all"
-                       title="{{ ucfirst(str_replace('_', ' ', $platform)) }}">
-                        <i class="{{ $icon['icon'] }} text-[14px] sm:text-[18px]"></i>
-                    </a>
-                @endforeach
-            </div>
-        </div>
-
-        <div class="lg:col-span-8 bg-surface-container-lowest rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-sm border border-outline-variant/10">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 divide-y sm:divide-y-0 sm:divide-x divide-outline-variant/10">
-                <div class="flex items-start gap-3 flex-1 pb-4 sm:pb-0 sm:pr-6">
-                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                        <i class="fa-solid fa-shield-halved text-[18px] sm:text-[20px]" style=""></i>
-                    </div>
-                    <div class="min-w-0">
-                        <p class="text-xs sm:text-sm font-bold text-on-surface">Premium Assurance</p>
-                        <p class="text-[10px] sm:text-xs text-on-surface-variant">Verified merchant with trusted quality</p>
-                    </div>
-                </div>
-                <div class="flex items-start gap-3 flex-1 pt-4 sm:pt-0 sm:pl-6">
-                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                        <i class="fa-solid fa-truck-fast text-[18px] sm:text-[20px]" style=""></i>
-                    </div>
-                    <div class="min-w-0">
-                        <p class="text-xs sm:text-sm font-bold text-on-surface">{{ $store->location ? explode(',', $store->location)[0] . ' Express' : 'Douala & YaoundÃ© Express' }}</p>
-                        <p class="text-[10px] sm:text-xs text-on-surface-variant">Fast delivery across {{ $store->location ? $store->location : "Cameroon's major cities" }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{-- REPORT MODAL --}}
-    <div x-show="reportOpen" x-cloak
-         class="fixed inset-0 z-[100] flex items-end sm:items-center justify-center"
-         x-transition:enter="transition ease-out duration-200"
-         x-transition:enter-start="opacity-0"
-         x-transition:enter-end="opacity-100"
-         x-transition:leave="transition ease-in duration-150"
-         x-transition:leave-start="opacity-100"
-         x-transition:leave-end="opacity-0">
-        <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" @click="closeReport()"></div>
-        <div class="relative bg-white w-full sm:max-w-lg rounded-t-2xl sm:rounded-2xl shadow-2xl z-10 overflow-hidden"
-             x-transition:enter="transition ease-out duration-200"
-             x-transition:enter-start="translate-y-full sm:translate-y-4 sm:scale-95 opacity-0"
-             x-transition:enter-end="translate-y-0 sm:translate-y-0 sm:scale-100 opacity-100"
-             x-transition:leave="transition ease-in duration-150"
-             x-transition:leave-start="translate-y-0 sm:translate-y-0 sm:scale-100 opacity-100"
-             x-transition:leave-end="translate-y-full sm:translate-y-4 sm:scale-95 opacity-0">
-
-            {{-- Header --}}
-            <div class="flex items-center justify-between px-5 sm:px-6 pt-4 sm:pt-5 pb-3 border-b border-gray-100">
-                <div class="flex items-center gap-2.5">
-                    <div class="w-8 h-8 rounded-lg bg-error/5 flex items-center justify-center text-error">
-                        <i class="fa-solid fa-flag text-[18px]"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-sm font-bold text-on-surface">Report Listing</h3>
-                        <p class="text-[10px] text-on-surface-variant/70">Help us keep the marketplace safe</p>
-                    </div>
-                </div>
-                <button @click="closeReport()" class="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center text-on-surface-variant hover:bg-gray-200 transition-colors">
-                    <i class="fa-solid fa-xmark text-[16px]"></i>
-                </button>
-            </div>
-
-            {{-- Success State --}}
-            <div x-show="reportSubmitted" class="px-5 sm:px-6 py-10 sm:py-12 text-center">
-                <div class="w-14 h-14 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-500 mx-auto mb-4">
-                    <i class="fa-solid fa-circle-check text-[28px]" style=""></i>
-                </div>
-                <h3 class="text-base font-bold text-on-surface mb-1">Report Submitted</h3>
-                <p class="text-xs text-on-surface-variant leading-relaxed max-w-xs mx-auto">Thank you for your report. Our team will review this listing shortly.</p>
-            </div>
-
-            {{-- Form --}}
-            <div x-show="!reportSubmitted" class="px-5 sm:px-6 py-4 sm:py-5 space-y-2.5 max-h-[60vh] overflow-y-auto no-scrollbar">
-                <p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider mb-1">Why are you reporting this?</p>
-
-                <template x-for="reason in ['Sexual Content', 'Scam / Fraud', 'Fake Product', 'Counterfeit', 'Offensive / Abusive', 'Spam', 'Other']" :key="reason">
-                    <button @click="selectReason(reason)"
-                            class="flex items-center gap-3 w-full px-4 py-3 rounded-xl border transition-all text-left"
-                            :class="reportReason === reason ? 'border-error/30 bg-error/5 text-error font-bold' : 'border-gray-100 bg-white hover:border-gray-200 text-on-surface font-medium'">
-                        <div class="w-4 h-4 rounded-full border-2 shrink-0 flex items-center justify-center transition-colors"
-                             :class="reportReason === reason ? 'border-error' : 'border-gray-300'">
-                            <div x-show="reportReason === reason" class="w-2 h-2 rounded-full bg-error"></div>
-                        </div>
-                        <span class="text-xs" x-text="reason"></span>
-                    </button>
-                </template>
-
-                <div x-show="otherSelected" class="pt-1">
-                    <textarea x-model="reportDetails"
-                              placeholder="Please describe the issue..."
-                              class="w-full px-4 py-3 bg-gray-50 border-none rounded-xl text-xs font-medium focus:ring-2 focus:ring-error/20 transition-all resize-none"
-                              rows="3"
-                              maxlength="1000"></textarea>
-                    <p class="text-[9px] text-on-surface-variant/50 text-right mt-1" x-text="reportDetails.length + '/1000'"></p>
-                </div>
-
-                <div x-show="reportError" class="bg-rose-50 text-rose-600 text-[10px] font-medium px-4 py-2.5 rounded-xl" x-text="reportError"></div>
-            </div>
-
-            {{-- Footer --}}
-            <div x-show="!reportSubmitted" class="flex items-center gap-3 px-5 sm:px-6 py-3 sm:py-4 border-t border-gray-100">
-                <button @click="closeReport()"
-                        class="flex-1 py-2.5 rounded-xl border border-gray-200 text-[11px] font-bold text-on-surface-variant hover:bg-gray-50 transition-all">
-                    Cancel
-                </button>
-                <button @click="submitReport()"
-                        :disabled="!reportReason || (otherSelected && !reportDetails.trim()) || reportSubmitting"
-                        class="flex-1 py-2.5 rounded-xl text-[11px] font-bold text-white transition-all flex items-center justify-center gap-2"
-                        :class="(!reportReason || (otherSelected && !reportDetails.trim()) || reportSubmitting) ? 'bg-gray-300 cursor-not-allowed' : 'bg-error hover:bg-error/90'">
-                    <span x-show="!reportSubmitting">Submit Report</span>
-                    <span x-show="reportSubmitting" class="flex items-center gap-2">
-                        <svg class="animate-spin w-4 h-4" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-                        Submitting...
-                    </span>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    {{-- CUSTOMER REVIEWS --}}
-    @if($reviews->count() > 0)
-    <section id="reviews" class="scroll-mt-[80px] lg:scroll-mt-[100px] space-y-4">
-        <div class="flex items-center justify-between">
-            <h4 class="text-base sm:text-lg lg:text-[24px] leading-8 font-bold flex items-center gap-2">
-                <i class="fa-solid fa-star text-primary text-[18px] sm:text-[20px]"></i>
-                Customer Reviews
-            </h4>
-            <div class="flex items-center gap-1.5 sm:gap-2">
-                <span class="text-xs sm:text-sm font-bold">{{ number_format($avgRating, 1) }}</span>
-                <div class="flex text-orange-500">
-                    @for($i = 1; $i <= 5; $i++)
-                    <i class="{{ $i <= round($avgRating) ? 'fa-solid' : 'fa-regular' }} fa-star text-[14px] sm:text-[16px]" style=""></i>
-                    @endfor
-                </div>
-            </div>
-        </div>
-
-        {{-- Star Distribution --}}
-        @if(isset($starDistribution))
-        <div class="bg-surface-container-lowest rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-sm border border-outline-variant/10">
-            @foreach($starDistribution as $star => $data)
-            <div class="flex items-center gap-2 sm:gap-3 py-1 sm:py-1.5">
-                <span class="text-[11px] sm:text-xs font-bold text-on-surface w-3 sm:w-4 text-right">{{ $star }}</span>
-                <i class="fa-solid fa-star text-[14px] sm:text-[16px] text-amber-500" style=""></i>
-                <div class="flex-1 h-2 sm:h-2.5 rounded-full bg-surface-container overflow-hidden">
-                    <div class="h-full rounded-full bg-amber-500" style="width: {{ $data['percentage'] }}%"></div>
-                </div>
-                <span class="text-[10px] sm:text-xs text-on-surface-variant w-8 text-right">{{ $data['count'] }}</span>
-            </div>
-            @endforeach
-        </div>
-        @endif
-
-        @php $firstReview = $reviews->shift(); @endphp
-        @if($firstReview)
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4">
-            <div class="bg-surface-container-lowest rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-sm border border-outline-variant/10">
-                <div class="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
-                    <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-secondary-container flex items-center justify-center font-bold text-primary text-[10px] sm:text-sm shrink-0">
-                        {{ substr($firstReview->user->name ?? 'A', 0, 1) }}
-                    </div>
-                    <div class="min-w-0">
-                        <p class="text-xs sm:text-sm font-bold truncate">{{ $firstReview->user->name ?? 'Anonymous' }}</p>
-                        <p class="text-[9px] sm:text-[10px] text-on-surface-variant">Verified Buyer</p>
-                    </div>
-                </div>
-                <div class="flex text-amber-500 mb-1.5 sm:mb-2">
-                    @for($i = 1; $i <= 5; $i++)
-                    <i class="{{ $i <= $firstReview->rating ? 'fa-solid' : 'fa-regular' }} fa-star text-[14px] sm:text-[16px]" style=""></i>
-                    @endfor
-                </div>
-                @if($firstReview->comment)
-                <p class="text-xs sm:text-sm text-on-surface-variant italic leading-relaxed">"{{ $firstReview->comment }}"</p>
-                @endif
-            </div>
-
-            @php $secondReview = $reviews->shift(); @endphp
-            @if($secondReview)
-            <div class="lg:col-span-2 bg-surface-container-lowest rounded-xl sm:rounded-2xl shadow-sm border border-outline-variant/10 overflow-hidden">
-                <div class="flex flex-col sm:flex-row">
-                    <div class="flex-1 p-4 sm:p-5">
-                        <div class="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
-                            <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-secondary-container flex items-center justify-center font-bold text-primary text-[10px] sm:text-sm shrink-0">
-                                {{ substr($secondReview->user->name ?? 'A', 0, 1) }}
+                    @if($reviews->isNotEmpty())
+                    <div class="max-h-[380px] lg:max-h-[420px] overflow-y-auto pr-1.5 reviews-scroll">
+                        <div class="space-y-4">
+                        @foreach($reviews as $review)
+                        @php $rating = (int)round((float)($review->rating ?? 5)); @endphp
+                        <div class="border border-[#eef0ee] rounded-xl p-3 sm:p-4">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#f2f9df] text-[#659316] grid place-items-center font-black text-[12px] uppercase shrink-0">
+                                    {{ substr($review->user->name ?? 'U', 0, 1) }}
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="text-[12px] font-bold text-[#1c201e] truncate">{{ $review->user->name ?? 'User' }}</p>
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="flex items-center gap-0.5">
+                                            @for($i = 1; $i <= 5; $i++)
+                                            <i class="fa-solid fa-star text-[10px] {{ $i <= $rating ? 'text-amber-400' : 'text-[#e0e3e0]' }}" style=""></i>
+                                            @endfor
+                                        </span>
+                                        <span class="text-[10px] text-[#9aa19c]">{{ $review->created_at->diffForHumans() }}</span>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="min-w-0">
-                                <p class="text-xs sm:text-sm font-bold truncate">{{ $secondReview->user->name ?? 'Anonymous' }}</p>
-                                <p class="text-[9px] sm:text-[10px] text-on-surface-variant">Verified Buyer</p>
-                            </div>
+                            <p class="mt-2 text-[12.5px] text-[#3f453f] leading-relaxed">{{ $review->comment }}</p>
                         </div>
-                        <div class="flex text-amber-500 mb-1.5 sm:mb-2">
-                            @for($i = 1; $i <= 5; $i++)
-                            <i class="{{ $i <= $secondReview->rating ? 'fa-solid' : 'fa-regular' }} fa-star text-[14px] sm:text-[16px]" style=""></i>
-                            @endfor
+                        @endforeach
                         </div>
-                        @if($secondReview->comment)
-                        <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed">"{{ $secondReview->comment }}"</p>
-                        @endif
-                    </div>
-                    @if($product->images->first())
-                    <div class="sm:w-40 lg:w-48 h-40 sm:h-auto shrink-0">
-                        <img src="{{ $product->images->first()->url }}"
-                             class="w-full h-full object-cover"
-                             alt="{{ $product->name }}">
                     </div>
                     @endif
                 </div>
             </div>
-            @endif
-        </div>
-        @endif
-    </section>
-    @endif
-
-    {{-- PRODUCT REVIEW FORM --}}
-    @auth
-    <section class="bg-surface-container-lowest rounded-2xl p-5 shadow-sm border border-outline-variant/10">
-        <h4 class="text-base font-bold flex items-center gap-2 mb-4">
-            <i class="fa-solid fa-star text-primary text-[18px]"></i>
-            Write a Review
-        </h4>
-        <form action="{{ route('products.review', $product) }}" method="POST">
-            @csrf
-            <div class="flex items-center gap-1 mb-3" x-data="{ rating: 0 }">
-                <p class="text-xs font-bold text-on-surface-variant mr-2">Your Rating:</p>
-                <template x-for="i in 5" :key="i">
-                    <button type="button" @click="rating = i"
-                            :class="i <= rating ? 'fa-solid fa-star text-[24px] text-orange-500' : 'fa-regular fa-star text-[24px] text-on-surface-variant/30'"
-                            class="transition-colors"></button>
-                </template>
-                <input type="hidden" name="rating" x-model="rating">
-            </div>
-            <textarea name="comment" rows="2" class="w-full bg-surface-container border-none rounded-xl p-3 text-sm text-on-surface focus:ring-2 focus:ring-primary/20 mb-3" placeholder="Share your thoughts about this product..." maxlength="500"></textarea>
-            <div class="flex justify-end">
-                <button type="submit" class="px-5 py-2 bg-primary text-on-primary rounded-xl text-xs font-bold hover:opacity-90 transition-all">
-                    Submit Review
-                </button>
-            </div>
-        </form>
-    </section>
-    @endauth
-
-    {{-- HIGHLY LIKED PRODUCTS --}}
-    @if($topProducts->count() > 0)
-    <section class="space-y-3 sm:space-y-4">
-        <div class="flex items-center justify-between">
-            <h4 class="text-base sm:text-lg lg:text-[24px] leading-8 font-bold flex items-center gap-2">
-                <i class="fa-solid fa-thumbs-up text-primary text-[18px] sm:text-[20px]" style=""></i>
-                Highly Liked Products
-            </h4>
-            <a href="{{ route('stores.show', $store->slug) }}#catalog" class="text-primary text-xs sm:text-sm font-bold hover:underline shrink-0 flex items-center gap-0.5 sm:gap-1">
-                View All <i class="fa-solid fa-arrow-right text-[14px] sm:text-[16px]"></i>
-            </a>
-        </div>
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 lg:gap-5">
-            @foreach($topProducts->take(4) as $p)
-            <div class="bg-surface-container-lowest rounded-xl sm:rounded-2xl shadow-sm hover:shadow-lg transition-all border border-outline-variant/10 overflow-hidden group relative">
-                <a href="{{ route('products.show', $p->slug) }}" class="block">
-                    <div class="aspect-square relative overflow-hidden bg-surface-container-high">
-                        @if($p->images->first())
-                        <img src="{{ $p->images->first()->url }}"
-                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                             alt="{{ $p->name }}">
-                        @else
-                        <div class="w-full h-full flex items-center justify-center text-on-surface-variant/30">
-                            <i class="fa-solid fa-image text-3xl sm:text-4xl"></i>
-                        </div>
-                        @endif
-                    </div>
-                    <div class="p-2 sm:p-3 space-y-0.5 sm:space-y-1">
-                        @if($p->category)
-                        <p class="text-[7px] sm:text-[9px] font-semibold text-outline uppercase truncate">{{ $p->category->name }}</p>
-                        @endif
-                        <h6 class="font-bold text-xs sm:text-sm text-on-surface truncate">{{ $p->name }}</h6>
-                        <p class="text-xs sm:text-sm font-black text-primary truncate">{{ number_format($p->price) }} FCFA</p>
-                    </div>
-                </a>
-                <button class="favorite-btn absolute top-1.5 right-1.5 sm:top-2 sm:right-2 w-6 h-6 sm:w-7 sm:h-7 bg-white/80 backdrop-blur rounded-full flex items-center justify-center hover:bg-white transition-colors z-10"
-                        data-product="{{ $p->id }}"
-                        data-favorited="{{ in_array($p->id, $savedProductIds) ? 'true' : 'false' }}">
-                    <i class="{{ in_array($p->id, $savedProductIds) ? 'fa-solid' : 'fa-regular' }} fa-heart text-[12px] sm:text-[16px]" style=""></i>
-                </button>
-            </div>
-            @endforeach
         </div>
     </section>
-    @endif
 
-    {{-- OTHER PRODUCTS IN STORE --}}
-    @if($storeProducts->count() > 0)
-    <section class="space-y-3 sm:space-y-4">
-        <h4 class="text-base sm:text-lg lg:text-[24px] leading-8 font-bold">Other Products in Store</h4>
-        <div class="grid grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3 lg:gap-4">
+    {{-- ============ MORE FROM STORE ============ --}}
+    @if($storeProducts->isNotEmpty())
+    <section class="max-w-7xl mx-auto px-2 sm:px-6 mt-3">
+        <div class="flex items-end justify-between gap-3 mb-3">
+            <div>
+                <h2 class="text-[14px] sm:text-lg font-bold tracking-tight text-[#1c201e]">More from {{ $store->name }}</h2>
+                <p class="text-[10.5px] sm:text-[12px] text-[#6b716c] mt-0.5">Other listings by this seller</p>
+            </div>
+            <a href="{{ route('stores.show', $store->slug) }}" class="text-[11px] sm:text-[13px] font-bold text-[#659316] hover:text-[#7ca81d] whitespace-nowrap">View store →</a>
+        </div>
+        <div class="grid grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3">
             @foreach($storeProducts as $sp)
             <a href="{{ route('products.show', $sp->slug) }}"
-               class="bg-surface-container-lowest rounded-lg sm:rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all border border-outline-variant/10 group">
-                <div class="aspect-square overflow-hidden bg-surface-container-high">
-                    @if($sp->images->first())
-                    <img src="{{ $sp->images->first()->url }}"
-                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                         alt="{{ $sp->name }}">
-                    @else
-                    <div class="w-full h-full flex items-center justify-center text-on-surface-variant/30">
-                        <i class="fa-solid fa-image text-2xl sm:text-3xl"></i>
-                    </div>
-                    @endif
+               class="group rounded-xl bg-white border border-[#e8eae8] overflow-hidden hover:border-[#9acd32]/50 hover:shadow-[0_12px_30px_-12px_rgba(0,0,0,0.10)] transition-all duration-300">
+                <div class="relative aspect-square bg-[#f5f6f5]">
+                    <img src="{{ $sp->images->first()->url ?? '' }}" alt="{{ $sp->name }}" loading="lazy"
+                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.classList.add('hidden')">
                 </div>
-                <div class="p-1.5 sm:p-2 space-y-0.5">
-                    <h6 class="text-[10px] sm:text-xs font-bold text-on-surface truncate">{{ $sp->name }}</h6>
-                    <p class="text-[10px] sm:text-xs font-bold text-primary truncate">{{ number_format($sp->price) }} FCFA</p>
+                <div class="p-2 sm:p-2.5">
+                    <p class="text-[9px] sm:text-[11.5px] font-semibold text-[#1c201e] line-clamp-2 leading-snug">{{ $sp->name }}</p>
+                    <p class="mt-0.5 text-[10px] sm:text-[12px] font-black text-[#659316] tnum">{{ number_format($sp->price) }} <span class="text-[8px] sm:text-[9px]">F</span></p>
                 </div>
             </a>
             @endforeach
@@ -716,191 +579,106 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xm
     </section>
     @endif
 
-</div>
+    {{-- ============ RELATED PRODUCTS (other stores) ============ --}}
+    @if($relatedProducts->isNotEmpty())
+    <section class="max-w-7xl mx-auto px-2 sm:px-6 mt-3">
+        <div class="flex items-end justify-between gap-3 mb-3">
+            <div>
+                <h2 class="text-[14px] sm:text-lg font-bold tracking-tight text-[#1c201e]">Related products</h2>
+                <p class="text-[10.5px] sm:text-[12px] text-[#6b716c] mt-0.5">Similar items from other stores</p>
+            </div>
+            <a href="{{ route('products.index') }}" class="text-[11px] sm:text-[13px] font-bold text-[#659316] hover:text-[#7ca81d] whitespace-nowrap">See all →</a>
+        </div>
+        <div class="grid grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
+            @foreach($relatedProducts as $rp)
+            <a href="{{ route('products.show', $rp->slug) }}"
+               class="group rounded-xl bg-white border border-[#e8eae8] overflow-hidden hover:border-[#9acd32]/50 hover:shadow-[0_12px_30px_-12px_rgba(0,0,0,0.10)] transition-all duration-300">
+                <div class="relative aspect-square bg-[#f5f6f5]">
+                    <img src="{{ $rp->images->first()->url ?? '' }}" alt="{{ $rp->name }}" loading="lazy"
+                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.classList.add('hidden')">
+                    @if($rp->old_price && $rp->old_price > $rp->price)
+                    <span class="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded bg-[#dc2626] text-white text-[8px] sm:text-[10px] font-black tnum">-{{ round((1 - $rp->price / $rp->old_price) * 100) }}%</span>
+                    @endif
+                </div>
+                <div class="p-2 sm:p-2.5">
+                    <p class="text-[9px] sm:text-[11.5px] font-semibold text-[#1c201e] line-clamp-2 leading-snug">{{ $rp->name }}</p>
+                    <p class="text-[8px] sm:text-[10px] text-[#9aa19c] truncate mt-0.5">
+                        <i class="fa-solid fa-store text-[9px] sm:text-[10px]" style=""></i> {{ $rp->store->name ?? '' }}
+                    </p>
+                    <p class="mt-0.5 text-[10px] sm:text-[12px] font-black text-[#659316] tnum">{{ number_format($rp->price) }} <span class="text-[8px] sm:text-[9px]">F</span></p>
+                </div>
+            </a>
+            @endforeach
+        </div>
+    </section>
+    @endif
+
+    {{-- ============ REPORT ============ --}}
+    <div class="max-w-7xl mx-auto px-2 sm:px-6 mt-8">
+        <button @click="reportOpen = true" class="mx-auto flex items-center gap-1.5 text-[11.5px] text-[#9aa19c] hover:text-[#dc2626] transition-colors">
+            <i class="fa-regular fa-flag text-[13px]" style=""></i>
+            Something wrong with this listing? Report it.
+        </button>
+    </div>
+
+    <div x-show="reportOpen" x-cloak x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+         class="fixed inset-0 bg-black/50 z-[100] lg:flex lg:items-center lg:justify-center">
+        <div class="absolute inset-0" @click="reportOpen = false"></div>
+        <div x-show="reportOpen" x-cloak x-transition:enter="transition ease-out duration-300" x-transition:enter-start="translate-y-full lg:translate-y-0 lg:scale-95" x-transition:enter-end="translate-y-0 lg:scale-100"
+             x-transition:leave="transition ease-in duration-200" x-transition:leave-start="translate-y-0 lg:scale-100" x-transition:leave-end="translate-y-full lg:translate-y-0 lg:scale-95"
+             class="absolute bottom-0 left-0 right-0 lg:static rounded-t-3xl lg:rounded-2xl bg-white p-5 sm:p-6 lg:max-w-md mx-auto lg:shadow-2xl">
+            <div class="w-10 h-1 rounded-full bg-[#e0e3e0] mx-auto lg:hidden mb-4"></div>
+            <div class="flex items-center justify-between mb-1">
+                <h3 class="text-[15px] font-black text-[#1c201e]">Report listing</h3>
+                <button @click="reportOpen = false" class="w-8 h-8 grid place-items-center rounded-full bg-[#f5f6f5] text-[#6b716c] hover:bg-[#e8eae8]">
+                    <i class="fa-solid fa-xmark text-[15px]" style=""></i>
+                </button>
+            </div>
+            <p class="text-[12px] text-[#9aa19c] leading-relaxed mb-4">Your report is confidential and helps keep Izifai safe.</p>
+            @guest
+            <div class="rounded-xl bg-[#f5f6f5] border border-dashed border-[#e0e3e0] px-4 py-4 text-center">
+                <p class="text-[12px] text-[#6b716c]">You need an account to report listings.</p>
+                <a href="{{ route('login') }}" class="mt-1 inline-block text-[12.5px] font-black text-[#659316]">Log in to continue →</a>
+            </div>
+            @else
+            <form action="{{ route('products.report', $product->id) }}" method="POST">
+                @csrf
+                <textarea name="reason" rows="4" required
+                          placeholder="e.g. Scam or fake item, misleading description, prohibited item…"
+                          class="w-full rounded-xl border border-[#e8eae8] bg-[#f5f6f5] text-[12.5px] px-3 py-2.5 outline-none focus:border-[#dc2626] focus:ring-2 focus:ring-[#dc2626]/10 transition-all placeholder:text-[#9aa19c] resize-none"></textarea>
+                <div class="flex gap-2 mt-3">
+                    <button type="button" @click="reportOpen = false" class="flex-1 h-10 rounded-xl bg-[#f5f6f5] text-[#3f453f] text-[12px] font-bold hover:bg-[#e8eae8] transition-colors">Cancel</button>
+                    <button type="submit" class="flex-1 h-10 rounded-xl bg-[#dc2626] text-white text-[12px] font-black hover:bg-[#b91c1c] transition-colors">Submit report</button>
+                </div>
+            </form>
+            @endguest
+        </div>
+    </div>
 </div>
 @endsection
 
-{{-- ==================== FOOTER ==================== --}}
-@section('footer')
-<footer class="w-full py-8 lg:py-12 bg-surface-container-low flex flex-col items-center justify-center space-y-3 lg:space-y-4 border-t border-outline-variant/30 px-4">
-    @if($store->business_email || $store->location)
-        <div class="flex flex-col sm:flex-row items-center gap-2 sm:gap-6 text-xs lg:text-sm text-on-surface-variant">
-            @if($store->business_email)
-                <a href="mailto:{{ $store->business_email }}" class="hover:text-primary transition-all flex items-center gap-1">
-                    <i class="fa-solid fa-envelope text-[14px] lg:text-[16px] align-middle"></i>
-                    {{ $store->business_email }}
-                </a>
-            @endif
-            @if($store->location)
-                <span class="flex items-center gap-1">
-                    <i class="fa-solid fa-location-dot text-[14px] lg:text-[16px] align-middle"></i>
-                    {{ $store->location }}
-                </span>
-            @endif
-        </div>
-    @endif
-    <div class="font-bold text-xs lg:text-sm text-on-surface text-center">{{ $store->name }} â€” IZIFAI Showroom</div>
-    @auth
-        @php $targetStore = auth()->user()->store; @endphp
-        @if(auth()->id() === $store->user_id)
-            <a href="{{ route('seller.dashboard') }}"
-               class="inline-flex items-center gap-1.5 text-primary font-semibold text-xs lg:text-sm hover:underline">
-                <i class="fa-solid fa-gauge-high text-[14px]"></i>
-                Go to Dashboard
-            </a>
-        @elseif($targetStore)
-            <a href="{{ route('seller.dashboard') }}"
-               class="inline-flex items-center gap-1.5 text-primary font-semibold text-xs lg:text-sm hover:underline">
-                <i class="fa-solid fa-gauge-high text-[14px]"></i>
-                Seller Dashboard
-            </a>
-        @else
-            <a href="{{ route('seller.store.create') }}"
-               class="text-primary font-semibold text-xs lg:text-sm hover:underline">
-                Start Selling on Izifai &rarr;
-            </a>
-        @endif
-    @endauth
-    @guest
-        <a href="{{ url('/') }}"
-           class="text-primary font-semibold text-xs lg:text-sm hover:underline">
-            Join Izifai Today &rarr;
-        </a>
-    @endguest
-    <p class="text-xs lg:text-sm text-on-surface-variant">&copy; {{ date('Y') }} IZIFAI Platform. All rights reserved.</p>
-</footer>
-
+@push('scripts')
 <script>
     function productPage() {
         return {
-            selectedImage: @js($product->images->first()?->url ?? ''),
+            images: @json($productImages->pluck('url')->values()),
+            imageIndex: 0,
+            selectedImage: @json($cover),
+            colors: @json($product->colors ?? []),
             selectedColor: null,
-            selectedSize: null,
-            qty: 1,
+            reviewStar: 0,
+            reviewHover: 0,
             reportOpen: false,
-            reportReason: '',
-            reportDetails: '',
-            reportSubmitted: false,
-            reportSubmitting: false,
-            reportError: '',
-            otherSelected: false,
-            openReport() {
-                @auth
-                    this.reportOpen = true;
-                    this.reportReason = '';
-                    this.reportDetails = '';
-                    this.reportSubmitted = false;
-                    this.reportError = '';
-                    this.otherSelected = false;
-                @endauth
-                @guest
-                    window.location.href = '{{ route('login') }}';
-                @endguest
-            },
-            closeReport() {
-                this.reportOpen = false;
-            },
-            selectReason(reason) {
-                this.reportReason = reason;
-                this.otherSelected = reason === 'Other';
-                if (!this.otherSelected) this.reportDetails = '';
-            },
-            submitReport() {
-                if (!this.reportReason) return;
-                if (this.otherSelected && !this.reportDetails.trim()) return;
-                this.reportSubmitting = true;
-                this.reportError = '';
-                const formData = new FormData();
-                formData.append('reason', this.reportReason);
-                formData.append('details', this.otherSelected ? this.reportDetails : this.reportReason);
-                @auth
-                fetch('{{ route('products.report', $product) }}', {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Accept': 'application/json'
-                    },
-                    body: formData
-                })
-                .then(r => {
-                    if (!r.ok && r.status === 422) return r.json().then(e => { throw new Error(Object.values(e.errors || {}).flat().join(', ')); });
-                    if (!r.ok) throw new Error('Server error');
-                    return r.json();
-                })
-                .then(data => {
-                    this.reportSubmitting = false;
-                    if (data.success) {
-                        this.reportSubmitted = true;
-                        setTimeout(() => { this.reportOpen = false; }, 2500);
-                    } else {
-                        this.reportError = data.error || 'Something went wrong.';
-                    }
-                })
-                .catch(e => {
-                    this.reportSubmitting = false;
-                    this.reportError = e.message || 'Network error. Please try again.';
-                });
-                @endauth
-            }
-        }
-    }
-
-    function storeSearch(slug) {
-        return {
-            query: '',
-            results: [],
-            open: false,
-            search() {
-                const q = this.query.trim();
-                if (q.length < 2) { this.results = []; this.open = false; return; }
-                fetch('/store/' + slug + '/search?q=' + encodeURIComponent(q))
-                    .then(r => r.json())
-                    .then(data => { this.results = data; this.open = true; })
-                    .catch(() => {});
+            prev() { this.go(this.imageIndex - 1); },
+            next() { this.go(this.imageIndex + 1); },
+            go(i) {
+                const total = this.images.length;
+                if (total === 0) return;
+                this.imageIndex = ((i % total) + total) % total;
+                this.selectedImage = this.images[this.imageIndex];
             }
         };
     }
-
-    function logContact(type) {
-        fetch('{{ route('products.log-contact', $product) }}', {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ type: type })
-        });
-        if (type === 'whatsapp') {
-            window.open('https://wa.me/{{ wa_url($store->whatsapp_number ?? '') }}?text={{ urlencode('Hi, I am interested in ' . $product->name . ' on Izifai.') }}', '_blank');
-        }
-    }
-
-    document.addEventListener('click', function(e) {
-        const btn = e.target.closest('.favorite-btn');
-        if (!btn) return;
-        e.preventDefault();
-        const productId = btn.dataset.product;
-        const isFav = btn.dataset.favorited === 'true';
-        @auth
-            fetch('{{ url('/products') }}/' + productId + '/favorite', {
-                method: 'POST',
-                headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Content-Type': 'application/json' }
-            })
-            .then(r => r.json())
-            .then(data => {
-                const icon = btn.querySelector('i.fa-heart');
-                if (data.favorited) {
-                    icon.classList.add('fa-solid'); icon.classList.remove('fa-regular');
-                    btn.dataset.favorited = 'true';
-                } else {
-                    icon.classList.add('fa-regular'); icon.classList.remove('fa-solid');
-                    btn.dataset.favorited = 'false';
-                }
-            });
-        @endauth
-        @guest
-            window.location.href = '{{ route('login') }}';
-        @endguest
-    });
 </script>
-@endsection
+@endpush

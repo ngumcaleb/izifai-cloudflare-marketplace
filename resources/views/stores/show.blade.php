@@ -205,35 +205,53 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 sm:
     </header>
 
     {{-- ================================================================
-         1.5. SECTION TABS (Products | Services | Rentals)
+         1.5. CATALOG TABS (Products | Services | Rentals) — Switchable
     ================================================================ --}}
-    <section class="max-w-7xl mx-auto px-2.5 sm:px-6 mt-5 sm:mt-6">
-        <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
-            <a href="#catalog" class="scroll-link shrink-0 inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl text-[11.5px] sm:text-[12px] font-bold transition-all duration-200 -skew-x-6 bg-[#1c201e] text-[#9acd32] shadow-sm">
-                <span class="skew-x-6 inline-flex items-center gap-1.5">
-                    <i class="fa-solid fa-boxes-stacked text-[15px]" style=""></i>
-                    Products
-                    <span class="px-1.5 py-0.5 rounded-md bg-[#9acd32]/15 text-[#9acd32] text-[10px] font-black">{{ number_format($totalProducts) }}</span>
-                </span>
-            </a>
-            <a href="#services" class="scroll-link shrink-0 inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl text-[11.5px] sm:text-[12px] font-bold transition-all duration-200 bg-white border border-[#e8eae8] text-[#3f453f] hover:border-[#9acd32]/50 hover:text-[#7ca81d] {{ $totalServices > 0 ? '' : 'opacity-40 pointer-events-none' }}">
-                <i class="fa-solid fa-bell-concierge text-[15px] text-purple-500" style=""></i>
-                Services
-                <span class="px-1.5 py-0.5 rounded-md bg-purple-50 text-purple-600 text-[10px] font-black">{{ number_format($totalServices) }}</span>
-            </a>
-            <a href="#rentals" class="scroll-link shrink-0 inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl text-[11.5px] sm:text-[12px] font-bold transition-all duration-200 bg-white border border-[#e8eae8] text-[#3f453f] hover:border-[#9acd32]/50 hover:text-[#7ca81d] {{ $totalRentals > 0 ? '' : 'opacity-40 pointer-events-none' }}">
-                <i class="fa-solid fa-handshake text-[15px] text-blue-500" style=""></i>
-                Rentals
-                <span class="px-1.5 py-0.5 rounded-md bg-blue-50 text-blue-600 text-[10px] font-black">{{ number_format($totalRentals) }}</span>
-            </a>
+    <section class="max-w-7xl mx-auto px-2.5 sm:px-6 mt-5 sm:mt-6" x-data="{ activeTab: 'products' }">
+        {{-- Sticky tab bar: hooks just below the fixed layout header --}}
+        <div class="sticky top-14 sm:top-[144px] z-30 -mx-2.5 sm:mx-0 py-1.5 sm:py-2 bg-[#f5f6f5]/95 backdrop-blur-sm border-b border-[#eff1ef]">
+            <div class="flex items-center gap-2 overflow-x-auto no-scrollbar">
+                <button @click="activeTab = 'products'"
+                        class="shrink-0 inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl text-[11.5px] sm:text-[12px] font-bold transition-all duration-200"
+                        :class="activeTab === 'products' ? '-skew-x-6 bg-[#1c201e] text-[#9acd32] shadow-sm' : 'bg-white border border-[#e8eae8] text-[#3f453f] hover:border-[#9acd32]/50 hover:text-[#7ca81d]'">
+                    <span class="inline-flex items-center gap-1.5" :class="activeTab === 'products' ? 'skew-x-6' : ''">
+                        <i class="fa-solid fa-boxes-stacked text-[15px]" style=""></i>
+                        Products
+                        <span class="px-1.5 py-0.5 rounded-md text-[10px] font-black" :class="activeTab === 'products' ? 'bg-[#9acd32]/15 text-[#9acd32]' : 'bg-[#f2f9df] text-[#659316]'">{{ number_format($totalProducts) }}</span>
+                    </span>
+                </button>
+                @if($totalServices > 0)
+                <button @click="activeTab = 'services'"
+                        class="shrink-0 inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl text-[11.5px] sm:text-[12px] font-bold transition-all duration-200"
+                        :class="activeTab === 'services' ? '-skew-x-6 bg-[#1c201e] text-[#9acd32] shadow-sm' : 'bg-white border border-[#e8eae8] text-[#3f453f] hover:border-[#9acd32]/50 hover:text-[#7ca81d]'">
+                    <span class="inline-flex items-center gap-1.5" :class="activeTab === 'services' ? 'skew-x-6' : ''">
+                        <i class="fa-solid fa-bell-concierge text-[15px] text-purple-500" style=""></i>
+                        Services
+                        <span class="px-1.5 py-0.5 rounded-md text-[10px] font-black" :class="activeTab === 'services' ? 'bg-[#9acd32]/15 text-[#9acd32]' : 'bg-purple-50 text-purple-600'">{{ number_format($totalServices) }}</span>
+                    </span>
+                </button>
+                @endif
+                @if($totalRentals > 0)
+                <button @click="activeTab = 'rentals'"
+                        class="shrink-0 inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl text-[11.5px] sm:text-[12px] font-bold transition-all duration-200"
+                        :class="activeTab === 'rentals' ? '-skew-x-6 bg-[#1c201e] text-[#9acd32] shadow-sm' : 'bg-white border border-[#e8eae8] text-[#3f453f] hover:border-[#9acd32]/50 hover:text-[#7ca81d]'">
+                    <span class="inline-flex items-center gap-1.5" :class="activeTab === 'rentals' ? 'skew-x-6' : ''">
+                        <i class="fa-solid fa-handshake text-[15px] text-blue-500" style=""></i>
+                        Rentals
+                        <span class="px-1.5 py-0.5 rounded-md text-[10px] font-black" :class="activeTab === 'rentals' ? 'bg-[#9acd32]/15 text-[#9acd32]' : 'bg-blue-50 text-blue-600'">{{ number_format($totalRentals) }}</span>
+                    </span>
+                </button>
+                @endif
+            </div>
         </div>
-    </section>
 
+        {{-- ============ PRODUCTS PANEL ============ --}}
+        <div x-show="activeTab === 'products'" x-cloak>
     {{-- ================================================================
          2. STORE CATEGORIES CHIP BAR (Exact Catalog Aesthetic)
     ================================================================ --}}
     @if($allCategories->isNotEmpty())
-    <section class="max-w-7xl mx-auto px-2.5 sm:px-6 mt-5 sm:mt-6">
+    <div class="max-w-7xl mx-auto px-0 mt-5 sm:mt-6">
         <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
             <a href="{{ route('stores.show', $store->slug) }}#catalog"
                class="shrink-0 px-3.5 sm:px-4 py-2 rounded-xl text-[11.5px] sm:text-[12px] font-bold transition-all duration-200 flex items-center gap-1.5 {{ !request('category') || request('category') === 'all' ? '-skew-x-6 bg-[#1c201e] text-[#9acd32] shadow-sm' : 'bg-white border border-[#e8eae8] text-[#3f453f] hover:border-[#9acd32]/50 hover:text-[#7ca81d]' }}">
@@ -250,14 +268,14 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 sm:
                 </a>
             @endforeach
         </div>
-    </section>
+    </div>
     @endif
 
     {{-- ================================================================
          4. FEATURED PRODUCTS STRIP (Matching Catalog Trending Strip)
     ================================================================ --}}
     @if($topProducts->count() > 0)
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-8 sm:mt-12">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 mt-8 sm:mt-10">
         <div class="flex items-end justify-between gap-3 mb-3.5 sm:mb-5">
             <div class="flex items-center gap-2.5 sm:gap-3">
                 <span class="grid place-items-center w-8 h-8 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-[#1c201e] text-[#9acd32] shadow-sm shrink-0">
@@ -315,13 +333,13 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 sm:
                 </a>
             @endforeach
         </div>
-    </section>
+    </div>
     @endif
 
     {{-- ================================================================
          5. TOOLBAR / SEARCH & SORT STRIP (Exact Catalog Aesthetic)
     ================================================================ --}}
-    <section id="catalog" class="max-w-7xl mx-auto px-2.5 sm:px-6 mt-8 sm:mt-10 scroll-mt-[130px]">
+    <div id="catalog" class="max-w-7xl mx-auto px-2.5 sm:px-6 mt-6 sm:mt-8 scroll-mt-[130px]">
         <div class="bg-white rounded-2xl border border-[#e8eae8] p-2.5 sm:p-4 flex flex-wrap items-center justify-between gap-2.5 sm:gap-3 shadow-sm">
             <div class="flex items-center gap-2.5 flex-wrap">
                 {{-- Results Count --}}
@@ -362,12 +380,12 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 sm:
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 
     {{-- ================================================================
          6. PRODUCTS GRID (2 Cards Mobile, 4-5 on PC)
     ================================================================ --}}
-    <section class="max-w-7xl mx-auto px-1 sm:px-6 mt-4 sm:mt-6">
+    <div class="max-w-7xl mx-auto px-1 sm:px-6 mt-4 sm:mt-6">
         @if($products->count() > 0)
             <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 items-stretch auto-rows-fr gap-2 sm:gap-4 w-full">
                 @foreach($products as $product)
@@ -486,24 +504,21 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 sm:
                 @endif
             </div>
         @endif
-    </section>
+    </div>
+    </div>{{-- end products panel --}}
 
-    {{-- ================================================================
-         7. POOL SECTION (Services + Rentals, Matching Catalog Grids)
-    ================================================================ --}}
-    @if($services->count() > 0 || $rentals->count() > 0)
-    <section class="max-w-7xl mx-auto px-1 sm:px-6 mt-8 sm:mt-12 space-y-8 sm:space-y-12">
-        {{-- Services --}}
-        @if($services->count() > 0)
-        <div id="services" class="space-y-3 sm:space-y-4 scroll-mt-[130px]">
-            <div class="flex items-end justify-between gap-3">
+    {{-- ============ SERVICES PANEL ============ --}}
+    @if($totalServices > 0)
+    <div x-show="activeTab === 'services'" x-cloak>
+        <div class="max-w-7xl mx-auto px-1 sm:px-6 mt-6 sm:mt-8">
+            <div class="flex items-end justify-between gap-3 mb-3 sm:mb-4">
                 <div class="flex items-center gap-2.5 sm:gap-3">
                     <span class="grid place-items-center w-8 h-8 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-purple-50 text-purple-600 shadow-sm shrink-0">
                         <i class="fa-solid fa-bell-concierge text-[16px] sm:text-[20px]" style=""></i>
                     </span>
                     <div>
                         <h2 class="text-sm sm:text-xl font-extrabold tracking-tight text-[#1c201e]">Services</h2>
-                        <p class="text-[10px] sm:text-[12px] text-[#6b716c] -mt-0.5">Professional services from this store</p>
+                        <p class="text-[10px] sm:text-[12px] text-[#6b716c] -mt-0.5">Professional services from {{ $store->name }}</p>
                     </div>
                 </div>
                 <a href="{{ route('services.index', ['store' => $store->slug]) }}"
@@ -564,12 +579,14 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 sm:
                 @endforeach
             </div>
         </div>
-        @endif
+    </div>
+    @endif
 
-        {{-- Rentals --}}
-        @if($rentals->count() > 0)
-        <div id="rentals" class="space-y-3 sm:space-y-4 scroll-mt-[130px]">
-            <div class="flex items-end justify-between gap-3">
+    {{-- ============ RENTALS PANEL ============ --}}
+    @if($totalRentals > 0)
+    <div x-show="activeTab === 'rentals'" x-cloak>
+        <div class="max-w-7xl mx-auto px-1 sm:px-6 mt-6 sm:mt-8">
+            <div class="flex items-end justify-between gap-3 mb-3 sm:mb-4">
                 <div class="flex items-center gap-2.5 sm:gap-3">
                     <span class="grid place-items-center w-8 h-8 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-blue-50 text-blue-600 shadow-sm shrink-0">
                         <i class="fa-solid fa-handshake text-[16px] sm:text-[20px]" style=""></i>
@@ -641,9 +658,9 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 sm:
                 @endforeach
             </div>
         </div>
-        @endif
-    </section>
+    </div>
     @endif
+    </section>{{-- end tabs x-data wrapper --}}
 
     {{-- ================================================================
          7.5 SUGGESTED FOR YOU (Cross-Store Products)

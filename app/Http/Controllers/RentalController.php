@@ -112,6 +112,29 @@ class RentalController extends Controller
 
         $totalRentals = $store->rentalItems()->where('status', 'published')->count();
 
+        // Related rentals from other stores (same category preferred)
+        $relatedRentals = RentalItem::where('status', 'published')
+            ->where('id', '!=', $rental->id)
+            ->where('store_id', '!=', $store->id)
+            ->with(['store', 'category'])
+            ->when($rental->category_id, fn($q) => $q->where('category_id', $rental->category_id))
+            ->latest()
+            ->take(8)
+            ->get();
+
+        if ($relatedRentals->count() < 8) {
+            $excludeIds = $relatedRentals->pluck('id');
+            $relatedFallback = RentalItem::where('status', 'published')
+                ->where('id', '!=', $rental->id)
+                ->where('store_id', '!=', $store->id)
+                ->whereNotIn('id', $excludeIds)
+                ->with(['store', 'category'])
+                ->latest()
+                ->take(8 - $relatedRentals->count())
+                ->get();
+            $relatedRentals = $relatedRentals->concat($relatedFallback);
+        }
+
         $reviews = $rental->reviews()->with('user')->latest()->get();
         $avgRating = $reviews->count() > 0 ? round($reviews->avg('rating'), 1) : 0;
         $totalReviews = $reviews->count();
@@ -127,7 +150,7 @@ class RentalController extends Controller
 
         return view('rentals.show', compact(
             'rental', 'store', 'storeRentals', 'totalRentals',
-            'reviews', 'avgRating', 'totalReviews', 'starDistribution'
+            'relatedRentals', 'reviews', 'avgRating', 'totalReviews', 'starDistribution'
         ));
     }
 

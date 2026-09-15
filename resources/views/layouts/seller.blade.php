@@ -370,30 +370,7 @@
         </header>
 
         <div class="px-4 md:px-6 py-4 md:py-6 max-w-7xl mx-auto space-y-4 md:space-y-6">
-            @if(session('success'))
-                <div class="bg-lime-100 border border-lime-200 rounded-xl p-4 flex items-center gap-3 animate-slide-down">
-                    <i class="fa-solid fa-circle-check text-lime-600"></i>
-                    <p class="text-sm font-semibold text-lime-800">{{ session('success') }}</p>
-                </div>
-            @endif
-
-            @if(session('error'))
-                <div class="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center gap-3 animate-slide-down">
-                    <i class="fa-solid fa-circle-exclamation text-red-600"></i>
-                    <p class="text-sm font-semibold text-red-800">{{ session('error') }}</p>
-                </div>
-            @endif
-
-            @if($errors->any())
-                <div class="bg-red-50 border border-red-200 rounded-xl p-4 flex items-start gap-3 animate-slide-down">
-                    <i class="fa-solid fa-triangle-exclamation text-red-600 mt-0.5"></i>
-                    <div>
-                        @foreach($errors->all() as $error)
-                            <p class="text-sm font-semibold text-red-800">{{ $error }}</p>
-                        @endforeach
-                    </div>
-                </div>
-            @endif
+            @include('partials.toasts')
 
             @yield('content')
         </div>

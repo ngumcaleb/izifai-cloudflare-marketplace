@@ -2,822 +2,650 @@
 
 @push('styles')
 <style>
-    @keyframes dotPulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.8; } }
-    @keyframes scalePulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-    .animate-dot-pulse { animation: dotPulse 1.5s ease-in-out infinite; }
-    .animate-dot-pulse-delayed { animation: dotPulse 1.5s ease-in-out 0.5s infinite; }
-    .animate-dot-pulse-slower { animation: dotPulse 1.5s ease-in-out 1s infinite; }
+    body { font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif !important; background-color: #f5f6f5; }
+
+    .tnum { font-variant-numeric: tabular-nums; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+    .reviews-scroll { scrollbar-width: thin; scrollbar-color: #d6d9d6 transparent; -webkit-mask-image: linear-gradient(to bottom, black calc(100% - 24px), transparent 100%); mask-image: linear-gradient(to bottom, black calc(100% - 24px), transparent 100%); }
+    .reviews-scroll::-webkit-scrollbar { width: 4px; }
+    .reviews-scroll::-webkit-scrollbar-thumb { background: #d8dbd8; border-radius: 9999px; }
+    .reviews-scroll::-webkit-scrollbar-track { background: transparent; }
 </style>
 @endpush
 
-@section('storeWhatsApp', $store->whatsapp_number)
 @php
+$store = $rental->store;
 $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c 0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>';
+$rentalImages = $rental->images_url;
+$cover = $rental->main_image_url ?: ($rentalImages[0] ?? '');
 @endphp
 
-@section('title', $rental->name . ' - ' . $store->name . ' Rentals')
-@section('description', strip_tags($rental->description) ?: $rental->name . ' on Izifai')
+@section('title', $rental->name . ' - ' . $store->name . ' | Izifai')
+@section('description', (strip_tags($rental->description ?? '') ?: $rental->name . ' on Izifai'))
 @section('og_title', $rental->name . ' - ' . $store->name)
-@section('og_description', str($rental->description ? strip_tags($rental->description) : $rental->name . ' on Izifai')->limit(160))
-@section('og_image', $rental->main_image_url ?: asset('images/logo.png'))
-@section('og_type', 'product')
+@section('og_description', str(strip_tags($rental->description ?? '') ?: $rental->name . ' on Izifai')->limit(160))
+@section('og_image', $cover ?: asset('images/logo.png'))
+@section('og_type', 'website')
 @section('twitter_title', $rental->name . ' - ' . $store->name)
-@section('twitter_description', str($rental->description ? strip_tags($rental->description) : $rental->name . ' on Izifai')->limit(160))
-@section('twitter_image', $rental->main_image_url ?: asset('images/logo.png'))
+@section('twitter_description', str(strip_tags($rental->description ?? '') ?: $rental->name . ' on Izifai')->limit(160))
+@section('twitter_image', $cover ?: asset('images/logo.png'))
 
-{{-- STORE NAV --}}
-@section('store-nav')
-<div class="flex items-center gap-3 py-2.5 overflow-x-auto no-scrollbar">
-    <a href="{{ route('stores.show', $store->slug) }}" class="flex items-center gap-1 text-xs font-semibold text-primary hover:underline shrink-0">
-        <i class="fa-solid fa-arrow-left text-[16px]"></i>
-        <span class="hidden sm:inline">Back to Store</span>
-    </a>
-    <span class="w-px h-5 bg-gray-200 shrink-0"></span>
-    <a href="{{ route('stores.show', $store->slug) }}" class="flex items-center gap-2.5 shrink-0 group">
-        <div class="w-8 h-8 rounded-lg overflow-hidden ring-2 ring-primary/10 bg-white shrink-0">
-            @if($store->logo)
-                <img src="{{ $store->logo_url }}" class="w-full h-full object-cover">
-            @else
-                <x-store-default-logo :store="$store" size="sm" />
-            @endif
-        </div>
-        <div class="min-w-0">
-            <p class="text-sm font-bold text-on-surface truncate max-w-[120px] lg:max-w-none group-hover:text-primary transition-colors">{{ $store->name }}</p>
-        </div>
-    </a>
-    <nav class="flex items-center gap-1 shrink-0">
-        <a href="{{ route('stores.show', $store->slug) }}" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-primary text-on-primary whitespace-nowrap">Showroom</a>
-        <a href="{{ route('stores.show', $store->slug) }}#catalog" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-on-surface-variant hover:bg-gray-100 whitespace-nowrap transition-colors">Rentals</a>
-        <a href="{{ route('stores.show', $store->slug) }}#reviews" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-on-surface-variant hover:bg-gray-100 whitespace-nowrap transition-colors">Reviews</a>
-        <a href="{{ route('stores.show', $store->slug) }}#store-info" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-on-surface-variant hover:bg-gray-100 whitespace-nowrap transition-colors">Store Info</a>
-    </nav>
-</div>
-@endsection
-
-{{-- STORE SIDEBAR (DESKTOP) --}}
-@section('store-sidebar')
-<div class="relative h-28 shrink-0">
-    @if($store->banner)
-        <img src="{{ $store->banner_url }}" class="w-full h-full object-cover">
-    @else
-        <x-store-default-banner :store="$store" variant="sidebar" />
-    @endif
-    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-    <div class="absolute -bottom-8 left-4 flex items-end gap-3">
-        <div class="w-14 h-14 rounded-xl border-2 border-white bg-white shadow-lg overflow-hidden">
-            @if($store->logo)
-                <img src="{{ $store->logo_url }}" class="w-full h-full object-cover">
-            @else
-                <x-store-default-logo :store="$store" size="lg" />
-            @endif
-        </div>
-    </div>
-</div>
-<div class="pt-10 px-4 pb-4 border-b border-gray-100">
-    <div class="flex items-center gap-1.5 min-w-0">
-        <h2 class="text-base font-bold text-on-surface truncate min-w-0 shrink">{{ $store->name }}</h2>
-        <x-store-badge :store="$store" size="sm" />
-    </div>
-    <div class="flex flex-wrap items-center gap-2 mt-1">
-        <span class="flex items-center gap-0.5 text-[11px] text-on-surface-variant">
-            <i class="fa-solid fa-star text-[14px]" style=""></i>
-            {{ number_format($store->rating ?? 0, 1) }}
+@section('header-search')
+<div class="hidden sm:flex flex-1 max-w-xl lg:max-w-2xl mx-4">
+    <div class="w-full flex rounded-full overflow-hidden bg-white border border-[#e6e8e6] focus-within:border-[#9acd32] focus-within:shadow-[0_0_0_3px_rgba(154,205,50,0.10)] transition-all h-11">
+        <span class="grid place-items-center pl-4 text-[#9aa19c]">
+            <i class="fa-solid fa-magnifying-glass text-[20px]" style=""></i>
         </span>
-        <span class="text-[11px] text-on-surface-variant">{{ $totalRentals }} rentals</span>
+        <input type="text" readonly placeholder="What are you looking for?"
+               @click="$dispatch('open-search')"
+               class="w-full h-full bg-transparent text-[13px] outline-none px-2 text-[#1c201e] placeholder:text-[#9aa19c] cursor-pointer">
+        <button class="h-full px-5 bg-[#9acd32] text-white text-sm font-bold hover:bg-[#7ca81d] transition-colors flex items-center gap-1.5" @click="$dispatch('open-search')">
+            <i class="fa-solid fa-magnifying-glass text-[18px]" style=""></i>
+            <span class="hidden lg:inline">Search</span>
+        </button>
     </div>
-</div>
-<nav class="flex-1 py-4 px-3 space-y-0.5 overflow-y-auto">
-    <a href="{{ route('stores.show', $store->slug) }}" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-primary font-semibold bg-primary/5 border-l-[3px] border-primary transition-all text-sm">
-        <i class="fa-solid fa-store text-[20px]"></i>
-        Showroom
-    </a>
-    <a href="{{ route('stores.show', $store->slug) }}#catalog" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-gray-50 transition-all text-sm font-medium">
-        <i class="fa-solid fa-table-cells text-[20px]"></i>
-        Rentals
-    </a>
-    <a href="{{ route('stores.show', $store->slug) }}#reviews" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-gray-50 transition-all text-sm font-medium">
-        <i class="fa-solid fa-star text-[20px]"></i>
-        Reviews
-    </a>
-    <a href="{{ route('stores.show', $store->slug) }}#store-info" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-primary hover:bg-gray-50 transition-all text-sm font-medium">
-        <i class="fa-solid fa-circle-info text-[20px]"></i>
-        Store Info
-    </a>
-    @if($store->location)
-        <div class="px-3 py-2 text-[11px] text-on-surface-variant flex items-center gap-2 border-t border-gray-100 pt-3 mt-2">
-            <i class="fa-solid fa-location-dot text-[16px]"></i>
-            <span class="truncate">{{ $store->location }}</span>
-        </div>
-    @endif
-</nav>
-<div class="px-4 py-4 border-t border-gray-100 space-y-2">
-    @auth
-        @if(auth()->id() !== $store->user_id)
-        <form action="{{ route('conversations.store') }}" method="POST" class="w-full">
-            @csrf
-            <input type="hidden" name="seller_id" value="{{ $store->user_id }}">
-            <input type="hidden" name="target_type" value="rental">
-            <input type="hidden" name="target_id" value="{{ $rental->id }}">
-            <input type="hidden" name="message" value="Hi, I am interested in renting {{ $rental->name }}. Is it available?">
-            <button type="submit"
-                    class="w-full py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 text-xs text-primary border border-primary/20 hover:bg-primary/5 transition-all">
-                <i class="fa-regular fa-comment text-[16px]"></i>
-                Message
-            </button>
-        </form>
-        @endif
-    @endauth
-    @if($store->whatsapp_number)
-        <a href="https://wa.me/{{ wa_url($store->whatsapp_number) }}?text={{ urlencode('Hi, I am interested in renting ' . $rental->name . ' on Izifai.') }}" target="_blank"
-           class="w-full bg-[#25D366] text-white py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#128C7E] transition-all text-xs shadow-sm">
-            {!! $whatsappIcon !!}
-            WhatsApp
-        </a>
-    @endif
-    <a href="https://chat.whatsapp.com/J3of97nRhL5IdTSXpScYLl" target="_blank"
-       class="w-full py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 text-xs text-on-surface-variant border border-gray-200 hover:bg-gray-50 transition-all">
-        <i class="fa-solid fa-users text-[16px]"></i>
-        Join WhatsApp Group
-    </a>
-    @auth
-        @if(auth()->id() === $store->user_id)
-            <a href="{{ route('seller.dashboard') }}"
-               class="w-full bg-primary text-on-primary py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-all text-xs">
-                <i class="fa-solid fa-gauge-high text-[16px]"></i>
-                Dashboard
-            </a>
-        @else
-            @php $sidebarStore = auth()->user()->store; @endphp
-            <a href="{{ $sidebarStore ? route('seller.dashboard') : route('seller.store.create') }}"
-               class="w-full py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 text-xs text-primary border border-primary/20 hover:bg-primary/5 transition-all">
-                <i class="fa-solid fa-store text-[16px]"></i>
-                {{ $sidebarStore ? 'Seller Dashboard' : 'Start Selling' }}
-            </a>
-        @endif
-    @endauth
-    @guest
-        <a href="{{ url('/') }}"
-           class="w-full bg-primary/10 text-primary py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-primary/20 transition-all text-xs">
-            <i class="fa-solid fa-id-card text-[16px]"></i>
-            Join Izifai
-        </a>
-    @endguest
 </div>
 @endsection
 
-{{-- CONTENT --}}
 @section('content')
-<div x-data="rentalPage()" class="pb-4 sm:pb-6">
+<div x-data="rentalPage()">
 
-    {{-- ===== MOBILE HERO (lg:hidden) ===== --}}
-    <section class="lg:hidden relative min-h-[420px] sm:min-h-[480px] overflow-hidden bg-black">
-        <template x-if="selectedImage">
-            <img :src="selectedImage" class="absolute inset-0 w-full h-full object-cover">
-        </template>
-        <template x-if="!selectedImage">
-            <div class="absolute inset-0 w-full h-full flex items-center justify-center bg-surface-container-low text-on-surface-variant/30">
-                <i class="fa-solid fa-image text-7xl"></i>
-            </div>
-        </template>
+    {{-- ============ MOBILE: rental card ============ --}}
+    <section class="lg:hidden max-w-7xl mx-auto px-2 sm:px-6 pt-3">
+        <div class="rounded-2xl bg-white border border-[#e8eae8] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
 
-        <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/10"></div>
-        <div class="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent"></div>
-
-        <div class="absolute inset-0 pointer-events-none opacity-[0.04]">
-            <div class="absolute top-1/4 left-[20%] w-1 h-1 rounded-full bg-white animate-dot-pulse"></div>
-            <div class="absolute top-1/3 left-[60%] w-1.5 h-1.5 rounded-full bg-white animate-dot-pulse-delayed"></div>
-            <div class="absolute top-2/3 left-[30%] w-1 h-1 rounded-full bg-white animate-dot-pulse-slower"></div>
-            <div class="absolute bottom-1/4 right-[25%] w-1.5 h-1.5 rounded-full bg-white animate-dot-pulse-delayed"></div>
-        </div>
-
-        {{-- Top bar --}}
-        <div class="absolute top-0 left-0 right-0 px-4 py-3">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-1.5 text-xs text-white/70">
-                    <a href="{{ route('stores.show', $store->slug) }}" class="hover:text-white transition-colors font-semibold truncate">{{ $store->name }}</a>
-                    <i class="fa-solid fa-chevron-right text-[14px] shrink-0"></i>
-                    <span class="text-white font-bold truncate">{{ $rental->name }}</span>
+            {{-- image (slide-track) --}}
+            <div class="relative aspect-[4/3] bg-[#f5f6f5] overflow-hidden">
+                @if(count($rentalImages) > 0)
+                <div class="flex h-full transition-transform duration-500 ease-out"
+                     :style="'transform: translateX(-' + (imageIndex * 100) + '%)'">
+                    @foreach($rentalImages as $i => $imgUrl)
+                    <img src="{{ $imgUrl }}" alt="{{ $rental->name }} {{ $i + 1 }}" class="w-full h-full shrink-0 object-cover select-none">
+                    @endforeach
                 </div>
-                <button onclick="copyToClipboard(window.location.href, this)"
-                        class="w-8 h-8 bg-white/15 backdrop-blur-md rounded-full flex items-center justify-center hover:bg-white/25 transition-all shadow-sm">
-                    <i class="fa-solid fa-share-nodes text-[15px] text-white copy-icon"></i>
+                <span class="absolute top-3 right-3 inline-flex items-center gap-1 px-2 py-1 rounded-full bg-black/60 text-white text-[10px] font-bold tnum backdrop-blur-sm">
+                    <span x-text="imageIndex + 1"></span>/{{ count($rentalImages) }}
+                </span>
+                @if(count($rentalImages) > 1)
+                <button @click="prev()"
+                        class="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/95 shadow-md grid place-items-center text-[#1c201e] hover:scale-105 transition-transform active:scale-95"
+                        aria-label="Previous image">
+                    <i class="fa-solid fa-chevron-left text-[15px]" style=""></i>
                 </button>
+                <button @click="next()"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/95 shadow-md grid place-items-center text-[#1c201e] hover:scale-105 transition-transform active:scale-95"
+                        aria-label="Next image">
+                    <i class="fa-solid fa-chevron-right text-[15px]" style=""></i>
+                </button>
+                @endif
+                @else
+                <div class="w-full h-full flex items-center justify-center text-[#c6cac6]">
+                    <i class="fa-solid fa-image text-[56px]"></i>
+                </div>
+                @endif
             </div>
-        </div>
-
-        {{-- Thumbnails --}}
-        @if(count($rental->images ?? []) > 0)
-        <div class="absolute top-14 left-4 right-4 pointer-events-none">
-            <div class="flex gap-1.5 overflow-x-auto no-scrollbar pointer-events-auto">
-                @foreach($rental->images_url as $idx => $imgUrl)
-                <button @click="selectedImage = '{{ $imgUrl }}'"
-                        class="shrink-0 w-9 h-9 rounded-lg overflow-hidden border-2 transition-all relative"
-                        :class="selectedImage === '{{ $imgUrl }}' ? 'border-white ring-2 ring-white/40' : 'border-white/30 hover:border-white/60'">
-                    <img src="{{ $imgUrl }}" class="w-full h-full object-cover">
-                    @if($loop->iteration === 4 && count($rental->images) > 4)
-                    <div class="absolute inset-0 bg-black/60 flex items-center justify-center rounded-[inherit]">
-                        <span class="text-white font-bold text-[8px]">+{{ count($rental->images) - 4 }}</span>
-                    </div>
-                    @endif
+            @if(count($rentalImages) > 1)
+            <div class="flex gap-2 pt-3 px-4 pb-1 overflow-x-auto no-scrollbar">
+                @foreach($rentalImages as $i => $imgUrl)
+                <button @click="go({{ $i }})"
+                        class="shrink-0 w-14 h-14 rounded-xl overflow-hidden border-2 transition-all duration-300"
+                        :class="imageIndex === {{ $i }} ? 'border-[#9acd32] ring-2 ring-[#9acd32]/30' : 'border-transparent hover:border-[#c6cac6]'">
+                    <img src="{{ $imgUrl }}" class="w-full h-full object-cover" loading="lazy" alt="Thumbnail {{ $i + 1 }}">
                 </button>
                 @endforeach
             </div>
-        </div>
-        @endif
+            @endif
 
-        {{-- Overlay content --}}
-        <div class="absolute bottom-0 left-0 right-0 px-4 pb-5">
-            <div class="max-w-2xl min-w-0">
-                <div class="flex flex-wrap items-center gap-1.5 mb-2">
+            {{-- info --}}
+            <div class="p-4 sm:p-5 pt-3">
+                {{-- badges --}}
+                <div class="flex items-center gap-1.5 flex-wrap mb-2">
                     @if($store->is_verified)
-                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[8px] font-bold bg-white/15 backdrop-blur-sm text-white border border-white/20 uppercase tracking-wider">
-                        <i class="fa-solid fa-circle-check text-[10px]" style=""></i>
-                        Verified
+                    <span class="inline-flex items-center text-[9px] font-black uppercase tracking-wide text-[#659316]">
+                        <i class="fa-solid fa-circle-check text-[11px] mr-0.5" style=""></i> Verified seller
                     </span>
                     @endif
                     @if($rental->category)
-                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[8px] font-bold bg-white/15 backdrop-blur-sm text-white border border-white/20 uppercase tracking-wider">{{ $rental->category->name }}</span>
+                    <span class="text-[9px] font-bold uppercase tracking-wide text-[#6b716c] bg-[#f5f6f5] px-1.5 py-0.5 rounded-full">{{ $rental->category->name }}</span>
                     @endif
-                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[8px] font-bold bg-white/15 backdrop-blur-sm text-white border border-white/20 uppercase tracking-wider">{{ ucfirst($rental->billing_unit) }}</span>
-                    @if($rental->rating > 0)
-                    <span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[8px] font-bold bg-white/15 backdrop-blur-sm text-white border border-white/20">
-                        <i class="fa-solid fa-star text-[10px]" style=""></i>
-                        {{ number_format($rental->rating, 1) }}
+                    <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-[#f2f9df] text-[#659316] text-[9px] font-bold uppercase tracking-wide border border-[#9acd32]/25">
+                        <i class="fa-solid fa-calendar-days text-[10px]" style=""></i> {{ ucfirst($rental->billing_unit) }}
+                    </span>
+                </div>
+
+                <h1 class="text-[19px] sm:text-[22px] font-bold leading-snug text-[#1c201e]">{{ $rental->name }}</h1>
+
+                {{-- store + rating + views --}}
+                <div class="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1.5">
+                    <a href="{{ route('stores.show', $store->slug) }}" class="text-[11px] font-semibold text-[#659316]">
+                        <i class="fa-solid fa-store text-[11px] mr-0.5" style=""></i>{{ $store->name }}
+                    </a>
+                    @if($totalReviews > 0)
+                    <span class="inline-flex items-center gap-1 text-[11px] text-[#6b716c]">
+                        <i class="fa-solid fa-star text-[11px] text-amber-400" style=""></i>
+                        <strong class="text-[#1c201e] tnum">{{ number_format($avgRating, 1) }}</strong>
+                        <span class="text-[#9aa19c]">({{ $totalReviews }})</span>
                     </span>
                     @endif
-                </div>
-                <h1 class="text-xl sm:text-2xl font-black leading-[1.08] text-white text-balance">{{ $rental->name }}</h1>
-                <div class="flex flex-wrap items-center gap-2 mt-1.5">
                     @if($rental->location)
-                    <span class="inline-flex items-center gap-1 text-[10px] text-white/80">
-                        <i class="fa-solid fa-location-dot text-[12px]"></i>
-                        <span class="font-semibold">{{ $rental->location }}</span>
+                    <span class="inline-flex items-center gap-1 text-[11px] text-[#9aa19c]">
+                        <i class="fa-solid fa-location-dot text-[11px]" style=""></i>
+                        <span class="truncate">{{ $rental->location }}</span>
                     </span>
                     @endif
-                    <span class="inline-flex items-center gap-1 text-[10px] text-white/60">
-                        <i class="fa-solid fa-eye text-[12px]"></i>
-                        <span class="font-semibold">{{ number_format($rental->views ?? 0) }}</span>
+                    <span class="inline-flex items-center gap-1 text-[11px] text-[#9aa19c]">
+                        <i class="fa-regular fa-eye text-[11px]" style=""></i>
+                        <span class="tnum">{{ number_format($rental->views ?? 0) }}</span>
                     </span>
                 </div>
-                <div class="flex items-center justify-between mt-3 pt-3 border-t border-white/15">
-                    <div>
-                        <div class="text-white">
-                            <span class="text-lg font-black">{{ number_format($rental->rate) }}</span>
-                            <span class="text-xs font-bold text-white/80"> FCFA</span>
-                            <span class="text-[10px] text-white/60">/{{ $rental->billing_unit }}</span>
-                        </div>
-                        @if($rental->deposit)
-                        <div class="flex items-center gap-1 mt-0.5">
-                            <i class="fa-solid fa-shield-halved text-[10px] text-white/50"></i>
-                            <span class="text-[9px] text-white/70">Deposit: <strong class="text-white/90">{{ number_format($rental->deposit) }} FCFA</strong></span>
-                        </div>
-                        @endif
+
+                {{-- price --}}
+                <div class="mt-3 pb-1">
+                    <div class="flex items-end gap-2 flex-wrap">
+                        <span class="text-[22px] sm:text-[26px] font-black text-[#1c201e] tnum tracking-tight">{{ number_format((float) $rental->rate) }} <span class="text-[12px] font-bold text-[#6b716c]">FCFA</span></span>
+                        <span class="text-[11px] font-semibold text-[#659316] mb-1"><i class="fa-solid fa-calendar-days text-[11px]" style=""></i> / {{ $rental->billing_unit }}</span>
                     </div>
-                    <div class="flex flex-col sm:flex-row items-stretch gap-1.5 sm:gap-2">
+                    @if($rental->deposit)
+                    <p class="mt-1 text-[11px] font-semibold text-[#6b716c]">
+                        <i class="fa-solid fa-shield-halved text-[12px] text-[#9aa19c]" style=""></i>
+                        Deposit: <strong class="text-[#1c201e] tnum">{{ number_format((float) $rental->deposit) }} FCFA</strong>
+                    </p>
+                    @endif
+                </div>
+
+                @if($rental->serial_number)
+                <p class="mt-1.5 flex items-center gap-1.5 text-[11px] text-[#9aa19c]">
+                    <i class="fa-solid fa-qrcode text-[12px]" style=""></i>
+                    Serial: <strong class="text-[#6b716c]">{{ $rental->serial_number }}</strong>
+                </p>
+                @endif
+
+                {{-- condition notes --}}
+                @if($rental->condition_notes)
+                <div class="mt-3 bg-[#fffbeb] border border-[#f3e2b8] rounded-xl px-3 py-2.5 flex items-start gap-2">
+                    <i class="fa-solid fa-circle-info text-[14px] text-[#f59e0b] mt-0.5 shrink-0" style=""></i>
+                    <p class="text-[11px] text-[#92600a] leading-relaxed">{{ $rental->condition_notes }}</p>
+                </div>
+                @endif
+
+                {{-- CTA --}}
+                <div class="mt-4">
                     @auth
-                        @if(auth()->id() !== $store->user_id)
-                        <form action="{{ route('conversations.store') }}" method="POST" class="flex-1">
+                        @if(auth()->id() === $store->user_id)
+                        <div class="flex items-center gap-2 text-[12px] font-semibold text-[#659316] bg-[#f2f9df] border border-[#9acd32]/25 rounded-xl px-4 py-3">
+                            <i class="fa-regular fa-circle-check text-[16px]" style=""></i>
+                            This is your own rental.
+                        </div>
+                        @else
+                        <form action="{{ route('conversations.store') }}" method="POST">
                             @csrf
                             <input type="hidden" name="seller_id" value="{{ $store->user_id }}">
                             <input type="hidden" name="target_type" value="rental">
                             <input type="hidden" name="target_id" value="{{ $rental->id }}">
-                            <input type="hidden" name="message" value="Hi, I am interested in renting {{ $rental->name }}. Is it available?">
+                            <input type="hidden" name="message" value="Hi, I'm interested in renting {{ $rental->name }}. Is it available?">
                             <button type="submit"
-                                    class="flex items-center justify-center gap-1.5 w-full py-2.5 px-4 bg-white/20 text-white rounded-xl text-[11px] font-bold hover:bg-white/30 transition-all backdrop-blur-sm whitespace-nowrap">
-                                <i class="fa-regular fa-comment text-[16px]"></i>
-                                Message
+                                    class="w-full h-12 bg-[#1c201e] text-white text-[12.5px] font-bold rounded-xl hover:bg-black active:scale-[0.99] transition-all flex items-center justify-center gap-2">
+                                <i class="fa-regular fa-comment text-[15px]" style=""></i>
+                                Message seller
                             </button>
                         </form>
+                        @if($store->whatsapp_number)
+                        <a href="https://wa.me/{{ wa_url($store->whatsapp_number) }}?text={{ urlencode('Hi, I\'m interested in renting ' . $rental->name . ' on Izifai.') }}"
+                           target="_blank"
+                           class="mt-2 w-full h-12 bg-[#25D366] text-white text-[12.5px] font-bold rounded-xl hover:bg-[#128C7E] active:scale-[0.99] transition-all flex items-center justify-center gap-2">
+                            {!! str_replace('w-5 h-5', 'w-[18px] h-[18px]', $whatsappIcon) !!}
+                            Chat on WhatsApp
+                        </a>
+                        @endif
+                        @endif
+                    @else
+                        @if($store->whatsapp_number)
+                        <a href="https://wa.me/{{ wa_url($store->whatsapp_number) }}?text={{ urlencode('Hi, I\'m interested in renting ' . $rental->name . ' on Izifai.') }}"
+                           target="_blank"
+                           class="w-full h-12 bg-[#25D366] text-white text-[12.5px] font-bold rounded-xl hover:bg-[#128C7E] active:scale-[0.99] transition-all flex items-center justify-center gap-2">
+                            {!! str_replace('w-5 h-5', 'w-[18px] h-[18px]', $whatsappIcon) !!}
+                            Chat on WhatsApp
+                        </a>
                         @endif
                     @endauth
-                    @if($store->whatsapp_number)
-                    <a href="https://wa.me/{{ wa_url($store->whatsapp_number) }}?text={{ urlencode('Hi, I am interested in renting ' . $rental->name . ' on Izifai.') }}"
-                       target="_blank"
-                       class="flex items-center justify-center gap-2 px-4 py-2.5 bg-[#25D366] text-white rounded-xl text-[11px] font-bold hover:bg-[#128C7E] transition-all shadow-lg shadow-[#25D366]/30 whitespace-nowrap">
-                        {!! $whatsappIcon !!}
-                        Enquire
-                    </a>
-                    @endif
-                    </div>
+
+                    <button onclick="copyToClipboard(window.location.href, this)"
+                            class="mt-2 w-full h-10 rounded-xl border border-[#e8eae8] text-[#3f453f] text-[11.5px] font-semibold hover:bg-[#f5f6f5] transition-colors flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-share-nodes text-[13px]" style=""></i>
+                        Share link
+                    </button>
                 </div>
             </div>
         </div>
     </section>
 
-    {{-- ===== DESKTOP LAYOUT (hidden lg:block) ===== --}}
-    <section class="hidden lg:block max-w-7xl mx-auto px-6 lg:px-8 pt-14 lg:pt-4">
-        {{-- Breadcrumb --}}
-        <div class="flex items-center gap-1.5 text-xs sm:text-sm text-on-surface-variant mb-4">
-            <a href="{{ route('stores.show', $store->slug) }}" class="hover:text-primary transition-colors font-semibold truncate">{{ $store->name }}</a>
-            <i class="fa-solid fa-chevron-right text-[14px] sm:text-[16px] shrink-0"></i>
-            <span class="text-on-surface font-bold truncate">{{ $rental->name }}</span>
-            <button onclick="copyToClipboard(window.location.href, this)"
-                    class="ml-auto w-8 h-8 rounded-full bg-surface-container-low flex items-center justify-center hover:bg-surface-container-high transition-all">
-                <i class="fa-solid fa-share-nodes text-[16px] text-on-surface-variant copy-icon"></i>
-            </button>
+    {{-- ============ DESKTOP: breadcrumb + gallery + info ============ --}}
+    <section class="hidden lg:block max-w-7xl mx-auto px-2 sm:px-6 pt-8">
+        <div class="flex items-center gap-1.5 text-[12px] text-[#9aa19c] mb-6">
+            <a href="{{ route('home') }}" class="hover:text-[#659316] transition-colors">Home</a>
+            <i class="fa-solid fa-chevron-right text-[10px] text-[#c6cac6]" style=""></i>
+            <a href="{{ route('rentals.index') }}" class="hover:text-[#659316] transition-colors">Rentals</a>
+            <i class="fa-solid fa-chevron-right text-[10px] text-[#c6cac6]" style=""></i>
+            <span class="text-[#1c201e] font-semibold truncate">{{ $rental->name }}</span>
         </div>
 
-        {{-- Image + Info grid --}}
-        <div class="grid grid-cols-12 gap-6">
-            {{-- Left: Gallery --}}
-            <div class="col-span-7 space-y-3">
-                <div class="relative bg-surface-container-low rounded-2xl overflow-hidden shadow-sm border border-outline-variant/10 aspect-[16/10]">
-                    <template x-if="selectedImage">
-                        <img :src="selectedImage" class="w-full h-full object-cover">
-                    </template>
-                    <template x-if="!selectedImage">
-                        <div class="w-full h-full flex items-center justify-center text-on-surface-variant/30">
-                            <i class="fa-solid fa-image text-6xl"></i>
-                        </div>
-                    </template>
+        <div class="grid grid-cols-12 gap-8 items-start">
+            {{-- gallery --}}
+            <div class="col-span-7">
+                <div class="relative bg-white rounded-2xl border border-[#e8eae8] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+                    @if(count($rentalImages) > 0)
+                    <div class="flex transition-transform duration-500 ease-out"
+                         :style="'transform: translateX(-' + (imageIndex * 100) + '%)'">
+                        @foreach($rentalImages as $i => $imgUrl)
+                        <img src="{{ $imgUrl }}" alt="{{ $rental->name }} {{ $i + 1 }}" class="w-full aspect-[4/3] object-cover shrink-0 select-none">
+                        @endforeach
+                    </div>
+                    @else
+                    <div class="w-full aspect-[4/3] flex items-center justify-center text-[#c6cac6]">
+                        <i class="fa-solid fa-image text-[72px]"></i>
+                    </div>
+                    @endif
+                    <button onclick="copyToClipboard(window.location.href, this)"
+                            class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/95 shadow-sm grid place-items-center text-[#3f453f] hover:text-[#1c201e] border border-[#e8eae8] hover:scale-105 transition-all">
+                        <i class="fa-solid fa-share-nodes text-[15px] copy-icon" style=""></i>
+                    </button>
+                    @if(count($rentalImages) > 1)
+                    <span class="absolute bottom-4 right-4 px-2 py-1 rounded-full bg-black/60 backdrop-blur-sm text-white text-[11px] font-bold tnum">
+                        <span x-text="imageIndex + 1"></span>/{{ count($rentalImages) }}
+                    </span>
+                    @endif
                 </div>
-                @if(count($rental->images ?? []) > 0)
-                <div class="flex gap-2 overflow-x-auto no-scrollbar pb-0.5">
-                    @foreach($rental->images_url as $idx => $imgUrl)
-                    <button @click="selectedImage = '{{ $imgUrl }}'"
-                            class="shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-lg sm:rounded-xl overflow-hidden border-2 transition-all relative"
-                            :class="selectedImage === '{{ $imgUrl }}' ? 'border-primary ring-2 ring-primary/20' : 'border-outline-variant/20 hover:border-outline-variant/50'">
-                        <img src="{{ $imgUrl }}" class="w-full h-full object-cover">
-                        @if($loop->iteration === 4 && count($rental->images) > 4)
-                        <div class="absolute inset-0 bg-black/50 flex items-center justify-center rounded-[inherit]">
-                            <span class="text-white font-bold text-xs sm:text-sm">+{{ count($rental->images) - 4 }}</span>
-                        </div>
-                        @endif
+                @if(count($rentalImages) > 1)
+                <div class="flex gap-3 mt-3">
+                    @foreach($rentalImages as $i => $imgUrl)
+                    <button @click="go({{ $i }})"
+                            class="w-16 h-16 rounded-xl overflow-hidden border-2 transition-all"
+                            :class="imageIndex === {{ $i }} ? 'border-[#9acd32]' : 'border-transparent hover:border-[#c6cac6]'">
+                        <img src="{{ $imgUrl }}" class="w-full h-full object-cover" loading="lazy">
                     </button>
                     @endforeach
                 </div>
                 @endif
             </div>
 
-            {{-- Right: Info panel --}}
+            {{-- info --}}
             <div class="col-span-5">
-                <div class="bg-surface-container-lowest rounded-2xl p-6 lg:p-7 shadow-sm border border-outline-variant/10 space-y-5 sticky top-[100px]">
-                    {{-- Badges --}}
-                    <div class="flex flex-wrap gap-1.5">
+                <div class="sticky top-[100px] bg-white rounded-2xl border border-[#e8eae8] p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+                    <div class="flex items-center gap-2 flex-wrap mb-2">
                         @if($store->is_verified)
-                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] sm:text-[10px] font-bold bg-primary/10 text-primary uppercase tracking-wider">
-                            <i class="fa-solid fa-circle-check text-[12px] sm:text-[14px]" style=""></i>
-                            Verified
+                        <span class="inline-flex items-center text-[10px] font-black uppercase tracking-wide text-[#659316]">
+                            <i class="fa-solid fa-circle-check text-[12px] mr-0.5" style=""></i> Verified seller
                         </span>
                         @endif
                         @if($rental->category)
-                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] sm:text-[10px] font-bold bg-surface-container text-on-surface uppercase tracking-wider">{{ $rental->category->name }}</span>
+                        <span class="text-[10px] font-bold uppercase tracking-wide text-[#6b716c] bg-[#f5f6f5] px-2 py-0.5 rounded-full">{{ $rental->category->name }}</span>
                         @endif
-                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[9px] sm:text-[10px] font-bold bg-surface-container text-on-surface uppercase tracking-wider">{{ ucfirst($rental->billing_unit) }}</span>
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#f2f9df] text-[#659316] text-[10px] font-bold uppercase tracking-wide border border-[#9acd32]/25">
+                            <i class="fa-solid fa-calendar-days text-[11px]" style=""></i> {{ ucfirst($rental->billing_unit) }}
+                        </span>
                     </div>
 
-                    {{-- Title --}}
-                    <h1 class="text-xl sm:text-2xl lg:text-[28px] leading-tight font-bold text-on-surface">{{ $rental->name }}</h1>
+                    <h1 class="text-[22px] font-bold leading-snug text-[#1c201e]">{{ $rental->name }}</h1>
 
-                    {{-- Store --}}
-                    <div class="flex items-center gap-2 text-sm text-on-surface-variant">
-                        <i class="fa-solid fa-store text-[16px] text-outline"></i>
-                        <span class="font-semibold hover:text-primary transition-colors">
-                            <a href="{{ route('stores.show', $store->slug) }}">{{ $store->name }}</a>
-                        </span>
-                        @if($rental->rating > 0)
-                        <span class="flex items-center gap-0.5 text-amber-600 ml-1">
-                            <i class="fa-solid fa-star text-[14px]" style=""></i>
-                            <span class="font-bold text-sm">{{ number_format($rental->rating, 1) }}</span>
+                    <div class="flex flex-wrap items-center gap-x-4 gap-y-1.5 mt-2 text-[12.5px]">
+                        <a href="{{ route('stores.show', $store->slug) }}" class="font-semibold text-[#659316] hover:underline">
+                            <i class="fa-solid fa-store text-[12px] mr-0.5" style=""></i>{{ $store->name }}
+                        </a>
+                        @if($totalReviews > 0)
+                        <span class="inline-flex items-center gap-1 text-[#6b716c]">
+                            <i class="fa-solid fa-star text-[12px] text-amber-400" style=""></i>
+                            <strong class="text-[#1c201e] tnum">{{ number_format($avgRating, 1) }}</strong>
+                            <span class="text-[#9aa19c]">({{ $totalReviews }} reviews)</span>
                         </span>
                         @endif
+                        @if($rental->location)
+                        <span class="inline-flex items-center gap-1 text-[#9aa19c]">
+                            <i class="fa-solid fa-location-dot text-[12px]" style=""></i>
+                            <span class="truncate">{{ $rental->location }}</span>
+                        </span>
+                        @endif
+                        <span class="inline-flex items-center gap-1 text-[#9aa19c]">
+                            <i class="fa-regular fa-eye text-[13px]" style=""></i>
+                            <span class="tnum">{{ number_format($rental->views ?? 0) }}</span>
+                        </span>
                     </div>
 
-                    {{-- Location --}}
-                    @if($rental->location)
-                    <div class="flex items-center gap-2 text-xs sm:text-sm text-on-surface-variant">
-                        <i class="fa-solid fa-location-dot text-[16px] text-outline"></i>
-                        <span class="font-semibold">{{ $rental->location }}</span>
-                    </div>
-                    @endif
-
-                    {{-- Price --}}
-                    <div class="pb-3 border-b border-outline-variant/10 space-y-1.5">
-                        <div>
-                            <span class="text-2xl sm:text-[28px] lg:text-[32px] leading-none font-black text-primary">{{ number_format($rental->rate) }} FCFA</span>
-                            <span class="text-sm sm:text-base text-on-surface-variant font-semibold">/{{ $rental->billing_unit }}</span>
+                    <div class="mt-4 pb-4 border-b border-[#f2f3f2]">
+                        <div class="flex flex-wrap items-end gap-x-2.5 gap-y-1">
+                            <span class="text-[26px] font-black text-[#1c201e] tnum tracking-tight">{{ number_format((float) $rental->rate) }} <span class="text-[13px] font-bold text-[#6b716c]">FCFA</span></span>
+                            <span class="text-[12px] font-bold text-[#659316] mb-1"><i class="fa-solid fa-calendar-days text-[12px]" style=""></i> / {{ $rental->billing_unit }}</span>
                         </div>
                         @if($rental->deposit)
-                        <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-shield-halved text-[16px] text-on-surface-variant"></i>
-                            <span class="text-xs sm:text-sm text-on-surface-variant">Deposit: <strong>{{ number_format($rental->deposit) }} FCFA</strong></span>
-                        </div>
+                        <p class="mt-1.5 text-[12px] font-semibold text-[#6b716c]">
+                            <i class="fa-solid fa-shield-halved text-[13px] text-[#9aa19c]" style=""></i>
+                            Deposit: <strong class="text-[#1c201e] tnum">{{ number_format((float) $rental->deposit) }} FCFA</strong>
+                        </p>
                         @endif
                     </div>
 
-                    {{-- Serial --}}
                     @if($rental->serial_number)
-                    <div class="flex items-center gap-2 text-xs text-on-surface-variant">
-                        <i class="fa-solid fa-qrcode text-[16px] text-outline"></i>
-                        <span>Serial: <strong>{{ $rental->serial_number }}</strong></span>
-                    </div>
+                    <p class="mt-3 flex items-center gap-1.5 text-[12px] text-[#9aa19c]">
+                        <i class="fa-solid fa-qrcode text-[13px]" style=""></i>
+                        Serial: <strong class="text-[#6b716c]">{{ $rental->serial_number }}</strong>
+                    </p>
                     @endif
 
-                    {{-- Views --}}
-                    <div class="flex items-center gap-2 text-xs text-on-surface-variant">
-                        <i class="fa-solid fa-eye text-[16px] text-outline"></i>
-                        <span class="font-semibold">{{ number_format($rental->views ?? 0) }}</span>
-                        <span class="text-outline">views</span>
-                    </div>
-
-                    {{-- Condition notes --}}
                     @if($rental->condition_notes)
-                    <div class="bg-amber-50 border border-amber-100 rounded-xl p-3 sm:p-4">
-                        <div class="flex items-start gap-2">
-                            <i class="fa-solid fa-circle-info text-[16px] text-amber-600 shrink-0 mt-0.5"></i>
-                            <p class="text-[11px] sm:text-xs text-amber-800 leading-relaxed">{{ $rental->condition_notes }}</p>
-                        </div>
+                    <div class="mt-3 bg-[#fffbeb] border border-[#f3e2b8] rounded-xl px-3.5 py-3 flex items-start gap-2">
+                        <i class="fa-solid fa-circle-info text-[15px] text-[#f59e0b] mt-0.5 shrink-0" style=""></i>
+                        <p class="text-[12px] text-[#92600a] leading-relaxed">{{ $rental->condition_notes }}</p>
                     </div>
                     @endif
 
-                    {{-- Actions --}}
-                    <div class="space-y-2.5 pt-1">
+                    <div class="mt-5">
                         @auth
-                            @if(auth()->id() !== $store->user_id)
+                            @if(auth()->id() === $store->user_id)
+                            <div class="flex items-center gap-2 text-[12px] font-semibold text-[#659316] bg-[#f2f9df] border border-[#9acd32]/25 rounded-xl px-4 py-3">
+                                <i class="fa-regular fa-circle-check text-[16px]" style=""></i>
+                                This is your own rental.
+                            </div>
+                            @else
                             <form action="{{ route('conversations.store') }}" method="POST">
                                 @csrf
                                 <input type="hidden" name="seller_id" value="{{ $store->user_id }}">
                                 <input type="hidden" name="target_type" value="rental">
                                 <input type="hidden" name="target_id" value="{{ $rental->id }}">
-                                <input type="hidden" name="message" value="Hi, I am interested in renting {{ $rental->name }}. Is it available?">
+                                <input type="hidden" name="message" value="Hi, I'm interested in renting {{ $rental->name }}. Is it available?">
                                 <button type="submit"
-                                        class="flex items-center justify-center gap-2 sm:gap-3 w-full py-3 sm:py-3.5 bg-primary text-on-primary rounded-xl text-xs sm:text-sm font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
-                                    <i class="fa-regular fa-comment text-[16px] sm:text-[18px]"></i>
-                                    Message
+                                        class="w-full h-12 bg-[#1c201e] text-white text-[13px] font-bold rounded-xl hover:bg-black active:scale-[0.99] transition-all flex items-center justify-center gap-2">
+                                    <i class="fa-regular fa-comment text-[16px]" style=""></i>
+                                    Message seller
                                 </button>
                             </form>
+                            @if($store->whatsapp_number)
+                            <a href="https://wa.me/{{ wa_url($store->whatsapp_number) }}?text={{ urlencode('Hi, I\'m interested in renting ' . $rental->name . ' on Izifai.') }}"
+                               target="_blank"
+                               class="mt-2 w-full h-12 bg-[#25D366] text-white text-[13px] font-bold rounded-xl hover:bg-[#128C7E] active:scale-[0.99] transition-all flex items-center justify-center gap-2">
+                                {!! str_replace('w-5 h-5', 'w-[18px] h-[18px]', $whatsappIcon) !!}
+                                Chat on WhatsApp
+                            </a>
+                            @endif
+                            @endif
+                        @else
+                            @if($store->whatsapp_number)
+                            <a href="https://wa.me/{{ wa_url($store->whatsapp_number) }}?text={{ urlencode('Hi, I\'m interested in renting ' . $rental->name . ' on Izifai.') }}"
+                               target="_blank"
+                               class="w-full h-12 bg-[#25D366] text-white text-[13px] font-bold rounded-xl hover:bg-[#128C7E] active:scale-[0.99] transition-all flex items-center justify-center gap-2">
+                                {!! str_replace('w-5 h-5', 'w-[18px] h-[18px]', $whatsappIcon) !!}
+                                Chat on WhatsApp
+                            </a>
                             @endif
                         @endauth
-                        @if($store->whatsapp_number)
-                        <a href="https://wa.me/{{ wa_url($store->whatsapp_number) }}?text={{ urlencode('Hi, I am interested in renting ' . $rental->name . ' on Izifai.') }}"
-                           target="_blank"
-                           class="flex items-center justify-center gap-2 sm:gap-3 w-full py-3 sm:py-3.5 bg-[#25D366] text-white rounded-xl text-xs sm:text-sm font-bold hover:bg-[#128C7E] transition-all shadow-lg shadow-[#25D366]/20">
-                            {!! $whatsappIcon !!}
-                            Enquire on WhatsApp
-                        </a>
-                        @endif
-                        <a href="{{ route('stores.show', $store->slug) }}"
-                           class="flex items-center justify-center gap-2 w-full py-2.5 sm:py-3 bg-surface-container-high text-on-surface rounded-xl text-xs sm:text-sm font-bold hover:bg-surface-container-highest transition-all">
-                            <i class="fa-solid fa-store text-[16px] sm:text-[18px]"></i>
-                            Browse Store
-                        </a>
-                        <button onclick="copyToClipboard(window.location.href, this)"
-                                class="flex items-center justify-center gap-2 w-full py-2 sm:py-2.5 border border-outline-variant/30 text-on-surface-variant rounded-xl text-[11px] sm:text-xs font-bold hover:bg-surface-container transition-all">
-                            <i class="fa-solid fa-share-nodes text-[16px] sm:text-[18px] copy-icon"></i>
-                            <span class="copy-label">Share Link</span>
-                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    {{-- CONDITION NOTES BANNER (mobile only; desktop shows inside info panel) --}}
-    @if($rental->condition_notes)
-    <div class="lg:hidden max-w-7xl mx-auto px-4 mt-4">
-        <div class="bg-amber-50/90 backdrop-blur-sm border border-amber-200/50 rounded-xl sm:rounded-2xl p-3 sm:p-4 shadow-sm">
-            <div class="flex items-start gap-2">
-                <i class="fa-solid fa-circle-info text-[16px] sm:text-[18px] text-amber-600 shrink-0 mt-0.5"></i>
-                <p class="text-[11px] sm:text-sm text-amber-800 leading-relaxed">{{ $rental->condition_notes }}</p>
-            </div>
+    {{-- ============ ABOUT ============ --}}
+    @if($rental->description)
+    <section class="max-w-7xl mx-auto px-2 sm:px-6 mt-6">
+        <div class="rounded-2xl bg-white border border-[#e8eae8] p-4 sm:p-6">
+            <h2 class="text-[15px] sm:text-base font-bold text-[#1c201e] mb-2.5">About this rental</h2>
+            <div class="text-[12.5px] sm:text-[13.5px] text-[#3f453f] leading-relaxed whitespace-pre-wrap break-words">{{ $rental->description }}</div>
         </div>
-    </div>
+    </section>
     @endif
 
-    {{-- MAIN CONTENT BELOW HERO --}}
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 sm:mt-8 lg:mt-12 space-y-6 sm:space-y-8 lg:space-y-12">
-
-        {{-- DESCRIPTION --}}
-        @if($rental->description)
-        <section>
-            <div class="flex items-center gap-2 mb-3 sm:mb-4">
-                <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-primary/[0.06] flex items-center justify-center border border-primary/10">
-                    <i class="fa-solid fa-file-lines text-[14px] sm:text-[16px] text-primary"></i>
-                </span>
-                <h2 class="text-sm sm:text-base font-bold text-on-surface">About This Rental</h2>
-            </div>
-            <div class="bg-surface-container-lowest rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 shadow-sm border border-outline-variant/10">
-                <div class="text-xs sm:text-sm text-on-surface-variant leading-relaxed whitespace-pre-wrap">{{ $rental->description }}</div>
-            </div>
-        </section>
-        @endif
-
-        {{-- RENTAL DETAILS --}}
-        @if($rental->return_conditions || $rental->duration_rules)
-        <section>
-            <div class="flex items-center gap-2 mb-3 sm:mb-4">
-                <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-primary/[0.06] flex items-center justify-center border border-primary/10">
-                    <i class="fa-solid fa-clipboard-list text-[14px] sm:text-[16px] text-primary"></i>
-                </span>
-                <h2 class="text-sm sm:text-base font-bold text-on-surface">Rental Terms</h2>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
-                @if($rental->return_conditions)
-                <div class="bg-surface-container-lowest rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-sm border border-outline-variant/10">
-                    <div class="flex items-center gap-2 mb-2">
-                        <i class="fa-solid fa-clipboard-check text-primary text-[16px] sm:text-[18px]"></i>
-                        <h3 class="text-xs sm:text-sm font-bold text-on-surface">Return Conditions</h3>
-                    </div>
-                    <p class="text-[11px] sm:text-sm text-on-surface-variant leading-relaxed whitespace-pre-wrap">{{ $rental->return_conditions }}</p>
-                </div>
-                @endif
-                @if($rental->duration_rules)
-                <div class="bg-surface-container-lowest rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-sm border border-outline-variant/10">
-                    <div class="flex items-center gap-2 mb-2">
-                        <i class="fa-solid fa-clock text-primary text-[16px] sm:text-[18px]"></i>
-                        <h3 class="text-xs sm:text-sm font-bold text-on-surface">Duration Rules</h3>
-                    </div>
-                    <p class="text-[11px] sm:text-sm text-on-surface-variant leading-relaxed whitespace-pre-wrap">{{ $rental->duration_rules }}</p>
-                </div>
-                @endif
-            </div>
-        </section>
-        @endif
-
-        {{-- TRUST & SOCIAL ROW --}}
-        <section>
-            <div class="flex items-center gap-2 mb-3 sm:mb-4">
-                <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-primary/[0.06] flex items-center justify-center border border-primary/10">
-                    <i class="fa-solid fa-shield-halved text-[14px] sm:text-[16px] text-primary"></i>
-                </span>
-                <h2 class="text-sm sm:text-base font-bold text-on-surface">Trust & Assurance</h2>
-            </div>
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4">
-                @php $socialLinks = $store->social_links ?: []; @endphp
-
-                <div class="lg:col-span-4 bg-surface-container-lowest rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-sm border border-outline-variant/10 flex flex-col items-center justify-center gap-2 sm:gap-3">
-                    <p class="text-[10px] sm:text-xs font-bold text-on-surface-variant uppercase tracking-wider">Connect With Us</p>
-                    <div class="flex flex-wrap justify-center gap-1.5 sm:gap-2">
-                        @if($store->whatsapp_number)
-                        <a href="https://wa.me/{{ wa_url($store->whatsapp_number) }}?text={{ urlencode('Hello, I found you on Izifai.') }}" target="_blank"
-                           class="w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white transition-all" title="WhatsApp">
-                            <svg viewBox="0 0 24 24" fill="currentColor" class="w-[14px] h-[14px] sm:w-[18px] sm:h-[18px]" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c 0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                        </a>
-                        @endif
-                        @foreach($socialLinks as $social)
-                            @php
-                                $url = $social['url'] ?? '';
-                                $platform = $social['platform'] ?? '';
-                                if (!$url) continue;
-                                $icon = match($platform) {
-                                    'facebook' => ['icon' => 'fa-brands fa-facebook', 'bg' => 'bg-blue-50', 'color' => 'text-blue-600', 'hover' => 'hover:bg-blue-600 hover:text-white'],
-                                    'instagram' => ['icon' => 'fa-brands fa-instagram', 'bg' => 'bg-pink-50', 'color' => 'text-pink-600', 'hover' => 'hover:bg-pink-600 hover:text-white'],
-                                    'twitter' => ['icon' => 'fa-brands fa-x-twitter', 'bg' => 'bg-sky-50', 'color' => 'text-sky-600', 'hover' => 'hover:bg-sky-600 hover:text-white'],
-                                    'linkedin' => ['icon' => 'fa-brands fa-linkedin-in', 'bg' => 'bg-blue-50', 'color' => 'text-blue-700', 'hover' => 'hover:bg-blue-700 hover:text-white'],
-                                    'tiktok' => ['icon' => 'fa-brands fa-tiktok', 'bg' => 'bg-gray-50', 'color' => 'text-gray-800', 'hover' => 'hover:bg-gray-800 hover:text-white'],
-                                    'youtube' => ['icon' => 'fa-brands fa-youtube', 'bg' => 'bg-red-50', 'color' => 'text-red-600', 'hover' => 'hover:bg-red-600 hover:text-white'],
-                                    'whatsapp_group' => ['icon' => 'fa-brands fa-whatsapp', 'bg' => 'bg-green-50', 'color' => 'text-green-600', 'hover' => 'hover:bg-green-600 hover:text-white'],
-                                    default => ['icon' => 'fa-solid fa-globe', 'bg' => 'bg-surface-container', 'color' => 'text-on-surface-variant', 'hover' => 'hover:bg-primary/10 hover:text-primary'],
-                                };
-                            @endphp
-                            <a href="{{ $url }}" target="_blank"
-                               class="w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center {{ $icon['bg'] }} {{ $icon['color'] }} {{ $icon['hover'] }} transition-all"
-                               title="{{ ucfirst(str_replace('_', ' ', $platform)) }}">
-                                <i class="{{ $icon['icon'] }} text-[14px] sm:text-[18px]"></i>
-                            </a>
-                        @endforeach
-                    </div>
-                </div>
-
-                <div class="lg:col-span-8 bg-surface-container-lowest rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-sm border border-outline-variant/10">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 divide-y sm:divide-y-0 sm:divide-x divide-outline-variant/10">
-                        <div class="flex items-start gap-3 flex-1 pb-4 sm:pb-0 sm:pr-6">
-                            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                                <i class="fa-solid fa-shield-halved text-[18px] sm:text-[20px]" style=""></i>
-                            </div>
-                            <div class="min-w-0">
-                                <p class="text-xs sm:text-sm font-bold text-on-surface">Premium Assurance</p>
-                                <p class="text-[10px] sm:text-xs text-on-surface-variant">Verified merchant with trusted quality</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-3 flex-1 pt-4 sm:pt-0 sm:pl-6">
-                            <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                                <i class="fa-solid fa-boxes-stacked text-[18px] sm:text-[20px]" style=""></i>
-                            </div>
-                            <div class="min-w-0">
-                                <p class="text-xs sm:text-sm font-bold text-on-surface">{{ $store->location ? explode(',', $store->location)[0] . ' Rentals' : 'Douala & YaoundÃ© Rentals' }}</p>
-                                <p class="text-[10px] sm:text-xs text-on-surface-variant">Quality rental items available in {{ $store->location ? $store->location : "Cameroon's major cities" }}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        {{-- OTHER RENTALS IN STORE --}}
-        @if($storeRentals->count() > 0)
-        <section class="space-y-3 sm:space-y-4">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-primary/[0.06] flex items-center justify-center border border-primary/10">
-                        <i class="fa-solid fa-table-cells text-[14px] sm:text-[16px] text-primary"></i>
-                    </span>
-                    <h4 class="text-sm sm:text-base font-bold text-on-surface">More from {{ $store->name }}</h4>
-                </div>
-                <a href="{{ route('stores.show', $store->slug) }}" class="text-[10px] sm:text-xs font-semibold text-primary hover:underline">View all</a>
-            </div>
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
-                @foreach($storeRentals as $sr)
-                <a href="{{ route('rentals.show', $sr->slug) }}"
-                   class="bg-surface-container-lowest rounded-lg sm:rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all border border-outline-variant/10 group">
-                    <div class="aspect-[4/3] overflow-hidden bg-surface-container-high">
-                        @if($sr->main_image_url)
-                        <img src="{{ $sr->main_image_url }}"
-                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                             alt="{{ $sr->name }}">
-                        @else
-                        <div class="w-full h-full flex items-center justify-center text-on-surface-variant/30">
-                            <i class="fa-solid fa-image text-2xl sm:text-3xl"></i>
-                        </div>
-                        @endif
-                    </div>
-                    <div class="p-1.5 sm:p-2 space-y-0.5">
-                        <h6 class="text-[10px] sm:text-xs font-bold text-on-surface truncate">{{ $sr->name }}</h6>
-                        <p class="text-[10px] sm:text-xs font-bold text-primary truncate">{{ number_format($sr->rate) }} FCFA / {{ $sr->billing_unit }}</p>
-                    </div>
-                </a>
-                @endforeach
-            </div>
-        </section>
-        @endif
-
-        {{-- RENTAL REVIEWS --}}
-        @if($reviews->count() > 0)
-        <section id="reviews" class="scroll-mt-[80px] lg:scroll-mt-[100px] space-y-4">
-            <div class="flex items-center justify-between">
-                <h4 class="text-base sm:text-lg lg:text-[24px] leading-8 font-bold flex items-center gap-2">
-                    <i class="fa-solid fa-star text-primary text-[18px] sm:text-[20px]"></i>
-                    Customer Reviews
-                </h4>
-                <div class="flex items-center gap-1.5 sm:gap-2">
-                    <span class="text-xs sm:text-sm font-bold">{{ number_format($avgRating, 1) }}</span>
-                    <div class="flex text-orange-500">
-                        @for($i = 1; $i <= 5; $i++)
-                        <i class="{{ $i <= round($avgRating) ? 'fa-solid' : 'fa-regular' }} fa-star text-[14px] sm:text-[16px]" style=""></i>
-                        @endfor
-                    </div>
-                </div>
-            </div>
-
-            {{-- Star Distribution --}}
-            @if(isset($starDistribution))
-            <div class="bg-surface-container-lowest rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-sm border border-outline-variant/10">
-                @foreach($starDistribution as $star => $data)
-                <div class="flex items-center gap-2 sm:gap-3 py-1 sm:py-1.5">
-                    <span class="text-[11px] sm:text-xs font-bold text-on-surface w-3 sm:w-4 text-right">{{ $star }}</span>
-                    <i class="fa-solid fa-star text-[14px] sm:text-[16px] text-amber-500" style=""></i>
-                    <div class="flex-1 h-2 sm:h-2.5 rounded-full bg-surface-container overflow-hidden">
-                        <div class="h-full rounded-full bg-amber-500" style="width: {{ $data['percentage'] }}%"></div>
-                    </div>
-                    <span class="text-[10px] sm:text-xs text-on-surface-variant w-8 text-right">{{ $data['count'] }}</span>
-                </div>
-                @endforeach
+    {{-- ============ RENTAL TERMS ============ --}}
+    @if($rental->return_conditions || $rental->duration_rules)
+    <section class="max-w-7xl mx-auto px-2 sm:px-6 mt-3">
+        <h2 class="text-[14px] sm:text-base font-bold text-[#1c201e] mb-2.5 px-0.5">Rental terms</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            @if($rental->return_conditions)
+            <div class="rounded-2xl bg-white border border-[#e8eae8] p-4 sm:p-6">
+                <h3 class="flex items-center gap-2 text-[13px] font-bold text-[#1c201e] mb-2">
+                    <i class="fa-solid fa-clipboard-check text-[14px] text-[#659316]" style=""></i>
+                    Return conditions
+                </h3>
+                <p class="text-[12px] sm:text-[13px] text-[#3f453f] leading-relaxed whitespace-pre-wrap">{{ $rental->return_conditions }}</p>
             </div>
             @endif
+            @if($rental->duration_rules)
+            <div class="rounded-2xl bg-white border border-[#e8eae8] p-4 sm:p-6">
+                <h3 class="flex items-center gap-2 text-[13px] font-bold text-[#1c201e] mb-2">
+                    <i class="fa-solid fa-clock text-[14px] text-[#659316]" style=""></i>
+                    Duration rules
+                </h3>
+                <p class="text-[12px] sm:text-[13px] text-[#3f453f] leading-relaxed whitespace-pre-wrap">{{ $rental->duration_rules }}</p>
+            </div>
+            @endif
+        </div>
+    </section>
+    @endif
 
-            @php $firstReview = $reviews->shift(); @endphp
-            @if($firstReview)
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4">
-                <div class="bg-surface-container-lowest rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-sm border border-outline-variant/10">
-                    <div class="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
-                        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-secondary-container flex items-center justify-center font-bold text-primary text-[10px] sm:text-sm shrink-0">
-                            {{ substr($firstReview->user->name ?? 'A', 0, 1) }}
+    {{-- ============ SELLER ============ --}}
+    <section class="max-w-7xl mx-auto px-2 sm:px-6 mt-3">
+        <div class="rounded-2xl bg-white border border-[#e8eae8] p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-4">
+            @if($store->logo_url)
+            <img src="{{ $store->logo_url }}" alt="{{ $store->name }}" class="w-14 h-14 rounded-xl object-cover border border-[#e8eae8] bg-[#f5f6f5] shrink-0">
+            @else
+            <div class="w-14 h-14 rounded-xl bg-[#f2f9df] border border-[#9acd32]/25 grid place-items-center text-[#659316] shrink-0">
+                <i class="fa-solid fa-store text-[22px]" style=""></i>
+            </div>
+            @endif
+            <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                    <p class="text-[14px] sm:text-[15px] font-bold text-[#1c201e] truncate">{{ $store->name }}</p>
+                    @if($store->is_verified)
+                    <i class="fa-solid fa-circle-check text-[15px] text-[#659316]" style=""></i>
+                    @endif
+                </div>
+                <div class="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-1 text-[11.5px] text-[#6b716c]">
+                    @if($store->location)
+                    <span><i class="fa-solid fa-location-dot text-[11px]" style=""></i> {{ $store->location }}</span>
+                    @endif
+                    <span>{{ $totalRentals }} rental{{ $totalRentals === 1 ? '' : 's' }}</span>
+                    @if($store->business_email)
+                    <span class="truncate">{{ $store->business_email }}</span>
+                    @endif
+                </div>
+            </div>
+            <a href="{{ route('stores.show', $store->slug) }}"
+               class="shrink-0 h-11 px-5 rounded-xl bg-[#1c201e] text-white text-[12px] font-bold hover:bg-black transition-colors flex items-center justify-center gap-1.5">
+                Visit store
+                <i class="fa-solid fa-arrow-right text-[14px]" style=""></i>
+            </a>
+        </div>
+        <p class="mt-2 px-1 text-[11px] text-[#9aa19c]">
+            <i class="fa-regular fa-shield-check text-[12px] mr-1 text-[#659316]" style=""></i>
+            Inspect the item before paying · Read the rental terms carefully · Return it in the same condition.
+        </p>
+    </section>
+
+    {{-- ============ REVIEWS ============ --}}
+    <section class="max-w-7xl mx-auto px-2 sm:px-6 mt-3">
+        <div class="rounded-2xl bg-white border border-[#e8eae8] p-4 sm:p-6">
+            <div class="flex flex-col lg:flex-row lg:items-start lg:gap-8">
+                <div class="lg:w-56 lg:text-center shrink-0 flex items-center lg:block gap-4 lg:gap-0">
+                    <div>
+                        <span class="text-[36px] sm:text-[44px] font-black text-[#1c201e] tnum leading-none">{{ number_format($avgRating, 1) }}</span>
+                        <div class="flex items-center gap-0.5 mt-1.5 justify-start lg:justify-center">
+                            @for($i = 1; $i <= 5; $i++)
+                            <i class="fa-solid fa-star text-[14px] {{ $i <= round($avgRating) ? 'text-amber-400' : 'text-[#e0e3e0]' }}" style=""></i>
+                            @endfor
                         </div>
-                        <div class="min-w-0">
-                            <p class="text-xs sm:text-sm font-bold truncate">{{ $firstReview->user->name ?? 'Anonymous' }}</p>
-                            <p class="text-[9px] sm:text-[10px] text-on-surface-variant">Verified Renter</p>
+                        <p class="text-[11px] text-[#9aa19c] mt-1">{{ $totalReviews }} review{{ $totalReviews === 1 ? '' : 's' }}</p>
+                    </div>
+                    @if($totalReviews > 0)
+                    <div class="lg:mt-5 space-y-1.5 w-full max-w-[180px] lg:mx-auto">
+                        @foreach([5, 4, 3, 2, 1] as $star)
+                        @php $count = $starDistribution[$star]['count'] ?? 0; $pct = $totalReviews > 0 ? ($count / $totalReviews) * 100 : 0; @endphp
+                        <div class="flex items-center gap-2">
+                            <span class="w-4 text-[10px] font-bold text-[#9aa19c] tnum shrink-0">{{ $star }}</span>
+                            <div class="flex-1 h-1.5 bg-[#eef0ee] rounded-full overflow-hidden">
+                                <div class="h-full rounded-full bg-gradient-to-r from-[#7ca81d] to-[#9acd32]" style="width: {{ $pct }}%"></div>
+                            </div>
+                            <span class="w-5 text-right text-[10px] text-[#9aa19c] font-semibold tnum shrink-0">{{ $count }}</span>
                         </div>
+                        @endforeach
                     </div>
-                    <div class="flex text-amber-500 mb-1.5 sm:mb-2">
-                        @for($i = 1; $i <= 5; $i++)
-                        <i class="{{ $i <= $firstReview->rating ? 'fa-solid' : 'fa-regular' }} fa-star text-[14px] sm:text-[16px]" style=""></i>
-                        @endfor
-                    </div>
-                    @if($firstReview->comment)
-                    <p class="text-xs sm:text-sm text-on-surface-variant italic leading-relaxed">"{{ $firstReview->comment }}"</p>
                     @endif
                 </div>
 
-                @php $secondReview = $reviews->shift(); @endphp
-                @if($secondReview)
-                <div class="lg:col-span-2 bg-surface-container-lowest rounded-xl sm:rounded-2xl shadow-sm border border-outline-variant/10 overflow-hidden">
-                    <div class="flex flex-col sm:flex-row">
-                        <div class="flex-1 p-4 sm:p-5">
-                            <div class="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
-                                <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-secondary-container flex items-center justify-center font-bold text-primary text-[10px] sm:text-sm shrink-0">
-                                    {{ substr($secondReview->user->name ?? 'A', 0, 1) }}
+                <div class="flex-1 min-w-0 mt-5 lg:mt-0">
+                    @auth
+                    @if(auth()->id() !== $store->user_id)
+                    <div class="lg:max-w-[480px] px-0 lg:pr-10">
+                        <p class="text-[12px] font-bold text-[#1c201e] mb-2">Share your thoughts</p>
+                        <div class="flex items-center gap-1 mb-2">
+                            <template x-for="i in 5" :key="i">
+                                <button type="button" @mouseenter="reviewHover = i" @mouseleave="reviewHover = 0" @click="reviewStar = i" class="text-[22px] leading-none">
+                                    <i class="fa-solid fa-star transition-colors" :class="(i <= (reviewHover || reviewStar)) ? 'text-amber-400' : 'text-[#e0e3e0]'"></i>
+                                </button>
+                            </template>
+                            <span class="ml-1 text-[12px] font-semibold text-[#6b716c]" x-text="reviewStar ? reviewStar + '/5' : ''"></span>
+                        </div>
+                        <form action="{{ route('rentals.review', $rental) }}" method="POST" class="flex gap-2 items-end">
+                            @csrf
+                            <input type="hidden" name="rating" :value="reviewStar">
+                            <textarea name="comment" rows="2" placeholder="How was your rental experience?"
+                                      class="flex-1 rounded-xl border border-[#e8eae8] bg-[#f5f6f5] text-[12.5px] px-3 py-2 outline-none focus:border-[#9acd32] focus:ring-2 focus:ring-[#9acd32]/15 transition-all placeholder:text-[#9aa19c] resize-none"></textarea>
+                            <button type="submit"
+                                    class="shrink-0 h-[42px] px-4 rounded-xl bg-[#1c201e] text-white text-[12px] font-bold hover:bg-black transition-colors">Post</button>
+                        </form>
+                    </div>
+                    <div class="h-px bg-[#eef0ee] my-5 lg:my-6"></div>
+                    @endif
+                    @else
+                    <div class="lg:max-w-[480px] rounded-xl bg-[#f5f6f5] border border-dashed border-[#e0e3e0] px-4 py-3.5 flex items-center justify-between">
+                        <p class="text-[12px] text-[#6b716c]">Sign in to review this rental</p>
+                        <a href="{{ route('login') }}" class="text-[12px] font-black text-[#659316]">Log in →</a>
+                    </div>
+                    <div class="h-px bg-[#eef0ee] my-5"></div>
+                    @endauth
+
+                    @if($reviews->isNotEmpty())
+                    <div class="max-h-[380px] lg:max-h-[420px] overflow-y-auto pr-1.5 reviews-scroll">
+                        <div class="space-y-4">
+                        @foreach($reviews as $review)
+                        @php $rating = (int)round((float)($review->rating ?? 5)); @endphp
+                        <div class="border border-[#eef0ee] rounded-xl p-3 sm:p-4">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#f2f9df] text-[#659316] grid place-items-center font-black text-[12px] uppercase shrink-0">
+                                    {{ substr($review->user->name ?? 'U', 0, 1) }}
                                 </div>
                                 <div class="min-w-0">
-                                    <p class="text-xs sm:text-sm font-bold truncate">{{ $secondReview->user->name ?? 'Anonymous' }}</p>
-                                    <p class="text-[9px] sm:text-[10px] text-on-surface-variant">Verified Renter</p>
+                                    <p class="text-[12px] font-bold text-[#1c201e] truncate">{{ $review->user->name ?? 'User' }}</p>
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="flex items-center gap-0.5">
+                                            @for($i = 1; $i <= 5; $i++)
+                                            <i class="fa-solid fa-star text-[10px] {{ $i <= $rating ? 'text-amber-400' : 'text-[#e0e3e0]' }}" style=""></i>
+                                            @endfor
+                                        </span>
+                                        <span class="text-[10px] text-[#9aa19c]">{{ $review->created_at->diffForHumans() }}</span>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="flex text-amber-500 mb-1.5 sm:mb-2">
-                                @for($i = 1; $i <= 5; $i++)
-                                <i class="{{ $i <= $secondReview->rating ? 'fa-solid' : 'fa-regular' }} fa-star text-[14px] sm:text-[16px]" style=""></i>
-                                @endfor
-                            </div>
-                            @if($secondReview->comment)
-                            <p class="text-xs sm:text-sm text-on-surface-variant leading-relaxed">"{{ $secondReview->comment }}"</p>
-                            @endif
+                            <p class="mt-2 text-[12.5px] text-[#3f453f] leading-relaxed">{{ $review->comment }}</p>
+                        </div>
+                        @endforeach
                         </div>
                     </div>
+                    @endif
                 </div>
-                @endif
             </div>
-            @endif
-        </section>
-        @endif
+        </div>
+    </section>
 
-        {{-- RENTAL REVIEW FORM --}}
-        @auth
-        <section class="bg-surface-container-lowest rounded-2xl p-5 shadow-sm border border-outline-variant/10">
-            <h4 class="text-base font-bold flex items-center gap-2 mb-4">
-                <i class="fa-solid fa-star text-primary text-[18px]"></i>
-                Write a Review
-            </h4>
-            <form action="{{ route('rentals.review', $rental) }}" method="POST">
-                @csrf
-                <div class="flex items-center gap-1 mb-3" x-data="{ rating: 0 }">
-                    <p class="text-xs font-bold text-on-surface-variant mr-2">Your Rating:</p>
-                    <template x-for="i in 5" :key="i">
-                        <button type="button" @click="rating = i"
-                                :class="i <= rating ? 'fa-solid fa-star text-[24px] text-orange-500' : 'fa-regular fa-star text-[24px] text-on-surface-variant/30'"
-                                class="transition-colors"></button>
-                    </template>
-                    <input type="hidden" name="rating" x-model="rating">
+    {{-- ============ MORE FROM STORE ============ --}}
+    @if($storeRentals->isNotEmpty())
+    <section class="max-w-7xl mx-auto px-2 sm:px-6 mt-3">
+        <div class="flex items-end justify-between gap-3 mb-3">
+            <div>
+                <h2 class="text-[14px] sm:text-lg font-bold tracking-tight text-[#1c201e]">More from {{ $store->name }}</h2>
+                <p class="text-[10.5px] sm:text-[12px] text-[#6b716c] mt-0.5">Other items you can rent from this seller</p>
+            </div>
+            <a href="{{ route('stores.show', $store->slug) }}" class="text-[11px] sm:text-[13px] font-bold text-[#659316] hover:text-[#7ca81d] whitespace-nowrap">View store →</a>
+        </div>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
+            @foreach($storeRentals as $sr)
+            <a href="{{ route('rentals.show', $sr->slug) }}"
+               class="group rounded-xl bg-white border border-[#e8eae8] overflow-hidden hover:border-[#9acd32]/50 hover:shadow-[0_12px_30px_-12px_rgba(0,0,0,0.10)] transition-all duration-300">
+                <div class="relative aspect-[4/3] bg-[#f5f6f5]">
+                    @if($sr->main_image_url)
+                    <img src="{{ $sr->main_image_url }}" alt="{{ $sr->name }}" loading="lazy"
+                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.classList.add('hidden')">
+                    @else
+                    <div class="w-full h-full flex items-center justify-center text-[#c6cac6]">
+                        <i class="fa-solid fa-image text-[24px] sm:text-[28px]"></i>
+                    </div>
+                    @endif
                 </div>
-                <textarea name="comment" rows="2" class="w-full bg-surface-container border-none rounded-xl p-3 text-sm text-on-surface focus:ring-2 focus:ring-primary/20 mb-3" placeholder="Share your experience with this rental..." maxlength="500"></textarea>
-                <div class="flex justify-end">
-                    <button type="submit" class="px-5 py-2 bg-primary text-on-primary rounded-xl text-xs font-bold hover:opacity-90 transition-all">
-                        Submit Review
-                    </button>
+                <div class="p-2 sm:p-2.5">
+                    <p class="text-[10px] sm:text-[12px] font-semibold text-[#1c201e] line-clamp-2 leading-snug">{{ $sr->name }}</p>
+                    <p class="mt-0.5 text-[10.5px] sm:text-[12px] font-black text-[#659316] tnum">{{ number_format((float) $sr->rate) }} FCFA / {{ $sr->billing_unit }}</p>
                 </div>
-            </form>
-        </section>
-        @endauth
+            </a>
+            @endforeach
+        </div>
+</section>
+    @endif
 
-    </div>
+    {{-- ============ RELATED RENTALS ============ --}}
+    @if($relatedRentals->isNotEmpty())
+    <section class="max-w-7xl mx-auto px-2 sm:px-6 mt-3">
+        <div class="flex items-end justify-between gap-3 mb-3">
+            <div>
+                <h2 class="text-[14px] sm:text-lg font-bold tracking-tight text-[#1c201e]">Related rentals</h2>
+                <p class="text-[10.5px] sm:text-[12px] text-[#6b716c] mt-0.5">More items you can rent on Izifai</p>
+            </div>
+            <a href="{{ route('rentals.index') }}" class="text-[11px] sm:text-[13px] font-bold text-[#659316] hover:text-[#7ca81d] whitespace-nowrap">View all →</a>
+        </div>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
+            @foreach($relatedRentals as $rr)
+            <a href="{{ route('rentals.show', $rr->slug) }}"
+               class="group rounded-xl bg-white border border-[#e8eae8] overflow-hidden hover:border-[#9acd32]/50 hover:shadow-[0_12px_30px_-12px_rgba(0,0,0,0.10)] transition-all duration-300">
+                <div class="relative aspect-[4/3] bg-[#f5f6f5]">
+                    @if($rr->main_image_url)
+                    <img src="{{ $rr->main_image_url }}" alt="{{ $rr->name }}" loading="lazy"
+                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.classList.add('hidden')">
+                    @else
+                    <div class="w-full h-full flex items-center justify-center text-[#c6cac6]">
+                        <i class="fa-solid fa-image text-[24px] sm:text-[28px]"></i>
+                    </div>
+                    @endif
+                </div>
+                <div class="p-2 sm:p-2.5">
+                    <p class="text-[10px] sm:text-[12px] font-semibold text-[#1c201e] line-clamp-2 leading-snug">{{ $rr->name }}</p>
+                    <p class="mt-0.5 text-[10.5px] sm:text-[12px] font-black text-[#659316] tnum">{{ number_format((float) $rr->rate) }} FCFA / {{ $rr->billing_unit }}</p>
+                    <p class="mt-0.5 flex items-center gap-0.5 text-[9.5px] sm:text-[10.5px] text-[#6b716c] truncate">
+                        <i class="fa-solid fa-store text-[9px] sm:text-[10px]" style=""></i>{{ $rr->store->name }}
+                    </p>
+                </div>
+            </a>
+            @endforeach
+        </div>
+    </section>
+    @endif
+
 </div>
 @endsection
-
-{{-- FOOTER --}}
-@section('footer')
-<footer class="w-full py-8 lg:py-12 bg-surface-container-low flex flex-col items-center justify-center space-y-3 lg:space-y-4 border-t border-outline-variant/30 px-4">
-    @if($store->business_email || $store->location)
-        <div class="flex flex-col sm:flex-row items-center gap-2 sm:gap-6 text-xs lg:text-sm text-on-surface-variant">
-            @if($store->business_email)
-                <a href="mailto:{{ $store->business_email }}" class="hover:text-primary transition-all flex items-center gap-1">
-                    <i class="fa-solid fa-envelope text-[14px] lg:text-[16px] align-middle"></i>
-                    {{ $store->business_email }}
-                </a>
-            @endif
-            @if($store->location)
-                <span class="flex items-center gap-1">
-                    <i class="fa-solid fa-location-dot text-[14px] lg:text-[16px] align-middle"></i>
-                    {{ $store->location }}
-                </span>
-            @endif
-        </div>
-    @endif
-    <div class="font-bold text-xs lg:text-sm text-on-surface text-center">{{ $store->name }} â€” IZIFAI Rentals</div>
-    @auth
-        @php $footerTargetStore = auth()->user()->store; @endphp
-        @if(auth()->id() === $store->user_id)
-            <a href="{{ route('seller.dashboard') }}"
-               class="inline-flex items-center gap-1.5 text-primary font-semibold text-xs lg:text-sm hover:underline">
-                <i class="fa-solid fa-gauge-high text-[14px]"></i>
-                Go to Dashboard
-            </a>
-        @elseif($footerTargetStore)
-            <a href="{{ route('seller.dashboard') }}"
-               class="inline-flex items-center gap-1.5 text-primary font-semibold text-xs lg:text-sm hover:underline">
-                <i class="fa-solid fa-gauge-high text-[14px]"></i>
-                Seller Dashboard
-            </a>
-        @else
-            <a href="{{ route('seller.store.create') }}"
-               class="text-primary font-semibold text-xs lg:text-sm hover:underline">
-                Start Selling on Izifai &rarr;
-            </a>
-        @endif
-    @endauth
-    @guest
-        <a href="{{ url('/') }}"
-           class="text-primary font-semibold text-xs lg:text-sm hover:underline">
-            Join Izifai Today &rarr;
-        </a>
-    @endguest
-    <p class="text-xs lg:text-sm text-on-surface-variant">&copy; {{ date('Y') }} IZIFAI Platform. All rights reserved.</p>
-</footer>
-
+@push('scripts')
 <script>
     function rentalPage() {
         return {
-            selectedImage: @js($rental->main_image_url ?? $rental->images_url[0] ?? ''),
-        }
+            images: @json($rentalImages),
+            imageIndex: 0,
+            reviewStar: 0,
+            reviewHover: 0,
+            prev() { this.go(this.imageIndex - 1); },
+            next() { this.go(this.imageIndex + 1); },
+            go(i) {
+                const total = this.images.length;
+                if (total === 0) return;
+                this.imageIndex = ((i % total) + total) % total;
+            }
+        };
     }
 </script>
-@endsection
+@endpush

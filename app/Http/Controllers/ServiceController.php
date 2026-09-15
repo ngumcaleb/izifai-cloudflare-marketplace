@@ -104,6 +104,29 @@ class ServiceController extends Controller
             ->take(12)
             ->get();
 
+        // Related services from other stores (same category preferred)
+        $relatedServices = Service::active()
+            ->where('id', '!=', $service->id)
+            ->where('store_id', '!=', $store->id)
+            ->with('store', 'category')
+            ->when($service->category_id, fn($q) => $q->where('category_id', $service->category_id))
+            ->latest()
+            ->take(8)
+            ->get();
+
+        if ($relatedServices->count() < 8) {
+            $excludeIds = $relatedServices->pluck('id');
+            $relatedFallback = Service::active()
+                ->where('id', '!=', $service->id)
+                ->where('store_id', '!=', $store->id)
+                ->whereNotIn('id', $excludeIds)
+                ->with('store', 'category')
+                ->latest()
+                ->take(8 - $relatedServices->count())
+                ->get();
+            $relatedServices = $relatedServices->concat($relatedFallback);
+        }
+
         $starDistribution = [];
         for ($i = 5; $i >= 1; $i--) {
             $count = $reviews->where('rating', $i)->count();
@@ -115,7 +138,7 @@ class ServiceController extends Controller
 
         return view('services.show', compact(
             'service', 'store', 'reviews', 'avgRating', 'totalReviews',
-            'totalServices', 'storeServices', 'starDistribution'
+            'totalServices', 'storeServices', 'relatedServices', 'starDistribution'
         ));
     }
 

@@ -18,13 +18,6 @@
         @endif
     </div>
 
-    @if(session('success'))
-        <div class="bg-green-50 border border-green-200 rounded-xl p-4 mb-4 flex items-center gap-3 animate-slide-down">
-            <i class="fa-solid fa-circle-check text-green-600"></i>
-            <p class="text-sm font-semibold text-green-800">{{ session('success') }}</p>
-        </div>
-    @endif
-
     <div class="space-y-1">
         @forelse($notifications as $notification)
             @php
