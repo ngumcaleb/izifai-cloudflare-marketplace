@@ -55,8 +55,8 @@ $cover = $service->main_image_url ?: ($serviceImages->first()?->url ?? '');
 <div x-data="servicePage()">
 
     {{-- ============ MOBILE: service card ============ --}}
-    <section class="lg:hidden">
-        <div>
+    <section class="lg:hidden max-w-7xl mx-auto px-2 sm:px-6 pt-3">
+        <div class="rounded-2xl bg-white border border-[#e8eae8] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
 
             {{-- image (slide-track) --}}
             <div class="relative aspect-[4/3] bg-[#f5f6f5] overflow-hidden">
@@ -98,7 +98,7 @@ $cover = $service->main_image_url ?: ($serviceImages->first()?->url ?? '');
                 </span>
             </div>
             @if($serviceImages->count() > 1)
-            <div class="flex gap-2 pt-3 px-2 pb-1 overflow-x-auto no-scrollbar">
+            <div class="flex gap-2 pt-3 px-4 pb-1 overflow-x-auto no-scrollbar">
                 @foreach($serviceImages as $i => $img)
                 <button @click="go({{ $i }})"
                         class="shrink-0 w-14 h-14 rounded-xl overflow-hidden border-2 transition-all duration-300"
@@ -110,7 +110,7 @@ $cover = $service->main_image_url ?: ($serviceImages->first()?->url ?? '');
             @endif
 
             {{-- info --}}
-            <div class="px-2 pt-3 pb-4">
+            <div class="p-4 sm:p-5 pt-3">
                 {{-- badges --}}
                 <div class="flex items-center gap-1.5 flex-wrap mb-2">
                     @if($service->is_featured)

@@ -57,8 +57,8 @@ $cover = $productImages->first()?->url ?? '';
 <div x-data="productPage()">
 
     {{-- ============ MOBILE: product card ============ --}}
-    <section class="lg:hidden">
-        <div>
+    <section class="lg:hidden max-w-7xl mx-auto px-2 sm:px-6 pt-3">
+        <div class="rounded-2xl bg-white border border-[#e8eae8] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
 
             {{-- image (slide-track) --}}
             <div class="relative aspect-square bg-[#f5f6f5] overflow-hidden">
@@ -100,7 +100,7 @@ $cover = $productImages->first()?->url ?? '';
                 </span>
             </div>
             @if($productImages->count() > 1)
-            <div class="flex gap-2 pt-3 px-2 pb-1 overflow-x-auto no-scrollbar">
+            <div class="flex gap-2 pt-3 px-4 pb-1 overflow-x-auto no-scrollbar">
                 @foreach($productImages as $i => $img)
                 <button @click="go({{ $i }})"
                         class="shrink-0 w-14 h-14 rounded-xl overflow-hidden border-2 transition-all duration-300"
@@ -112,7 +112,7 @@ $cover = $productImages->first()?->url ?? '';
             @endif
 
             {{-- info --}}
-            <div class="px-2 pt-3 pb-4">
+            <div class="p-4 sm:p-5 pt-3">
                 {{-- badges --}}
                 <div class="flex items-center gap-1.5 flex-wrap mb-2">
                     @if($product->is_featured)
@@ -186,7 +186,7 @@ $cover = $productImages->first()?->url ?? '';
                             <input type="hidden" name="target_id" value="{{ $product->id }}">
                             <input type="hidden" name="message" value="Hi, I'm interested in {{ $product->name }}. Is it still available?">
                             <button type="submit"
-                                    class="w-full h-12 bg-[#1c201e] text-white text-[12.5px] font-bold rounded-xl hover:bg-black active:scale-[0.99] transition-all flex items-center justify-center gap-2">
+                                    class="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#1c201e] text-[13px] font-bold text-white shadow-[0_4px_14px_-5px_rgba(28,32,30,0.5)] transition-all hover:bg-[#2a2f2b] active:scale-[0.98]">
                                 <i class="fa-regular fa-comment text-[15px]" style=""></i>
                                 Message seller
                             </button>
@@ -194,7 +194,7 @@ $cover = $productImages->first()?->url ?? '';
                         @if($store->whatsapp_number)
                         <a href="https://wa.me/{{ wa_url($store->whatsapp_number) }}?text={{ urlencode('Hi, I\'m interested in ' . $product->name . ' on Izifai.') }}"
                            target="_blank"
-                           class="mt-2 w-full h-12 bg-[#25D366] text-white text-[12.5px] font-bold rounded-xl hover:bg-[#128C7E] active:scale-[0.99] transition-all flex items-center justify-center gap-2">
+                           class="mt-2 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#25D366] text-[13px] font-bold text-white shadow-[0_4px_14px_-5px_rgba(37,211,102,0.5)] transition-all hover:bg-[#1eb95a] active:scale-[0.98]">
                             {!! str_replace('w-5 h-5', 'w-[18px] h-[18px]', $whatsappIcon) !!}
                             Chat on WhatsApp
                         </a>
@@ -204,7 +204,7 @@ $cover = $productImages->first()?->url ?? '';
                         @if($store->whatsapp_number)
                         <a href="https://wa.me/{{ wa_url($store->whatsapp_number) }}?text={{ urlencode('Hi, I\'m interested in ' . $product->name . ' on Izifai.') }}"
                            target="_blank"
-                           class="w-full h-12 bg-[#25D366] text-white text-[12.5px] font-bold rounded-xl hover:bg-[#128C7E] active:scale-[0.99] transition-all flex items-center justify-center gap-2">
+                           class="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#25D366] text-[13px] font-bold text-white shadow-[0_4px_14px_-5px_rgba(37,211,102,0.5)] transition-all hover:bg-[#1eb95a] active:scale-[0.98]">
                             {!! str_replace('w-5 h-5', 'w-[18px] h-[18px]', $whatsappIcon) !!}
                             Chat on WhatsApp
                         </a>
@@ -212,7 +212,7 @@ $cover = $productImages->first()?->url ?? '';
                     @endauth
 
                     <button onclick="copyToClipboard(window.location.href, this)"
-                            class="mt-2 w-full h-10 rounded-xl border border-[#e8eae8] text-[#3f453f] text-[11.5px] font-semibold hover:bg-[#f5f6f5] transition-colors flex items-center justify-center gap-1.5">
+                            class="mt-2 flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-[#e0e3e0] bg-white text-[12px] font-bold text-[#3f453f] transition-all hover:border-[#9acd32] hover:bg-[#f2f9df] hover:text-[#659316] active:scale-[0.98]">
                         <i class="fa-solid fa-share-nodes text-[13px]" style=""></i>
                         Share link
                     </button>

@@ -207,39 +207,36 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 sm:
     {{-- ================================================================
          1.5. CATALOG TABS (Products | Services | Rentals) — Switchable
     ================================================================ --}}
-    <section class="max-w-7xl mx-auto px-2.5 sm:px-6 mt-5 sm:mt-6" x-data="{ activeTab: 'products' }">
-        {{-- Sticky tab bar: hooks just below the fixed layout header --}}
-        <div class="sticky top-14 sm:top-[144px] z-30 -mx-2.5 sm:mx-0 py-1.5 sm:py-2 bg-[#f5f6f5]/95 backdrop-blur-sm border-b border-[#eff1ef]">
-            <div class="flex items-center gap-2 overflow-x-auto no-scrollbar">
+    <section class="max-w-7xl mx-auto px-2 sm:px-6 mt-5 sm:mt-6" x-data="{ activeTab: 'products' }">
+        {{-- Sticky segmented tab bar: hooks just below the fixed layout header --}}
+        <div class="sticky top-14 sm:top-[144px] z-30 -mx-2 sm:mx-0 py-1.5 sm:py-2 bg-[#f5f6f5]/95 backdrop-blur-sm border-b border-[#eff1ef]">
+            <div class="flex items-center gap-1 p-1 overflow-x-auto no-scrollbar bg-[#eceeed] border border-[#e3e6e3] rounded-full">
                 <button @click="activeTab = 'products'"
-                        class="shrink-0 inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl text-[11.5px] sm:text-[12px] font-bold transition-all duration-200"
-                        :class="activeTab === 'products' ? '-skew-x-6 bg-[#1c201e] text-[#9acd32] shadow-sm' : 'bg-white border border-[#e8eae8] text-[#3f453f] hover:border-[#9acd32]/50 hover:text-[#7ca81d]'">
-                    <span class="inline-flex items-center gap-1.5" :class="activeTab === 'products' ? 'skew-x-6' : ''">
-                        <i class="fa-solid fa-boxes-stacked text-[15px]" style=""></i>
-                        Products
-                        <span class="px-1.5 py-0.5 rounded-md text-[10px] font-black" :class="activeTab === 'products' ? 'bg-[#9acd32]/15 text-[#9acd32]' : 'bg-[#f2f9df] text-[#659316]'">{{ number_format($totalProducts) }}</span>
-                    </span>
+                        class="shrink-0 inline-flex items-center gap-1.5 px-3.5 sm:px-5 py-2 rounded-full text-[11.5px] sm:text-[12px] font-bold transition-all duration-200"
+                        :class="activeTab === 'products' ? 'bg-[#9acd32] text-[#1c201e] shadow-sm' : 'text-[#6b716c] hover:bg-white/70 hover:text-[#1c201e]'">
+                    <i class="fa-solid fa-boxes-stacked text-[15px]" style=""></i>
+                    Products
+                    <span class="px-1.5 py-0.5 rounded-md text-[10px] font-black"
+                          :class="activeTab === 'products' ? 'bg-[#1c201e]/10 text-[#1c201e]' : 'bg-white/70 text-[#6b716c]'">{{ number_format($totalProducts) }}</span>
                 </button>
                 @if($totalServices > 0)
                 <button @click="activeTab = 'services'"
-                        class="shrink-0 inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl text-[11.5px] sm:text-[12px] font-bold transition-all duration-200"
-                        :class="activeTab === 'services' ? '-skew-x-6 bg-[#1c201e] text-[#9acd32] shadow-sm' : 'bg-white border border-[#e8eae8] text-[#3f453f] hover:border-[#9acd32]/50 hover:text-[#7ca81d]'">
-                    <span class="inline-flex items-center gap-1.5" :class="activeTab === 'services' ? 'skew-x-6' : ''">
-                        <i class="fa-solid fa-bell-concierge text-[15px] text-purple-500" style=""></i>
-                        Services
-                        <span class="px-1.5 py-0.5 rounded-md text-[10px] font-black" :class="activeTab === 'services' ? 'bg-[#9acd32]/15 text-[#9acd32]' : 'bg-purple-50 text-purple-600'">{{ number_format($totalServices) }}</span>
-                    </span>
+                        class="shrink-0 inline-flex items-center gap-1.5 px-3.5 sm:px-5 py-2 rounded-full text-[11.5px] sm:text-[12px] font-bold transition-all duration-200"
+                        :class="activeTab === 'services' ? 'bg-[#9acd32] text-[#1c201e] shadow-sm' : 'text-[#6b716c] hover:bg-white/70 hover:text-[#1c201e]'">
+                    <i class="fa-solid fa-bell-concierge text-[15px]" style=""></i>
+                    Services
+                    <span class="px-1.5 py-0.5 rounded-md text-[10px] font-black"
+                          :class="activeTab === 'services' ? 'bg-[#1c201e]/10 text-[#1c201e]' : 'bg-white/70 text-[#6b716c]'">{{ number_format($totalServices) }}</span>
                 </button>
                 @endif
                 @if($totalRentals > 0)
                 <button @click="activeTab = 'rentals'"
-                        class="shrink-0 inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-xl text-[11.5px] sm:text-[12px] font-bold transition-all duration-200"
-                        :class="activeTab === 'rentals' ? '-skew-x-6 bg-[#1c201e] text-[#9acd32] shadow-sm' : 'bg-white border border-[#e8eae8] text-[#3f453f] hover:border-[#9acd32]/50 hover:text-[#7ca81d]'">
-                    <span class="inline-flex items-center gap-1.5" :class="activeTab === 'rentals' ? 'skew-x-6' : ''">
-                        <i class="fa-solid fa-handshake text-[15px] text-blue-500" style=""></i>
-                        Rentals
-                        <span class="px-1.5 py-0.5 rounded-md text-[10px] font-black" :class="activeTab === 'rentals' ? 'bg-[#9acd32]/15 text-[#9acd32]' : 'bg-blue-50 text-blue-600'">{{ number_format($totalRentals) }}</span>
-                    </span>
+                        class="shrink-0 inline-flex items-center gap-1.5 px-3.5 sm:px-5 py-2 rounded-full text-[11.5px] sm:text-[12px] font-bold transition-all duration-200"
+                        :class="activeTab === 'rentals' ? 'bg-[#9acd32] text-[#1c201e] shadow-sm' : 'text-[#6b716c] hover:bg-white/70 hover:text-[#1c201e]'">
+                    <i class="fa-solid fa-handshake text-[15px]" style=""></i>
+                    Rentals
+                    <span class="px-1.5 py-0.5 rounded-md text-[10px] font-black"
+                          :class="activeTab === 'rentals' ? 'bg-[#1c201e]/10 text-[#1c201e]' : 'bg-white/70 text-[#6b716c]'">{{ number_format($totalRentals) }}</span>
                 </button>
                 @endif
             </div>
@@ -253,17 +250,15 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 sm:
     @if($allCategories->isNotEmpty())
     <div class="max-w-7xl mx-auto px-0 mt-5 sm:mt-6">
         <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
-            <a href="{{ route('stores.show', $store->slug) }}#catalog"
-               class="shrink-0 px-3.5 sm:px-4 py-2 rounded-xl text-[11.5px] sm:text-[12px] font-bold transition-all duration-200 flex items-center gap-1.5 {{ !request('category') || request('category') === 'all' ? '-skew-x-6 bg-[#1c201e] text-[#9acd32] shadow-sm' : 'bg-white border border-[#e8eae8] text-[#3f453f] hover:border-[#9acd32]/50 hover:text-[#7ca81d]' }}">
-                <span class="{{ !request('category') || request('category') === 'all' ? 'skew-x-6' : '' }} flex items-center gap-1.5">
-                    <i class="fa-solid fa-store text-[16px]" style=""></i>
-                    All Items
-                </span>
+<a href="{{ route('stores.show', $store->slug) }}#catalog"
+               class="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-[11.5px] sm:text-[12px] font-bold transition-all duration-200 {{ !request('category') || request('category') === 'all' ? 'bg-[#9acd32] text-[#1c201e] shadow-sm shadow-[#9acd32]/25' : 'bg-white border border-[#e8eae8] text-[#3f453f] hover:border-[#9acd32]/50 hover:text-[#7ca81d]' }}">
+                <i class="fa-solid fa-store text-[15px]" style=""></i>
+                All Items
             </a>
             @foreach($allCategories as $cat)
                 @php $isActive = request('category') === $cat->slug; @endphp
                 <a href="{{ route('stores.show', $store->slug) }}?category={{ $cat->slug }}#catalog"
-                   class="shrink-0 px-3.5 sm:px-4 py-2 rounded-xl text-[11.5px] sm:text-[12px] font-bold transition-all duration-200 {{ $isActive ? '-skew-x-6 bg-[#9acd32] text-[#1c201e] shadow-sm shadow-[#9acd32]/30' : 'bg-white border border-[#e8eae8] text-[#3f453f] hover:border-[#9acd32]/50 hover:text-[#7ca81d]' }}">
+                   class="shrink-0 inline-flex items-center px-4 py-2 rounded-xl text-[11.5px] sm:text-[12px] font-bold transition-all duration-200 {{ $isActive ? 'bg-[#9acd32] text-[#1c201e] shadow-sm shadow-[#9acd32]/25' : 'bg-white border border-[#e8eae8] text-[#3f453f] hover:border-[#9acd32]/50 hover:text-[#7ca81d]' }}">
                     {{ $cat->name }}
                 </a>
             @endforeach
