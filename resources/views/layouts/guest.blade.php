@@ -598,10 +598,16 @@
 
             <div class="px-6 pt-7 pb-8 sm:p-8 text-center">
 
-                {{-- Logo --}}
-                <div class="mx-auto mb-6 w-24 h-24 rounded-[26px] bg-gradient-to-br from-[#f2f9df] via-white to-[#f2f9df] shadow-lg shadow-[#9acd32]/15 grid place-items-center overflow-hidden animate-pop-in">
-                    <div class="w-full h-full animate-floaty">
-                        <img src="{{ asset('images/izifai-onboarding-logo.png') }}" alt="Izifai" class="w-full h-full object-cover">
+                {{-- Logo: clean wordmark + small app-icon tile --}}
+                <div class="mx-auto mb-5 animate-pop-in">
+                    <div class="flex flex-col items-center gap-3.5 animate-floaty">
+                        <x-application-logo class="h-9 sm:h-10 w-auto" />
+                        <span class="inline-flex items-center gap-2 rounded-full bg-white border border-[#eef1ee] shadow-sm pl-1 pr-3.5 py-1">
+                            <span class="w-7 h-7 rounded-lg overflow-hidden ring-1 ring-black/5 shadow-sm shrink-0">
+                                <img src="{{ asset('icons/icon-192.png') }}" alt="Izifai app icon" class="w-full h-full object-cover">
+                            </span>
+                            <span class="text-[10px] font-bold text-[#3f453f] tracking-tight">iziFaii App</span>
+                        </span>
                     </div>
                 </div>
 
