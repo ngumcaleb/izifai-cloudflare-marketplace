@@ -27,15 +27,6 @@
     ================================================================ --}}
     <section class="max-w-7xl mx-auto px-2 sm:px-6 mt-4 sm:mt-6">
         <div class="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-[#1c201e] border border-black/5 shadow-[0_14px_44px_-16px_rgba(0,0,0,0.18)] p-5 sm:p-10 lg:p-12 text-white">
-            {{-- Random product as faint background --}}
-            @if($heroProduct && $heroProduct->images->isNotEmpty())
-            <div class="absolute inset-0 pointer-events-none">
-                <img src="{{ $heroProduct->images->first()->url }}" alt="{{ $heroProduct->name }}" loading="lazy"
-                     class="w-full h-full object-cover opacity-[0.22] scale-105">
-                <div class="absolute inset-0 bg-gradient-to-r from-[#1c201e] via-[#1c201e]/92 to-[#1c201e]/40"></div>
-            </div>
-            @endif
-
             {{-- Ambient glow orbs --}}
             <div class="absolute -top-24 -right-16 w-80 h-80 rounded-full bg-[#9acd32]/15 blur-3xl pointer-events-none"></div>
             <div class="absolute -bottom-28 -left-16 w-72 h-72 rounded-full bg-[#7ca81d]/15 blur-3xl pointer-events-none"></div>
@@ -56,6 +47,17 @@
                 <p class="mt-2 text-xs sm:text-sm text-white/75 leading-relaxed max-w-xl">
                     {{ $description }}
                 </p>
+
+                {{-- Mobile-only filter trigger (filtering on mobile happens in the sheet) --}}
+                @php $filterCount = count(array_filter([request('category'), request('min_price'), request('max_price')])); @endphp
+                <button @click="openMobileFilters = true"
+                        class="lg:hidden mt-5 inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-[#9acd32] text-[#1c201e] text-[12px] font-extrabold shadow-md hover:bg-[#86b92c] active:scale-[0.97] transition-all">
+                    <i class="fa-solid fa-sliders text-[15px]" style=""></i>
+                    Filters
+                    @if($filterCount > 0)
+                        <span class="w-5 h-5 rounded-full bg-[#1c201e] text-[#9acd32] text-[10px] font-extrabold flex items-center justify-center">{{ $filterCount }}</span>
+                    @endif
+                </button>
 
                 {{-- Highlights / Quick Stats --}}
                 <div class="mt-5 sm:mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-[10.5px] sm:text-xs font-semibold text-white/80">
@@ -138,16 +140,6 @@
                     </div>
                 @endif
             </div>
-
-            {{-- Tagged random product --}}
-            @if($heroProduct && $heroProduct->images->isNotEmpty())
-            <a href="{{ route('products.show', $heroProduct->slug) }}"
-               class="absolute top-4 sm:top-6 right-4 sm:right-8 z-10 -rotate-3 inline-flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-lg bg-[#1c201e]/70 backdrop-blur-md border border-white/15 text-white text-[10.5px] sm:text-xs font-bold shadow-lg transition-all duration-300 hover:bg-[#9acd32] hover:text-[#1c201e] hover:border-transparent active:scale-95">
-                <img src="{{ $heroProduct->images->first()->url }}" alt="" class="w-6 h-6 sm:w-7 sm:h-7 rounded-md object-cover ring-1 ring-white/25">
-                <span class="line-clamp-1 max-w-[8rem] sm:max-w-[13rem]">{{ $heroProduct->name }}</span>
-                <i class="fa-solid fa-arrow-up-right-from-square text-[9px] sm:text-[10px]"></i>
-            </a>
-            @endif
         </div>
     </section>
 
@@ -206,7 +198,7 @@
          3. CATEGORIES HORIZONTAL BAR
     ================================================================ --}}
     @if($categories->isNotEmpty())
-    <section class="max-w-7xl mx-auto px-2.5 sm:px-6 mt-5 sm:mt-6">
+    <section class="hidden lg:block max-w-7xl mx-auto px-2.5 sm:px-6 mt-5 sm:mt-6">
         <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
             {{-- All Categories chip --}}
             <a href="{{ route('products.index', request()->except(['category', 'page'])) }}"
@@ -236,21 +228,10 @@
     {{-- ================================================================
          4. TOOLBAR / FILTER & SORT STRIP
     ================================================================ --}}
-    <section class="max-w-7xl mx-auto px-2.5 sm:px-6 mt-5 sm:mt-6">
+    <section class="hidden lg:block max-w-7xl mx-auto px-2.5 sm:px-6 mt-5 sm:mt-6">
         <div class="bg-white rounded-2xl border border-[#e8eae8] p-2.5 sm:p-4 flex flex-wrap items-center justify-between gap-2.5 sm:gap-3 shadow-sm">
-            {{-- Left: Filter button & quick indicators --}}
+            {{-- Left: quick indicators --}}
             <div class="flex items-center gap-2.5">
-                {{-- Mobile Filter Trigger --}}
-                <button @click="openMobileFilters = true"
-                        class="lg:hidden inline-flex items-center gap-2 h-10 px-4 rounded-xl bg-[#f5f6f5] border border-[#e0e3e0] text-[#1c201e] text-[12px] font-bold hover:bg-[#eceeed] transition-all">
-                    <i class="fa-solid fa-sliders text-[18px]" style=""></i>
-                    Filters
-                    @php $filterCount = collect([request('category'), request('min_price'), request('max_price')])->filter()->count(); @endphp
-                    @if($filterCount > 0)
-                        <span class="w-5 h-5 rounded-full bg-[#9acd32] text-[#1c201e] text-[10px] font-extrabold flex items-center justify-center">{{ $filterCount }}</span>
-                    @endif
-                </button>
-
                 {{-- Desktop Quick Price Filter Form --}}
                 <form method="GET" action="{{ route('products.index') }}" class="hidden lg:flex items-center gap-2">
                     @foreach(request()->except(['min_price', 'max_price', 'page']) as $k => $v)
