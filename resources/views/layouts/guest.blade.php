@@ -6,7 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="theme-color" content="#ffffff">
     <link rel="canonical" href="{{ url()->current() }}">
-    <link rel="icon" type="image/svg+xml" href="{{ asset('images/favicon.svg') }}">
+    <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
     <link rel="apple-touch-icon" href="{{ asset('icons/apple-touch-icon.png') }}">
     <link rel="manifest" href="{{ asset('manifest.webmanifest') }}">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -15,7 +15,7 @@
     <meta name="description" content="@yield('description', 'Izifai helps Cameroon merchants create beautiful, shareable product catalogs. No app needed — just a link.')">
     <meta property="og:title" content="@yield('og_title', 'Izifai — Your Store in a Link')">
     <meta property="og:description" content="@yield('og_description', 'Izifai helps Cameroon merchants create beautiful, shareable product catalogs. No app needed — just a link.')">
-    <meta property="og:image" content="@yield('og_image', asset('images/logo.png'))">
+    <meta property="og:image" content="@yield('og_image', asset('images/izifai-onboarding-logo.png'))">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:type" content="@yield('og_type', 'website')">
     <meta property="og:site_name" content="Izifai">
@@ -23,7 +23,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="@yield('twitter_title', 'Izifai — Your Store in a Link')">
     <meta name="twitter:description" content="@yield('twitter_description', 'Izifai helps Cameroon merchants create beautiful, shareable product catalogs.')">
-    <meta name="twitter:image" content="@yield('twitter_image', asset('images/logo.png'))">
+    <meta name="twitter:image" content="@yield('twitter_image', asset('images/izifai-onboarding-logo.png'))">
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -599,9 +599,9 @@
             <div class="px-6 pt-7 pb-8 sm:p-8 text-center">
 
                 {{-- Logo --}}
-                <div class="mx-auto mb-6 w-24 h-24 rounded-[26px] bg-gradient-to-br from-[#f2f9df] via-white to-[#f2f9df] shadow-lg shadow-[#9acd32]/15 grid place-items-center animate-pop-in">
-                    <div class="animate-floaty">
-                        <x-application-logo class="h-14 w-auto" />
+                <div class="mx-auto mb-6 w-24 h-24 rounded-[26px] bg-gradient-to-br from-[#f2f9df] via-white to-[#f2f9df] shadow-lg shadow-[#9acd32]/15 grid place-items-center overflow-hidden animate-pop-in">
+                    <div class="w-full h-full animate-floaty">
+                        <img src="{{ asset('images/izifai-onboarding-logo.png') }}" alt="Izifai" class="w-full h-full object-cover">
                     </div>
                 </div>
 
