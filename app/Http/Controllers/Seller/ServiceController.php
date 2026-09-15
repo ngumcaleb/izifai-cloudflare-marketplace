@@ -7,7 +7,6 @@ use App\Models\Service;
 use App\Models\ServiceImage;
 use App\Models\ServicePackage;
 use App\Models\Category;
-use App\Models\StoreCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -27,9 +26,8 @@ class ServiceController extends Controller
     public function create()
     {
         $categories = Category::where('type', 'service')->get();
-        $storeCategories = auth()->user()->store->storeCategories()->with('children')->whereNull('parent_id')->orderBy('name')->get();
 
-        return view('seller.services.create', compact('categories', 'storeCategories'));
+        return view('seller.services.create', compact('categories'));
     }
 
     public function store(Request $request)
@@ -38,8 +36,6 @@ class ServiceController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'category_id' => 'nullable|exists:categories,id',
-            'store_category_id' => 'nullable|exists:store_categories,id',
-            'store_category_name' => 'nullable|string|max:255',
             'starting_price' => 'required|numeric|min:0',
             'delivery_time' => 'nullable|string|max:100',
             'status' => 'nullable|in:active,inactive',
@@ -54,12 +50,10 @@ class ServiceController extends Controller
 
         $categoryId = $request->category_id;
         $store = auth()->user()->store;
-        $storeCategoryId = $this->resolveStoreCategory($store, $request->store_category_id, $request->store_category_name);
 
         $service = Service::create([
             'store_id' => $store->id,
             'category_id' => $categoryId,
-            'store_category_id' => $storeCategoryId,
             'name' => $request->name,
             'slug' => Str::slug($request->name) . '-' . Str::random(6),
             'description' => $request->description,
@@ -103,9 +97,8 @@ class ServiceController extends Controller
             ->findOrFail($id);
 
         $categories = Category::where('type', 'service')->get();
-        $storeCategories = auth()->user()->store->storeCategories()->with('children')->whereNull('parent_id')->orderBy('name')->get();
 
-        return view('seller.services.edit', compact('service', 'categories', 'storeCategories'));
+        return view('seller.services.edit', compact('service', 'categories'));
     }
 
     public function update(Request $request, $id)
@@ -116,8 +109,6 @@ class ServiceController extends Controller
             'name' => 'sometimes|string|max:255',
             'description' => 'nullable|string',
             'category_id' => 'sometimes|exists:categories,id',
-            'store_category_id' => 'nullable|exists:store_categories,id',
-            'store_category_name' => 'nullable|string|max:255',
             'starting_price' => 'sometimes|numeric|min:0',
             'delivery_time' => 'nullable|string|max:100',
             'status' => 'nullable|in:active,inactive',
@@ -129,12 +120,10 @@ class ServiceController extends Controller
             'packages.*.delivery_time' => 'nullable|string|max:100',
         ]);
 
-        $storeCategoryId = $this->resolveStoreCategory(auth()->user()->store, $request->store_category_id, $request->store_category_name);
-
-        $service->update(array_merge($request->only([
+        $service->update($request->only([
             'name', 'description', 'category_id', 'starting_price',
             'delivery_time', 'status',
-        ]), ['store_category_id' => $storeCategoryId]));
+        ]));
 
         if ($request->has('packages')) {
             $existingIds = $service->packages()->pluck('id')->toArray();
@@ -199,17 +188,5 @@ class ServiceController extends Controller
 
         return redirect()->route('seller.services.index')
             ->with('success', 'Service deleted successfully.');
-    }
-
-    private function resolveStoreCategory($store, $storeCategoryId, $storeCategoryName): ?int
-    {
-        if ($storeCategoryName && !is_numeric($storeCategoryName)) {
-            $category = $store->storeCategories()->firstOrCreate(
-                ['name' => $storeCategoryName],
-                ['slug' => Str::slug($storeCategoryName) . '-' . Str::random(4)]
-            );
-            return $category->id;
-        }
-        return $storeCategoryId ?: null;
     }
 }

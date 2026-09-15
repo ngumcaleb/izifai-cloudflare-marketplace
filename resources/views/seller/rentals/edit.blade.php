@@ -15,14 +15,6 @@
 
         <form action="{{ route('seller.rentals.update', $rental->id) }}" method="POST" enctype="multipart/form-data" class="space-y-4 md:space-y-6"
               x-data="{
-                scActive: {{ $rental->store_category_id ? 'true' : 'false' }},
-                scCustom: false,
-                scVal: '{{ $rental->store_category_id ?? '' }}',
-                onScChange(val) {
-                    this.scVal = val;
-                    this.scActive = !!val && val !== '__new__' && val !== '';
-                    if (val === '__new__') { this.scCustom = true; this.scVal = ''; }
-                },
                 imagePreviews: {{ Js::from($rental->images_url) }},
                 handleImageUpload(event) {
                     this.imagePreviews = [];
@@ -52,7 +44,7 @@
                     </div>
                     <div class="space-y-1.5">
                         <label class="text-xs font-semibold text-gray-500 ml-1">Category</label>
-                        <select name="category_id" :disabled="scActive"
+                        <select name="category_id"
                                 class="w-full h-11 md:h-12 bg-gray-50 border border-gray-200 rounded-xl px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50">
                             <option value="">Select Category</option>
                             @foreach($categories as $cat)
@@ -62,48 +54,13 @@
                     </div>
                     <div class="space-y-1.5">
                         <label class="text-xs font-semibold text-gray-500 ml-1">Subcategory (optional)</label>
-                        <select name="subcategory_id" :disabled="scActive"
+                        <select name="subcategory_id"
                                 class="w-full h-11 md:h-12 bg-gray-50 border border-gray-200 rounded-xl px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50">
                             <option value="">None</option>
                             @foreach($categories as $cat)
                                 <option value="{{ $cat->id }}" {{ $rental->subcategory_id == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
                             @endforeach
                         </select>
-                    </div>
-                    <div class="space-y-1.5">
-                        <label class="text-xs font-semibold text-gray-500 ml-1">Collection</label>
-                        @if($rental->store_category)
-                            <div class="h-11 md:h-12 flex items-center gap-2 px-4 bg-primary/5 border border-primary/20 rounded-xl text-sm font-bold text-primary">
-                                <i class="fa-solid fa-folder text-[18px]"></i>
-                                {{ $rental->store_category->name }}
-                            </div>
-                            <input type="hidden" name="store_category_id" value="{{ $rental->store_category_id }}">
-                        @else
-                            <template x-if="!scCustom">
-                                <select name="store_category_id" x-model="scVal"
-                                        @change="onScChange(scVal)"
-                                        class="w-full h-11 md:h-12 bg-gray-50 border border-gray-200 rounded-xl px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50">
-                                    <option value="">None</option>
-                                    @foreach($storeCategories as $sc)
-                                        <option value="{{ $sc->id }}" {{ $rental->store_category_id == $sc->id ? 'selected' : '' }}>{{ $sc->name }}</option>
-                                        @foreach($sc->children as $child)
-                                            <option value="{{ $child->id }}" {{ $rental->store_category_id == $child->id ? 'selected' : '' }}>&nbsp;&nbsp;&nbsp;{{ $child->name }}</option>
-                                        @endforeach
-                                    @endforeach
-                                    <option value="__new__">+ Add custom category...</option>
-                                </select>
-                            </template>
-                            <template x-if="scCustom">
-                                <div class="flex gap-2">
-                                    <input type="text" name="store_category_name" placeholder="Type your category name"
-                                           class="flex-1 h-11 md:h-12 bg-gray-50 border border-gray-200 rounded-xl px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50">
-                                    <button type="button" @click="scCustom = false; scVal = ''; onScChange('')"
-                                            class="shrink-0 px-3 text-xs font-semibold text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-xl transition-colors">
-                                        Cancel
-                                    </button>
-                                </div>
-                            </template>
-                        @endif
                     </div>
                     <div class="space-y-1.5">
                         <label class="text-xs font-semibold text-gray-500 ml-1">Rate (XAF)</label>

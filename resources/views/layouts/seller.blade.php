@@ -168,13 +168,6 @@
                 <i class="fa-solid fa-screwdriver-wrench text-[20px]" style=""></i>
                 My Services
             </a>
-            @php $isCategories = request()->routeIs('seller.store-categories.*'); @endphp
-            <a href="{{ route('seller.store-categories.index') }}"
-               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isCategories ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
-                <i class="fa-solid fa-tags text-[20px]" style=""></i>
-                Store Categories
-            </a>
-
             @php $isRentals = request()->routeIs('seller.rentals.*'); @endphp
             <a href="{{ route('seller.rentals.index') }}"
                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isRentals ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
@@ -281,13 +274,6 @@
                 <i class="fa-solid fa-screwdriver-wrench text-[20px]" style=""></i>
                 My Services
             </a>
-            @php $isCategories = request()->routeIs('seller.store-categories.*'); @endphp
-            <a href="{{ route('seller.store-categories.index') }}"
-               class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isCategories ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">
-                <i class="fa-solid fa-tags text-[20px]" style=""></i>
-                Store Categories
-            </a>
-
             @php $isRentals = request()->routeIs('seller.rentals.*'); @endphp
             <a href="{{ route('seller.rentals.index') }}"
                class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 {{ $isRentals ? 'text-primary bg-primary/5 shadow-sm' : 'text-gray-500 hover:text-primary hover:bg-gray-50/80 font-medium' }}">

@@ -174,8 +174,6 @@ class StoreController extends Controller
         $allCategoryIds = $categories->pluck('id')->merge($serviceCategoryIds)->merge($rentalCategoryIds)->unique();
         $allCategories = \App\Models\Category::whereIn('id', $allCategoryIds)->get();
 
-        $storeCategories = $store->storeCategories()->with('children')->whereNull('parent_id')->get();
-
         $totalItems = $totalProducts + $totalServices + $totalRentals;
 
         // Suggested products from other active stores
@@ -210,7 +208,7 @@ class StoreController extends Controller
             'starDistribution', 'avgRating', 'totalReviews',
             'totalProducts', 'topProducts', 'joinedDate',
             'savedProductIds', 'services', 'totalServices',
-            'rentals', 'totalRentals', 'allCategories', 'storeCategories', 'totalItems',
+            'rentals', 'totalRentals', 'allCategories', 'totalItems',
             'suggestedProducts', 'suggestedSavedIds', 'isFollowing'
         ));
     }

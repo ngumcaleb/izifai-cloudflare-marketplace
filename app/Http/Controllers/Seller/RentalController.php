@@ -5,47 +5,27 @@ namespace App\Http\Controllers\Seller;
 use App\Http\Controllers\Controller;
 use App\Models\RentalItem;
 use App\Models\Category;
-use App\Models\StoreCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
 class RentalController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
         $store = auth()->user()->store;
 
-        $query = $store->rentalItems()->with(['category']);
+        $rentals = $store->rentalItems()->with(['category'])->latest()->get();
 
-        if ($request->filled('collection')) {
-            $query->where('store_category_id', $request->collection);
-        }
-
-        $rentals = $query->latest()->get();
-        $storeCategories = $store->storeCategories()->where('type', 'rental')->withCount('rentalItems')->whereNull('parent_id')->orderBy('name')->get();
-
-        $currentCollection = null;
-        if ($request->filled('collection')) {
-            $currentCollection = $storeCategories->firstWhere('id', $request->collection)
-                ?? $store->storeCategories()->find($request->collection);
-        }
-
-        return view('seller.rentals.index', compact('rentals', 'storeCategories', 'currentCollection'));
+        return view('seller.rentals.index', compact('rentals'));
     }
 
-    public function create(Request $request)
+    public function create()
     {
         $store = auth()->user()->store;
         $categories = Category::where('type', 'rental')->orWhereDoesntHave('rentalItems')->get();
-        $storeCategories = $store ? $store->storeCategories()->where('type', 'rental')->with('children')->whereNull('parent_id')->orderBy('name')->get() : collect();
 
-        $selectedCategory = null;
-        if ($request->filled('collection')) {
-            $selectedCategory = $store->storeCategories()->where('type', 'rental')->find($request->collection);
-        }
-
-        return view('seller.rentals.create', compact('categories', 'storeCategories', 'selectedCategory'));
+        return view('seller.rentals.create', compact('categories'));
     }
 
     public function store(Request $request)
@@ -55,8 +35,6 @@ class RentalController extends Controller
             'description' => 'nullable|string',
             'category_id' => 'nullable|exists:categories,id',
             'subcategory_id' => 'nullable|exists:categories,id',
-            'store_category_id' => 'nullable|exists:store_categories,id',
-            'store_category_name' => 'nullable|string|max:255',
             'rate' => 'required|numeric|min:0',
             'billing_unit' => 'required|in:hourly,daily,weekly,monthly',
             'deposit' => 'nullable|numeric|min:0',
@@ -79,13 +57,11 @@ class RentalController extends Controller
         }
 
         $store = auth()->user()->store;
-        $storeCategoryId = $this->resolveStoreCategory($store, $request->store_category_id, $request->store_category_name);
 
         $rental = RentalItem::create([
             'store_id' => $store->id,
             'category_id' => $request->category_id,
             'subcategory_id' => $request->subcategory_id,
-            'store_category_id' => $storeCategoryId,
             'name' => $request->name,
             'slug' => Str::slug($request->name) . '-' . Str::random(6),
             'description' => $request->description,
@@ -113,9 +89,8 @@ class RentalController extends Controller
             ->findOrFail($id);
 
         $categories = Category::where('type', 'rental')->orWhereDoesntHave('rentalItems')->get();
-        $storeCategories = $store ? $store->storeCategories()->where('type', 'rental')->with('children')->whereNull('parent_id')->orderBy('name')->get() : collect();
 
-        return view('seller.rentals.edit', compact('rental', 'categories', 'storeCategories'));
+        return view('seller.rentals.edit', compact('rental', 'categories'));
     }
 
     public function update(Request $request, $id)
@@ -127,8 +102,6 @@ class RentalController extends Controller
             'description' => 'nullable|string',
             'category_id' => 'nullable|exists:categories,id',
             'subcategory_id' => 'nullable|exists:categories,id',
-            'store_category_id' => 'nullable|exists:store_categories,id',
-            'store_category_name' => 'nullable|string|max:255',
             'rate' => 'sometimes|numeric|min:0',
             'billing_unit' => 'nullable|in:hourly,daily,weekly,monthly',
             'deposit' => 'nullable|numeric|min:0',
@@ -143,7 +116,6 @@ class RentalController extends Controller
         ]);
 
         $store = auth()->user()->store;
-        $storeCategoryId = $this->resolveStoreCategory($store, $request->store_category_id, $request->store_category_name);
 
         $data = $request->only([
             'name', 'description', 'category_id', 'subcategory_id',
@@ -151,7 +123,6 @@ class RentalController extends Controller
             'return_conditions', 'duration_rules', 'condition_notes',
             'serial_number', 'location', 'status',
         ]);
-        $data['store_category_id'] = $storeCategoryId;
 
         if ($request->hasFile('images')) {
             $data['images'] = [];
@@ -181,17 +152,5 @@ class RentalController extends Controller
 
         return redirect()->route('seller.rentals.index')
             ->with('success', 'Rental item deleted successfully.');
-    }
-
-    private function resolveStoreCategory($store, $storeCategoryId, $storeCategoryName): ?int
-    {
-        if ($storeCategoryName && !is_numeric($storeCategoryName)) {
-            $category = $store->storeCategories()->firstOrCreate(
-                ['name' => $storeCategoryName],
-                ['slug' => Str::slug($storeCategoryName) . '-' . Str::random(4)]
-            );
-            return $category->id;
-        }
-        return $storeCategoryId ?: null;
     }
 }

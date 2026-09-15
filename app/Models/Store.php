@@ -50,11 +50,6 @@ class Store extends Model
         return $this->hasMany(RentalItem::class);
     }
 
-    public function storeCategories(): HasMany
-    {
-        return $this->hasMany(StoreCategory::class);
-    }
-
 
     public function advertisementRequests(): HasMany
     {

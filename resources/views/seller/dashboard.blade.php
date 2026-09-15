@@ -52,13 +52,6 @@
                     </a>
                     
                     
-                    <a href="{{ route('seller.store-categories.index') }}"
-                       class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold text-gray-700 hover:bg-primary/5 hover:text-primary transition-all group active:scale-[0.98]">
-                        <div class="w-8 h-8 rounded-lg bg-primary/5 flex items-center justify-center text-primary shrink-0">
-                            <i class="fa-solid fa-tags text-[18px]" style=""></i>
-                        </div>
-                        <span>Categories</span>
-                    </a>
                     <hr class="border-gray-100 mx-2 my-1">
                     <a href="{{ route('seller.ads.index') }}"
                        class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold text-gray-700 hover:bg-primary/5 hover:text-primary transition-all group active:scale-[0.98]">
@@ -234,13 +227,6 @@
                     </a>
                     
                     
-                    <a href="{{ route('seller.store-categories.index') }}"
-                       class="flex flex-col items-center gap-1 md:gap-1.5 p-2 md:p-3 bg-white rounded-xl md:rounded-2xl border border-gray-100/80 shadow-sm hover:border-primary/30 hover:shadow-md hover:-translate-y-0.5 transition-all group">
-                        <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-primary/5 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-                            <i class="fa-solid fa-tags text-[16px] md:text-[20px]" style=""></i>
-                        </div>
-                        <span class="text-[9px] md:text-[11px] font-bold text-gray-600 group-hover:text-primary text-center leading-tight">Categories</span>
-                    </a>
                     <a href="{{ route('seller.ads.index') }}"
                        class="flex flex-col items-center gap-1 md:gap-1.5 p-2 md:p-3 bg-white rounded-xl md:rounded-2xl border border-gray-100/80 shadow-sm hover:border-primary/30 hover:shadow-md hover:-translate-y-0.5 transition-all group">
                         <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-primary/5 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">

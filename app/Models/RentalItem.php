@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class RentalItem extends Model
 {
     protected $fillable = [
-        'store_id', 'category_id', 'store_category_id', 'subcategory_id',
+        'store_id', 'category_id', 'subcategory_id',
         'name', 'slug', 'description',
         'rate', 'billing_unit', 'deposit',
         'images', 'availability_calendar',
@@ -39,11 +39,6 @@ class RentalItem extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
-    }
-
-    public function storeCategory(): BelongsTo
-    {
-        return $this->belongsTo(StoreCategory::class, 'store_category_id');
     }
 
     public function subcategory(): BelongsTo

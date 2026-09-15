@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Service extends Model
 {
     protected $fillable = [
-        'store_id', 'category_id', 'store_category_id', 'name', 'slug', 'description',
+        'store_id', 'category_id', 'name', 'slug', 'description',
         'starting_price', 'delivery_time', 'is_featured', 'featured_until',
         'status', 'views', 'approval_status',
         'rating', 'review_count', 'videos', 'portfolio',
@@ -41,11 +41,6 @@ class Service extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
-    }
-
-    public function storeCategory(): BelongsTo
-    {
-        return $this->belongsTo(StoreCategory::class, 'store_category_id');
     }
 
     public function images(): HasMany

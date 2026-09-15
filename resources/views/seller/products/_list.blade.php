@@ -50,8 +50,8 @@
                 <i class="fa-solid fa-boxes-stacked text-2xl text-gray-300"></i>
             </div>
             <p class="text-sm font-bold text-gray-900">No products found</p>
-            <p class="text-xs text-gray-500 mt-0.5">This collection is empty.</p>
-            <a href="{{ route('seller.products.create', request('collection') ? ['collection' => request('collection')] : []) }}" class="inline-flex items-center gap-1.5 mt-3 px-4 py-2 bg-primary text-white rounded-lg text-xs font-bold hover:opacity-90 active:scale-[0.97] transition-all shadow-sm">
+            <p class="text-xs text-gray-500 mt-0.5">Start selling by adding your first product.</p>
+            <a href="{{ route('seller.products.create') }}" class="inline-flex items-center gap-1.5 mt-3 px-4 py-2 bg-primary text-white rounded-lg text-xs font-bold hover:opacity-90 active:scale-[0.97] transition-all shadow-sm">
                 <i class="fa-solid fa-plus text-[16px]"></i>
                 Add Product
             </a>
@@ -129,8 +129,8 @@
                 <i class="fa-solid fa-boxes-stacked text-3xl text-gray-300"></i>
             </div>
             <p class="text-base font-bold text-gray-900">No products found</p>
-            <p class="text-sm text-gray-500 mt-1">This collection is empty.</p>
-            <a href="{{ route('seller.products.create', request('collection') ? ['collection' => request('collection')] : []) }}" class="inline-flex items-center gap-1.5 mt-4 px-5 py-2.5 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 active:scale-[0.97] transition-all shadow-sm">
+            <p class="text-sm text-gray-500 mt-1">Start selling by adding your first product.</p>
+            <a href="{{ route('seller.products.create') }}" class="inline-flex items-center gap-1.5 mt-4 px-5 py-2.5 bg-primary text-white rounded-xl text-sm font-bold hover:opacity-90 active:scale-[0.97] transition-all shadow-sm">
                 <i class="fa-solid fa-plus text-[18px]"></i>
                 Add Product
             </a>

@@ -60,13 +60,6 @@ Route::middleware(['auth', 'seller'])->prefix('seller')->name('seller.')->group(
     Route::put('/rentals/{id}', [\App\Http\Controllers\Seller\RentalController::class, 'update'])->name('rentals.update');
     Route::delete('/rentals/{id}', [\App\Http\Controllers\Seller\RentalController::class, 'destroy'])->name('rentals.destroy');
 
-    Route::get('/store-categories', [\App\Http\Controllers\Seller\StoreCategoryController::class, 'index'])->name('store-categories.index');
-    Route::get('/store-categories/create', [\App\Http\Controllers\Seller\StoreCategoryController::class, 'create'])->name('store-categories.create');
-    Route::post('/store-categories', [\App\Http\Controllers\Seller\StoreCategoryController::class, 'store'])->name('store-categories.store');
-    Route::get('/store-categories/{id}/edit', [\App\Http\Controllers\Seller\StoreCategoryController::class, 'edit'])->name('store-categories.edit');
-    Route::put('/store-categories/{id}', [\App\Http\Controllers\Seller\StoreCategoryController::class, 'update'])->name('store-categories.update');
-    Route::delete('/store-categories/{id}', [\App\Http\Controllers\Seller\StoreCategoryController::class, 'destroy'])->name('store-categories.destroy');
-
     Route::get('/ads', [\App\Http\Controllers\Seller\AdController::class, 'index'])->name('ads.index');
     Route::post('/ads', [\App\Http\Controllers\Seller\AdController::class, 'store'])->name('ads.store');
     Route::get('/ads/{id}', [\App\Http\Controllers\Seller\AdController::class, 'show'])->name('ads.show');
