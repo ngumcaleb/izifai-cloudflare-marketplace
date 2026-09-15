@@ -285,15 +285,16 @@
     ================================================================ --}}
     <section id="products-section" class="max-w-7xl mx-auto px-1 sm:px-6 mt-3 sm:mt-6">
         @if($products->count() > 0)
-            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 items-stretch auto-rows-fr gap-2.5 sm:gap-4 w-full">
+            <div id="product-grid" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 items-stretch auto-rows-fr gap-2.5 sm:gap-4 w-full">
                 @foreach($products as $product)
                     @include('partials.home-product-card', ['product' => $product, 'savedProductIds' => $savedProductIds])
                 @endforeach
             </div>
 
-            {{-- Pagination --}}
-            <div class="mt-10 sm:mt-12 flex justify-center">
-                {{ $products->links('partials.pagination') }}
+            {{-- Infinite scroll sentinel: auto-loads more as the user reaches the bottom --}}
+            <div id="load-more" class="mt-8 sm:mt-10 flex flex-col items-center justify-center gap-3">
+                <div id="load-more-spinner" class="hidden w-9 h-9 border-[3px] border-[#e8eae8] border-t-[#9acd32] rounded-full animate-spin"></div>
+                <p id="load-more-end" class="hidden text-[11px] sm:text-xs font-bold text-[#9aa19c]">You've reached the end — {{ number_format($products->total()) }} products</p>
             </div>
 
         @else
@@ -552,5 +553,45 @@
             window.location.href = '{{ route('login') }}';
         @endguest
     });
+
+    // Infinite scroll: auto-load next page of products as the user reaches the bottom
+    const gridEl = document.getElementById('product-grid');
+    const sentinelEl = document.getElementById('load-more');
+    const spinnerEl = document.getElementById('load-more-spinner');
+    const endEl = document.getElementById('load-more-end');
+    let nextUrl = {!! json_encode($products->nextPageUrl()) !!};
+    let loadingMore = false;
+
+    if (!nextUrl && sentinelEl && endEl) {
+        endEl.classList.remove('hidden');
+    }
+
+    if (gridEl && sentinelEl && nextUrl && 'IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+            if (!entries[0].isIntersecting || loadingMore || !nextUrl) return;
+            loadingMore = true;
+            spinnerEl.classList.remove('hidden');
+
+            const url = nextUrl + (nextUrl.includes('?') ? '&' : '?') + 'partial=1';
+            fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' } })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.html) gridEl.insertAdjacentHTML('beforeend', data.html);
+                    if (data.hasMore && data.nextUrl) {
+                        nextUrl = data.nextUrl;
+                    } else {
+                        nextUrl = null;
+                        endEl.classList.remove('hidden');
+                        observer.disconnect();
+                    }
+                })
+                .catch(() => {})
+                .finally(() => {
+                    loadingMore = false;
+                    spinnerEl.classList.add('hidden');
+                });
+        }, { rootMargin: '500px 0px' });
+        observer.observe(sentinelEl);
+    }
 </script>
 @endpush

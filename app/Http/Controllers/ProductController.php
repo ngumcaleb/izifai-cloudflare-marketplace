@@ -62,6 +62,10 @@ class ProductController extends Controller
 
         $products = $query->paginate(24)->withQueryString();
 
+        if ($request->boolean('partial')) {
+            return $this->paginatePartial($request, $products);
+        }
+
         $categories = \App\Models\Category::whereHas('products', function ($q) {
             $q->whereHas('store', fn($s) => $s->where('status', 'active'));
         })->get();
@@ -107,6 +111,28 @@ class ProductController extends Controller
             'categories', 'selectedCategory', 'trendingProducts',
             'mostContactedProducts', 'topStores'
         ));
+    }
+
+    protected function paginatePartial(Request $request, $products)
+    {
+        $savedProductIds = [];
+        if (auth()->check()) {
+            $savedProductIds = \App\Models\SavedProduct::where('user_id', auth()->id())
+                ->whereIn('product_id', $products->pluck('id'))
+                ->pluck('product_id')
+                ->toArray();
+        }
+
+        $html = view('products.partials.grid-cards', [
+            'products' => $products,
+            'savedProductIds' => $savedProductIds,
+        ])->render();
+
+        return response()->json([
+            'html' => $html,
+            'hasMore' => $products->hasMorePages(),
+            'nextUrl' => $products->nextPageUrl(),
+        ]);
     }
 
     public function localSourcing(Request $request)
