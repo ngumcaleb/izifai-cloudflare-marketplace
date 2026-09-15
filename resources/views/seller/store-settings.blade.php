@@ -18,7 +18,7 @@
                 socialLinks: {{ Js::from($store->social_links ?? []) }}.length ? {{ Js::from($store->social_links ?? []) }} : [{ platform: '', url: '' }],
                 policies: {{ Js::from($store->policies ?? []) }}.length ? {{ Js::from($store->policies ?? []) }} : [],
                 certifications: {{ Js::from($store->certifications ?? []) }}.length ? {{ Js::from($store->certifications ?? []) }} : [''],
-                teamMembers: {{ Js::from($store->team_members->map(fn($m) => ['id' => $m->id, 'name' => $m->name, 'role' => $m->role, 'bio' => $m->bio, 'photo' => $m->photo_url])) }},
+                teamMembers: {{ Js::from($store->teamMembers->map(fn($m) => ['id' => $m->id, 'name' => $m->name, 'role' => $m->role, 'bio' => $m->bio, 'photo' => $m->photo_url])) }},
                 logoPreview: null,
                 bannerPreview: null,
                 addSocial() { this.socialLinks.push({ platform: '', url: '' }) },

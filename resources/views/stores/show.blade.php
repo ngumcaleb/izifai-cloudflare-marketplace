@@ -27,6 +27,9 @@ $ogStoreImage = $ogStoreImage ?: asset('images/logo.png');
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     .line-clamp-1 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+    @media (max-width: 639px) {
+        .back-to-top-btn { bottom: calc(132px + env(safe-area-inset-bottom)) !important; }
+    }
 </style>
 @endpush
 
@@ -35,7 +38,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 sm:
 @endphp
 
 @section('content')
-<div class="pb-16 sm:pb-24">
+<div class="pb-32 sm:pb-24">
 
     {{-- ================================================================
          HERO — Full-Bleed Cover Fading Into the Page
@@ -107,77 +110,58 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 sm:
                     </div>
 
                     {{-- Actions --}}
-                    <div class="mt-4 sm:mt-5" x-data="{
-                        storeSearch: {{ request('search') ? 'true' : 'false' }},
-                        following: {{ auth()->check() && auth()->id() !== $store->user_id && $isFollowing ? 'true' : 'false' }},
-                        followBusy: false,
-                        toggleFollow() {
-                            if (this.followBusy) { return; }
-                            this.followBusy = true;
-                            fetch('{{ route('stores.follow', $store) }}', {
-                                method: 'POST',
-                                headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Content-Type': 'application/json' }
-                            })
-                            .then(r => r.json())
-                            .then(d => {
-                                this.following = d.following;
-                                const el = document.getElementById('follower-count');
-                                if (el) { el.textContent = Number(d.follower_count).toLocaleString(); }
-                            })
-                            .finally(() => { this.followBusy = false; });
-                        }
-                    }">
-                        <div class="grid grid-cols-3 gap-2 sm:flex sm:flex-wrap sm:items-center sm:justify-start">
+                    <div class="mt-4 sm:mt-5" x-data="{ storeSearch: {{ request('search') ? 'true' : 'false' }}, ...izifaiStoreBar() }">
+                        <div class="flex items-center justify-between gap-1.5 sm:flex-wrap sm:items-center sm:justify-start sm:gap-2">
                             <button @click="storeSearch = !storeSearch"
-                                    class="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-10 sm:h-11 px-0 sm:px-5 rounded-xl text-[11px] sm:text-[13px] font-bold border border-[#1c201e]/15 bg-white text-[#3f453f] hover:border-[#1c201e] hover:text-[#1c201e] active:scale-[0.98] transition-all duration-200">
-                                <i class="fa-solid fa-magnifying-glass text-[13px] sm:text-[15px]" style=""></i>
-                                <span>Search</span>
+                                    class="h-11 aspect-square sm:aspect-auto sm:w-auto inline-flex items-center justify-center gap-2 sm:px-5 rounded-xl text-[11px] sm:text-[13px] font-bold border border-[#1c201e]/15 bg-white text-[#3f453f] hover:border-[#1c201e] hover:text-[#1c201e] active:scale-[0.98] transition-all duration-200">
+                                <i class="fa-solid fa-magnifying-glass text-[15px]" style=""></i>
+                                <span class="hidden sm:inline">Search</span>
                                 @if(request('search'))
-                                    <span class="w-1.5 h-1.5 rounded-full bg-[#659316] animate-pulse"></span>
+                                    <span class="hidden sm:inline-flex w-1.5 h-1.5 rounded-full bg-[#659316] animate-pulse"></span>
                                 @endif
                             </button>
                             @if($store->whatsapp_number)
                                 <a href="https://wa.me/{{ wa_url($store->whatsapp_number) }}?text={{ urlencode('Hi ' . $store->name . ', I saw your store on Izifai!') }}" target="_blank"
-                                   class="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 sm:gap-2 h-10 sm:h-11 px-0 sm:px-6 rounded-xl text-[11px] sm:text-[13px] font-bold text-white bg-[#25D366] hover:bg-[#128C7E] active:scale-[0.98] transition-all duration-200 shadow-sm">
+                                   class="h-11 aspect-square sm:aspect-auto sm:w-auto inline-flex items-center justify-center gap-1.5 sm:gap-2 sm:px-6 rounded-xl text-[11px] sm:text-[13px] font-bold text-white bg-[#25D366] hover:bg-[#128C7E] active:scale-[0.98] transition-all duration-200 shadow-sm">
                                     {!! $whatsappIcon !!}
-                                    WhatsApp
+                                    <span class="hidden sm:inline">WhatsApp</span>
                                 </a>
                             @endif
                             @auth
                                 @if(auth()->id() !== $store->user_id)
-                                <form action="{{ route('conversations.store') }}" method="POST" class="w-full sm:inline">
+                                <form action="{{ route('conversations.store') }}" method="POST" class="h-11 aspect-square sm:aspect-auto sm:w-auto">
                                     @csrf
                                     <input type="hidden" name="seller_id" value="{{ $store->user_id }}">
                                     <input type="hidden" name="target_type" value="store">
                                     <input type="hidden" name="target_id" value="{{ $store->id }}">
                                     <input type="hidden" name="message" value="Hi, I am interested in {{ $store->name }} on Izifai.">
                                     <button type="submit"
-                                            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-10 sm:h-11 px-0 sm:px-6 rounded-xl text-[11px] sm:text-[13px] font-bold text-white bg-[#1c201e] hover:bg-[#2a2f2b] active:scale-[0.98] transition-all duration-200">
-                                        <i class="fa-regular fa-comment text-[14px] sm:text-[16px]" style=""></i>
-                                        Message
+                                            class="w-full h-full inline-flex items-center justify-center gap-2 sm:px-6 rounded-xl text-[11px] sm:text-[13px] font-bold text-white bg-[#1c201e] hover:bg-[#2a2f2b] active:scale-[0.98] transition-all duration-200">
+                                        <i class="fa-regular fa-comment text-[15px] sm:text-[16px]" style=""></i>
+                                        <span class="hidden sm:inline">Message</span>
                                     </button>
                                 </form>
                                 @endif
                             @endauth
-                            <button onclick="copyToClipboard(window.location.href, this, 'Done!')"
-                                    class="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-10 sm:h-11 px-0 sm:px-5 rounded-xl text-[11px] sm:text-[13px] font-bold border border-[#e8eae8] bg-white text-[#3f453f] hover:border-[#1c201e] active:scale-[0.98] transition-all duration-200">
-                                <i class="fa-solid fa-share-nodes text-[14px] sm:text-[16px] copy-icon" style=""></i>
-                                <span class="copy-label">Share</span>
+                            <button @click="share()"
+                                    class="h-11 aspect-square sm:aspect-auto sm:w-auto inline-flex items-center justify-center gap-2 sm:px-5 rounded-xl text-[11px] sm:text-[13px] font-bold border border-[#e8eae8] bg-white text-[#3f453f] hover:border-[#1c201e] active:scale-[0.98] transition-all duration-200">
+                                <i class="fa-solid fa-share-nodes text-[15px] sm:text-[16px]" style=""></i>
+                                <span class="hidden sm:inline" x-text="copied ? 'Done!' : 'Share'"></span>
                             </button>
                             @auth
                                 @if(auth()->id() !== $store->user_id)
                                 <button @click="toggleFollow()"
-                                        class="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-10 sm:h-11 px-0 sm:px-5 rounded-xl text-[11px] sm:text-[13px] font-bold transition-all duration-200 active:scale-[0.98]"
+                                        class="h-11 aspect-square sm:aspect-auto sm:w-auto inline-flex items-center justify-center gap-2 sm:px-5 rounded-xl text-[11px] sm:text-[13px] font-bold transition-all duration-200 active:scale-[0.98]"
                                         :class="following ? 'bg-[#1c201e] text-white shadow-sm' : 'bg-[#f2f9df] text-[#659316] border border-[#9acd32]/30 hover:border-[#7ca81d]'">
-                                    <i class="fa-solid fa-heart text-[14px]" :class="following ? 'text-[#9acd32]' : 'text-[#659316]'" style=""></i>
-                                    <span x-text="following ? 'Following' : 'Follow'"></span>
+                                    <i class="fa-solid fa-heart text-[15px]" :class="following ? 'text-[#9acd32]' : 'text-[#659316]'" style=""></i>
+                                    <span class="hidden sm:inline" x-text="following ? 'Following' : 'Follow'"></span>
                                 </button>
                                 @endif
                             @else
                                 <a href="{{ route('login') }}"
-                                   class="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-10 sm:h-11 px-0 sm:px-5 rounded-xl text-[11px] sm:text-[13px] font-bold border border-[#9acd32]/30 bg-[#f2f9df] text-[#659316] hover:border-[#7ca81d] transition-all duration-200">
-                                    <i class="fa-solid fa-heart text-[14px]" style=""></i>
-                                    <span>Follow</span>
+                                   class="h-11 aspect-square sm:aspect-auto sm:w-auto inline-flex items-center justify-center gap-2 sm:px-5 rounded-xl text-[11px] sm:text-[13px] font-bold border border-[#9acd32]/30 bg-[#f2f9df] text-[#659316] hover:border-[#7ca81d] transition-all duration-200">
+                                    <i class="fa-solid fa-heart text-[15px]" style=""></i>
+                                    <span class="hidden sm:inline">Follow</span>
                                 </a>
                             @endauth
                         </div>
@@ -211,6 +195,64 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 sm:
             </div>
         </div>
     </header>
+
+    {{-- ================================================================
+         MOBILE QUICK ACTION BAR (floating dock above the app nav)
+    ================================================================ --}}
+    <div class="lg:hidden" x-data="izifaiStoreBar()">
+        <div class="fixed left-3 right-3 z-40" style="bottom: calc(64px + env(safe-area-inset-bottom))">
+            <div class="flex items-center gap-1.5 bg-white/95 backdrop-blur-lg border border-[#00000008] rounded-2xl shadow-[0_14px_36px_-10px_rgba(0,0,0,0.28)] p-1.5">
+                @if($store->whatsapp_number)
+                    <a href="https://wa.me/{{ wa_url($store->whatsapp_number) }}?text={{ urlencode('Hi ' . $store->name . ', I saw your store on Izifai!') }}" target="_blank"
+                       class="flex-1 inline-flex items-center justify-center gap-1.5 h-11 rounded-xl bg-[#25D366] text-white text-[12px] font-bold hover:bg-[#128C7E] active:scale-[0.98] transition-all shadow-sm">
+                        {!! $whatsappIcon !!}
+                        WhatsApp
+                    </a>
+                @endif
+                @auth
+                    @if(auth()->id() !== $store->user_id)
+                    <form action="{{ route('conversations.store') }}" method="POST" class="flex-1 flex">
+                        @csrf
+                        <input type="hidden" name="seller_id" value="{{ $store->user_id }}">
+                        <input type="hidden" name="target_type" value="store">
+                        <input type="hidden" name="target_id" value="{{ $store->id }}">
+                        <input type="hidden" name="message" value="Hi, I am interested in {{ $store->name }} on Izifai.">
+                        <button type="submit" class="w-full inline-flex items-center justify-center gap-1.5 h-11 rounded-xl bg-[#1c201e] text-white text-[12px] font-bold hover:bg-[#2a2f2b] active:scale-[0.98] transition-all">
+                            <i class="fa-regular fa-comment text-[15px]" style=""></i>
+                            Message
+                        </button>
+                    </form>
+                    @endif
+                @else
+                    <a href="{{ route('login') }}" class="flex-1 inline-flex items-center justify-center gap-1.5 h-11 rounded-xl bg-[#1c201e] text-white text-[12px] font-bold hover:bg-[#2a2f2b] active:scale-[0.98] transition-all">
+                        <i class="fa-regular fa-comment text-[15px]" style=""></i>
+                        Message
+                    </a>
+                @endauth
+                @auth
+                    @if(auth()->id() !== $store->user_id)
+                    <button @click="toggleFollow()"
+                            class="shrink-0 inline-flex items-center justify-center gap-1 h-11 px-3 rounded-xl text-[11px] font-bold transition-all active:scale-[0.98]"
+                            :class="following ? 'bg-[#1c201e] text-white' : 'bg-[#f2f9df] text-[#659316] border border-[#9acd32]/30'">
+                        <i class="fa-solid fa-heart text-[15px]" :class="following ? 'text-[#9acd32]' : ''" style=""></i>
+                        <span x-text="following ? 'Following' : 'Follow'"></span>
+                    </button>
+                    @endif
+                @else
+                    <a href="{{ route('login') }}"
+                       class="shrink-0 inline-flex items-center justify-center gap-1 h-11 px-3 rounded-xl text-[11px] font-bold bg-[#f2f9df] text-[#659316] border border-[#9acd32]/30 transition-all active:scale-[0.98]">
+                        <i class="fa-solid fa-heart text-[15px]" style=""></i>
+                        <span>Follow</span>
+                    </a>
+                @endauth
+                <button @click="share()"
+                        class="shrink-0 inline-flex items-center justify-center gap-1 h-11 px-3 rounded-xl bg-[#f5f6f5] border border-[#e8eae8] text-[#3f453f] text-[11px] font-bold hover:border-[#1c201e] transition-all active:scale-[0.98]">
+                    <i class="fa-solid fa-share-nodes text-[15px]" style=""></i>
+                    <span x-text="copied ? 'Done!' : 'Share'"></span>
+                </button>
+            </div>
+        </div>
+    </div>
 
     {{-- ================================================================
          MOBILE FIRST: Contact details (before catalog)
@@ -425,7 +467,7 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 sm:
     ================================================================ --}}
     <section class="max-w-7xl mx-auto px-2 sm:px-6 mt-5 sm:mt-6" x-data="{ activeTab: 'products' }">
         {{-- Sticky segmented tab bar --}}
-        <div class="sticky top-14 sm:top-[144px] z-30 -mx-2 sm:mx-0 py-1.5 sm:py-2 bg-[#f5f6f5]/95 backdrop-blur-sm border-b border-[#eff1ef]">
+        <div class="sticky top-14 sm:top-16 z-30 -mx-2 sm:mx-0 py-1.5 sm:py-2 bg-[#f5f6f5]/95 backdrop-blur-sm border-b border-[#eff1ef]">
             <div class="flex items-center gap-1 p-1 overflow-x-auto no-scrollbar bg-white border border-[#e8eae8] rounded-full shadow-sm">
                 <button @click="activeTab = 'products'"
                         class="shrink-0 inline-flex items-center gap-1.5 px-3.5 sm:px-5 py-2 rounded-full text-[11.5px] sm:text-[12px] font-bold transition-all duration-200"
@@ -1186,6 +1228,69 @@ $whatsappIcon = '<svg viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 sm:
 
 @section('footer')
 <script>
+    @auth
+    function izifaiStoreBar() {
+        return {
+            following: {{ auth()->id() !== $store->user_id && $isFollowing ? 'true' : 'false' }},
+            followBusy: false,
+            copied: false,
+            toggleFollow() {
+                if (this.followBusy) { return; }
+                this.followBusy = true;
+                fetch('{{ route('stores.follow', $store) }}', {
+                    method: 'POST',
+                    headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Content-Type': 'application/json' }
+                })
+                .then(r => r.json())
+                .then(d => {
+                    this.following = d.following;
+                    const el = document.getElementById('follower-count');
+                    if (el) { el.textContent = Number(d.follower_count).toLocaleString(); }
+                })
+                .finally(() => { this.followBusy = false; });
+            },
+            share() {
+                const url = window.location.href;
+                if (navigator.share) {
+                    navigator.share({ title: {{ Js::from($store->name . ' on Izifai') }}, url: url }).catch(() => {});
+                    return;
+                }
+                const t = document.createElement('textarea');
+                t.value = url;
+                document.body.appendChild(t);
+                t.select();
+                try { document.execCommand('copy'); } catch (e) {}
+                document.body.removeChild(t);
+                this.copied = true;
+                setTimeout(() => { this.copied = false; }, 1600);
+            }
+        };
+    }
+    @else
+    function izifaiStoreBar() {
+        return {
+            following: false,
+            followBusy: false,
+            copied: false,
+            share() {
+                const url = window.location.href;
+                if (navigator.share) {
+                    navigator.share({ title: {{ Js::from($store->name . ' on Izifai') }}, url: url }).catch(() => {});
+                    return;
+                }
+                const t = document.createElement('textarea');
+                t.value = url;
+                document.body.appendChild(t);
+                t.select();
+                try { document.execCommand('copy'); } catch (e) {}
+                document.body.removeChild(t);
+                this.copied = true;
+                setTimeout(() => { this.copied = false; }, 1600);
+            }
+        };
+    }
+    @endauth
+
     document.addEventListener('click', function(e) {
         const btn = e.target.closest('.favorite-btn');
         if (!btn) return;
