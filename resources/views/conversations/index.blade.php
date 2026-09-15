@@ -7,6 +7,13 @@
 @endsection
 
 @section('content')
+<style>
+    html, body {
+        height: 100%;
+        overflow: hidden;
+        overscroll-behavior: none;
+    }
+</style>
 <div class="fixed inset-x-0 top-[56px] sm:top-[160px] bottom-[60px] sm:bottom-0 bg-[#f5f6f5]">
     <div class="h-full w-full max-w-3xl mx-auto sm:py-5">
         <div class="h-full flex flex-col bg-white sm:border sm:border-[#e8eae8] sm:rounded-2xl sm:shadow-sm sm:overflow-hidden">
