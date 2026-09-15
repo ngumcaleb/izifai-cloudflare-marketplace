@@ -54,8 +54,8 @@
                         {{ $categories->count() }} specialties
                     </span>
                     <span class="inline-flex items-center gap-1.5">
-                        <i class="fa-solid fa-lock text-[14px] text-[#9acd32]" style=""></i>
-                        Escrow booking protection
+                        <i class="fa-solid fa-comment-dots text-[14px] text-[#9acd32]" style=""></i>
+                        Direct service requests
                     </span>
                 </div>
 

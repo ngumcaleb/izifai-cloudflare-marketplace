@@ -266,6 +266,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
 // === CONVERSATIONS & USER (authenticated users) ===
 Route::middleware(['auth'])->group(function () {
+    Route::post('/store/{store}/follow', [\App\Http\Controllers\StoreController::class, 'follow'])->name('stores.follow');
     Route::get('/favorites', [\App\Http\Controllers\SavedProductController::class, 'index'])->name('favorites.index');
     Route::get('/conversations', [\App\Http\Controllers\ConversationController::class, 'index'])->name('conversations.index');
     Route::get('/conversations/{conversation}', [\App\Http\Controllers\ConversationController::class, 'show'])->name('conversations.show');

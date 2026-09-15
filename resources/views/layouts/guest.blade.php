@@ -531,11 +531,6 @@
                         <i class="fa-solid fa-heart text-[20px] text-[#9aa19c] group-hover:text-[#9acd32]" style=""></i>
                         <span class="text-[13px] font-semibold text-[#3f453f] group-hover:text-[#7ca81d]">Saved Items</span>
                     </a>
-                    <a href="{{ route('orders.index') }}" @click="mobileMenu = false"
-                       class="flex items-center gap-3 px-3.5 py-3 rounded-2xl hover:bg-[#f2f9df] transition-all active:scale-[0.98] group">
-                        <i class="fa-solid fa-truck-fast text-[20px] text-[#9aa19c] group-hover:text-[#9acd32]" style=""></i>
-                        <span class="text-[13px] font-semibold text-[#3f453f] group-hover:text-[#7ca81d]">My Orders</span>
-                    </a>
                     <a href="{{ route('conversations.index') }}" @click="mobileMenu = false"
                        class="flex items-center gap-3 px-3.5 py-3 rounded-2xl hover:bg-[#f2f9df] transition-all active:scale-[0.98] group">
                         <i class="fa-solid fa-comment text-[20px] text-[#9aa19c] group-hover:text-[#9acd32]" style=""></i>
@@ -633,7 +628,7 @@
                         <span class="grid place-items-center w-9 h-9 rounded-xl bg-[#9acd32]/15 shrink-0">
                             <i class="fa-solid fa-bell text-[16px] text-[#659316]"></i>
                         </span>
-                        <span class="text-[12px] font-semibold text-[#2e332f]">Get notified the moment someone orders</span>
+                        <span class="text-[12px] font-semibold text-[#2e332f]">Get notified the moment a buyer messages you</span>
                     </div>
                 </div>
 
@@ -1067,19 +1062,16 @@
                 </div>
 
                 <div>
-                    <p class="text-[11px] font-extrabold uppercase tracking-[0.12em] text-[#9aa19c] mb-4">Payments</p>
+                    <p class="text-[11px] font-extrabold uppercase tracking-[0.12em] text-[#9aa19c] mb-4">Why Izifai</p>
                     <div class="flex flex-wrap gap-2">
                         <span class="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#3f453f] bg-[#f5f6f5] border border-[#e8eae8] px-3 py-1.5 rounded-full">
-                            <i class="fa-solid fa-mobile-screen-button text-[14px] text-[#9acd32]"></i> MTN MoMo
+                            <i class="fa-solid fa-shield-halved text-[14px] text-[#9acd32]"></i> Verified sellers
                         </span>
                         <span class="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#3f453f] bg-[#f5f6f5] border border-[#e8eae8] px-3 py-1.5 rounded-full">
-                            <i class="fa-solid fa-mobile-screen-button text-[14px] text-[#9acd32]"></i> Orange Money
+                            <i class="fa-solid fa-comment-dots text-[14px] text-[#9acd32]"></i> Direct seller chat
                         </span>
                         <span class="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#3f453f] bg-[#f5f6f5] border border-[#e8eae8] px-3 py-1.5 rounded-full">
-                            <i class="fa-solid fa-credit-card text-[14px] text-[#9acd32]"></i> Cards
-                        </span>
-                        <span class="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#3f453f] bg-[#f5f6f5] border border-[#e8eae8] px-3 py-1.5 rounded-full">
-                            <i class="fa-solid fa-circle-check text-[14px] text-[#659316]" style=""></i> Verified sellers
+                            <i class="fa-solid fa-location-dot text-[14px] text-[#9acd32]"></i> Made in Cameroon
                         </span>
                     </div>
                     <p class="text-[11px] text-[#6b716c] mt-5 leading-relaxed">

@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Follow;
 use App\Models\Store;
+use App\Models\UserNotification;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class StoreController extends Controller
@@ -194,14 +197,61 @@ class StoreController extends Controller
         // Store tenure
         $joinedDate = $store->created_at ? $store->created_at->format('M d, Y') : 'N/A';
 
+        $isFollowing = false;
+        if (auth()->check() && auth()->id() !== $store->user_id) {
+            $isFollowing = Follow::where('user_id', auth()->id())
+                ->where('followable_type', Store::class)
+                ->where('followable_id', $store->id)
+                ->exists();
+        }
+
         return view('stores.show', compact(
             'store', 'products', 'categories', 'reviews',
             'starDistribution', 'avgRating', 'totalReviews',
             'totalProducts', 'topProducts', 'joinedDate',
             'savedProductIds', 'services', 'totalServices',
             'rentals', 'totalRentals', 'allCategories', 'storeCategories', 'totalItems',
-            'suggestedProducts', 'suggestedSavedIds'
+            'suggestedProducts', 'suggestedSavedIds', 'isFollowing'
         ));
+    }
+
+    public function follow(Store $store): JsonResponse
+    {
+        $existing = Follow::where('user_id', auth()->id())
+            ->where('followable_type', Store::class)
+            ->where('followable_id', $store->id)
+            ->first();
+
+        if ($existing) {
+            $existing->delete();
+            $store->decrement('follower_count');
+            return response()->json([
+                'following' => false,
+                'follower_count' => max(0, (int) $store->fresh()->follower_count),
+            ]);
+        }
+
+        Follow::create([
+            'user_id' => auth()->id(),
+            'followable_type' => Store::class,
+            'followable_id' => $store->id,
+        ]);
+        $store->increment('follower_count');
+
+        if ($store->user_id && $store->user_id !== auth()->id()) {
+            UserNotification::create([
+                'user_id' => $store->user_id,
+                'type' => 'follow',
+                'title' => 'New follower',
+                'message' => auth()->user()->name . ' is now following ' . $store->name . '.',
+                'data' => ['url' => route('stores.show', $store->slug)],
+            ]);
+        }
+
+        return response()->json([
+            'following' => true,
+            'follower_count' => (int) $store->follower_count,
+        ]);
     }
 
     public function searchJson(Request $request, $slug)

@@ -523,23 +523,29 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
 ================================================================ --}}
 <section class="max-w-7xl mx-auto px-2.5 sm:px-6 mt-2.5 sm:mt-6">
     <div class="rounded-2xl bg-white border border-[#e8eae8] px-3 sm:px-6 py-2 sm:py-3.5 flex items-center justify-center flex-wrap gap-x-4 sm:gap-x-7 gap-y-1.5 text-[9.5px] sm:text-[11px] font-semibold text-[#6b716c]">
-        <span class="inline-flex items-center gap-1.5 sm:gap-2">
+<span class="inline-flex items-center gap-1.5 sm:gap-2">
             <span class="grid place-items-center w-6 h-6 sm:w-7 sm:h-7 rounded-md sm:rounded-lg bg-[#f2f9df] text-[#7ca81d]">
-                <i class="fa-solid fa-mobile-screen-button text-[13px] sm:text-[15px]" style=""></i>
+                <i class="fa-solid fa-shield-halved text-[13px] sm:text-[15px]" style=""></i>
             </span>
-            MTN MoMo
+            Verified stores only
         </span>
         <span class="inline-flex items-center gap-1.5 sm:gap-2">
             <span class="grid place-items-center w-6 h-6 sm:w-7 sm:h-7 rounded-md sm:rounded-lg bg-[#f2f9df] text-[#7ca81d]">
-                <i class="fa-solid fa-mobile-screen-button text-[13px] sm:text-[15px]" style=""></i>
+                <i class="fa-solid fa-comment-dots text-[13px] sm:text-[15px]" style=""></i>
             </span>
-            Orange Money
+            Direct seller chat
         </span>
         <span class="inline-flex items-center gap-1.5 sm:gap-2">
             <span class="grid place-items-center w-6 h-6 sm:w-7 sm:h-7 rounded-md sm:rounded-lg bg-[#f2f9df] text-[#7ca81d]">
-                <i class="fa-solid fa-credit-card text-[13px] sm:text-[15px]" style=""></i>
+                <i class="fa-solid fa-tag text-[13px] sm:text-[15px]" style=""></i>
             </span>
-            Cards
+            Local prices in FCFA
+        </span>
+        <span class="inline-flex items-center gap-1.5 sm:gap-2">
+            <span class="grid place-items-center w-6 h-6 sm:w-7 sm:h-7 rounded-md sm:rounded-lg bg-[#f2f9df] text-[#659316]">
+                <i class="fa-solid fa-location-dot text-[13px] sm:text-[15px]" style=""></i>
+            </span>
+            Made in Cameroon
         </span>
         <span class="inline-flex items-center gap-1.5 sm:gap-2">
             <span class="grid place-items-center w-6 h-6 sm:w-7 sm:h-7 rounded-md sm:rounded-lg bg-[#f2f9df] text-[#659316]">

@@ -130,6 +130,19 @@ class ProductController extends Controller
             }
         }
 
+        \App\Models\Follow::where('followable_type', \App\Models\Store::class)
+            ->where('followable_id', $store->id)
+            ->get()
+            ->each(function ($follow) use ($store, $product) {
+                \App\Models\UserNotification::create([
+                    'user_id' => $follow->user_id,
+                    'type' => 'store',
+                    'title' => $store->name . ' added a new product',
+                    'message' => '"' . $product->name . '" is now live at ' . number_format($product->price) . ' F.',
+                    'data' => ['url' => route('products.show', $product->slug), 'product_id' => $product->id],
+                ]);
+            });
+
         return redirect()->route('seller.products.index')->with('success', 'Product created successfully.');
     }
 

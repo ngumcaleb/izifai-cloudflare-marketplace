@@ -40,7 +40,7 @@
                 </h1>
 
                 <p class="mt-2 text-xs sm:text-sm text-white/75 leading-relaxed max-w-xl">
-                    Discover verified local sellers and manufacturers across Cameroon. Browse real store catalogs, connect directly on WhatsApp, and buy with escrow safety.
+                    Discover verified local sellers and manufacturers across Cameroon. Browse real store catalogs, chat and negotiate directly on WhatsApp.
                 </p>
 
                 {{-- Highlights / Quick Stats --}}

@@ -52,8 +52,8 @@
                         Verified owners
                     </span>
                     <span class="inline-flex items-center gap-1.5">
-                        <i class="fa-solid fa-shield-halved text-[14px] text-[#9acd32]" style=""></i>
-                        Escrow deposit protection
+                        <i class="fa-solid fa-comment-dots text-[14px] text-[#9acd32]" style=""></i>
+                        Direct owner contact
                     </span>
                 </div>
 

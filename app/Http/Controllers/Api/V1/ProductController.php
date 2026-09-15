@@ -227,6 +227,19 @@ class ProductController extends Controller
             }
         }
 
+        \App\Models\Follow::where('followable_type', \App\Models\Store::class)
+            ->where('followable_id', $store->id)
+            ->get()
+            ->each(function ($follow) use ($store, $product) {
+                \App\Models\UserNotification::create([
+                    'user_id' => $follow->user_id,
+                    'type' => 'store',
+                    'title' => $store->name . ' added a new product',
+                    'message' => '"' . $product->name . '" is now live at ' . number_format($product->price) . ' F.',
+                    'data' => ['product_id' => $product->id, 'slug' => $product->slug],
+                ]);
+            });
+
         return response()->json([
             'message' => 'Product created.',
             'product' => $product->fresh()->load(['images', 'specifications', 'category']),

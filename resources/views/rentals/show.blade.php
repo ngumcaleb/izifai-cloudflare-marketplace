@@ -59,7 +59,7 @@ $cover = $rental->main_image_url ?: ($rentalImages[0] ?? '');
         <div class="rounded-2xl bg-white border border-[#e8eae8] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
 
             {{-- image (slide-track) --}}
-            <div class="relative aspect-[4/3] bg-[#f5f6f5] overflow-hidden">
+            <div class="relative h-64 sm:h-80 bg-[#f5f6f5] overflow-hidden">
                 @if(count($rentalImages) > 0)
                 <div class="flex h-full transition-transform duration-500 ease-out"
                      :style="'transform: translateX(-' + (imageIndex * 100) + '%)'">
@@ -245,11 +245,11 @@ $cover = $rental->main_image_url ?: ($rentalImages[0] ?? '');
                     <div class="flex transition-transform duration-500 ease-out"
                          :style="'transform: translateX(-' + (imageIndex * 100) + '%)'">
                         @foreach($rentalImages as $i => $imgUrl)
-                        <img src="{{ $imgUrl }}" alt="{{ $rental->name }} {{ $i + 1 }}" class="w-full aspect-[4/3] object-cover shrink-0 select-none">
+                        <img src="{{ $imgUrl }}" alt="{{ $rental->name }} {{ $i + 1 }}" class="w-full h-[440px] lg:h-[520px] object-cover shrink-0 select-none">
                         @endforeach
                     </div>
                     @else
-                    <div class="w-full aspect-[4/3] flex items-center justify-center text-[#c6cac6]">
+                    <div class="w-full h-[440px] lg:h-[520px] flex items-center justify-center text-[#c6cac6]">
                         <i class="fa-solid fa-image text-[72px]"></i>
                     </div>
                     @endif

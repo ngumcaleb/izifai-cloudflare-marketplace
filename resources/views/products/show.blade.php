@@ -61,7 +61,7 @@ $cover = $productImages->first()?->url ?? '';
         <div class="rounded-2xl bg-white border border-[#e8eae8] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
 
             {{-- image (slide-track) --}}
-            <div class="relative aspect-square bg-[#f5f6f5] overflow-hidden">
+            <div class="relative h-64 sm:h-80 bg-[#f5f6f5] overflow-hidden">
                 @if($productImages->isNotEmpty())
                 <div class="flex h-full transition-transform duration-500 ease-out"
                      :style="'transform: translateX(-' + (imageIndex * 100) + '%)'">
@@ -239,11 +239,11 @@ $cover = $productImages->first()?->url ?? '';
                     <div class="flex transition-transform duration-500 ease-out"
                          :style="'transform: translateX(-' + (imageIndex * 100) + '%)'">
                         @foreach($productImages as $i => $img)
-                        <img src="{{ $img->url }}" alt="{{ $product->name }} {{ $i + 1 }}" class="w-full aspect-square object-cover shrink-0 select-none">
+                        <img src="{{ $img->url }}" alt="{{ $product->name }} {{ $i + 1 }}" class="w-full h-[440px] lg:h-[520px] object-cover shrink-0 select-none">
                         @endforeach
                     </div>
                     @else
-                    <div class="w-full aspect-square flex items-center justify-center text-[#c6cac6]">
+                    <div class="w-full h-[440px] lg:h-[520px] flex items-center justify-center text-[#c6cac6]">
                         <i class="fa-solid fa-image text-[72px]"></i>
                     </div>
                     @endif
