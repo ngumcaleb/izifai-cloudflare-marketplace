@@ -3,8 +3,13 @@
 @section('title', 'Inbox — Izifai')
 @section('description', 'Your messages on Izifai')
 
+@section('footer')
+@endsection
+
 @section('content')
-<div class="fixed inset-x-0 top-[57px] bottom-[72px] sm:relative sm:inset-x-auto sm:top-auto sm:bottom-auto sm:max-w-3xl sm:mx-auto sm:w-full sm:h-[calc(100dvh-184px)] sm:my-0 sm:rounded-2xl sm:border sm:border-[#e8eae8] sm:bg-white sm:shadow-sm sm:overflow-hidden flex flex-col bg-white">
+<div class="fixed inset-x-0 top-[56px] sm:top-[160px] bottom-[60px] sm:bottom-0 bg-[#f5f6f5]">
+    <div class="h-full w-full max-w-3xl mx-auto sm:py-5">
+        <div class="h-full flex flex-col bg-white sm:border sm:border-[#e8eae8] sm:rounded-2xl sm:shadow-sm sm:overflow-hidden">
 
     {{-- HEADER --}}
     <div class="shrink-0 bg-white border-b border-[#e8eae8] px-3 sm:px-4 py-2.5 sm:py-3 z-10">
@@ -173,6 +178,8 @@
                 </div>
             @endif
         @endif
+    </div>
+        </div>
     </div>
 </div>
 @endsection

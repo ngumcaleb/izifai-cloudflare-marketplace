@@ -3,6 +3,9 @@
 @section('title', $otherUser->name . ' — Izifai Chat')
 @section('description', 'Chat with ' . $otherUser->name . ' on Izifai')
 
+@section('footer')
+@endsection
+
 @php
 $userId = auth()->id();
 $store = $otherUser->store;
@@ -10,9 +13,11 @@ $whatsappNumber = $store?->whatsapp_number;
 @endphp
 
 @section('content')
-<div class="fixed inset-x-0 top-[57px] bottom-[72px] sm:relative sm:inset-x-auto sm:top-auto sm:bottom-auto sm:max-w-3xl sm:mx-auto sm:w-full sm:h-[calc(100dvh-184px)] sm:my-0 sm:rounded-2xl sm:border sm:border-[#e8eae8] sm:shadow-sm sm:overflow-hidden flex flex-col bg-white"
-     x-data="chatWindow({{ $conversation->id }}, '{{ csrf_token() }}', {{ $userId }}, '{{ ($store->logo_url ?? '') }}', '{{ $otherUser->name }}')"
-     x-init="init()">
+<div class="fixed inset-x-0 top-[56px] sm:top-[160px] bottom-[60px] sm:bottom-0 bg-[#f5f6f5]">
+    <div class="h-full w-full max-w-3xl mx-auto sm:py-5">
+        <div class="h-full flex flex-col bg-white sm:border sm:border-[#e8eae8] sm:rounded-2xl sm:shadow-sm sm:overflow-hidden"
+             x-data="chatWindow({{ $conversation->id }}, '{{ csrf_token() }}', {{ $userId }}, '{{ ($store->logo_url ?? '') }}', '{{ $otherUser->name }}')"
+             x-init="init()">
 
     {{-- HEADER --}}
     <div class="shrink-0 bg-white border-b border-[#e8eae8] px-2.5 sm:px-4 py-2 sm:py-2.5 flex items-center gap-2 sm:gap-2.5 z-10">
@@ -196,28 +201,30 @@ $whatsappNumber = $store?->whatsapp_number;
     </div>
 
     {{-- INPUT --}}
-    <div class="shrink-0 px-2.5 sm:px-4 pb-2.5 sm:pb-3 pt-1.5 sm:pt-2 bg-white border-t border-[#e8eae8] z-10"
+    <div class="shrink-0 bg-white border-t border-[#e8eae8] px-3 sm:px-4 pt-2.5 sm:pt-3 pb-2.5 sm:pb-4 z-10"
          x-data="{ focused: false }">
         <form @submit.prevent="sendMessage"
-              class="relative flex items-center gap-1.5 sm:gap-2 rounded-full bg-[#f5f6f5] border transition-all duration-200 pl-4 sm:pl-5 pr-1.5 sm:pr-2 py-1.5 sm:py-2"
-              :class="focused ? 'border-[#9acd32]/60 ring-2 ring-[#9acd32]/20' : 'border-[#e8eae8]'">
+              class="group flex items-end gap-2 rounded-3xl bg-white border transition-all duration-200 pl-4 sm:pl-5 pr-2 py-2 sm:py-2.5 shadow-[0_4px_16px_rgba(28,32,30,0.06)]"
+              :class="focused ? 'border-[#9acd32]/70 ring-4 ring-[#9acd32]/15 shadow-[0_6px_20px_rgba(154,205,50,0.18)]' : 'border-[#e8eae8]'">
             <textarea x-model="newMessage"
                       @keydown.enter.prevent="if(!$event.shiftKey) { sendMessage() }"
                       @focus="focused = true"
                       @blur="focused = false"
                       placeholder="Write a message..."
                       rows="1"
-                      class="flex-1 bg-transparent resize-none focus:outline-none text-[13px] sm:text-sm text-[#1c201e] leading-snug placeholder:text-[#b0b7b3] min-h-[22px] max-h-[100px] py-0.5"
+                      class="composer-input flex-1 bg-transparent resize-none focus:outline-none text-[13px] sm:text-[14px] text-[#1c201e] leading-relaxed placeholder:text-[#b0b7b3] min-h-[26px] max-h-[120px] py-1"
                       @input="autoResize($event.target)"></textarea>
             <button type="submit"
                     :disabled="!newMessage.trim()"
-                    class="shrink-0 w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center transition-all duration-200 active:scale-90"
+                    class="composer-send shrink-0 w-9 h-9 sm:w-10 sm:h-10 rounded-full grid place-items-center transition-all duration-200 active:scale-90 hover:scale-105"
                     :class="newMessage.trim()
-                        ? 'bg-[#9acd32] text-[#1c201e] shadow-sm hover:shadow-md'
-                        : 'bg-[#eef0ee] text-[#aeb5b0]'">
-                <i class="fa-solid fa-paper-plane text-[13px] sm:text-[15px]" style=""></i>
+                        ? 'bg-[#9acd32] text-[#1c201e] shadow-[0_4px_12px_rgba(154,205,50,0.45)]'
+                        : 'bg-[#eef0ee] text-[#a8afaa]'">
+                <i class="fa-solid fa-paper-plane text-[14px] sm:text-[16px] transition-transform duration-200" :class="newMessage.trim() ? 'group-hover:rotate-[10deg]' : ''" style=""></i>
             </button>
         </form>
+    </div>
+        </div>
     </div>
 </div>
 @endsection
@@ -231,6 +238,41 @@ $whatsappNumber = $store?->whatsapp_number;
     }
     @keyframes msgIn {
         to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .composer-input {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        background: transparent !important;
+    }
+    .composer-input::-webkit-scrollbar {
+        display: none;
+        width: 0;
+        height: 0;
+    }
+    .composer-input:focus,
+    .composer-input:focus-visible {
+        outline: none !important;
+        box-shadow: none !important;
+        border: none !important;
+    }
+    .composer-input:-webkit-autofill,
+    .composer-input:-webkit-autofill:hover,
+    .composer-input:-webkit-autofill:focus,
+    .composer-input:-webkit-autofill:active {
+        -webkit-text-fill-color: #1c201e;
+        -webkit-box-shadow: 0 0 0 1000px transparent inset;
+        transition: background-color 5000s ease-in-out 0s;
+        caret-color: #1c201e;
+    }
+    .composer-send:focus,
+    .composer-send:focus-visible {
+        outline: none !important;
+        box-shadow: none !important;
     }
 </style>
 <script>
