@@ -15,7 +15,11 @@
     <meta name="description" content="@yield('description', 'Izifai helps Cameroon merchants create beautiful, shareable product catalogs. No app needed — just a link.')">
     <meta property="og:title" content="@yield('og_title', 'Izifai — Your Store in a Link')">
     <meta property="og:description" content="@yield('og_description', 'Izifai helps Cameroon merchants create beautiful, shareable product catalogs. No app needed — just a link.')">
-    <meta property="og:image" content="@yield('og_image', asset('images/izifai-onboarding-logo.png'))">
+    <meta property="og:image" content="@yield('og_image', asset('images/og-image.png'))">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Izifai — Your Store in a Link">
+    <link rel="image_src" href="@yield('og_image', asset('images/og-image.png'))">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:type" content="@yield('og_type', 'website')">
     <meta property="og:site_name" content="Izifai">
@@ -23,7 +27,8 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="@yield('twitter_title', 'Izifai — Your Store in a Link')">
     <meta name="twitter:description" content="@yield('twitter_description', 'Izifai helps Cameroon merchants create beautiful, shareable product catalogs.')">
-    <meta name="twitter:image" content="@yield('twitter_image', asset('images/izifai-onboarding-logo.png'))">
+    <meta name="twitter:image" content="@yield('twitter_image', asset('images/og-image.png'))">
+    <meta name="twitter:image:alt" content="Izifai — Your Store in a Link">
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
