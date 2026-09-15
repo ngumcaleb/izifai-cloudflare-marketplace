@@ -1,4 +1,4 @@
-const IZIFAI_CACHE = 'izifai-v1';
+const IZIFAI_CACHE = 'izifai-v2';
 const APP_PRECACHE = ['/', '/' + 'manifest.webmanifest'];
 
 self.addEventListener('install', function (event) {

@@ -1,4 +1,4 @@
-const VERSION = 'izifai-v1';
+const VERSION = 'izifai-v2';
 const CORE = [
     '/',
     '/manifest.webmanifest',

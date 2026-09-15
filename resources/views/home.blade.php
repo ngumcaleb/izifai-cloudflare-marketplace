@@ -541,17 +541,11 @@ $featuredTab = $products->where('is_featured', true)->take(8)->values();
             </span>
             Local prices in FCFA
         </span>
-        <span class="inline-flex items-center gap-1.5 sm:gap-2">
+<span class="inline-flex items-center gap-1.5 sm:gap-2">
             <span class="grid place-items-center w-6 h-6 sm:w-7 sm:h-7 rounded-md sm:rounded-lg bg-[#f2f9df] text-[#659316]">
                 <i class="fa-solid fa-location-dot text-[13px] sm:text-[15px]" style=""></i>
             </span>
             Made in Cameroon
-        </span>
-        <span class="inline-flex items-center gap-1.5 sm:gap-2">
-            <span class="grid place-items-center w-6 h-6 sm:w-7 sm:h-7 rounded-md sm:rounded-lg bg-[#f2f9df] text-[#659316]">
-                <i class="fa-solid fa-shield-halved text-[13px] sm:text-[15px]" style=""></i>
-            </span>
-            Verified stores only
         </span>
     </div>
 </section>

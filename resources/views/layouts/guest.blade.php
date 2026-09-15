@@ -475,7 +475,7 @@
             <div class="h-px bg-[#f0f2f0] mx-5 shrink-0"></div>
 
             {{-- ============ INSTALL APP CARD ============ --}}
-            <button x-show="installReady || isIOS"
+            <button x-show="!installed"
                     x-cloak
                     @click="openOnboarding()"
                     class="shrink-0 mx-5 mt-3 mb-1 text-left flex items-center gap-3.5 px-4 py-3.5 rounded-2xl border border-[#9acd32]/25 bg-[#f2f9df] group active:scale-[0.98] transition-all"
