@@ -74,6 +74,11 @@ class ProductController extends Controller
             ->take(8)
             ->get();
 
+        $heroProduct = \App\Models\Product::active()
+            ->with(['images', 'category'])
+            ->inRandomOrder()
+            ->first();
+
         $mostContactedProducts = \App\Models\Product::active()
             ->with(['images', 'store'])
             ->inRandomOrder()
@@ -104,7 +109,7 @@ class ProductController extends Controller
 
         return view('products.index', compact(
             'products', 'title', 'description', 'savedProductIds',
-            'categories', 'selectedCategory', 'trendingProducts',
+            'categories', 'selectedCategory', 'trendingProducts', 'heroProduct',
             'mostContactedProducts', 'topStores'
         ));
     }

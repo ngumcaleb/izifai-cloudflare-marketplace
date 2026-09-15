@@ -27,6 +27,15 @@
     ================================================================ --}}
     <section class="max-w-7xl mx-auto px-2 sm:px-6 mt-4 sm:mt-6">
         <div class="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-[#1c201e] border border-black/5 shadow-[0_14px_44px_-16px_rgba(0,0,0,0.18)] p-5 sm:p-10 lg:p-12 text-white">
+            {{-- Random product as faint background --}}
+            @if($heroProduct && $heroProduct->images->isNotEmpty())
+            <div class="absolute inset-0 pointer-events-none">
+                <img src="{{ $heroProduct->images->first()->url }}" alt="{{ $heroProduct->name }}" loading="lazy"
+                     class="w-full h-full object-cover opacity-[0.22] scale-105">
+                <div class="absolute inset-0 bg-gradient-to-r from-[#1c201e] via-[#1c201e]/92 to-[#1c201e]/40"></div>
+            </div>
+            @endif
+
             {{-- Ambient glow orbs --}}
             <div class="absolute -top-24 -right-16 w-80 h-80 rounded-full bg-[#9acd32]/15 blur-3xl pointer-events-none"></div>
             <div class="absolute -bottom-28 -left-16 w-72 h-72 rounded-full bg-[#7ca81d]/15 blur-3xl pointer-events-none"></div>
@@ -129,11 +138,72 @@
                     </div>
                 @endif
             </div>
+
+            {{-- Tagged random product --}}
+            @if($heroProduct && $heroProduct->images->isNotEmpty())
+            <a href="{{ route('products.show', $heroProduct->slug) }}"
+               class="absolute top-4 sm:top-6 right-4 sm:right-8 z-10 -rotate-3 inline-flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-lg bg-[#1c201e]/70 backdrop-blur-md border border-white/15 text-white text-[10.5px] sm:text-xs font-bold shadow-lg transition-all duration-300 hover:bg-[#9acd32] hover:text-[#1c201e] hover:border-transparent active:scale-95">
+                <img src="{{ $heroProduct->images->first()->url }}" alt="" class="w-6 h-6 sm:w-7 sm:h-7 rounded-md object-cover ring-1 ring-white/25">
+                <span class="line-clamp-1 max-w-[8rem] sm:max-w-[13rem]">{{ $heroProduct->name }}</span>
+                <i class="fa-solid fa-arrow-up-right-from-square text-[9px] sm:text-[10px]"></i>
+            </a>
+            @endif
         </div>
     </section>
 
     {{-- ================================================================
-         2. CATEGORIES HORIZONTAL BAR
+         2. TRENDING NOW STRIP (catches the eye right under the header)
+    ================================================================ --}}
+    @if(isset($trendingProducts) && $trendingProducts->count() > 0 && !request('q'))
+    <section class="max-w-7xl mx-auto px-2 sm:px-6 mt-5 sm:mt-6">
+        <div class="flex items-center gap-2.5 sm:gap-3 mb-3.5 sm:mb-5">
+            <span class="grid place-items-center w-8 h-8 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-[#dc2626] text-white shadow-md sm:shadow-lg shadow-red-500/20 shrink-0">
+                <i class="fa-solid fa-fire text-[16px] sm:text-[20px]" style=""></i>
+            </span>
+            <div>
+                <h2 class="text-sm sm:text-xl font-extrabold tracking-tight text-[#1c201e]">Trending Now</h2>
+                <p class="text-[10px] sm:text-[12px] text-[#6b716c] -mt-0.5">Most popular items buyers are looking at today</p>
+            </div>
+        </div>
+
+        <div class="flex gap-2 sm:gap-2.5 overflow-x-auto no-scrollbar pb-2">
+            @foreach($trendingProducts as $p)
+                @php
+                    $dPct = $p->old_price && $p->old_price > $p->price ? round((1 - $p->price / $p->old_price) * 100) : 0;
+                @endphp
+                <a href="{{ route('products.show', $p->slug) }}" class="group shrink-0 w-[8.75rem] sm:w-48 rounded-xl sm:rounded-2xl bg-white border border-[#e8eae8] overflow-hidden hover:shadow-[0_16px_40px_-12px_rgba(0,0,0,0.14)] hover:-translate-y-1 transition-all duration-300">
+                    <div class="relative aspect-square bg-[#f5f6f5] overflow-hidden">
+                        @if($p->images->first())
+                            <img src="{{ $p->images->first()->url }}" alt="{{ $p->name }}" loading="lazy"
+                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        @else
+                            <div class="w-full h-full grid place-items-center text-[#9aa19c]/30">
+                                <i class="fa-solid fa-image text-4xl"></i>
+                            </div>
+                        @endif
+
+                        @if($dPct > 0)
+                            <span class="absolute top-2 sm:top-2.5 left-2 sm:left-2.5 rounded-md sm:rounded-lg bg-[#dc2626] text-white text-[9px] sm:text-[11px] font-bold px-1.5 sm:px-2 py-0.5 shadow-sm">-{{ $dPct }}%</span>
+                        @endif
+                    </div>
+                    <div class="p-2.5 sm:p-3">
+                        <p class="text-[10.5px] sm:text-[12px] font-bold text-[#1c201e] line-clamp-1 group-hover:text-[#7ca81d] transition-colors">{{ $p->name }}</p>
+                        <p class="text-[8.5px] sm:text-[10px] text-[#9aa19c] truncate mt-0.5">{{ $p->store->name ?? 'Marketplace' }}</p>
+                        <div class="flex items-baseline gap-1.5 mt-1 sm:mt-1.5">
+                            <span class="text-[12px] sm:text-[14px] font-black text-[#659316] tnum">{{ number_format($p->price) }} <span class="text-[8.5px] sm:text-[10px] font-bold">F</span></span>
+                            @if($p->old_price && $p->old_price > $p->price)
+                                <span class="text-[10px] sm:text-[11px] text-[#f97316] line-through tnum font-medium">{{ number_format($p->old_price) }}</span>
+                            @endif
+                        </div>
+                    </div>
+                </a>
+            @endforeach
+        </div>
+    </section>
+    @endif
+
+    {{-- ================================================================
+         3. CATEGORIES HORIZONTAL BAR
     ================================================================ --}}
     @if($categories->isNotEmpty())
     <section class="max-w-7xl mx-auto px-2.5 sm:px-6 mt-5 sm:mt-6">
@@ -164,7 +234,7 @@
     @endif
 
     {{-- ================================================================
-         3. TOOLBAR / FILTER & SORT STRIP
+         4. TOOLBAR / FILTER & SORT STRIP
     ================================================================ --}}
     <section class="max-w-7xl mx-auto px-2.5 sm:px-6 mt-5 sm:mt-6">
         <div class="bg-white rounded-2xl border border-[#e8eae8] p-2.5 sm:p-4 flex flex-wrap items-center justify-between gap-2.5 sm:gap-3 shadow-sm">
@@ -230,7 +300,7 @@
     </section>
 
     {{-- ================================================================
-         4. MAIN PRODUCT GRID (Wall-to-Wall 4 Cards on PC View)
+         5. MAIN PRODUCT GRID (Wall-to-Wall 4 Cards on PC View)
     ================================================================ --}}
     <section id="products-section" class="max-w-7xl mx-auto px-1 sm:px-6 mt-3 sm:mt-6">
         @if($products->count() > 0)
@@ -282,60 +352,7 @@
     </section>
 
     {{-- ================================================================
-         5. TRENDING STRIP (Matching Home "Deals of the day" aesthetic)
-    ================================================================ --}}
-    @if(isset($trendingProducts) && $trendingProducts->count() > 0 && !request('q'))
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-10 sm:mt-14">
-        <div class="flex items-end justify-between gap-3 mb-3.5 sm:mb-5">
-            <div class="flex items-center gap-2.5 sm:gap-3">
-                <span class="grid place-items-center w-8 h-8 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-[#dc2626] text-white shadow-md sm:shadow-lg shadow-red-500/20 shrink-0">
-                    <i class="fa-solid fa-fire text-[16px] sm:text-[20px]" style=""></i>
-                </span>
-                <div>
-                    <h2 class="text-sm sm:text-xl font-extrabold tracking-tight text-[#1c201e]">Trending Now</h2>
-                    <p class="text-[10px] sm:text-[12px] text-[#6b716c] -mt-0.5">Most popular items buyers are looking at today</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="flex gap-2 sm:gap-2.5 overflow-x-auto no-scrollbar pb-2">
-            @foreach($trendingProducts as $p)
-                @php
-                    $dPct = $p->old_price && $p->old_price > $p->price ? round((1 - $p->price / $p->old_price) * 100) : 0;
-                @endphp
-                <a href="{{ route('products.show', $p->slug) }}" class="group shrink-0 w-[8.75rem] sm:w-48 rounded-xl sm:rounded-2xl bg-white border border-[#e8eae8] overflow-hidden hover:shadow-[0_16px_40px_-12px_rgba(0,0,0,0.14)] hover:-translate-y-1 transition-all duration-300">
-                    <div class="relative aspect-square bg-[#f5f6f5] overflow-hidden">
-                        @if($p->images->first())
-                            <img src="{{ $p->images->first()->url }}" alt="{{ $p->name }}" loading="lazy"
-                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        @else
-                            <div class="w-full h-full grid place-items-center text-[#9aa19c]/30">
-                                <i class="fa-solid fa-image text-4xl"></i>
-                            </div>
-                        @endif
-
-                        @if($dPct > 0)
-                            <span class="absolute top-2 sm:top-2.5 left-2 sm:left-2.5 rounded-md sm:rounded-lg bg-[#dc2626] text-white text-[9px] sm:text-[11px] font-bold px-1.5 sm:px-2 py-0.5 shadow-sm">-{{ $dPct }}%</span>
-                        @endif
-                    </div>
-                    <div class="p-2.5 sm:p-3">
-                        <p class="text-[10.5px] sm:text-[12px] font-bold text-[#1c201e] line-clamp-1 group-hover:text-[#7ca81d] transition-colors">{{ $p->name }}</p>
-                        <p class="text-[8.5px] sm:text-[10px] text-[#9aa19c] truncate mt-0.5">{{ $p->store->name ?? 'Marketplace' }}</p>
-                        <div class="flex items-baseline gap-1.5 mt-1 sm:mt-1.5">
-                            <span class="text-[12px] sm:text-[14px] font-black text-[#659316] tnum">{{ number_format($p->price) }} <span class="text-[8.5px] sm:text-[10px] font-bold">F</span></span>
-                            @if($p->old_price && $p->old_price > $p->price)
-                                <span class="text-[10px] sm:text-[11px] text-[#f97316] line-through tnum font-medium">{{ number_format($p->old_price) }}</span>
-                            @endif
-                        </div>
-                    </div>
-                </a>
-            @endforeach
-        </div>
-    </section>
-    @endif
-
-    {{-- ================================================================
-         6. TOP STORES STRIP (Matching Home "Top stores" aesthetic)
+         5. TOP STORES STRIP (Matching Home "Top stores" aesthetic)
     ================================================================ --}}
     @if(isset($topStores) && $topStores->isNotEmpty())
     <section class="max-w-7xl mx-auto px-4 sm:px-6 mt-10 sm:mt-14">
